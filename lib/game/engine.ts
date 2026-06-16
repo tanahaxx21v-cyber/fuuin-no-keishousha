@@ -69,16 +69,53 @@ export function createInitialState(difficulty: Difficulty): GameState {
 export function travel(state: GameState, destId: LocationId): GameState {
   const s = deepClone(state)
   const loc = LOCATIONS[s.currentLocId]
+  const destLoc = LOCATIONS[destId]
   const days = loc.travelDays[destId] ?? 1
   s.daysLeft -= days
   s.currentLocId = destId
   if (!s.visitedLocs.includes(destId)) s.visitedLocs.push(destId)
+
   if (s.daysLeft <= 0) {
     s.daysLeft = 0
     s.phase = 'gameover'
-  } else {
-    s.phase = 'location'
+    return s
   }
+
+  // 中間地点（relay）のみランダムエンカウント/イベント発生
+  // 町・ダンジョンでは発生しない
+  if (destLoc.type === 'relay') {
+    const roll = Math.random()
+
+    if (roll < 0.30) {
+      // 30%: 敵エンカウント
+      const pool = destLoc.travelEnemyPool ?? []
+      if (pool.length > 0) {
+        const enemyId = pool[Math.floor(Math.random() * pool.length)]
+        s.message = '⚠️ 移動中に敵に遭遇した！'
+        return startBattle(s, [enemyId], false)
+      }
+    } else if (roll < 0.45) {
+      // 15%: ランダムイベント
+      const ev = Math.random()
+      if (ev < 0.40) {
+        const gold = Math.floor(Math.random() * 40) + 20
+        s.gold += gold
+        s.message = `💰 道中で ${gold}G を見つけた！`
+      } else if (ev < 0.75) {
+        const ex = s.inventory.find(i => i.itemId === 'potion')
+        if (ex) ex.qty += 1
+        else s.inventory.push({ itemId: 'potion', qty: 1 })
+        s.message = '🧪 道中でポーションを拾った！'
+      } else {
+        const heal = Math.floor(s.playerMaxHp * 0.10)
+        s.playerHp = Math.min(s.playerMaxHp, s.playerHp + heal)
+        s.message = `✨ 清らかな泉を発見。HP が ${heal} 回復した！`
+      }
+    }
+    // 55%: 何も起こらない
+  }
+
+  s.phase = 'location'
   return s
 }
 

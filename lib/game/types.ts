@@ -124,6 +124,7 @@ export interface LocationDef {
   shopItems?: string[]
   hasInn?: boolean
   requireAllStones?: boolean
+  travelEnemyPool?: string[]
 }
 
 // ===== Runtime State =====

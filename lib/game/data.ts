@@ -592,6 +592,7 @@ export const LOCATIONS: Record<LocationId, LocationDef> = {
     travelDays: { alseria: 1, galdo: 2, forest_entrance: 1 },
     hasInn: true,
     shopItems: ['potion', 'antidote'],
+    travelEnemyPool: ['wolf', 'goromin'],
   },
   checkpoint: {
     id: 'checkpoint', name: '東関所', emoji: '🚧',
@@ -600,6 +601,7 @@ export const LOCATIONS: Record<LocationId, LocationDef> = {
     connections: ['alseria', 'bern'],
     travelDays: { alseria: 1, bern: 2 },
     shopItems: ['potion'],
+    travelEnemyPool: ['bandit', 'goblin'],
   },
   great_bridge: {
     id: 'great_bridge', name: '大橋', emoji: '🌉',
@@ -607,6 +609,7 @@ export const LOCATIONS: Record<LocationId, LocationDef> = {
     desc: 'ルーテ大河に架かる大きな橋。南北をつなぐ重要な通路。川の流れを眺めながら渡る。',
     connections: ['alseria', 'riverside'],
     travelDays: { alseria: 2, riverside: 1 },
+    travelEnemyPool: ['wolf', 'poyogaeru'],
   },
   riverside: {
     id: 'riverside', name: '川辺の村', emoji: '🏡',
@@ -617,6 +620,7 @@ export const LOCATIONS: Record<LocationId, LocationDef> = {
     companionId: 'finn',
     hasInn: true,
     shopItems: ['potion', 'ether'],
+    travelEnemyPool: ['poyogaeru', 'yadotsubo', 'mokumokumo'],
   },
   watchtower: {
     id: 'watchtower', name: '見張り塔', emoji: '🗼',
@@ -624,6 +628,7 @@ export const LOCATIONS: Record<LocationId, LocationDef> = {
     desc: 'ベルンとガルドを結ぶ街道の中継地点。兵士が北方の動向を監視している。',
     connections: ['bern', 'galdo'],
     travelDays: { bern: 2, galdo: 2 },
+    travelEnemyPool: ['goromin', 'kabemimi'],
   },
   lighthouse: {
     id: 'lighthouse', name: '灯台岬', emoji: '🏮',
@@ -632,6 +637,7 @@ export const LOCATIONS: Record<LocationId, LocationDef> = {
     connections: ['mirea', 'riverside'],
     travelDays: { mirea: 1, riverside: 1 },
     shopItems: ['potion', 'antidote'],
+    travelEnemyPool: ['kuchipaku', 'mokumokumo'],
   },
   spirit_spring: {
     id: 'spirit_spring', name: '精霊の泉', emoji: '💧',
@@ -639,7 +645,7 @@ export const LOCATIONS: Record<LocationId, LocationDef> = {
     desc: 'エルナの里の近くにある精霊が宿る泉。癒しの力があり、大橋や古代神殿への道が分かれる場所。',
     connections: ['elna', 'ancient_temple'],
     travelDays: { elna: 1, ancient_temple: 2 },
-    hasInn: false,
+    travelEnemyPool: ['mofunezu', 'kinobokku', 'hari_wolf'],
   },
   trading_post: {
     id: 'trading_post', name: '交易所', emoji: '🏪',
@@ -648,6 +654,7 @@ export const LOCATIONS: Record<LocationId, LocationDef> = {
     connections: ['bern', 'checkpoint', 'bandit_hideout', 'sahal'],
     travelDays: { bern: 1, checkpoint: 2, bandit_hideout: 2, sahal: 2 },
     shopItems: ['potion', 'hi_potion', 'ether', 'antidote'],
+    travelEnemyPool: ['bandit', 'tsugihagi_hei'],
   },
   coastal_road: {
     id: 'coastal_road', name: '海岸街道', emoji: '🌊',
@@ -655,6 +662,7 @@ export const LOCATIONS: Record<LocationId, LocationDef> = {
     desc: '南東海岸沿いの街道。ミレアとサハルを海沿いに結ぶルート。砂漠の入口にも近い。',
     connections: ['mirea', 'sahal'],
     travelDays: { mirea: 2, sahal: 1 },
+    travelEnemyPool: ['kuchipaku', 'poyogaeru', 'sabotenu'],
   },
   forest_entrance: {
     id: 'forest_entrance', name: '森の入口', emoji: '🌿',
@@ -662,6 +670,7 @@ export const LOCATIONS: Record<LocationId, LocationDef> = {
     desc: '旅人の宿とエルナの里を結ぶ森の入口。深い緑に囲まれた静かな場所。',
     connections: ['traveler_inn', 'elna'],
     travelDays: { traveler_inn: 1, elna: 1 },
+    travelEnemyPool: ['mofunezu', 'kinobokku'],
   },
 
   // ===== DUNGEONS =====
