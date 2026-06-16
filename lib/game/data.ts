@@ -220,6 +220,65 @@ export const ENEMIES: Record<string, EnemyDef> = {
     skills: [{ id: 'sting', name: '猛毒の針', desc: '強力な毒を注入する。', mpCost: 6, target: 'enemy_one', effect: 'poison', power: 1.1 }],
     exp: 32, gold: 26,
   },
+  // 森エリア
+  mofunezu: {
+    id: 'mofunezu', name: 'モフネズ', emoji: '🐿️',
+    hp: 28, mp: 0, atk: 8, def: 3, spd: 10,
+    skills: [
+      { id: 'tackle_m', name: 'たいあたり', desc: '体当たり攻撃。', mpCost: 0, target: 'enemy_one', effect: 'damage', power: 1.0 },
+      { id: 'gnaw', name: 'かじる', desc: '鋭い歯で噛みつく。', mpCost: 0, target: 'enemy_one', effect: 'damage', power: 1.2 },
+    ],
+    exp: 10, gold: 6,
+  },
+  kinobokku: {
+    id: 'kinobokku', name: 'キノボック', emoji: '🍄',
+    hp: 42, mp: 35, atk: 11, def: 6, spd: 7,
+    skills: [
+      { id: 'poison_spore', name: 'どくほうし', desc: '毒の胞子をまき散らす。', mpCost: 6, target: 'enemy_one', effect: 'poison', power: 1.0 },
+      { id: 'sleep_spore', name: 'ねむりほうし', desc: '眠り胞子でスタン状態にする。', mpCost: 8, target: 'enemy_one', effect: 'stun', power: 1.0 },
+      { id: 'spore_shower', name: 'ほうしまき', desc: '胞子を全体にまき散らす。', mpCost: 10, target: 'enemy_all', effect: 'damage', power: 1.0 },
+    ],
+    exp: 18, gold: 12,
+  },
+  donguraa: {
+    id: 'donguraa', name: 'ドングラー', emoji: '🌰',
+    hp: 68, mp: 15, atk: 14, def: 13, spd: 5,
+    skills: [
+      { id: 'tackle_d', name: 'たいあたり', desc: '重い体で体当たり。', mpCost: 0, target: 'enemy_one', effect: 'damage', power: 1.1 },
+      { id: 'acorn_guard', name: 'ぼうぎょ', desc: '帽子をかぶり防御力を上げる。', mpCost: 8, target: 'self', effect: 'def_up', power: 1 },
+    ],
+    exp: 25, gold: 18,
+  },
+  hari_wolf: {
+    id: 'hari_wolf', name: 'ハリオオカミ', emoji: '🐺',
+    hp: 58, mp: 22, atk: 19, def: 8, spd: 17,
+    skills: [
+      { id: 'scratch_hw', name: 'ひっかく', desc: '鋭い爪で引っかく。', mpCost: 0, target: 'enemy_one', effect: 'damage', power: 1.2 },
+      { id: 'spine_shot', name: 'ハリとばし', desc: '背中の針を全体に飛ばす。', mpCost: 8, target: 'enemy_all', effect: 'damage', power: 0.9 },
+      { id: 'bite_hw', name: 'かみつく', desc: '強力な顎で噛みつく。', mpCost: 6, target: 'enemy_one', effect: 'damage', power: 1.8 },
+    ],
+    exp: 32, gold: 24,
+  },
+  mori_doll: {
+    id: 'mori_doll', name: '森人形', emoji: '🪆',
+    hp: 72, mp: 18, atk: 16, def: 11, spd: 6,
+    skills: [
+      { id: 'grab', name: 'つかむ', desc: '強引に掴みスタン状態にする。', mpCost: 8, target: 'enemy_one', effect: 'stun', power: 1.3 },
+      { id: 'eerie_stare', name: 'みつめる', desc: '不気味な視線で攻撃力を下げる。', mpCost: 6, target: 'enemy_one', effect: 'debuff_atk', power: 1 },
+    ],
+    exp: 38, gold: 30,
+  },
+  forest_king: {
+    id: 'forest_king', name: '森王モルガ', emoji: '🦌',
+    hp: 400, mp: 90, atk: 31, def: 17, spd: 11,
+    skills: [
+      { id: 'king_scratch', name: 'ひっかく', desc: '巨大な爪で引っかく。', mpCost: 0, target: 'enemy_one', effect: 'damage', power: 1.5 },
+      { id: 'stomp', name: 'ふみつけ', desc: '重い足で踏みつける。全体攻撃。', mpCost: 12, target: 'enemy_all', effect: 'damage', power: 1.2 },
+      { id: 'seed_scatter', name: 'たねまき', desc: '毒の種を全体にまき散らす。', mpCost: 14, target: 'enemy_all', effect: 'poison', power: 1.0 },
+      { id: 'vine_call', name: 'つるのよびごえ', desc: '蔓を操り自身の攻撃力を大幅アップ。', mpCost: 10, target: 'self', effect: 'atk_up', power: 1 },
+    ],
+    exp: 220, gold: 150, isBoss: true, sealStone: 'dark',
+  },
   // 終盤
   dark_soldier: {
     id: 'dark_soldier', name: '魔王軍兵士', emoji: '💀',
@@ -477,8 +536,8 @@ export const LOCATIONS: Record<LocationId, LocationDef> = {
     travelDays: { spirit_spring: 2 },
     companionId: 'mira',
     sealStone: 'dark',
-    enemyPool: ['dark_soldier', 'desert_scorpion', 'bandit'],
-    bossId: 'dark_guardian',
+    enemyPool: ['mofunezu', 'kinobokku', 'donguraa', 'hari_wolf', 'mori_doll'],
+    bossId: 'forest_king',
   },
   desert_ruins: {
     id: 'desert_ruins', name: '砂漠遺跡', emoji: '🌑',
