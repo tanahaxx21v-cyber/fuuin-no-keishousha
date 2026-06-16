@@ -5,20 +5,41 @@ export type GamePhase =
 export type Difficulty = 'easy' | 'normal' | 'hard'
 
 export type LocationId =
-  | 'royal_city'    // 王都リーベル
-  | 'volca_town'    // 炎の街ヴォルカ
-  | 'elda_village'  // 迷いの森の里エルダ
-  | 'marina_port'   // 港町マリナ
-  | 'rune_city'     // 廃都ルーン
-  | 'mist_village'  // 霧の里ミスト
-  | 'ignis_dungeon' // 炎山イグニス
-  | 'stormia_tower' // 嵐の塔ストーミア
-  | 'shadowgrave'   // 暗黒の森シャドウグレイブ
-  | 'darkfort'      // 魔王城ダークフォート
+  // 6 towns
+  | 'alseria'       // アルセリア王都 ①
+  | 'bern'          // ベルン商業都市 ②
+  | 'sahal'         // サハル砂漠都市 ③
+  | 'mirea'         // ミレア港町 ④
+  | 'elna'          // エルナの里 ⑤
+  | 'galdo'         // ガルド皆都市 ⑥
+  // 6 relay points
+  | 'traveler_inn'  // 旅人の宿
+  | 'checkpoint'    // 関所
+  | 'great_bridge'  // 大橋
+  | 'riverside'     // 川辺の村
+  | 'watchtower'    // 見張り塔
+  | 'lighthouse'    // 灯台岬
+  // dungeons & special
+  | 'demon_mine'    // 魔鉱山（炎の封印石）
+  | 'dragon_pass'   // 竜の峠（嵐の封印石）
+  | 'bandit_hideout'// 盗賊の隠れ家
+  | 'ancient_temple'// 古代神殿（闇の封印石）
+  | 'beast_forest'  // 魔獣の森（魔王最終決戦）
 
 export type CompanionId =
-  | 'gordon' | 'liria' | 'sera' | 'dan' | 'flare' | 'kain'
-  | 'win' | 'march' | 'belk' | 'noel' | 'ain' | 'sofia'
+  | 'gares'   // ガレス 騎士
+  | 'liz'     // リズ 神官
+  | 'noa'     // ノア 弓使い
+  | 'cecil'   // セシル 魔法使い
+  | 'bram'    // ブラム 戦士
+  | 'finn'    // フィン 見習い剣士
+  | 'vais'    // ヴァイス 元盗賊団長
+  | 'logan'   // ローガン 元処刑人
+  | 'iris'    // イリス 元魔王軍魔導士
+  | 'sig'     // シグ 詐欺師
+  | 'elk'     // エルク 獣人・槍使い
+  | 'mira'    // ミラ エルフ・弓術士
+  | 'zeno'    // ゼノ 隠しキャラ・魔族
 
 export type SealStone = 'fire' | 'storm' | 'dark'
 
@@ -55,6 +76,7 @@ export interface CompanionDef {
   baseSpd: number
   joinLevel: number
   skills: Skill[]
+  isHidden?: boolean
 }
 
 export interface EnemyDef {
@@ -87,7 +109,7 @@ export interface LocationDef {
   id: LocationId
   name: string
   emoji: string
-  type: 'town' | 'dungeon' | 'castle'
+  type: 'town' | 'relay' | 'dungeon' | 'castle'
   desc: string
   connections: LocationId[]
   travelDays: Partial<Record<LocationId, number>>
@@ -165,6 +187,7 @@ export interface BattleState {
   rewardGold: number
   sealStoneFound?: SealStone
   isBoss: boolean
+  isFinalBoss: boolean
   turn: number
 }
 

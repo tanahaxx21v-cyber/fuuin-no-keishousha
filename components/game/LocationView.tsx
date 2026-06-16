@@ -25,7 +25,7 @@ export default function LocationView({
 
   const bossDefeated = loc.bossId ? gs.defeatedBosses.some(id => id.includes(loc.bossId!)) : false
   const sealObtained = loc.sealStone ? gs.sealStones.includes(loc.sealStone) : false
-  const canEnterDarkfort = loc.id === 'darkfort' && gs.sealStones.length >= 3
+  const canEnterDarkfort = loc.id === 'beast_forest' && gs.sealStones.length >= 3
 
   return (
     <div className="p-4 max-w-2xl mx-auto">

@@ -13,8 +13,8 @@ export function createInitialState(difficulty: Difficulty): GameState {
   const companions: Record<CompanionId, CompanionState> = {} as Record<CompanionId, CompanionState>
 
   const companionIds: CompanionId[] = [
-    'gordon', 'liria', 'sera', 'dan', 'flare', 'kain',
-    'win', 'march', 'belk', 'noel', 'ain', 'sofia',
+    'gares', 'liz', 'noa', 'cecil', 'bram', 'finn',
+    'vais', 'logan', 'iris', 'sig', 'elk', 'mira', 'zeno',
   ]
 
   for (const id of companionIds) {
@@ -55,8 +55,8 @@ export function createInitialState(difficulty: Difficulty): GameState {
     playerStatus: [],
     gold: 200,
     inventory: [{ itemId: 'potion', qty: 2 }, { itemId: 'ether', qty: 1 }],
-    currentLocId: 'royal_city',
-    visitedLocs: ['royal_city'],
+    currentLocId: 'alseria',
+    visitedLocs: ['alseria'],
     sealStones: [],
     defeatedBosses: [],
     companions,
@@ -151,8 +151,8 @@ export function startBattle(state: GameState, enemyIds: string[], isBoss: boolea
   const allies: BattleUnit[] = [
     {
       uid: 'player',
-      name: '後継者',
-      emoji: '🗡️',
+      name: 'レオン',
+      emoji: '⚔️',
       hp: s.playerHp,
       maxHp: s.playerMaxHp,
       mp: s.playerMp,
@@ -224,6 +224,7 @@ export function startBattle(state: GameState, enemyIds: string[], isBoss: boolea
     rewardGold: enemyIds.reduce((sum, id) => sum + (ENEMIES[id]?.gold ?? 0), 0),
     sealStoneFound: isBoss ? ENEMIES[enemyIds[0]]?.sealStone : undefined,
     isBoss,
+    isFinalBoss: isBoss && enemyIds[0] === 'demon_king',
     turn: 1,
   }
 
@@ -499,7 +500,14 @@ function applyBattleRewards(state: GameState): GameState {
   if (b.isBoss) {
     const bossUid = b.units.find(u => u.isBoss)?.uid
     if (bossUid) s.defeatedBosses.push(bossUid)
-    // Check companion join at dungeon
+
+    // Final boss → win
+    if (b.isFinalBoss) {
+      b.logs.push({ text: `🏆 魔王ヴァールドを討伐した！ルミナ大陸に平和が戻る！`, type: 'system' })
+      return s
+    }
+
+    // Companion join event at dungeon
     const loc = LOCATIONS[s.currentLocId]
     if (loc.companionId) {
       const cid = loc.companionId
@@ -538,13 +546,16 @@ export function closeBattle(state: GameState): GameState {
   if (!s.battle) return s
 
   const defeated = s.battle.phase === 'defeat'
+  const isFinal = s.battle.isFinalBoss && s.battle.phase === 'victory'
   syncBattleToState(s)
   s.battle = undefined
 
   if (defeated) {
     s.phase = 'gameover'
+  } else if (isFinal) {
+    s.phase = 'win'
   } else {
-    s.phase = s.pendingCompanionJoin ? 'location' : 'location'
+    s.phase = 'location'
   }
   return s
 }
@@ -602,7 +613,7 @@ export function checkWinCondition(state: GameState): GameState {
   const loc = LOCATIONS[s.currentLocId]
 
   // Check if all 3 seal stones are collected and at demon castle
-  if (s.currentLocId === 'darkfort' && s.sealStones.length === 3) {
+  if (s.currentLocId === 'beast_forest' && s.sealStones.length === 3) {
     // Already handled by fightBoss → battle victory
   }
   return s

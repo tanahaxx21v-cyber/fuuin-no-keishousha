@@ -10,17 +10,28 @@ interface Props {
 }
 
 // Pixel positions for each location on the map (percentage-based)
+// Based on ルミナ大陸 world map
 const MAP_POSITIONS: Partial<Record<LocationId, { x: number; y: number }>> = {
-  royal_city:     { x: 35, y: 20 },
-  volca_town:     { x: 65, y: 15 },
-  elda_village:   { x: 25, y: 42 },
-  marina_port:    { x: 55, y: 50 },
-  rune_city:      { x: 30, y: 65 },
-  mist_village:   { x: 50, y: 78 },
-  ignis_dungeon:  { x: 80, y: 10 },
-  stormia_tower:  { x: 72, y: 55 },
-  shadowgrave:    { x: 65, y: 82 },
-  darkfort:       { x: 50, y: 93 },
+  // 6 towns
+  alseria:        { x: 40, y: 42 },  // ① 中央
+  bern:           { x: 64, y: 44 },  // ② 東
+  sahal:          { x: 74, y: 68 },  // ③ 南東
+  mirea:          { x: 50, y: 78 },  // ④ 南
+  elna:           { x: 20, y: 60 },  // ⑤ 西
+  galdo:          { x: 52, y: 22 },  // ⑥ 北
+  // relay
+  traveler_inn:   { x: 28, y: 50 },
+  checkpoint:     { x: 52, y: 43 },
+  great_bridge:   { x: 44, y: 56 },
+  riverside:      { x: 36, y: 66 },
+  watchtower:     { x: 60, y: 32 },
+  lighthouse:     { x: 64, y: 76 },
+  // dungeons
+  demon_mine:     { x: 46, y: 14 },
+  dragon_pass:    { x: 66, y: 10 },
+  bandit_hideout: { x: 70, y: 56 },
+  ancient_temple: { x: 10, y: 76 },
+  beast_forest:   { x: 22, y: 30 },
 }
 
 const LOCATION_TYPE_COLORS: Record<string, string> = {
@@ -33,8 +44,8 @@ export default function WorldMap({ gs, onTravel, onEnterLocation }: Props) {
   const currentLoc = LOCATIONS[gs.currentLocId]
   const connectedIds = currentLoc.connections
 
-  const canEnterDarkfort = gs.currentLocId === 'darkfort' || connectedIds.includes('darkfort')
-  const darkfortLocked = !gs.sealStones.length || gs.sealStones.length < 3
+  const canEnterDarkfort = gs.currentLocId === 'beast_forest' || connectedIds.includes('beast_forest')
+  const beast_forestLocked = !gs.sealStones.length || gs.sealStones.length < 3
 
   return (
     <div className="flex flex-col lg:flex-row gap-4 p-4 max-w-6xl mx-auto">
@@ -76,7 +87,7 @@ export default function WorldMap({ gs, onTravel, onEnterLocation }: Props) {
             const isCurrent = id === gs.currentLocId
             const isConnected = connectedIds.includes(id)
             const isVisited = gs.visitedLocs.includes(id)
-            const isLocked = id === 'darkfort' && darkfortLocked
+            const isLocked = id === 'beast_forest' && beast_forestLocked
             const canTravel = isConnected && !isCurrent && !isLocked
 
             const typeColor = isCurrent
