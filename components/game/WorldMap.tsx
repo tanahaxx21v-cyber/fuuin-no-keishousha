@@ -10,28 +10,32 @@ interface Props {
 }
 
 // Pixel positions for each location on the map (percentage-based)
-// Based on ルミナ大陸 world map
+// Based on ルミナ大陸 world map (updated)
 const MAP_POSITIONS: Partial<Record<LocationId, { x: number; y: number }>> = {
   // 6 towns
-  alseria:        { x: 40, y: 42 },  // ① 中央
-  bern:           { x: 64, y: 44 },  // ② 東
-  sahal:          { x: 74, y: 68 },  // ③ 南東
-  mirea:          { x: 50, y: 78 },  // ④ 南
-  elna:           { x: 20, y: 60 },  // ⑤ 西
-  galdo:          { x: 52, y: 22 },  // ⑥ 北
-  // relay
-  traveler_inn:   { x: 28, y: 50 },
-  checkpoint:     { x: 52, y: 43 },
-  great_bridge:   { x: 44, y: 56 },
-  riverside:      { x: 36, y: 66 },
-  watchtower:     { x: 60, y: 32 },
-  lighthouse:     { x: 64, y: 76 },
-  // dungeons
-  demon_mine:     { x: 46, y: 14 },
-  dragon_pass:    { x: 66, y: 10 },
-  bandit_hideout: { x: 70, y: 56 },
-  ancient_temple: { x: 10, y: 76 },
-  beast_forest:   { x: 22, y: 30 },
+  galdo:           { x: 52, y: 25 },
+  alseria:         { x: 45, y: 47 },
+  bern:            { x: 72, y: 43 },
+  elna:            { x: 14, y: 44 },
+  sahal:           { x: 82, y: 63 },
+  mirea:           { x: 50, y: 78 },
+  // relay points
+  watchtower:      { x: 82, y: 25 },
+  traveler_inn:    { x: 44, y: 35 },
+  checkpoint:      { x: 57, y: 47 },
+  great_bridge:    { x: 44, y: 58 },
+  riverside:       { x: 45, y: 68 },
+  lighthouse:      { x: 34, y: 78 },
+  spirit_spring:   { x: 27, y: 55 },
+  trading_post:    { x: 65, y: 58 },
+  coastal_road:    { x: 68, y: 73 },
+  forest_entrance: { x: 22, y: 42 },
+  // dungeons & special
+  demon_mine:      { x: 27, y: 22 },
+  dragon_pass:     { x: 55, y: 8  },
+  bandit_hideout:  { x: 68, y: 62 },
+  ancient_temple:  { x: 10, y: 70 },
+  desert_ruins:    { x: 88, y: 78 },
 }
 
 const LOCATION_TYPE_COLORS: Record<string, string> = {
@@ -44,8 +48,7 @@ export default function WorldMap({ gs, onTravel, onEnterLocation }: Props) {
   const currentLoc = LOCATIONS[gs.currentLocId]
   const connectedIds = currentLoc.connections
 
-  const canEnterDarkfort = gs.currentLocId === 'beast_forest' || connectedIds.includes('beast_forest')
-  const beast_forestLocked = !gs.sealStones.length || gs.sealStones.length < 3
+  const finalBossLocked = gs.sealStones.length < 3
 
   return (
     <div className="flex flex-col lg:flex-row gap-4 p-4 max-w-6xl mx-auto">
@@ -87,7 +90,7 @@ export default function WorldMap({ gs, onTravel, onEnterLocation }: Props) {
             const isCurrent = id === gs.currentLocId
             const isConnected = connectedIds.includes(id)
             const isVisited = gs.visitedLocs.includes(id)
-            const isLocked = id === 'beast_forest' && beast_forestLocked
+            const isLocked = id === 'desert_ruins' && finalBossLocked
             const canTravel = isConnected && !isCurrent && !isLocked
 
             const typeColor = isCurrent
@@ -161,9 +164,9 @@ export default function WorldMap({ gs, onTravel, onEnterLocation }: Props) {
         <div className="bg-gray-900/80 border border-gray-700 rounded-xl p-4 mt-3">
           <div className="text-xs text-gray-500 mb-2">封印石の収集状況</div>
           {([
-            { stone: 'fire' as const, name: '炎の封印石', icon: '🔥', loc: '炎山イグニス' },
-            { stone: 'storm' as const, name: '嵐の封印石', icon: '⚡', loc: '嵐の塔ストーミア' },
-            { stone: 'dark' as const, name: '闇の封印石', icon: '🌑', loc: '暗黒の森' },
+            { stone: 'fire' as const, name: '炎の封印石', icon: '🔥', loc: '廃鉱山' },
+            { stone: 'storm' as const, name: '嵐の封印石', icon: '⚡', loc: '竜の峠' },
+            { stone: 'dark' as const, name: '闇の封印石', icon: '🌑', loc: '古代神殿' },
           ]).map(({ stone, name, icon, loc: locName }) => (
             <div key={stone} className="flex items-center gap-2 py-1">
               <span className={`text-lg ${gs.sealStones.includes(stone) ? '' : 'grayscale opacity-30'}`}>{icon}</span>

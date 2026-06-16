@@ -6,25 +6,29 @@ export type Difficulty = 'easy' | 'normal' | 'hard'
 
 export type LocationId =
   // 6 towns
-  | 'alseria'       // アルセリア王都 ①
-  | 'bern'          // ベルン商業都市 ②
-  | 'sahal'         // サハル砂漠都市 ③
-  | 'mirea'         // ミレア港町 ④
-  | 'elna'          // エルナの里 ⑤
-  | 'galdo'         // ガルド皆都市 ⑥
-  // 6 relay points
-  | 'traveler_inn'  // 旅人の宿
-  | 'checkpoint'    // 関所
-  | 'great_bridge'  // 大橋
-  | 'riverside'     // 川辺の村
-  | 'watchtower'    // 見張り塔
-  | 'lighthouse'    // 灯台岬
+  | 'alseria'        // アルセリア王都 ①
+  | 'bern'           // ベルン商業都市 ②
+  | 'sahal'          // サハル砂漠都市 ③
+  | 'mirea'          // ミレア港町 ④
+  | 'elna'           // エルナの里 ⑤
+  | 'galdo'          // ガルド皆都市 ⑥
+  // 10 relay points
+  | 'traveler_inn'   // 旅人の宿
+  | 'checkpoint'     // 東関所
+  | 'great_bridge'   // 大橋
+  | 'riverside'      // 川辺の村
+  | 'watchtower'     // 見張り塔
+  | 'lighthouse'     // 灯台岬
+  | 'spirit_spring'  // 精霊の泉 (NEW)
+  | 'trading_post'   // 交易所 (NEW)
+  | 'coastal_road'   // 海岸街道 (NEW)
+  | 'forest_entrance'// 森の入口 (NEW)
   // dungeons & special
-  | 'demon_mine'    // 魔鉱山（炎の封印石）
-  | 'dragon_pass'   // 竜の峠（嵐の封印石）
-  | 'bandit_hideout'// 盗賊の隠れ家
-  | 'ancient_temple'// 古代神殿（闇の封印石）
-  | 'beast_forest'  // 魔獣の森（魔王最終決戦）
+  | 'demon_mine'     // 廃鉱山（炎の封印石）
+  | 'dragon_pass'    // 竜の峠（嵐の封印石）
+  | 'bandit_hideout' // 盗賊アジト
+  | 'ancient_temple' // 古代神殿（闇の封印石）
+  | 'desert_ruins'   // 砂漠遺跡（魔王最終決戦）
 
 export type CompanionId =
   | 'gares'   // ガレス 騎士

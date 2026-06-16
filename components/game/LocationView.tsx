@@ -25,7 +25,7 @@ export default function LocationView({
 
   const bossDefeated = loc.bossId ? gs.defeatedBosses.some(id => id.includes(loc.bossId!)) : false
   const sealObtained = loc.sealStone ? gs.sealStones.includes(loc.sealStone) : false
-  const canEnterDarkfort = loc.id === 'beast_forest' && gs.sealStones.length >= 3
+  const canEnterDarkfort = loc.id === 'desert_ruins' && gs.sealStones.length >= 3
 
   return (
     <div className="p-4 max-w-2xl mx-auto">
@@ -188,7 +188,7 @@ export default function LocationView({
                   onClick={onFightBoss}
                   className="w-full py-3 bg-red-900 hover:bg-red-800 border border-red-600 text-white rounded-xl transition font-bold text-center animate-pulse"
                 >
-                  👑 魔王ダークルーラーに挑む！
+                  👑 魔王ヴァールドに挑む！
                 </button>
               </>
             )}

@@ -613,7 +613,7 @@ export function checkWinCondition(state: GameState): GameState {
   const loc = LOCATIONS[s.currentLocId]
 
   // Check if all 3 seal stones are collected and at demon castle
-  if (s.currentLocId === 'beast_forest' && s.sealStones.length === 3) {
+  if (s.currentLocId === 'desert_ruins' && s.sealStones.length === 3) {
     // Already handled by fightBoss → battle victory
   }
   return s
