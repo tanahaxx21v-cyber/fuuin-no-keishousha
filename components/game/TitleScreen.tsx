@@ -5,6 +5,8 @@ import type { Difficulty } from '@/lib/game/types'
 
 interface Props {
   onStart: (diff: Difficulty) => void
+  onDeleteSave?: () => void
+  hasSave?: boolean
 }
 
 const DIFFICULTIES: { id: Difficulty; name: string; desc: string; color: string }[] = [
@@ -13,7 +15,7 @@ const DIFFICULTIES: { id: Difficulty; name: string; desc: string; color: string 
   { id: 'hard', name: 'ハード', desc: '日数80日・敵HP140%・仲間永続死', color: 'border-red-700 bg-red-900/30 hover:bg-red-800/40' },
 ]
 
-export default function TitleScreen({ onStart }: Props) {
+export default function TitleScreen({ onStart, onDeleteSave, hasSave }: Props) {
   const [selected, setSelected] = useState<Difficulty>('normal')
 
   return (
@@ -74,6 +76,15 @@ export default function TitleScreen({ onStart }: Props) {
         <div className="mt-4 text-xs text-gray-600">
           ハードモードでは仲間が死亡すると永続的に失います
         </div>
+
+        {hasSave && onDeleteSave && (
+          <button
+            onClick={onDeleteSave}
+            className="mt-3 text-xs text-gray-600 hover:text-red-400 underline transition"
+          >
+            🗑️ セーブデータを削除して最初から始める
+          </button>
+        )}
       </div>
     </div>
   )

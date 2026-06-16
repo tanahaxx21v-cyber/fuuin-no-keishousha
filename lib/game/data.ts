@@ -232,43 +232,43 @@ export const ENEMIES: Record<string, EnemyDef> = {
   wolf: {
     id: 'wolf', name: '山狼', emoji: '🐺',
     hp: 32, mp: 0, atk: 9, def: 4, spd: 10,
-    skills: [], exp: 12, gold: 8,
+    skills: [], exp: 16, gold: 10,
   },
   goblin: {
     id: 'goblin', name: 'ゴブリン兵', emoji: '👺',
     hp: 45, mp: 10, atk: 12, def: 6, spd: 9,
     skills: [{ id: 'stab', name: '突き', desc: '素早い刺突。', mpCost: 4, target: 'enemy_one', effect: 'damage', power: 1.3 }],
-    exp: 18, gold: 15,
+    exp: 24, gold: 18,
   },
   bandit: {
     id: 'bandit', name: '盗賊', emoji: '🗡️',
     hp: 50, mp: 15, atk: 14, def: 7, spd: 12,
     skills: [{ id: 'poison_knife', name: '毒ナイフ', desc: '毒を塗った刃。', mpCost: 5, target: 'enemy_one', effect: 'poison', power: 1.0 }],
-    exp: 22, gold: 20,
+    exp: 28, gold: 24,
   },
   // 中盤
   fire_elemental: {
     id: 'fire_elemental', name: '炎精霊', emoji: '🔥',
     hp: 60, mp: 30, atk: 17, def: 8, spd: 11,
     skills: [{ id: 'fire_blast', name: '炎弾', desc: '炎の塊を放つ。', mpCost: 8, target: 'enemy_one', effect: 'damage', power: 1.7 }],
-    exp: 30, gold: 25,
+    exp: 40, gold: 32,
   },
   mine_golem: {
     id: 'mine_golem', name: '鉱山ゴーレム', emoji: '⛏️',
     hp: 80, mp: 0, atk: 18, def: 14, spd: 5,
-    skills: [], exp: 35, gold: 28,
+    skills: [], exp: 46, gold: 36,
   },
   storm_bird: {
     id: 'storm_bird', name: '嵐鳥', emoji: '🦅',
     hp: 55, mp: 20, atk: 20, def: 6, spd: 18,
     skills: [{ id: 'gale', name: '旋風', desc: '翼で竜巻を起こす。', mpCost: 8, target: 'enemy_all', effect: 'damage', power: 1.1 }],
-    exp: 28, gold: 22,
+    exp: 36, gold: 28,
   },
   desert_scorpion: {
     id: 'desert_scorpion', name: '砂漠サソリ', emoji: '🦂',
     hp: 65, mp: 10, atk: 19, def: 9, spd: 13,
     skills: [{ id: 'sting', name: '猛毒の針', desc: '強力な毒を注入する。', mpCost: 6, target: 'enemy_one', effect: 'poison', power: 1.1 }],
-    exp: 32, gold: 26,
+    exp: 42, gold: 34,
   },
   // 森エリア
   mofunezu: {
@@ -327,7 +327,7 @@ export const ENEMIES: Record<string, EnemyDef> = {
       { id: 'seed_scatter', name: 'たねまき', desc: '毒の種を全体にまき散らす。', mpCost: 14, target: 'enemy_all', effect: 'poison', power: 1.0 },
       { id: 'vine_call', name: 'つるのよびごえ', desc: '蔓を操り自身の攻撃力を大幅アップ。', mpCost: 10, target: 'self', effect: 'atk_up', power: 1 },
     ],
-    exp: 220, gold: 150, isBoss: true, sealStone: 'dark',
+    exp: 330, gold: 180, isBoss: true, sealStone: 'dark',
   },
   // ===== 山岳エリア（廃鉱山・竜の峠）=====
   goromin: {
@@ -506,7 +506,7 @@ export const ENEMIES: Record<string, EnemyDef> = {
       { id: 'triple_slash', name: '三連斬り', desc: '三段連続攻撃。', mpCost: 10, target: 'enemy_one', effect: 'damage', power: 2.0 },
       { id: 'smoke_bomb', name: '煙幕爆弾', desc: '敵全体の攻撃力を下げる。', mpCost: 8, target: 'enemy_all', effect: 'debuff_atk', power: 1 },
     ],
-    exp: 100, gold: 80, isBoss: true,
+    exp: 150, gold: 100, isBoss: true,
   },
   mine_king: {
     id: 'mine_king', name: '鉱王グラドル', emoji: '💎',
@@ -516,7 +516,7 @@ export const ENEMIES: Record<string, EnemyDef> = {
       { id: 'ore_shield', name: '鉱石の盾', desc: '鉱石の盾で防御力を大幅に上げる。', mpCost: 10, target: 'self', effect: 'def_up', power: 1 },
       { id: 'daichi_no_ikari', name: '大地の怒り', desc: '大地を揺らし1体に超強力な一撃。', mpCost: 16, target: 'enemy_one', effect: 'damage', power: 2.8 },
     ],
-    exp: 200, gold: 130, isBoss: true, sealStone: 'fire',
+    exp: 300, gold: 160, isBoss: true, sealStone: 'fire',
   },
   storm_dragon: {
     id: 'storm_dragon', name: '嵐竜ストームレックス', emoji: '🌩️',
@@ -525,7 +525,7 @@ export const ENEMIES: Record<string, EnemyDef> = {
       { id: 'storm_blast', name: '嵐の爆風', desc: '全体に嵐ダメージ。', mpCost: 14, target: 'enemy_all', effect: 'damage', power: 1.4 },
       { id: 'lightning_dive', name: '雷撃落とし', desc: '1体に超強力な雷。', mpCost: 12, target: 'enemy_one', effect: 'damage', power: 2.6 },
     ],
-    exp: 180, gold: 120, isBoss: true, sealStone: 'storm',
+    exp: 280, gold: 150, isBoss: true, sealStone: 'storm',
   },
   ruins_guardian: {
     id: 'ruins_guardian', name: '遺跡守ラザーム', emoji: '🗿',
@@ -549,7 +549,7 @@ export const ENEMIES: Record<string, EnemyDef> = {
   },
   archive: {
     id: 'archive', name: '終末記録体アーカイブ', emoji: '📚',
-    hp: 580, mp: 150, atk: 40, def: 22, spd: 14,
+    hp: 460, mp: 150, atk: 36, def: 20, spd: 14,
     skills: [
       { id: 'kiroku_sabaki', name: 'きろくのさばき', desc: '世界の記録が全体に降り注ぐ。', mpCost: 18, target: 'enemy_all', effect: 'damage', power: 1.7 },
       { id: 'kako_no_kodama', name: 'かこのこだま', desc: '過去の記録が全体の攻撃力を下げる。', mpCost: 14, target: 'enemy_all', effect: 'debuff_atk', power: 1 },

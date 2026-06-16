@@ -25,7 +25,6 @@ export default function LocationView({
 
   const bossDefeated = loc.bossId ? gs.defeatedBosses.some(id => id.includes(loc.bossId!)) : false
   const sealObtained = loc.sealStone ? gs.sealStones.includes(loc.sealStone) : false
-  const canEnterDarkfort = loc.id === 'desert_ruins' && gs.sealStones.length >= 3
 
   return (
     <div className="p-4 max-w-2xl mx-auto">
@@ -76,8 +75,8 @@ export default function LocationView({
         </div>
       )}
 
-      {/* Companion encounter (before boss defeat, at town) */}
-      {!pendingJoin && showCompanionJoin && loc.type === 'town' && (
+      {/* Companion encounter (before boss defeat, at town / relay / castle) */}
+      {!pendingJoin && showCompanionJoin && (loc.type === 'town' || loc.type === 'relay' || loc.type === 'castle') && (
         <div className="bg-indigo-950/80 border border-indigo-700 rounded-xl p-4 mb-4">
           <div className="flex items-center gap-3 mb-2">
             <span className="text-3xl">{companion!.emoji}</span>
@@ -157,7 +156,7 @@ export default function LocationView({
         {loc.type === 'dungeon' && bossDefeated && (
           <>
             <div className="text-center py-2 text-green-400 text-sm">✅ ボス討伐済み</div>
-            {!sealObtained && (
+            {sealObtained && (
               <div className="text-center py-2 text-yellow-300 text-sm">💎 封印石入手済み</div>
             )}
             <button
@@ -188,7 +187,7 @@ export default function LocationView({
                   onClick={onFightBoss}
                   className="w-full py-3 bg-red-900 hover:bg-red-800 border border-red-600 text-white rounded-xl transition font-bold text-center animate-pulse"
                 >
-                  👑 魔王ヴァールドに挑む！
+                  👑 終末記録体アーカイブに挑む！
                 </button>
               </>
             )}

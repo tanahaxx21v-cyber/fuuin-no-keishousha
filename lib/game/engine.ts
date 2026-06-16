@@ -58,7 +58,7 @@ export function createInitialState(difficulty: Difficulty, playerName = 'レオ�
     playerExp: 0,
     playerSkills: startSkills,
     playerStatus: [],
-    gold: 200,
+    gold: 300,
     inventory: [{ itemId: 'potion', qty: 2 }, { itemId: 'ether', qty: 1 }],
     currentLocId: 'alseria',
     visitedLocs: ['alseria'],
@@ -120,6 +120,14 @@ export function travel(state: GameState, destId: LocationId): GameState {
     // 55%: 何も起こらない
   }
 
+  // castle型ロケーション到着時: 隠しキャラ出現判定
+  if (destLoc.type === 'castle' && destLoc.companionId) {
+    const cid = destLoc.companionId as CompanionId
+    if (!s.companions[cid].joined && !s.pendingCompanionJoin) {
+      s.pendingCompanionJoin = cid
+    }
+  }
+
   s.phase = 'location'
   return s
 }
@@ -128,6 +136,13 @@ export function travel(state: GameState, destId: LocationId): GameState {
 
 export function joinCompanion(state: GameState, companionId: CompanionId): GameState {
   const s = deepClone(state)
+  // 仲間は合計3人まで（パーティ枠ではなく加入済み総数）
+  const joinedCount = Object.values(s.companions).filter(c => c.joined).length
+  if (joinedCount >= 3) {
+    s.message = '仲間はすでに3人います。これ以上は仲間にできません。'
+    s.pendingCompanionJoin = undefined
+    return s
+  }
   s.companions[companionId].joined = true
   // Auto-add to party if space available
   if (s.party.length < 3) {
@@ -658,9 +673,14 @@ export function enterDungeon(state: GameState): GameState {
   const loc = LOCATIONS[s.currentLocId]
   if (!loc.enemyPool || !loc.bossId) return s
 
-  const bossAlreadyDefeated = s.defeatedBosses.some(id => id.includes(loc.bossId!.replace('boss_', '')))
+  // ダンジョン探索は1日消費
+  s.daysLeft -= 1
+  if (s.daysLeft <= 0) {
+    s.daysLeft = 0
+    s.phase = 'gameover'
+    return s
+  }
 
-  // Random enemies then boss
   const pool = loc.enemyPool
   const enemies = [
     pool[Math.floor(Math.random() * pool.length)],

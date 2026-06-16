@@ -30,6 +30,8 @@ function loadGame(): GameState | null {
     const parsed = JSON.parse(raw) as GameState
     // 基本バリデーション
     if (!parsed.phase || !parsed.playerLevel) return null
+    // ゲームオーバー/クリア済みセーブはロードしない
+    if (parsed.phase === 'gameover' || parsed.phase === 'win') return null
     // learnedSkillsが旧セーブにない場合は補完
     if (parsed.companions) {
       for (const id of Object.keys(parsed.companions) as (keyof typeof parsed.companions)[]) {
@@ -44,12 +46,17 @@ export default function GameRoot() {
   const [gs, setGs] = useState<GameState>(() => loadGame() ?? createInitialState('normal'))
   const [pendingDiff, setPendingDiff] = useState<Difficulty | null>(null)
   const [saveMsg, setSaveMsg] = useState<string | null>(null)
+  const [showPartyHint, setShowPartyHint] = useState(false)
 
   const update = useCallback((fn: (s: GameState) => GameState) => {
     setGs(prev => {
       const next = fn(prev)
-      // 戦闘中以外は自動セーブ
-      if (next.phase !== 'battle') saveGame(next)
+      if (next.phase === 'gameover' || next.phase === 'win') {
+        // ゲームオーバー・クリア時はセーブを削除
+        try { localStorage.removeItem(SAVE_KEY) } catch {}
+      } else if (next.phase !== 'battle') {
+        saveGame(next)
+      }
       return next
     })
   }, [])
@@ -122,7 +129,15 @@ export default function GameRoot() {
   }
 
   const handleJoinCompanion = (id: CompanionId) => {
-    update(s => joinCompanion(s, id))
+    update(s => {
+      const next = joinCompanion(s, id)
+      // 加入成功時（エラーメッセージなし）にパーティ誘導を表示
+      const joinedCount = Object.values(next.companions).filter(c => c.joined).length
+      if (joinedCount > Object.values(s.companions).filter(c => c.joined).length) {
+        setShowPartyHint(true)
+      }
+      return next
+    })
   }
 
   const handleSkipCompanion = () => {
@@ -202,6 +217,31 @@ export default function GameRoot() {
         </div>
       )}
 
+      {/* Party hint after companion joins */}
+      {showPartyHint && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60">
+          <div className="bg-indigo-950 border-2 border-indigo-500 rounded-2xl p-6 text-center max-w-xs mx-4 shadow-2xl">
+            <div className="text-3xl mb-2">👥</div>
+            <div className="text-white font-bold mb-1">仲間が加入しました！</div>
+            <div className="text-gray-300 text-sm mb-4">パーティに編成してから冒険を続けましょう。</div>
+            <div className="flex gap-2">
+              <button
+                onClick={() => { setShowPartyHint(false); setGs(prev => ({ ...prev, phase: 'party_manage' })) }}
+                className="flex-1 py-2 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold rounded-lg transition text-sm"
+              >
+                👥 パーティ編成
+              </button>
+              <button
+                onClick={() => setShowPartyHint(false)}
+                className="px-4 py-2 bg-gray-700 hover:bg-gray-600 text-gray-300 rounded-lg transition text-sm"
+              >
+                後で
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Message toast */}
       {gs.message && (
         <div className="fixed top-20 left-1/2 -translate-x-1/2 z-40 bg-red-900/90 border border-red-500 text-red-200 px-4 py-2 rounded-lg text-sm shadow-lg">
@@ -215,7 +255,13 @@ export default function GameRoot() {
 
       {/* Main content */}
       <div className="flex-1">
-        {gs.phase === 'title' && !pendingDiff && <TitleScreen onStart={handleStart} />}
+        {gs.phase === 'title' && !pendingDiff && (
+          <TitleScreen
+            onStart={handleStart}
+            onDeleteSave={handleDeleteSave}
+            hasSave={!!loadGame()}
+          />
+        )}
         {gs.phase === 'title' && pendingDiff && <NamingScreen onConfirm={handleNameConfirm} />}
         {gs.phase === 'prologue' && <PrologueScreen onDone={handlePrologueDone} playerName={gs.playerName} />}
         {gs.phase === 'worldmap' && (
