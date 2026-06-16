@@ -1,6 +1,6 @@
-import type { CompanionDef, EnemyDef, ItemDef, LocationDef, Skill, CompanionId, LocationId } from './types'
+import type { CompanionDef, EnemyDef, ItemDef, LocationDef, Skill, LevelSkill, CompanionId, LocationId } from './types'
 
-// ===== PLAYER SKILLS (レオン) =====
+// ===== PLAYER SKILLS — 全習得スキル一覧 =====
 export const PLAYER_SKILLS: Skill[] = [
   {
     id: 'hero_slash',
@@ -26,6 +26,28 @@ export const PLAYER_SKILLS: Skill[] = [
     desc: '封印石の力を解放する。ボス戦で絶大なダメージ。',
     mpCost: 20, target: 'enemy_one', effect: 'boss_bonus', power: 3.5,
   },
+  {
+    id: 'judgement',
+    name: '天命の一撃',
+    desc: '勇者の運命が宿る必殺技。全敵に強烈なダメージ。',
+    mpCost: 22, target: 'enemy_all', effect: 'damage', power: 2.0,
+  },
+  {
+    id: 'undying_vow',
+    name: '不死の誓い',
+    desc: '決して諦めない誓いの力。自身のHPを大回復する。',
+    mpCost: 28, target: 'self', effect: 'heal', power: 150,
+  },
+]
+
+// ===== PLAYER SKILL SCHEDULE (レベルで習得) =====
+export const PLAYER_SKILL_SCHEDULE: LevelSkill[] = [
+  { level: 1,  skill: PLAYER_SKILLS[0] }, // 勇者斬り
+  { level: 5,  skill: PLAYER_SKILLS[1] }, // 鼓舞
+  { level: 10, skill: PLAYER_SKILLS[2] }, // 守護の誓い
+  { level: 15, skill: PLAYER_SKILLS[3] }, // 封印解放
+  { level: 20, skill: PLAYER_SKILLS[4] }, // 天命の一撃
+  { level: 25, skill: PLAYER_SKILLS[5] }, // 不死の誓い
 ]
 
 // ===== COMPANIONS (13人) =====
@@ -36,9 +58,13 @@ export const COMPANIONS: Record<CompanionId, CompanionDef> = {
     joinLocId: 'alseria',
     joinText: '「レオン殿。私ガレスが剣と盾で貴殿を守ろう。騎士の誇りにかけて。」',
     baseHp: 130, baseMp: 25, baseAtk: 14, baseDef: 20, baseSpd: 6, joinLevel: 2,
+    hpGrowth: 15, mpGrowth: 2, atkGrowth: 2, defGrowth: 4, spdGrowth: 0,
     skills: [
       { id: 'shield_bash', name: '盾撃', desc: '盾で敵をスタンさせる。', mpCost: 6, target: 'enemy_one', effect: 'stun', power: 1.2 },
       { id: 'iron_wall', name: '鉄壁', desc: '自分の防御力を大幅に上昇させる。', mpCost: 8, target: 'self', effect: 'def_up', power: 1 },
+    ],
+    learnableSkills: [
+      { level: 10, skill: { id: 'knight_vow', name: '聖騎士の誓い', desc: '騎士の誓いで仲間を癒す。味方全体のHPを回復。', mpCost: 18, target: 'ally_all', effect: 'heal', power: 35 } },
     ],
   },
   liz: {
@@ -47,9 +73,13 @@ export const COMPANIONS: Record<CompanionId, CompanionDef> = {
     joinLocId: 'alseria',
     joinText: '「神様の導きがあなたをここへ連れてきた。私の癒しの力、お役に立てれば。」',
     baseHp: 65, baseMp: 95, baseAtk: 9, baseDef: 9, baseSpd: 9, joinLevel: 2,
+    hpGrowth: 7, mpGrowth: 10, atkGrowth: 1, defGrowth: 1, spdGrowth: 1,
     skills: [
       { id: 'heal', name: '癒し', desc: '味方1体のHPを50回復する。', mpCost: 6, target: 'ally_one', effect: 'heal', power: 50 },
       { id: 'holy_light', name: '聖なる光', desc: '味方全体のHPを25回復。', mpCost: 14, target: 'ally_all', effect: 'heal', power: 25 },
+    ],
+    learnableSkills: [
+      { level: 10, skill: { id: 'great_heal', name: '大いなる癒し', desc: '神の奇跡。味方全体のHPを大幅に回復する。', mpCost: 22, target: 'ally_all', effect: 'heal', power: 60 } },
     ],
   },
   noa: {
@@ -58,6 +88,7 @@ export const COMPANIONS: Record<CompanionId, CompanionDef> = {
     joinLocId: 'bern',
     joinText: '「俺、この旅に参加したい！遠くの敵はぜんぶ俺に任せといて！」',
     baseHp: 75, baseMp: 35, baseAtk: 17, baseDef: 8, baseSpd: 15, joinLevel: 3,
+    hpGrowth: 8, mpGrowth: 3, atkGrowth: 3, defGrowth: 1, spdGrowth: 2,
     skills: [
       { id: 'rapid_shot', name: '連射', desc: '敵1体に矢を連続で射る。', mpCost: 7, target: 'enemy_one', effect: 'damage', power: 1.9 },
       { id: 'scatter', name: '散弾', desc: '敵全体に矢の雨を降らせる。', mpCost: 10, target: 'enemy_all', effect: 'damage', power: 1.2 },
@@ -69,6 +100,7 @@ export const COMPANIONS: Record<CompanionId, CompanionDef> = {
     joinLocId: 'galdo',
     joinText: '「……封印石か。理論的には可能。私が同行すれば成功率が上がる。それだけよ。」',
     baseHp: 60, baseMp: 85, baseAtk: 22, baseDef: 6, baseSpd: 12, joinLevel: 4,
+    hpGrowth: 6, mpGrowth: 12, atkGrowth: 3, defGrowth: 1, spdGrowth: 1,
     skills: [
       { id: 'fireball', name: '炎球', desc: '炎の球で敵全体を焼き払う。', mpCost: 12, target: 'enemy_all', effect: 'damage', power: 1.4 },
       { id: 'thunder', name: '雷撃', desc: '雷を1体に集中させる。', mpCost: 10, target: 'enemy_one', effect: 'damage', power: 2.5 },
@@ -80,6 +112,7 @@ export const COMPANIONS: Record<CompanionId, CompanionDef> = {
     joinLocId: 'elna',
     joinText: '「ガッハッハ！面白え旅じゃねえか！俺も連れてけ。この斧、貸してやるぜ！」',
     baseHp: 115, baseMp: 25, baseAtk: 23, baseDef: 14, baseSpd: 8, joinLevel: 3,
+    hpGrowth: 14, mpGrowth: 2, atkGrowth: 3, defGrowth: 2, spdGrowth: 1,
     skills: [
       { id: 'axe_swing', name: '大斧振り', desc: '大斧で敵全体を薙ぎ払う。', mpCost: 8, target: 'enemy_all', effect: 'damage', power: 1.3 },
       { id: 'earth_crush', name: '大地砕き', desc: '地面を叩き割る超重撃。', mpCost: 12, target: 'enemy_one', effect: 'damage', power: 2.8 },
@@ -91,9 +124,13 @@ export const COMPANIONS: Record<CompanionId, CompanionDef> = {
     joinLocId: 'riverside',
     joinText: '「お、お兄さん！冒険者ですよね？俺も連れてってください！絶対役に立ちます！」',
     baseHp: 70, baseMp: 30, baseAtk: 13, baseDef: 11, baseSpd: 12, joinLevel: 2,
+    hpGrowth: 10, mpGrowth: 3, atkGrowth: 2, defGrowth: 2, spdGrowth: 2,
     skills: [
       { id: 'young_slash', name: '若き剣閃', desc: '気合いの一撃。成長中の力が宿る。', mpCost: 6, target: 'enemy_one', effect: 'damage', power: 1.6 },
       { id: 'guts', name: '根性', desc: '気力で自分を奮い立たせ攻撃力UP。', mpCost: 5, target: 'self', effect: 'atk_up', power: 1 },
+    ],
+    learnableSkills: [
+      { level: 8, skill: { id: 'brave_slash', name: '勇躍の一閃', desc: '一人前になった証。全力の斬撃で敵1体に強力なダメージ。', mpCost: 12, target: 'enemy_one', effect: 'damage', power: 2.8 } },
     ],
   },
   vais: {
@@ -102,6 +139,7 @@ export const COMPANIONS: Record<CompanionId, CompanionDef> = {
     joinLocId: 'bandit_hideout',
     joinText: '「チッ……負けたか。いいだろう。どうせ居場所もない。しばらく付き合ってやる。」',
     baseHp: 75, baseMp: 40, baseAtk: 18, baseDef: 8, baseSpd: 16, joinLevel: 3,
+    hpGrowth: 8, mpGrowth: 4, atkGrowth: 2, defGrowth: 1, spdGrowth: 3,
     skills: [
       { id: 'poison_blade', name: '毒刃', desc: '毒を塗った刃で攻撃し毒状態にする。', mpCost: 5, target: 'enemy_one', effect: 'poison', power: 1.0 },
       { id: 'shadow_rush', name: '影走り', desc: '闇に紛れた超高速の奇襲。', mpCost: 8, target: 'enemy_one', effect: 'damage', power: 1.9 },
@@ -109,10 +147,11 @@ export const COMPANIONS: Record<CompanionId, CompanionDef> = {
   },
   logan: {
     id: 'logan', name: 'ローガン', cls: '元処刑人', emoji: '⚒️',
-    desc: '罪人を裁いてきた過去を持つ。無口で寡黙だが、信念は固い。',
+    desc: '罪人を裁いてきた過去を持つ。無口で寡黙だが、信念は固い。HP・ATKが最高クラス。',
     joinLocId: 'sahal',
     joinText: '「……魔王を倒すか。それが罪滅ぼしになるなら、力を貸そう。」',
-    baseHp: 110, baseMp: 20, baseAtk: 25, baseDef: 15, baseSpd: 7, joinLevel: 4,
+    baseHp: 120, baseMp: 20, baseAtk: 27, baseDef: 16, baseSpd: 7, joinLevel: 4,
+    hpGrowth: 13, mpGrowth: 2, atkGrowth: 4, defGrowth: 2, spdGrowth: 0,
     skills: [
       { id: 'execution', name: '処刑の一撃', desc: '過去の経験が宿る渾身の一撃。', mpCost: 12, target: 'enemy_one', effect: 'damage', power: 3.0 },
       { id: 'intimidate', name: '威圧', desc: '恐ろしい眼光で敵全体の攻撃力を下げる。', mpCost: 7, target: 'enemy_all', effect: 'debuff_atk', power: 1 },
@@ -124,9 +163,13 @@ export const COMPANIONS: Record<CompanionId, CompanionDef> = {
     joinLocId: 'demon_mine',
     joinText: '「魔王軍から逃げて、ここに隠れていた。……あなたが魔王を倒すというなら、協力する。」',
     baseHp: 65, baseMp: 90, baseAtk: 20, baseDef: 7, baseSpd: 11, joinLevel: 4,
+    hpGrowth: 6, mpGrowth: 12, atkGrowth: 3, defGrowth: 1, spdGrowth: 1,
     skills: [
       { id: 'magic_bullet', name: '魔弾', desc: '魔王軍仕込みの魔法弾。敵1体に大ダメージ。', mpCost: 9, target: 'enemy_one', effect: 'damage', power: 2.2 },
       { id: 'dark_explosion', name: '闇爆発', desc: '闇の力を爆発させ敵全体を攻撃。', mpCost: 14, target: 'enemy_all', effect: 'damage', power: 1.6 },
+    ],
+    learnableSkills: [
+      { level: 12, skill: { id: 'dark_army_awaken', name: '魔王軍覚醒', desc: '封印された魔王軍の力を解放。敵全体に圧倒的なダメージ。', mpCost: 24, target: 'enemy_all', effect: 'damage', power: 2.5 } },
     ],
   },
   sig: {
@@ -135,6 +178,7 @@ export const COMPANIONS: Record<CompanionId, CompanionDef> = {
     joinLocId: 'mirea',
     joinText: '「へへ、封印石探しか。俺、情報網があるんだよね。一緒に行けば得するよ、絶対。」',
     baseHp: 68, baseMp: 45, baseAtk: 14, baseDef: 9, baseSpd: 14, joinLevel: 3,
+    hpGrowth: 7, mpGrowth: 5, atkGrowth: 1, defGrowth: 1, spdGrowth: 3,
     skills: [
       { id: 'smoke_screen', name: '煙幕', desc: '煙幕を張り敵全体の攻撃力を下げる。', mpCost: 6, target: 'enemy_all', effect: 'debuff_atk', power: 1 },
       { id: 'vital_strike', name: '急所突き', desc: '急所を正確に狙いスタン状態にする。', mpCost: 10, target: 'enemy_one', effect: 'stun', power: 1.8 },
@@ -142,10 +186,11 @@ export const COMPANIONS: Record<CompanionId, CompanionDef> = {
   },
   elk: {
     id: 'elk', name: 'エルク', cls: '獣人・槍使い', emoji: '🐺',
-    desc: '寡黙でクール。戦闘能力が高く、仲間を守ることに忠実。',
+    desc: '寡黙でクール。戦闘能力が高く、仲間を守ることに忠実。後半合流のため高スペック。',
     joinLocId: 'dragon_pass',
     joinText: '「……お前たちは強い。この峠を越えるなら俺が案内しよう。ついでに旅に加わる。」',
-    baseHp: 100, baseMp: 25, baseAtk: 22, baseDef: 12, baseSpd: 13, joinLevel: 5,
+    baseHp: 105, baseMp: 28, baseAtk: 24, baseDef: 14, baseSpd: 14, joinLevel: 5,
+    hpGrowth: 11, mpGrowth: 3, atkGrowth: 3, defGrowth: 2, spdGrowth: 2,
     skills: [
       { id: 'wolf_claw', name: '狼の爪', desc: '鋭い爪で敵1体を切り裂く。', mpCost: 8, target: 'enemy_one', effect: 'damage', power: 2.1 },
       { id: 'pack_howl', name: '群狼の咆哮', desc: '魂の咆哮で敵全体の攻撃力を大幅に下げる。', mpCost: 10, target: 'enemy_all', effect: 'debuff_atk', power: 2 },
@@ -153,10 +198,11 @@ export const COMPANIONS: Record<CompanionId, CompanionDef> = {
   },
   mira: {
     id: 'mira', name: 'ミラ', cls: 'エルフ・弓術士', emoji: '🌿',
-    desc: '森の民の出身。自然を愛し、穏やかで思慮深い性格。',
+    desc: '森の民の出身。自然を愛し、穏やかで思慮深い性格。MP・速度が最高クラスのレアキャラ。',
     joinLocId: 'ancient_temple',
     joinText: '「古代神殿を守ってきた。……あなたならば封印石を任せられる。共に行きましょう。」',
-    baseHp: 72, baseMp: 60, baseAtk: 19, baseDef: 10, baseSpd: 15, joinLevel: 5,
+    baseHp: 75, baseMp: 70, baseAtk: 20, baseDef: 11, baseSpd: 16, joinLevel: 5,
+    hpGrowth: 8, mpGrowth: 8, atkGrowth: 2, defGrowth: 1, spdGrowth: 2,
     skills: [
       { id: 'spirit_arrow', name: '精霊の矢', desc: '精霊の力が宿る矢。敵1体に大ダメージ。', mpCost: 9, target: 'enemy_one', effect: 'damage', power: 2.3 },
       { id: 'forest_blessing', name: '森の加護', desc: '自然の加護で味方全体の防御力を上昇。', mpCost: 12, target: 'ally_all', effect: 'def_up', power: 1 },
@@ -164,14 +210,18 @@ export const COMPANIONS: Record<CompanionId, CompanionDef> = {
   },
   zeno: {
     id: 'zeno', name: 'ゼノ', cls: '魔族', emoji: '😈',
-    desc: '目的は謎に包まれている。加入条件が特殊で、仲間になるかはプレイヤー次第。',
+    desc: '最も強力な隠しキャラ。砂漠遺跡でのみ出会える。全ステータスが最高クラスで、強力な魔族スキルを持つ。',
     joinLocId: 'desert_ruins',
     joinText: '「……面白い。お前が魔王を倒せるか見てやろう。私が手を貸せば、可能性は上がる。」',
-    baseHp: 95, baseMp: 100, baseAtk: 28, baseDef: 14, baseSpd: 13, joinLevel: 6,
+    baseHp: 110, baseMp: 110, baseAtk: 32, baseDef: 16, baseSpd: 15, joinLevel: 7,
     isHidden: true,
+    hpGrowth: 10, mpGrowth: 11, atkGrowth: 4, defGrowth: 2, spdGrowth: 1,
     skills: [
       { id: 'demon_power', name: '魔族の力', desc: '魔族の秘めた力を解放し敵1体を粉砕。', mpCost: 15, target: 'enemy_one', effect: 'damage', power: 3.5 },
       { id: 'demon_gate', name: '魔界門', desc: '魔界の門を開き敵全体に猛攻撃。', mpCost: 18, target: 'enemy_all', effect: 'damage', power: 2.0 },
+    ],
+    learnableSkills: [
+      { level: 8, skill: { id: 'demon_release', name: '魔族解放', desc: '魔族の真の力を解放。自身の攻撃力を大幅に上昇させる。', mpCost: 14, target: 'self', effect: 'atk_up', power: 1 } },
     ],
   },
 }
@@ -730,8 +780,9 @@ export const LOCATIONS: Record<LocationId, LocationDef> = {
   },
 }
 
+// Lv20クリア目標。Lv20到達必要EXP: 190 * 15 = 2850
 export function getExpToNext(level: number): number {
-  return level * 35
+  return level * 15
 }
 
 export function getDifficultyMultiplier(difficulty: string): { days: number; enemyHpMult: number; playerHpMult: number } {

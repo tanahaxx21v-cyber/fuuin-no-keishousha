@@ -6,11 +6,12 @@ import { LOCATIONS } from '@/lib/game/data'
 interface Props {
   gs: GameState
   onOpenParty: () => void
+  onSave?: () => void
 }
 
 const SEAL_ICONS: Record<string, string> = { fire: '🔥', storm: '⚡', dark: '🌑' }
 
-export default function StatusBar({ gs, onOpenParty }: Props) {
+export default function StatusBar({ gs, onOpenParty, onSave }: Props) {
   const loc = LOCATIONS[gs.currentLocId]
   const hpPct = Math.max(0, (gs.playerHp / gs.playerMaxHp) * 100)
   const mpPct = Math.max(0, (gs.playerMp / gs.playerMaxMp) * 100)
@@ -43,7 +44,8 @@ export default function StatusBar({ gs, onOpenParty }: Props) {
         <span className="text-xs text-gray-300">{gs.playerMp}/{gs.playerMaxMp}</span>
       </div>
 
-      {/* Level & Gold */}
+      {/* Name & Level & Gold */}
+      <div className="text-xs text-purple-300 font-semibold">{gs.playerName}</div>
       <div className="text-xs text-gray-400">Lv{gs.playerLevel}</div>
       <div className="text-xs text-yellow-400">💰 {gs.gold}G</div>
 
@@ -72,6 +74,16 @@ export default function StatusBar({ gs, onOpenParty }: Props) {
       >
         👥 仲間 {gs.party.filter(id => gs.companions[id].alive).length}/3
       </button>
+
+      {/* Save */}
+      {onSave && (
+        <button
+          onClick={onSave}
+          className="text-xs bg-indigo-800 hover:bg-indigo-700 px-2 py-1 rounded-lg transition"
+        >
+          💾
+        </button>
+      )}
     </div>
   )
 }

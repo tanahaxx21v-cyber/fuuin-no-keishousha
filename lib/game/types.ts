@@ -65,6 +65,11 @@ export interface Skill {
   power: number
 }
 
+export interface LevelSkill {
+  level: number
+  skill: Skill
+}
+
 export interface CompanionDef {
   id: CompanionId
   name: string
@@ -81,6 +86,13 @@ export interface CompanionDef {
   joinLevel: number
   skills: Skill[]
   isHidden?: boolean
+  // Per-level stat growth
+  hpGrowth: number
+  mpGrowth: number
+  atkGrowth: number
+  defGrowth: number
+  spdGrowth: number
+  learnableSkills?: LevelSkill[]
 }
 
 export interface EnemyDef {
@@ -144,6 +156,7 @@ export interface CompanionState {
   level: number
   exp: number
   statusEffects: StatusEffect[]
+  learnedSkills: Skill[]
 }
 
 export interface BattleUnit {
@@ -200,6 +213,7 @@ export interface GameState {
   phase: GamePhase
   difficulty: Difficulty
   daysLeft: number
+  playerName: string
 
   playerHp: number
   playerMaxHp: number

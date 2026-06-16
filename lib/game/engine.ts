@@ -2,11 +2,11 @@ import type {
   GameState, BattleState, BattleUnit, CompanionState,
   Skill, StatusEffect, SealStone, CompanionId, Difficulty, LocationId
 } from './types'
-import { COMPANIONS, ENEMIES, ITEMS, LOCATIONS, PLAYER_SKILLS, getExpToNext, getDifficultyMultiplier } from './data'
+import { COMPANIONS, ENEMIES, ITEMS, LOCATIONS, PLAYER_SKILL_SCHEDULE, getExpToNext, getDifficultyMultiplier } from './data'
 
 // ===== INITIALIZATION =====
 
-export function createInitialState(difficulty: Difficulty): GameState {
+export function createInitialState(difficulty: Difficulty, playerName = 'レオン'): GameState {
   const { days, playerHpMult } = getDifficultyMultiplier(difficulty)
 
   const baseHp = Math.floor(100 * playerHpMult)
@@ -25,22 +25,27 @@ export function createInitialState(difficulty: Difficulty): GameState {
       joined: false,
       alive: true,
       inParty: false,
-      hp: def.baseHp + lvBonus * 10,
-      maxHp: def.baseHp + lvBonus * 10,
-      mp: def.baseMp + lvBonus * 5,
-      maxMp: def.baseMp + lvBonus * 5,
-      atk: def.baseAtk + lvBonus * 2,
-      def: def.baseDef + lvBonus * 2,
-      spd: def.baseSpd + Math.floor(lvBonus * 0.5),
+      hp: def.baseHp + lvBonus * def.hpGrowth,
+      maxHp: def.baseHp + lvBonus * def.hpGrowth,
+      mp: def.baseMp + lvBonus * def.mpGrowth,
+      maxMp: def.baseMp + lvBonus * def.mpGrowth,
+      atk: def.baseAtk + lvBonus * def.atkGrowth,
+      def: def.baseDef + lvBonus * def.defGrowth,
+      spd: def.baseSpd + lvBonus * def.spdGrowth,
       level: def.joinLevel,
       exp: 0,
       statusEffects: [],
+      learnedSkills: [],
     }
   }
+
+  // Player starts with only Lv1 skill (勇者斬り)
+  const startSkills = PLAYER_SKILL_SCHEDULE.filter(ps => ps.level <= 1).map(ps => ps.skill)
 
   return {
     phase: 'title',
     difficulty,
+    playerName,
     daysLeft: days,
     playerHp: baseHp,
     playerMaxHp: baseHp,
@@ -51,7 +56,7 @@ export function createInitialState(difficulty: Difficulty): GameState {
     playerSpd: 10,
     playerLevel: 1,
     playerExp: 0,
-    playerSkills: PLAYER_SKILLS,
+    playerSkills: startSkills,
     playerStatus: [],
     gold: 200,
     inventory: [{ itemId: 'potion', qty: 2 }, { itemId: 'ether', qty: 1 }],
@@ -188,7 +193,7 @@ export function startBattle(state: GameState, enemyIds: string[], isBoss: boolea
   const allies: BattleUnit[] = [
     {
       uid: 'player',
-      name: 'レオン',
+      name: s.playerName,
       emoji: '⚔️',
       hp: s.playerHp,
       maxHp: s.playerMaxHp,
@@ -218,7 +223,7 @@ export function startBattle(state: GameState, enemyIds: string[], isBoss: boolea
           atk: c.atk,
           def: c.def,
           spd: c.spd,
-          skills: def.skills,
+          skills: [...def.skills, ...c.learnedSkills],
           statusEffects: [...c.statusEffects],
           isAlly: true,
           companionId: id,
@@ -312,9 +317,11 @@ export function battleSkill(state: GameState, skill: Skill, targetUid?: string):
   const actor = b.units.find(u => u.uid === b.currentUid)!
 
   if (actor.mp < skill.mpCost) {
-    b.logs.push({ text: `💫 MPが足りない！`, type: 'system' })
-    b.phase = 'select_action'
-    return s
+    // MP不足 → 1ターン休憩して少し回復
+    const mpRecover = Math.max(5, Math.floor(actor.maxMp * 0.08))
+    actor.mp = Math.min(actor.maxMp, actor.mp + mpRecover)
+    b.logs.push({ text: `💤 ${actor.name}はMPが足りず休憩した。MP+${mpRecover}回復。`, type: 'status' })
+    return advanceTurn(s)
   }
   actor.mp -= skill.mpCost
 
@@ -510,47 +517,77 @@ function applyBattleRewards(state: GameState): GameState {
   // Sync HP/MP back to game state
   syncBattleToState(s)
 
-  // EXP gain
   const expGain = b.rewardExp
+
+  // ===== プレイヤーEXP & レベルアップ =====
   s.playerExp += expGain
-  const expNeeded = getExpToNext(s.playerLevel)
-  if (s.playerExp >= expNeeded) {
-    s.playerExp -= expNeeded
+  while (s.playerExp >= getExpToNext(s.playerLevel) && s.playerLevel < 30) {
+    s.playerExp -= getExpToNext(s.playerLevel)
     s.playerLevel += 1
-    s.playerMaxHp += 10
-    s.playerHp = Math.min(s.playerHp + 10, s.playerMaxHp)
+    // 勇者クラス成長: HP+12, MP+5, ATK+2, DEF+2, SPD+1
+    s.playerMaxHp += 12
+    s.playerHp = Math.min(s.playerHp + 12, s.playerMaxHp)
     s.playerMaxMp += 5
+    s.playerMp = Math.min(s.playerMp + 5, s.playerMaxMp)
     s.playerAtk += 2
     s.playerDef += 2
     s.playerSpd += 1
     s.levelUpPending = true
-    b.logs.push({ text: `⭐ レベルアップ！Lv${s.playerLevel}になった！`, type: 'system' })
+    b.logs.push({ text: `⭐ ${s.playerName}がLv${s.playerLevel}にレベルアップ！`, type: 'system' })
+    // スキル習得チェック
+    const newSkill = PLAYER_SKILL_SCHEDULE.find(ps => ps.level === s.playerLevel)
+    if (newSkill && !s.playerSkills.some(sk => sk.id === newSkill.skill.id)) {
+      s.playerSkills.push(newSkill.skill)
+      b.logs.push({ text: `✨ 新スキル「${newSkill.skill.name}」を習得した！`, type: 'system' })
+    }
   }
 
-  // Seal stone
+  // ===== 仲間EXP & レベルアップ（パーティメンバーのみ）=====
+  for (const cid of s.party) {
+    const c = s.companions[cid]
+    if (!c.joined) continue
+    const def = COMPANIONS[cid]
+    c.exp += expGain
+    while (c.exp >= getExpToNext(c.level) && c.level < 30) {
+      c.exp -= getExpToNext(c.level)
+      c.level += 1
+      c.maxHp += def.hpGrowth
+      c.hp = Math.min(c.hp + def.hpGrowth, c.maxHp)
+      c.maxMp += def.mpGrowth
+      c.mp = Math.min(c.mp + def.mpGrowth, c.maxMp)
+      c.atk += def.atkGrowth
+      c.def += def.defGrowth
+      c.spd += def.spdGrowth
+      b.logs.push({ text: `⭐ ${def.name}がLv${c.level}にレベルアップ！`, type: 'system' })
+      // 仲間スキル習得チェック
+      const newCompSkill = def.learnableSkills?.find(ls => ls.level === c.level)
+      if (newCompSkill && !c.learnedSkills.some(sk => sk.id === newCompSkill.skill.id)) {
+        c.learnedSkills.push(newCompSkill.skill)
+        b.logs.push({ text: `✨ ${def.name}が「${newCompSkill.skill.name}」を習得した！`, type: 'system' })
+      }
+    }
+  }
+
+  // ===== 封印石入手 =====
   if (b.sealStoneFound && !s.sealStones.includes(b.sealStoneFound)) {
     s.sealStones.push(b.sealStoneFound)
     b.logs.push({ text: `💎 ${sealStoneName(b.sealStoneFound)}を手に入れた！`, type: 'system' })
   }
 
-  // Boss defeated
+  // ===== ボス撃破 =====
   if (b.isBoss) {
     const bossUid = b.units.find(u => u.isBoss)?.uid
     if (bossUid) s.defeatedBosses.push(bossUid)
 
-    // Final boss → win
     if (b.isFinalBoss) {
-      b.logs.push({ text: `🏆 魔王ヴァールドを討伐した！ルミナ大陸に平和が戻る！`, type: 'system' })
+      b.logs.push({ text: `🏆 終末記録体アーカイブを討伐した！ルミナ大陸に平和が戻った！`, type: 'system' })
       return s
     }
 
-    // Companion join event at dungeon
+    // ダンジョンボス撃破後、仲間加入イベント
     const loc = LOCATIONS[s.currentLocId]
-    if (loc.companionId) {
-      const cid = loc.companionId
-      if (!s.companions[cid].joined) {
-        s.pendingCompanionJoin = cid
-      }
+    if (loc.companionId && !s.companions[loc.companionId].joined) {
+      s.pendingCompanionJoin = loc.companionId
     }
   }
 
