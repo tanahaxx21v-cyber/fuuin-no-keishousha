@@ -224,7 +224,7 @@ export function startBattle(state: GameState, enemyIds: string[], isBoss: boolea
     rewardGold: enemyIds.reduce((sum, id) => sum + (ENEMIES[id]?.gold ?? 0), 0),
     sealStoneFound: isBoss ? ENEMIES[enemyIds[0]]?.sealStone : undefined,
     isBoss,
-    isFinalBoss: isBoss && enemyIds[0] === 'demon_king',
+    isFinalBoss: isBoss && enemyIds[0] === 'archive',
     turn: 1,
   }
 

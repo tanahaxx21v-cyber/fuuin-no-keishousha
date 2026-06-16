@@ -279,20 +279,176 @@ export const ENEMIES: Record<string, EnemyDef> = {
     ],
     exp: 220, gold: 150, isBoss: true, sealStone: 'dark',
   },
-  // 終盤
-  dark_soldier: {
-    id: 'dark_soldier', name: '魔王軍兵士', emoji: '💀',
-    hp: 75, mp: 25, atk: 22, def: 12, spd: 10,
-    skills: [{ id: 'dark_slash', name: '闇斬り', desc: '闇の力を纏った斬撃。', mpCost: 8, target: 'enemy_one', effect: 'damage', power: 1.8 }],
-    exp: 40, gold: 35,
+  // ===== 山岳エリア（廃鉱山・竜の峠）=====
+  goromin: {
+    id: 'goromin', name: 'ゴロミン', emoji: '🪨',
+    hp: 40, mp: 0, atk: 11, def: 7, spd: 6,
+    skills: [
+      { id: 'iwa_koro', name: 'いわコロ', desc: '岩のように転がりぶつかる。', mpCost: 0, target: 'enemy_one', effect: 'damage', power: 1.0 },
+      { id: 'taiatar_g', name: 'たいあたり', desc: '体当たりで押しつぶす。', mpCost: 0, target: 'enemy_one', effect: 'damage', power: 1.1 },
+    ],
+    exp: 14, gold: 9,
   },
-  beast_soldier: {
-    id: 'beast_soldier', name: '魔獣兵', emoji: '👾',
-    hp: 85, mp: 20, atk: 24, def: 13, spd: 12,
-    skills: [{ id: 'beast_charge', name: '獣の突進', desc: '猛スピードで体当たり。', mpCost: 7, target: 'enemy_one', effect: 'damage', power: 2.0 }],
-    exp: 45, gold: 38,
+  tsuru_hammer: {
+    id: 'tsuru_hammer', name: 'ツルハンマー', emoji: '⛏️',
+    hp: 35, mp: 10, atk: 15, def: 4, spd: 10,
+    skills: [
+      { id: 'hammer_buri', name: 'ハンマーぶり', desc: '鉱道具を全力で振り下ろす。', mpCost: 0, target: 'enemy_one', effect: 'damage', power: 1.6 },
+      { id: 'hori_okoshi', name: 'ほりおこし', desc: '掘り起こしてスタン状態にする。', mpCost: 8, target: 'enemy_one', effect: 'stun', power: 1.0 },
+    ],
+    exp: 17, gold: 11,
   },
-  // ボス
+  kabemimi: {
+    id: 'kabemimi', name: 'カベミミ', emoji: '🦇',
+    hp: 50, mp: 15, atk: 13, def: 9, spd: 7,
+    skills: [
+      { id: 'kabedon', name: 'かべドン', desc: '岩壁に叩きつける。', mpCost: 0, target: 'enemy_one', effect: 'damage', power: 1.3 },
+      { id: 'choushu', name: 'チョウシュ', desc: '壁に耳を当て弱点を察知。攻撃力を下げる。', mpCost: 7, target: 'enemy_one', effect: 'debuff_atk', power: 1 },
+    ],
+    exp: 20, gold: 14,
+  },
+  ganseki_bou: {
+    id: 'ganseki_bou', name: 'ガンセキ坊', emoji: '🗿',
+    hp: 78, mp: 0, atk: 14, def: 17, spd: 3,
+    skills: [
+      { id: 'omoi_tsubushi', name: 'おもいつぶし', desc: '重い体でゆっくり押しつぶす。', mpCost: 0, target: 'enemy_one', effect: 'damage', power: 1.8 },
+      { id: 'katamaru', name: 'かたまる', desc: '石のように固まり防御力を上げる。', mpCost: 8, target: 'self', effect: 'def_up', power: 1 },
+    ],
+    exp: 27, gold: 19,
+  },
+  // ===== 砂漠エリア（砂漠遺跡）=====
+  sabotenu: {
+    id: 'sabotenu', name: 'サボテヌ', emoji: '🌵',
+    hp: 55, mp: 0, atk: 14, def: 7, spd: 9,
+    skills: [
+      { id: 'toge_atari', name: 'とげあたり', desc: '鋭いとげを刺して毒状態にする。', mpCost: 0, target: 'enemy_one', effect: 'poison', power: 1.0 },
+      { id: 'saboten_kick', name: 'サボテンキック', desc: 'とげだらけの足で蹴る。', mpCost: 0, target: 'enemy_one', effect: 'damage', power: 1.3 },
+    ],
+    exp: 22, gold: 16,
+  },
+  sunabukuro: {
+    id: 'sunabukuro', name: 'スナブクロ', emoji: '🎒',
+    hp: 70, mp: 10, atk: 12, def: 13, spd: 5,
+    skills: [
+      { id: 'suna_arashi', name: 'すなあらし', desc: '砂を全体に撒き散らす。', mpCost: 8, target: 'enemy_all', effect: 'damage', power: 1.0 },
+      { id: 'omoi_crush', name: 'おもいつぶし', desc: '重い砂袋で叩きつける。', mpCost: 0, target: 'enemy_one', effect: 'damage', power: 1.5 },
+    ],
+    exp: 24, gold: 18,
+  },
+  hibikamen: {
+    id: 'hibikamen', name: 'ヒビカメン', emoji: '🗺️',
+    hp: 60, mp: 25, atk: 17, def: 8, spd: 10,
+    skills: [
+      { id: 'noroi', name: 'のろい', desc: '遺跡の呪いで全体の攻撃力を下げる。', mpCost: 10, target: 'enemy_all', effect: 'debuff_atk', power: 1 },
+      { id: 'inishie_honoo', name: 'いにしえのほのお', desc: '古代の炎を放つ。', mpCost: 8, target: 'enemy_one', effect: 'damage', power: 1.6 },
+    ],
+    exp: 26, gold: 20,
+  },
+  mizunomin: {
+    id: 'mizunomin', name: 'ミズノミン', emoji: '🫙',
+    hp: 45, mp: 30, atk: 11, def: 6, spd: 13,
+    skills: [
+      { id: 'mizu_housya', name: 'みずほうしゃ', desc: '水筒から水を勢いよく噴射する。', mpCost: 0, target: 'enemy_one', effect: 'damage', power: 1.2 },
+      { id: 'uruoi', name: 'うるおい', desc: '自分を水で潤し防御力を上げる。', mpCost: 8, target: 'self', effect: 'def_up', power: 1 },
+    ],
+    exp: 20, gold: 14,
+  },
+  // ===== 魔王軍 一般兵（砂漠遺跡 後半）=====
+  tsugihagi_hei: {
+    id: 'tsugihagi_hei', name: 'ツギハギ兵', emoji: '🪡',
+    hp: 72, mp: 15, atk: 21, def: 11, spd: 11,
+    skills: [
+      { id: 'tsugihagi_giri', name: 'つぎはぎぎり', desc: '継ぎはぎだらけの剣で斬りつける。', mpCost: 0, target: 'enemy_one', effect: 'damage', power: 1.5 },
+      { id: 'gamushara', name: 'がむしゃら', desc: '我武者羅に攻撃し自身の攻撃力を上げる。', mpCost: 8, target: 'self', effect: 'atk_up', power: 1 },
+    ],
+    exp: 42, gold: 34,
+  },
+  baketsu_hei: {
+    id: 'baketsu_hei', name: 'バケツ兵', emoji: '🪣',
+    hp: 80, mp: 0, atk: 19, def: 16, spd: 7,
+    skills: [
+      { id: 'baketsu_naguri', name: 'バケツなぐり', desc: 'バケツを全力で叩きつける。', mpCost: 0, target: 'enemy_one', effect: 'damage', power: 1.4 },
+      { id: 'jourou_maki', name: 'じょうろまき', desc: 'じょうろで水をかけスタンさせる。', mpCost: 8, target: 'enemy_one', effect: 'stun', power: 1.0 },
+    ],
+    exp: 44, gold: 36,
+  },
+  memo_hei: {
+    id: 'memo_hei', name: 'メモ兵', emoji: '📝',
+    hp: 65, mp: 25, atk: 17, def: 9, spd: 13,
+    skills: [
+      { id: 'memo_nage', name: 'メモなげ', desc: 'メモを丸めて投げつける。', mpCost: 0, target: 'enemy_one', effect: 'damage', power: 1.2 },
+      { id: 'jouhou_koukou', name: 'じょうほうこうかん', desc: '弱点情報を共有し攻撃力を下げる。', mpCost: 8, target: 'enemy_one', effect: 'debuff_atk', power: 1 },
+    ],
+    exp: 40, gold: 32,
+  },
+  // ===== 魔王軍 幹部（砂漠遺跡 深部）=====
+  sansec_general: {
+    id: 'sansec_general', name: '三秒将軍', emoji: '🎭',
+    hp: 110, mp: 40, atk: 25, def: 14, spd: 13,
+    skills: [
+      { id: 'kimaguregiri', name: 'きまぐれぎり', desc: '気まぐれな一撃。毎回威力が変わる。', mpCost: 0, target: 'enemy_one', effect: 'damage', power: 1.6 },
+      { id: 'hanka_no_sakebi', name: 'へんかのさけび', desc: '豹変して自身の攻撃力を大幅に上げる。', mpCost: 10, target: 'self', effect: 'atk_up', power: 1 },
+    ],
+    exp: 75, gold: 58,
+  },
+  mirror_lady: {
+    id: 'mirror_lady', name: '鏡面婦人', emoji: '🪞',
+    hp: 95, mp: 65, atk: 22, def: 12, spd: 15,
+    skills: [
+      { id: 'kyoumen_hansha', name: 'きょうめんはんしゃ', desc: '鏡で光を反射し敵を攻撃。', mpCost: 8, target: 'enemy_one', effect: 'damage', power: 1.4 },
+      { id: 'maboroshi', name: 'まぼろし', desc: '幻を見せスタン状態にする。', mpCost: 12, target: 'enemy_one', effect: 'stun', power: 1.0 },
+      { id: 'majo_no_hitomi', name: 'まじょのひとみ', desc: '魔女の瞳で攻撃力を下げる。', mpCost: 10, target: 'enemy_one', effect: 'debuff_atk', power: 1 },
+    ],
+    exp: 80, gold: 62,
+  },
+  ito_kiri: {
+    id: 'ito_kiri', name: '糸切り郷', emoji: '🕷️',
+    hp: 105, mp: 50, atk: 23, def: 11, spd: 16,
+    skills: [
+      { id: 'ito_shibari', name: 'いとしばり', desc: '糸で縛りスタン状態にする。', mpCost: 8, target: 'enemy_one', effect: 'stun', power: 1.0 },
+      { id: 'kumosu_zan', name: 'くものすざん', desc: '蜘蛛の巣で全体を切り裂く。', mpCost: 12, target: 'enemy_all', effect: 'damage', power: 1.1 },
+      { id: 'ayatsuri', name: 'あやつりにんぎょう', desc: '糸で操り自身の攻撃力を上げる。', mpCost: 10, target: 'self', effect: 'atk_up', power: 1 },
+    ],
+    exp: 85, gold: 66,
+  },
+  // ===== 河川・海岸エリア（ダンジョン未決定）=====
+  poyogaeru: {
+    id: 'poyogaeru', name: 'ポヨガエル', emoji: '🐸',
+    hp: 48, mp: 20, atk: 10, def: 5, spd: 14,
+    skills: [
+      { id: 'fuwa_tobi', name: 'ふわとび', desc: 'ぷくっとふくらんで飛びかかりスタンさせる。', mpCost: 8, target: 'enemy_one', effect: 'stun', power: 1.0 },
+      { id: 'shita_uchi', name: 'したうち', desc: '長い舌でぺちんと叩く。', mpCost: 0, target: 'enemy_one', effect: 'damage', power: 1.3 },
+    ],
+    exp: 14, gold: 9,
+  },
+  yadotsubo: {
+    id: 'yadotsubo', name: 'ヤドツボ', emoji: '🫙',
+    hp: 62, mp: 0, atk: 12, def: 15, spd: 4,
+    skills: [
+      { id: 'tsubo_komori', name: 'ツボにひきこもる', desc: '壺に隠れ防御力を大幅に上げる。', mpCost: 8, target: 'self', effect: 'def_up', power: 1 },
+      { id: 'hasami_kudaki', name: 'ハサミくだき', desc: '大きなハサミで強力に挟む。', mpCost: 0, target: 'enemy_one', effect: 'damage', power: 1.5 },
+    ],
+    exp: 19, gold: 14,
+  },
+  mokumokumo: {
+    id: 'mokumokumo', name: 'モクモクモ', emoji: '🌊',
+    hp: 70, mp: 28, atk: 11, def: 8, spd: 8,
+    skills: [
+      { id: 'matowari_tsuku', name: 'まとわりつく', desc: '藻が絡みついてスタン状態にする。', mpCost: 8, target: 'enemy_one', effect: 'stun', power: 1.0 },
+      { id: 'doku_no_moku', name: 'どくのもく', desc: '毒を帯びた藻でダメージを与える。', mpCost: 6, target: 'enemy_one', effect: 'poison', power: 1.0 },
+    ],
+    exp: 21, gold: 15,
+  },
+  kuchipaku: {
+    id: 'kuchipaku', name: 'クチパク', emoji: '🐡',
+    hp: 55, mp: 0, atk: 17, def: 5, spd: 15,
+    skills: [
+      { id: 'gabu_nomi', name: 'がぶのみ', desc: '大きな口でまるごと噛みつく。', mpCost: 0, target: 'enemy_one', effect: 'damage', power: 1.9 },
+      { id: 'hageshii_nagare', name: 'はげしいながれ', desc: '激流を起こして全体を攻撃する。', mpCost: 8, target: 'enemy_all', effect: 'damage', power: 0.9 },
+    ],
+    exp: 23, gold: 17,
+  },
+  // ===== ボス =====
   bandit_king: {
     id: 'bandit_king', name: '盗賊王カルド', emoji: '👑',
     hp: 200, mp: 30, atk: 22, def: 10, spd: 14,
@@ -302,14 +458,15 @@ export const ENEMIES: Record<string, EnemyDef> = {
     ],
     exp: 100, gold: 80, isBoss: true,
   },
-  fire_dragon: {
-    id: 'fire_dragon', name: '炎竜イグニドラ', emoji: '🐉',
-    hp: 300, mp: 60, atk: 28, def: 15, spd: 12,
+  mine_king: {
+    id: 'mine_king', name: '鉱王グラドル', emoji: '💎',
+    hp: 320, mp: 60, atk: 29, def: 20, spd: 8,
     skills: [
-      { id: 'fire_breath', name: '炎のブレス', desc: '全体に炎ダメージ。', mpCost: 15, target: 'enemy_all', effect: 'damage', power: 1.5 },
-      { id: 'tail_whip', name: 'テールウィップ', desc: '重い尻尾で薙ぎ払う。', mpCost: 8, target: 'enemy_one', effect: 'damage', power: 2.2 },
+      { id: 'crystal_rush', name: 'クリスタルラッシュ', desc: '水晶の刃で全体を切り裂く。', mpCost: 14, target: 'enemy_all', effect: 'damage', power: 1.3 },
+      { id: 'ore_shield', name: '鉱石の盾', desc: '鉱石の盾で防御力を大幅に上げる。', mpCost: 10, target: 'self', effect: 'def_up', power: 1 },
+      { id: 'daichi_no_ikari', name: '大地の怒り', desc: '大地を揺らし1体に超強力な一撃。', mpCost: 16, target: 'enemy_one', effect: 'damage', power: 2.8 },
     ],
-    exp: 150, gold: 100, isBoss: true, sealStone: 'fire',
+    exp: 200, gold: 130, isBoss: true, sealStone: 'fire',
   },
   storm_dragon: {
     id: 'storm_dragon', name: '嵐竜ストームレックス', emoji: '🌩️',
@@ -320,24 +477,36 @@ export const ENEMIES: Record<string, EnemyDef> = {
     ],
     exp: 180, gold: 120, isBoss: true, sealStone: 'storm',
   },
-  dark_guardian: {
-    id: 'dark_guardian', name: '闇の守護者', emoji: '🌑',
-    hp: 360, mp: 70, atk: 32, def: 18, spd: 10,
+  ruins_guardian: {
+    id: 'ruins_guardian', name: '遺跡守ラザーム', emoji: '🗿',
+    hp: 200, mp: 60, atk: 26, def: 16, spd: 9,
     skills: [
-      { id: 'dark_wave', name: '暗黒波動', desc: '全体に闇ダメージ。', mpCost: 13, target: 'enemy_all', effect: 'damage', power: 1.4 },
-      { id: 'curse', name: '呪縛', desc: '1体を毒＋スタンにする。', mpCost: 10, target: 'enemy_one', effect: 'poison', power: 1.5 },
+      { id: 'inishie_sabaki', name: 'いにしえのさばき', desc: '古代の力で全体を裁く。', mpCost: 14, target: 'enemy_all', effect: 'damage', power: 1.3 },
+      { id: 'razaam_ikari', name: 'ラザームのいかり', desc: '怒りで自身の攻撃力を大幅に上げる。', mpCost: 10, target: 'self', effect: 'atk_up', power: 1 },
+      { id: 'fuji_kome', name: 'ふうじこめ', desc: '遺跡の力で1体を封じスタンさせる。', mpCost: 8, target: 'enemy_one', effect: 'stun', power: 1.0 },
     ],
-    exp: 200, gold: 140, isBoss: true, sealStone: 'dark',
+    exp: 90, gold: 70, isBoss: false,
   },
-  demon_king: {
-    id: 'demon_king', name: '魔王ヴァールド', emoji: '👿',
-    hp: 550, mp: 120, atk: 38, def: 20, spd: 14,
+  tidal_king: {
+    id: 'tidal_king', name: '潮王ネブラ', emoji: '🐳',
+    hp: 380, mp: 80, atk: 28, def: 15, spd: 13,
     skills: [
-      { id: 'dark_dominion', name: '暗黒支配', desc: '全体に圧倒的な闇の力。', mpCost: 18, target: 'enemy_all', effect: 'damage', power: 1.8 },
-      { id: 'soul_crush', name: '魂砕き', desc: '1体の魂を完全に砕く。', mpCost: 20, target: 'enemy_one', effect: 'damage', power: 3.2 },
-      { id: 'demon_curse', name: '魔王の呪い', desc: '全体を毒状態にする。', mpCost: 15, target: 'enemy_all', effect: 'poison', power: 1.0 },
+      { id: 'taida_no_nami', name: 'たいだのなみ', desc: '怠惰な大波で全体を攻撃する。', mpCost: 13, target: 'enemy_all', effect: 'damage', power: 1.3 },
+      { id: 'kaitei_shihai', name: 'かいていのしはい', desc: '海底から全体の攻撃力を下げる。', mpCost: 10, target: 'enemy_all', effect: 'debuff_atk', power: 1 },
+      { id: 'uzushio', name: 'うずしお', desc: '渦潮に巻き込みスタンさせる。', mpCost: 10, target: 'enemy_one', effect: 'stun', power: 1.0 },
     ],
-    exp: 500, gold: 300, isBoss: true,
+    exp: 200, gold: 130, isBoss: true,
+  },
+  archive: {
+    id: 'archive', name: '終末記録体アーカイブ', emoji: '📚',
+    hp: 580, mp: 150, atk: 40, def: 22, spd: 14,
+    skills: [
+      { id: 'kiroku_sabaki', name: 'きろくのさばき', desc: '世界の記録が全体に降り注ぐ。', mpCost: 18, target: 'enemy_all', effect: 'damage', power: 1.7 },
+      { id: 'kako_no_kodama', name: 'かこのこだま', desc: '過去の記録が全体の攻撃力を下げる。', mpCost: 14, target: 'enemy_all', effect: 'debuff_atk', power: 1 },
+      { id: 'mirai_no_fuuin', name: 'みらいのふういん', desc: '未来を封じ1体をスタン状態にする。', mpCost: 12, target: 'enemy_one', effect: 'stun', power: 1.0 },
+      { id: 'sekai_no_kiroku', name: 'せかいのきろく', desc: '世界全ての記録を解放する最強の一撃。', mpCost: 25, target: 'enemy_one', effect: 'damage', power: 3.5 },
+    ],
+    exp: 600, gold: 300, isBoss: true,
   },
 }
 
@@ -499,13 +668,13 @@ export const LOCATIONS: Record<LocationId, LocationDef> = {
   demon_mine: {
     id: 'demon_mine', name: '廃鉱山', emoji: '⛏️',
     type: 'dungeon',
-    desc: '北西の山中に潜む廃坑。炎の精霊が棲み、炎の封印石が眠ると言われる。魔王軍の残党も潜伏中。',
+    desc: '北西の山中に潜む廃坑。岩石の魔物が棲み、炎の封印石が眠ると言われる。鉱王グラドルが支配する。',
     connections: ['galdo'],
     travelDays: { galdo: 2 },
     companionId: 'iris',
     sealStone: 'fire',
-    enemyPool: ['fire_elemental', 'mine_golem', 'goblin'],
-    bossId: 'fire_dragon',
+    enemyPool: ['goromin', 'tsuru_hammer', 'kabemimi', 'ganseki_bou'],
+    bossId: 'mine_king',
   },
   dragon_pass: {
     id: 'dragon_pass', name: '竜の峠', emoji: '🐲',
@@ -515,7 +684,7 @@ export const LOCATIONS: Record<LocationId, LocationDef> = {
     travelDays: { galdo: 3 },
     companionId: 'elk',
     sealStone: 'storm',
-    enemyPool: ['storm_bird', 'wolf', 'mine_golem'],
+    enemyPool: ['goromin', 'tsuru_hammer', 'kabemimi', 'ganseki_bou'],
     bossId: 'storm_dragon',
   },
   bandit_hideout: {
@@ -542,12 +711,12 @@ export const LOCATIONS: Record<LocationId, LocationDef> = {
   desert_ruins: {
     id: 'desert_ruins', name: '砂漠遺跡', emoji: '🌑',
     type: 'castle',
-    desc: '砂漠の奥に眠る古代遺跡。魔王ヴァールドが復活を待つ禁断の地。3つの封印石を持つ者だけが真の決戦に挑める。謎めいた魔族ゼノもここにいる。',
+    desc: '砂漠の奥に眠る古代遺跡。世界の記録を刻む終末記録体アーカイブが待ち受ける禁断の地。3つの封印石を持つ者だけが真の決戦に挑める。謎めいた魔族ゼノもここにいる。',
     connections: ['sahal'],
     travelDays: { sahal: 3 },
     companionId: 'zeno',
-    enemyPool: ['beast_soldier', 'dark_soldier'],
-    bossId: 'demon_king',
+    enemyPool: ['sabotenu', 'sunabukuro', 'hibikamen', 'mizunomin', 'ruins_guardian', 'tsugihagi_hei', 'baketsu_hei', 'memo_hei', 'sansec_general', 'mirror_lady', 'ito_kiri'],
+    bossId: 'archive',
     requireAllStones: true,
   },
 }
