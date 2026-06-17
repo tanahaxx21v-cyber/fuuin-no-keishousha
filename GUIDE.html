@@ -1,0 +1,1037 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>封印の継承者 — 公式攻略本</title>
+<style>
+:root {
+  --bg: #0d0d1a;
+  --bg2: #13132a;
+  --bg3: #1a1a35;
+  --border: #2a2a5a;
+  --accent: #7c4dff;
+  --accent2: #f4c542;
+  --red: #e05555;
+  --green: #4caf7d;
+  --blue: #5599ff;
+  --purple: #b06cff;
+  --text: #e0e0f0;
+  --muted: #888aaa;
+  --boss: #c0392b;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-padding-top: 56px; }
+body { background: var(--bg); color: var(--text); font-family: 'Hiragino Kaku Gothic ProN', 'Yu Gothic', sans-serif; line-height: 1.7; }
+
+/* NAV */
+nav { position: sticky; top: 0; z-index: 100; background: #0a0a18; border-bottom: 2px solid var(--accent); padding: 0 1rem; display: flex; align-items: center; gap: 1.2rem; overflow-x: auto; white-space: nowrap; height: 48px; }
+nav a { color: var(--accent2); text-decoration: none; font-size: 0.82rem; font-weight: bold; letter-spacing: 0.05em; opacity: 0.85; }
+nav a:hover { opacity: 1; color: #fff; }
+nav .brand { color: #fff; font-size: 1rem; font-weight: bold; margin-right: 0.5rem; flex-shrink: 0; }
+
+/* LAYOUT */
+.container { max-width: 1100px; margin: 0 auto; padding: 2rem 1.5rem; }
+
+/* HERO */
+.hero { text-align: center; padding: 3.5rem 1rem 2.5rem; background: linear-gradient(180deg, #1a0a4a 0%, var(--bg) 100%); border-bottom: 1px solid var(--border); }
+.hero h1 { font-size: 2.6rem; color: var(--accent2); letter-spacing: 0.12em; text-shadow: 0 0 20px #f4c54280; }
+.hero .sub { color: var(--muted); font-size: 0.95rem; margin-top: 0.5rem; }
+.hero .stones { display: flex; justify-content: center; gap: 1.5rem; margin-top: 1.5rem; }
+.hero .stone { display: flex; flex-direction: column; align-items: center; gap: 0.3rem; }
+.hero .stone .icon { font-size: 2rem; }
+.hero .stone .label { font-size: 0.75rem; color: var(--muted); }
+
+/* SECTIONS */
+section { padding: 3rem 0 2rem; border-bottom: 1px solid var(--border); }
+h2 { font-size: 1.6rem; color: var(--accent2); border-left: 4px solid var(--accent); padding-left: 0.8rem; margin-bottom: 1.5rem; }
+h3 { font-size: 1.15rem; color: #c0c8ff; margin: 1.5rem 0 0.7rem; }
+h4 { font-size: 0.95rem; color: var(--accent2); margin: 1rem 0 0.4rem; }
+p { margin-bottom: 0.8rem; font-size: 0.93rem; color: #ccd; }
+ul { padding-left: 1.4rem; margin-bottom: 0.8rem; }
+li { font-size: 0.9rem; margin-bottom: 0.3rem; }
+
+/* TABLES */
+.tbl-wrap { overflow-x: auto; margin: 0.5rem 0 1.5rem; border-radius: 10px; border: 1px solid var(--border); }
+table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+th { background: var(--bg3); color: var(--accent2); padding: 0.55rem 0.7rem; text-align: left; font-size: 0.8rem; letter-spacing: 0.04em; white-space: nowrap; }
+td { padding: 0.5rem 0.7rem; border-top: 1px solid #1e1e3a; vertical-align: middle; }
+tr:hover td { background: #1a1a30; }
+.num { text-align: right; font-variant-numeric: tabular-nums; }
+.boss-row td { background: #1a0808; color: #ff9999; }
+.boss-row:hover td { background: #220808; }
+.hidden-row td { background: #0d0a1a; color: #c399ff; }
+
+/* CARDS */
+.card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(310px, 1fr)); gap: 1rem; margin: 1rem 0; }
+.card { background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; padding: 1rem 1.2rem; }
+.card.boss-card { border-color: var(--boss); }
+.card.hidden-card { border-color: var(--purple); background: #0f0a1e; }
+.card-header { display: flex; align-items: center; gap: 0.7rem; margin-bottom: 0.7rem; }
+.card-emoji { font-size: 1.8rem; }
+.card-name { font-size: 1.05rem; font-weight: bold; color: #fff; }
+.card-cls { font-size: 0.78rem; color: var(--muted); }
+.card-join { font-size: 0.8rem; color: var(--green); margin-bottom: 0.5rem; }
+.card-desc { font-size: 0.82rem; color: #aab; margin-bottom: 0.7rem; line-height: 1.5; }
+.card-quote { font-size: 0.8rem; color: var(--accent2); font-style: italic; border-left: 2px solid var(--accent2); padding-left: 0.6rem; margin-bottom: 0.8rem; line-height: 1.5; }
+.stat-row { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 0.6rem; }
+.stat-chip { background: var(--bg3); border: 1px solid var(--border); border-radius: 6px; padding: 0.2rem 0.5rem; font-size: 0.75rem; }
+.stat-chip span { color: var(--accent2); font-weight: bold; margin-left: 0.2rem; }
+.skill-list { margin: 0; padding: 0; list-style: none; }
+.skill-item { background: var(--bg3); border-radius: 6px; padding: 0.35rem 0.6rem; margin-bottom: 0.3rem; font-size: 0.8rem; display: flex; justify-content: space-between; align-items: flex-start; gap: 0.5rem; }
+.skill-item .sname { color: #dde; font-weight: bold; white-space: nowrap; }
+.skill-item .sdesc { color: var(--muted); font-size: 0.75rem; }
+.skill-item .smp { color: var(--blue); font-size: 0.72rem; white-space: nowrap; }
+
+/* LOCATION GRID */
+.loc-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 0.8rem; }
+.loc-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 10px; padding: 0.9rem 1rem; }
+.loc-card.town { border-left: 3px solid var(--accent2); }
+.loc-card.dungeon { border-left: 3px solid var(--red); }
+.loc-card.relay { border-left: 3px solid var(--green); }
+.loc-card.castle { border-left: 3px solid var(--purple); }
+.loc-title { font-size: 0.95rem; font-weight: bold; color: #fff; margin-bottom: 0.3rem; }
+.loc-type { font-size: 0.7rem; padding: 0.1rem 0.4rem; border-radius: 4px; display: inline-block; margin-bottom: 0.4rem; }
+.loc-type.town { background: #3a2a00; color: var(--accent2); }
+.loc-type.dungeon { background: #2a0808; color: #ff8888; }
+.loc-type.relay { background: #0a2a18; color: var(--green); }
+.loc-type.castle { background: #1a0a30; color: var(--purple); }
+.loc-desc { font-size: 0.78rem; color: #99a; line-height: 1.4; margin-bottom: 0.5rem; }
+.loc-meta { font-size: 0.75rem; color: var(--muted); }
+.loc-meta strong { color: #ccd; }
+
+/* ROUTE */
+.route-box { background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; padding: 1.2rem 1.4rem; margin: 1rem 0; }
+.route-step { display: flex; gap: 0.8rem; align-items: flex-start; margin-bottom: 1rem; }
+.route-num { background: var(--accent); color: #fff; border-radius: 50%; width: 26px; height: 26px; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: bold; flex-shrink: 0; margin-top: 0.1rem; }
+.route-content { flex: 1; }
+.route-title { font-size: 0.95rem; font-weight: bold; color: var(--accent2); margin-bottom: 0.2rem; }
+.route-body { font-size: 0.83rem; color: #bbc; line-height: 1.5; }
+.route-days { font-size: 0.78rem; color: var(--blue); margin-top: 0.2rem; }
+
+/* BOSS CARDS */
+.boss-detail { background: linear-gradient(135deg, #1a0808 0%, var(--bg2) 100%); border: 1px solid var(--boss); border-radius: 12px; padding: 1.2rem 1.4rem; margin: 1rem 0; }
+.boss-detail h3 { color: #ff8888; border: none; }
+.boss-phase { display: inline-block; background: #2a0000; color: #ff6666; padding: 0.15rem 0.5rem; border-radius: 4px; font-size: 0.75rem; margin-bottom: 0.5rem; }
+.boss-stats { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 0.7rem; }
+.strategy-box { background: #0a1a0a; border-left: 3px solid var(--green); border-radius: 0 8px 8px 0; padding: 0.7rem 1rem; font-size: 0.83rem; color: #bbe; margin-top: 0.7rem; }
+.strategy-box strong { color: var(--green); }
+
+/* CHIPS */
+.chip { display: inline-block; padding: 0.15rem 0.5rem; border-radius: 6px; font-size: 0.72rem; font-weight: bold; margin: 0.1rem; }
+.chip-fire { background: #2a0e00; color: #ff8855; border: 1px solid #5a2200; }
+.chip-storm { background: #001a2a; color: #55aaff; border: 1px solid #003355; }
+.chip-dark { background: #1a0a2a; color: #cc88ff; border: 1px solid #440077; }
+.chip-warn { background: #2a1a00; color: var(--accent2); border: 1px solid #553300; }
+.chip-ok { background: #0a1a0a; color: var(--green); border: 1px solid #114411; }
+.chip-info { background: #0a1030; color: var(--blue); border: 1px solid #112255; }
+
+/* TIPS */
+.tip { background: var(--bg2); border-left: 3px solid var(--accent2); border-radius: 0 8px 8px 0; padding: 0.7rem 1rem; margin: 0.6rem 0; font-size: 0.85rem; }
+.tip strong { color: var(--accent2); }
+.danger { border-left-color: var(--red); }
+.danger strong { color: var(--red); }
+
+/* DIFFICULTY TABLE */
+.diff-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.8rem; margin: 1rem 0; }
+.diff-card { border-radius: 10px; padding: 1rem; text-align: center; }
+.diff-card.easy { background: #082808; border: 1px solid #1a5a1a; }
+.diff-card.normal { background: #282000; border: 1px solid #5a4a00; }
+.diff-card.hard { background: #280808; border: 1px solid #5a1010; }
+.diff-name { font-size: 1.1rem; font-weight: bold; margin-bottom: 0.4rem; }
+.diff-card.easy .diff-name { color: #6fdf6f; }
+.diff-card.normal .diff-name { color: var(--accent2); }
+.diff-card.hard .diff-name { color: #ff6666; }
+
+/* CROSS LINKS */
+a { color: var(--accent2); text-decoration: none; border-bottom: 1px dotted var(--accent2); transition: color 0.15s; }
+a:hover { color: #fff; border-bottom-color: #fff; }
+table a { border-bottom: none; }
+table a:hover { text-decoration: underline; }
+nav a { border-bottom: none; }
+
+/* SCROLL TOP */
+.scroll-top { position: fixed; bottom: 1.5rem; right: 1.5rem; background: var(--accent); color: #fff; border: none; border-radius: 50%; width: 40px; height: 40px; cursor: pointer; font-size: 1.1rem; box-shadow: 0 2px 8px #0007; }
+
+@media (max-width: 600px) {
+  .hero h1 { font-size: 1.8rem; }
+  .card-grid { grid-template-columns: 1fr; }
+  .diff-grid { grid-template-columns: 1fr; }
+  .loc-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <span class="brand">⚔️ 封印の継承者</span>
+  <a href="#intro">はじめに</a>
+  <a href="#basics">基本システム</a>
+  <a href="#player">主人公</a>
+  <a href="#companions">仲間</a>
+  <a href="#locations">ロケーション</a>
+  <a href="#dungeons">ダンジョン</a>
+  <a href="#bosses">ボス攻略</a>
+  <a href="#enemies">敵一覧</a>
+  <a href="#items">アイテム</a>
+  <a href="#route">攻略ルート</a>
+  <a href="#tips">ヒント</a>
+</nav>
+
+<div class="hero">
+  <h1>封印の継承者</h1>
+  <div class="sub">公式攻略本 ／ 完全版 ／ ローカル専用</div>
+  <div class="stones">
+    <div class="stone"><div class="icon">🔥</div><div class="label">炎の封印石</div></div>
+    <div class="stone"><div class="icon">⚡</div><div class="label">嵐の封印石</div></div>
+    <div class="stone"><div class="icon">🌑</div><div class="label">闇の封印石</div></div>
+  </div>
+</div>
+
+<div class="container">
+
+<!-- ===== はじめに ===== -->
+<section id="intro">
+  <h2>はじめに</h2>
+  <p>「封印の継承者」は、<strong>100日以内</strong>に3つの封印石を集め、魔王の復活を阻止するブラウザRPGです。</p>
+  <p>世界各地のダンジョンを攻略し、13人の仲間を集め、最終決戦地「砂漠遺跡」でラスボス<strong>終末記録体アーカイブ</strong>を倒せ！</p>
+  <div class="tip"><strong>ゲームの目標：</strong>3つの封印石（炎・嵐・闇）を集め、砂漠遺跡でラスボスを討伐する。残り日数が0になる前に達成すること。</div>
+  <div class="tip danger"><strong>ゲームオーバー条件：</strong>① 残り日数が0になる ② 主人公のHPが0になる（全滅）</div>
+</section>
+
+<!-- ===== 基本システム ===== -->
+<section id="basics">
+  <h2>基本システム</h2>
+
+  <h3>難易度</h3>
+  <div class="diff-grid">
+    <div class="diff-card easy">
+      <div class="diff-name">🟢 イージー</div>
+      <div style="font-size:0.82rem; color:#aacaaa; margin-top:0.4rem;">
+        <div>日数：<strong>120日</strong></div>
+        <div>敵HP：通常の<strong>70%</strong></div>
+        <div>推奨：初心者</div>
+        <div>仲間永続死：なし</div>
+      </div>
+    </div>
+    <div class="diff-card normal">
+      <div class="diff-name">🟡 ノーマル</div>
+      <div style="font-size:0.82rem; color:#ccc0aa; margin-top:0.4rem;">
+        <div>日数：<strong>100日</strong></div>
+        <div>敵HP：通常の<strong>100%</strong></div>
+        <div>推奨：標準プレイ</div>
+        <div>仲間永続死：なし</div>
+      </div>
+    </div>
+    <div class="diff-card hard">
+      <div class="diff-name">🔴 ハード</div>
+      <div style="font-size:0.82rem; color:#ccaaaa; margin-top:0.4rem;">
+        <div>日数：<strong>80日</strong></div>
+        <div>敵HP：通常の<strong>140%</strong></div>
+        <div>推奨：上級者</div>
+        <div>仲間永続死：<strong>あり</strong></div>
+      </div>
+    </div>
+  </div>
+
+  <h3>日数の消費</h3>
+  <ul>
+    <li>ロケーション間の<strong>移動</strong>：移動先によって1〜3日消費</li>
+    <li><strong>宿屋で休む</strong>：1日消費（HP・MP全回復）</li>
+    <li><strong>ダンジョン潜入</strong>：1日消費（戦闘 → ボス戦）</li>
+    <li>ショップ・仲間加入：日数消費なし</li>
+  </ul>
+
+  <h3>パーティ編成</h3>
+  <ul>
+    <li>仲間は最大<strong>3人</strong>まで加入可能</li>
+    <li>パーティに編成できるのも最大<strong>3人</strong>（パーティ管理で変更可）</li>
+    <li>バトル中はパーティ編成変更不可</li>
+    <li>仲間が全滅しても主人公のHPが残ればゲームオーバーにはならない</li>
+  </ul>
+
+  <h3>バトルシステム</h3>
+  <ul>
+    <li><strong>スピード順ターン制</strong>：SPDが高いキャラほど先に行動</li>
+    <li>プレイヤーは毎ターン行動を選択。仲間・敵はAI自動行動</li>
+    <li>仲間AIの行動優先度：①味方HP30%以下なら回復スキル → ②攻撃スキル（35%確率） → ③最弱の敵に通常攻撃</li>
+    <li><strong>逃げる</strong>：ボス戦では不可。通常戦闘は60%の確率で成功</li>
+    <li>会心の一撃：通常ダメージの約1.5倍</li>
+  </ul>
+
+  <h3>状態異常</h3>
+  <div class="tbl-wrap">
+    <table>
+      <tr><th>状態</th><th>効果</th><th>継続</th></tr>
+      <tr><td>☠️ 毒</td><td>毎ターン8ダメージ</td><td>4ターン</td></tr>
+      <tr><td>💫 スタン</td><td>1ターン行動不能</td><td>2ターン</td></tr>
+      <tr><td>⬆️ 攻撃UP</td><td>ダメージ1.5倍</td><td>3ターン</td></tr>
+      <tr><td>🛡️ 防御UP</td><td>受ダメージ0.6倍</td><td>3ターン</td></tr>
+      <tr><td>⬇️ 攻撃DOWN</td><td>相手の攻撃力低下</td><td>永続（その戦闘中）</td></tr>
+    </table>
+  </div>
+
+  <h3>レベルアップ</h3>
+  <ul>
+    <li>次のLvに必要なEXP = <strong>現在Lv × 15</strong>（例：Lv5 → Lv6は75EXP）</li>
+    <li>最大レベルは<strong>Lv30</strong></li>
+    <li>ラスボス攻略目標レベル：<strong>Lv15〜20</strong></li>
+  </ul>
+</section>
+
+<!-- ===== 主人公 ===== -->
+<section id="player">
+  <h2>主人公（勇者）</h2>
+  <p>デフォルト名「レオン」。ゲーム開始時に命名可能（最大8文字）。</p>
+
+  <h3>初期ステータス（ノーマル）</h3>
+  <div class="tbl-wrap">
+    <table>
+      <tr><th>HP</th><th>MP</th><th>ATK</th><th>DEF</th><th>SPD</th><th>初期所持金</th></tr>
+      <tr><td class="num">80</td><td class="num">40</td><td class="num">15</td><td class="num">10</td><td class="num">10</td><td class="num">300G</td></tr>
+    </table>
+  </div>
+
+  <h3>レベルアップ成長値</h3>
+  <div class="tbl-wrap">
+    <table>
+      <tr><th>HP</th><th>MP</th><th>ATK</th><th>DEF</th><th>SPD</th></tr>
+      <tr><td class="num">+12</td><td class="num">+5</td><td class="num">+2</td><td class="num">+2</td><td class="num">+1</td></tr>
+    </table>
+  </div>
+
+  <h3>スキル習得スケジュール</h3>
+  <div class="tbl-wrap">
+    <table>
+      <tr><th>習得Lv</th><th>スキル名</th><th>MP</th><th>対象</th><th>効果</th><th>説明</th></tr>
+      <tr><td>Lv1</td><td>⚔️ 勇者斬り</td><td class="num">10</td><td>敵1体</td><td>ダメージ×2.2</td><td>正義の力が宿る一撃</td></tr>
+      <tr><td>Lv5</td><td>💪 鼓舞</td><td class="num">8</td><td>味方全体</td><td>攻撃力UP</td><td>仲間を鼓舞し攻撃力上昇</td></tr>
+      <tr><td>Lv10</td><td>🛡️ 守護の誓い</td><td class="num">10</td><td>味方1体</td><td>防御力UP</td><td>対象の防御力を大幅上昇</td></tr>
+      <tr><td>Lv15</td><td>💎 封印解放</td><td class="num">20</td><td>敵1体</td><td>ダメージ×3.5（ボス特効）</td><td>封印石の力を解放。ボス戦で絶大ダメージ</td></tr>
+      <tr><td>Lv20</td><td>⚡ 天命の一撃</td><td class="num">22</td><td>敵全体</td><td>ダメージ×2.0</td><td>全敵に強烈なダメージ</td></tr>
+      <tr><td>Lv25</td><td>💖 不死の誓い</td><td class="num">28</td><td>自分</td><td>HP+150回復</td><td>自身のHPを大回復</td></tr>
+    </table>
+  </div>
+  <div class="tip"><strong>「封印解放」（Lv15）が最重要スキル。</strong>ボス戦でATKに×3.5のダメージ補正+ボス特効が乗り、高Lvになると1000超のダメージも可能。MP節約して温存しよう。</div>
+</section>
+
+<!-- ===== 仲間 ===== -->
+<section id="companions">
+  <h2>仲間キャラクター一覧（全13人）</h2>
+  <div class="tip"><strong>仲間の上限は3人。</strong>加入のチャンスを逃すと二度と誘えない（ロケーション通過時のみイベント発生）。パーティ枠を考えて選ぼう。</div>
+
+  <div class="card-grid">
+
+    <!-- ガレス -->
+    <div class="card" id="c-gares">
+      <div class="card-header">
+        <div class="card-emoji">🛡️</div>
+        <div><div class="card-name">ガレス</div><div class="card-cls">騎士（男・27歳）</div></div>
+      </div>
+      <div class="card-join">📍 アルセリア王都（序盤）</div>
+      <div class="card-desc">王都の騎士団長。誇り高く真面目で面倒見が良い。HP・DEF最高クラスのタンク。</div>
+      <div class="card-quote">「レオン殿。私ガレスが剣と盾で貴殿を守ろう。騎士の誇りにかけて。」</div>
+      <div class="stat-row">
+        <div class="stat-chip">HP<span>130</span></div>
+        <div class="stat-chip">MP<span>25</span></div>
+        <div class="stat-chip">ATK<span>14</span></div>
+        <div class="stat-chip">DEF<span>20</span></div>
+        <div class="stat-chip">SPD<span>6</span></div>
+        <div class="stat-chip">加入Lv<span>2</span></div>
+      </div>
+      <div style="font-size:0.78rem;color:var(--muted);margin-bottom:0.4rem;">成長：HP+15 ATK+2 DEF+4</div>
+      <ul class="skill-list">
+        <li class="skill-item"><span class="sname">盾撃</span><span class="sdesc">敵1体スタン</span><span class="smp">MP6</span></li>
+        <li class="skill-item"><span class="sname">鉄壁</span><span class="sdesc">自分の防御UP</span><span class="smp">MP8</span></li>
+        <li class="skill-item" style="border:1px solid #334;"><span class="sname">✨ 聖騎士の誓い</span><span class="sdesc">味方全体HP+35（Lv10習得）</span><span class="smp">MP18</span></li>
+      </ul>
+    </div>
+
+    <!-- リズ -->
+    <div class="card" id="c-liz">
+      <div class="card-header">
+        <div class="card-emoji">✨</div>
+        <div><div class="card-name">リズ</div><div class="card-cls">神官（女・22歳）</div></div>
+      </div>
+      <div class="card-join">📍 アルセリア王都（序盤）</div>
+      <div class="card-desc">優しく穏やかな性格。MP・回復力が最高クラスのヒーラー。全回復スキルで長期戦を支える。</div>
+      <div class="card-quote">「神様の導きがあなたをここへ連れてきた。私の癒しの力、お役に立てれば。」</div>
+      <div class="stat-row">
+        <div class="stat-chip">HP<span>65</span></div>
+        <div class="stat-chip">MP<span>95</span></div>
+        <div class="stat-chip">ATK<span>9</span></div>
+        <div class="stat-chip">DEF<span>9</span></div>
+        <div class="stat-chip">SPD<span>9</span></div>
+        <div class="stat-chip">加入Lv<span>2</span></div>
+      </div>
+      <div style="font-size:0.78rem;color:var(--muted);margin-bottom:0.4rem;">成長：HP+7 MP+10 ATK+1 DEF+1 SPD+1</div>
+      <ul class="skill-list">
+        <li class="skill-item"><span class="sname">癒し</span><span class="sdesc">味方1体HP+50</span><span class="smp">MP6</span></li>
+        <li class="skill-item"><span class="sname">聖なる光</span><span class="sdesc">味方全体HP+25</span><span class="smp">MP14</span></li>
+        <li class="skill-item" style="border:1px solid #334;"><span class="sname">✨ 大いなる癒し</span><span class="sdesc">味方全体HP+60（Lv10習得）</span><span class="smp">MP22</span></li>
+      </ul>
+    </div>
+
+    <!-- ノア -->
+    <div class="card" id="c-noa">
+      <div class="card-header">
+        <div class="card-emoji">🏹</div>
+        <div><div class="card-name">ノア</div><div class="card-cls">弓使い（男・19歳）</div></div>
+      </div>
+      <div class="card-join">📍 ベルン商業都市</div>
+      <div class="card-desc">明るく快活。SPD15で高速行動。全体攻撃「散弾」が序盤の雑魚掃討に強い。</div>
+      <div class="card-quote">「俺、この旅に参加したい！遠くの敵はぜんぶ俺に任せといて！」</div>
+      <div class="stat-row">
+        <div class="stat-chip">HP<span>75</span></div>
+        <div class="stat-chip">MP<span>35</span></div>
+        <div class="stat-chip">ATK<span>17</span></div>
+        <div class="stat-chip">DEF<span>8</span></div>
+        <div class="stat-chip">SPD<span>15</span></div>
+        <div class="stat-chip">加入Lv<span>3</span></div>
+      </div>
+      <div style="font-size:0.78rem;color:var(--muted);margin-bottom:0.4rem;">成長：ATK+3 SPD+2</div>
+      <ul class="skill-list">
+        <li class="skill-item"><span class="sname">連射</span><span class="sdesc">敵1体×1.9倍ダメージ</span><span class="smp">MP7</span></li>
+        <li class="skill-item"><span class="sname">散弾</span><span class="sdesc">敵全体×1.2倍ダメージ</span><span class="smp">MP10</span></li>
+      </ul>
+    </div>
+
+    <!-- セシル -->
+    <div class="card" id="c-cecil">
+      <div class="card-header">
+        <div class="card-emoji">🔮</div>
+        <div><div class="card-name">セシル</div><div class="card-cls">魔法使い（女・20歳）</div></div>
+      </div>
+      <div class="card-join">📍 ガルド皆都市</div>
+      <div class="card-desc">知的でクール。ATK22・全体魔法「炎球」が強力。MP成長も高くスキルを連発できる。</div>
+      <div class="card-quote">「……封印石か。理論的には可能。私が同行すれば成功率が上がる。それだけよ。」</div>
+      <div class="stat-row">
+        <div class="stat-chip">HP<span>60</span></div>
+        <div class="stat-chip">MP<span>85</span></div>
+        <div class="stat-chip">ATK<span>22</span></div>
+        <div class="stat-chip">DEF<span>6</span></div>
+        <div class="stat-chip">SPD<span>12</span></div>
+        <div class="stat-chip">加入Lv<span>4</span></div>
+      </div>
+      <div style="font-size:0.78rem;color:var(--muted);margin-bottom:0.4rem;">成長：ATK+3 MP+12</div>
+      <ul class="skill-list">
+        <li class="skill-item"><span class="sname">炎球</span><span class="sdesc">敵全体×1.4倍ダメージ</span><span class="smp">MP12</span></li>
+        <li class="skill-item"><span class="sname">雷撃</span><span class="sdesc">敵1体×2.5倍ダメージ</span><span class="smp">MP10</span></li>
+      </ul>
+    </div>
+
+    <!-- ブラム -->
+    <div class="card" id="c-bram">
+      <div class="card-header">
+        <div class="card-emoji">🪓</div>
+        <div><div class="card-name">ブラム</div><div class="card-cls">戦士（男・35歳）</div></div>
+      </div>
+      <div class="card-join">📍 エルナの里</div>
+      <div class="card-desc">豪快な兄貴分。ATK23・HP115。「大地砕き」×2.8倍は序盤最強クラスの単体火力。</div>
+      <div class="card-quote">「ガッハッハ！面白え旅じゃねえか！俺も連れてけ。この斧、貸してやるぜ！」</div>
+      <div class="stat-row">
+        <div class="stat-chip">HP<span>115</span></div>
+        <div class="stat-chip">MP<span>25</span></div>
+        <div class="stat-chip">ATK<span>23</span></div>
+        <div class="stat-chip">DEF<span>14</span></div>
+        <div class="stat-chip">SPD<span>8</span></div>
+        <div class="stat-chip">加入Lv<span>3</span></div>
+      </div>
+      <div style="font-size:0.78rem;color:var(--muted);margin-bottom:0.4rem;">成長：HP+14 ATK+3</div>
+      <ul class="skill-list">
+        <li class="skill-item"><span class="sname">大斧振り</span><span class="sdesc">敵全体×1.3倍ダメージ</span><span class="smp">MP8</span></li>
+        <li class="skill-item"><span class="sname">大地砕き</span><span class="sdesc">敵1体×2.8倍ダメージ</span><span class="smp">MP12</span></li>
+      </ul>
+    </div>
+
+    <!-- フィン -->
+    <div class="card" id="c-finn">
+      <div class="card-header">
+        <div class="card-emoji">⚔️</div>
+        <div><div class="card-name">フィン</div><div class="card-cls">見習い剣士（男・16歳）</div></div>
+      </div>
+      <div class="card-join">📍 川辺の村</div>
+      <div class="card-desc">熱血少年。Lv8で「勇躍の一閃」×2.8倍を習得。成長率が高く育てると化ける。</div>
+      <div class="card-quote">「お、お兄さん！冒険者ですよね？俺も連れてってください！絶対役に立ちます！」</div>
+      <div class="stat-row">
+        <div class="stat-chip">HP<span>70</span></div>
+        <div class="stat-chip">MP<span>30</span></div>
+        <div class="stat-chip">ATK<span>13</span></div>
+        <div class="stat-chip">DEF<span>11</span></div>
+        <div class="stat-chip">SPD<span>12</span></div>
+        <div class="stat-chip">加入Lv<span>2</span></div>
+      </div>
+      <div style="font-size:0.78rem;color:var(--muted);margin-bottom:0.4rem;">成長：HP+10 ATK+2 DEF+2 SPD+2（全体的にバランス良く伸びる）</div>
+      <ul class="skill-list">
+        <li class="skill-item"><span class="sname">若き剣閃</span><span class="sdesc">敵1体×1.6倍ダメージ</span><span class="smp">MP6</span></li>
+        <li class="skill-item"><span class="sname">根性</span><span class="sdesc">自分の攻撃UP</span><span class="smp">MP5</span></li>
+        <li class="skill-item" style="border:1px solid #334;"><span class="sname">✨ 勇躍の一閃</span><span class="sdesc">敵1体×2.8倍ダメージ（Lv8習得）</span><span class="smp">MP12</span></li>
+      </ul>
+    </div>
+
+    <!-- ヴァイス -->
+    <div class="card" id="c-vais">
+      <div class="card-header">
+        <div class="card-emoji">🗡️</div>
+        <div><div class="card-name">ヴァイス</div><div class="card-cls">元盗賊団長（男・28歳）</div></div>
+      </div>
+      <div class="card-join">📍 盗賊アジト（ダンジョンクリア後）</div>
+      <div class="card-desc">口は悪いが仲間思い。SPD16最速クラス。毒+高速攻撃で継続ダメージ戦法に強い。</div>
+      <div class="card-quote">「チッ……負けたか。いいだろう。どうせ居場所もない。しばらく付き合ってやる。」</div>
+      <div class="stat-row">
+        <div class="stat-chip">HP<span>75</span></div>
+        <div class="stat-chip">MP<span>40</span></div>
+        <div class="stat-chip">ATK<span>18</span></div>
+        <div class="stat-chip">DEF<span>8</span></div>
+        <div class="stat-chip">SPD<span>16</span></div>
+        <div class="stat-chip">加入Lv<span>3</span></div>
+      </div>
+      <div style="font-size:0.78rem;color:var(--muted);margin-bottom:0.4rem;">成長：ATK+2 SPD+3（最終的に最速クラス）</div>
+      <ul class="skill-list">
+        <li class="skill-item"><span class="sname">毒刃</span><span class="sdesc">敵1体に毒＋ダメージ</span><span class="smp">MP5</span></li>
+        <li class="skill-item"><span class="sname">影走り</span><span class="sdesc">敵1体×1.9倍ダメージ</span><span class="smp">MP8</span></li>
+      </ul>
+    </div>
+
+    <!-- ローガン -->
+    <div class="card" id="c-logan">
+      <div class="card-header">
+        <div class="card-emoji">⚒️</div>
+        <div><div class="card-name">ローガン</div><div class="card-cls">元処刑人（男・31歳）</div></div>
+      </div>
+      <div class="card-join">📍 サハル砂漠都市</div>
+      <div class="card-desc">無口で寡黙。HP120・ATK27でタンク兼アタッカー。「処刑の一撃」×3.0倍は仲間最高クラス。</div>
+      <div class="card-quote">「……魔王を倒すか。それが罪滅ぼしになるなら、力を貸そう。」</div>
+      <div class="stat-row">
+        <div class="stat-chip">HP<span>120</span></div>
+        <div class="stat-chip">MP<span>20</span></div>
+        <div class="stat-chip">ATK<span>27</span></div>
+        <div class="stat-chip">DEF<span>16</span></div>
+        <div class="stat-chip">SPD<span>7</span></div>
+        <div class="stat-chip">加入Lv<span>4</span></div>
+      </div>
+      <div style="font-size:0.78rem;color:var(--muted);margin-bottom:0.4rem;">成長：HP+13 ATK+4（ATK成長最高）</div>
+      <ul class="skill-list">
+        <li class="skill-item"><span class="sname">処刑の一撃</span><span class="sdesc">敵1体×3.0倍ダメージ</span><span class="smp">MP12</span></li>
+        <li class="skill-item"><span class="sname">威圧</span><span class="sdesc">敵全体の攻撃力DOWN</span><span class="smp">MP7</span></li>
+      </ul>
+    </div>
+
+    <!-- イリス -->
+    <div class="card" id="c-iris">
+      <div class="card-header">
+        <div class="card-emoji">💜</div>
+        <div><div class="card-name">イリス</div><div class="card-cls">元魔王軍魔導士（女・25歳）</div></div>
+      </div>
+      <div class="card-join">📍 廃鉱山（ダンジョン内）</div>
+      <div class="card-desc">元魔王軍。ATK20・MP90。Lv12で「魔王軍覚醒」×2.5倍全体を習得。セシルと並ぶ魔法アタッカー。</div>
+      <div class="card-quote">「魔王軍から逃げて、ここに隠れていた。……あなたが魔王を倒すというなら、協力する。」</div>
+      <div class="stat-row">
+        <div class="stat-chip">HP<span>65</span></div>
+        <div class="stat-chip">MP<span>90</span></div>
+        <div class="stat-chip">ATK<span>20</span></div>
+        <div class="stat-chip">DEF<span>7</span></div>
+        <div class="stat-chip">SPD<span>11</span></div>
+        <div class="stat-chip">加入Lv<span>4</span></div>
+      </div>
+      <div style="font-size:0.78rem;color:var(--muted);margin-bottom:0.4rem;">成長：ATK+3 MP+12</div>
+      <ul class="skill-list">
+        <li class="skill-item"><span class="sname">魔弾</span><span class="sdesc">敵1体×2.2倍ダメージ</span><span class="smp">MP9</span></li>
+        <li class="skill-item"><span class="sname">闇爆発</span><span class="sdesc">敵全体×1.6倍ダメージ</span><span class="smp">MP14</span></li>
+        <li class="skill-item" style="border:1px solid #334;"><span class="sname">✨ 魔王軍覚醒</span><span class="sdesc">敵全体×2.5倍ダメージ（Lv12習得）</span><span class="smp">MP24</span></li>
+      </ul>
+    </div>
+
+    <!-- シグ -->
+    <div class="card" id="c-sig">
+      <div class="card-header">
+        <div class="card-emoji">🎩</div>
+        <div><div class="card-name">シグ</div><div class="card-cls">詐欺師（男・24歳）</div></div>
+      </div>
+      <div class="card-join">📍 ミレア港町</div>
+      <div class="card-desc">ちゃっかり者。「急所突き」のスタン+「煙幕」の攻撃DOWN で敵を弱体化させるサポート型。</div>
+      <div class="card-quote">「へへ、封印石探しか。俺、情報網があるんだよね。一緒に行けば得するよ、絶対。」</div>
+      <div class="stat-row">
+        <div class="stat-chip">HP<span>68</span></div>
+        <div class="stat-chip">MP<span>45</span></div>
+        <div class="stat-chip">ATK<span>14</span></div>
+        <div class="stat-chip">DEF<span>9</span></div>
+        <div class="stat-chip">SPD<span>14</span></div>
+        <div class="stat-chip">加入Lv<span>3</span></div>
+      </div>
+      <div style="font-size:0.78rem;color:var(--muted);margin-bottom:0.4rem;">成長：SPD+3（最終SPD高め）</div>
+      <ul class="skill-list">
+        <li class="skill-item"><span class="sname">煙幕</span><span class="sdesc">敵全体の攻撃力DOWN</span><span class="smp">MP6</span></li>
+        <li class="skill-item"><span class="sname">急所突き</span><span class="sdesc">敵1体スタン＋×1.8倍</span><span class="smp">MP10</span></li>
+      </ul>
+    </div>
+
+    <!-- エルク -->
+    <div class="card" id="c-elk">
+      <div class="card-header">
+        <div class="card-emoji">🐺</div>
+        <div><div class="card-name">エルク</div><div class="card-cls">獣人・槍使い（年齢不詳）</div></div>
+      </div>
+      <div class="card-join">📍 竜の峠（ダンジョンクリア後）</div>
+      <div class="card-desc">後半加入でHP105・ATK24・SPD14と全ステータス高水準。「群狼の咆哮」で全敵の攻撃を下げられる。</div>
+      <div class="card-quote">「……お前たちは強い。この峠を越えるなら俺が案内しよう。ついでに旅に加わる。」</div>
+      <div class="stat-row">
+        <div class="stat-chip">HP<span>105</span></div>
+        <div class="stat-chip">MP<span>28</span></div>
+        <div class="stat-chip">ATK<span>24</span></div>
+        <div class="stat-chip">DEF<span>14</span></div>
+        <div class="stat-chip">SPD<span>14</span></div>
+        <div class="stat-chip">加入Lv<span>5</span></div>
+      </div>
+      <div style="font-size:0.78rem;color:var(--muted);margin-bottom:0.4rem;">成長：ATK+3 SPD+2</div>
+      <ul class="skill-list">
+        <li class="skill-item"><span class="sname">狼の爪</span><span class="sdesc">敵1体×2.1倍ダメージ</span><span class="smp">MP8</span></li>
+        <li class="skill-item"><span class="sname">群狼の咆哮</span><span class="sdesc">敵全体の攻撃力DOWN（強力）</span><span class="smp">MP10</span></li>
+      </ul>
+    </div>
+
+    <!-- ミラ -->
+    <div class="card" id="c-mira">
+      <div class="card-header">
+        <div class="card-emoji">🌿</div>
+        <div><div class="card-name">ミラ</div><div class="card-cls">エルフ・弓術士（年齢不詳）</div></div>
+      </div>
+      <div class="card-join">📍 古代神殿（ダンジョンクリア後）</div>
+      <div class="card-desc">森の守護者。SPD16・MP70。「森の加護」で味方全体の防御を上げながら精霊の矢で高火力を出す。</div>
+      <div class="card-quote">「古代神殿を守ってきた。……あなたならば封印石を任せられる。共に行きましょう。」</div>
+      <div class="stat-row">
+        <div class="stat-chip">HP<span>75</span></div>
+        <div class="stat-chip">MP<span>70</span></div>
+        <div class="stat-chip">ATK<span>20</span></div>
+        <div class="stat-chip">DEF<span>11</span></div>
+        <div class="stat-chip">SPD<span>16</span></div>
+        <div class="stat-chip">加入Lv<span>5</span></div>
+      </div>
+      <div style="font-size:0.78rem;color:var(--muted);margin-bottom:0.4rem;">成長：MP+8 SPD+2（最終SPD最高クラス）</div>
+      <ul class="skill-list">
+        <li class="skill-item"><span class="sname">精霊の矢</span><span class="sdesc">敵1体×2.3倍ダメージ</span><span class="smp">MP9</span></li>
+        <li class="skill-item"><span class="sname">森の加護</span><span class="sdesc">味方全体の防御力UP</span><span class="smp">MP12</span></li>
+      </ul>
+    </div>
+
+    <!-- ゼノ（隠しキャラ） -->
+    <div class="card hidden-card" id="c-zeno">
+      <div class="card-header">
+        <div class="card-emoji">😈</div>
+        <div><div class="card-name">ゼノ <span style="font-size:0.7rem;color:var(--purple);">【隠しキャラ】</span></div><div class="card-cls">魔族（年齢不詳）</div></div>
+      </div>
+      <div class="card-join">📍 砂漠遺跡（ラスボス直前・3つの封印石を持って訪問）</div>
+      <div class="card-desc">最強の隠しキャラ。ATK32・HP110・MP110・SPD15とオールラウンドに最高クラス。「魔族の力」×3.5倍は仲間最強スキル。</div>
+      <div class="card-quote">「……面白い。お前が魔王を倒せるか見てやろう。私が手を貸せば、可能性は上がる。」</div>
+      <div class="stat-row">
+        <div class="stat-chip">HP<span>110</span></div>
+        <div class="stat-chip">MP<span>110</span></div>
+        <div class="stat-chip">ATK<span>32</span></div>
+        <div class="stat-chip">DEF<span>16</span></div>
+        <div class="stat-chip">SPD<span>15</span></div>
+        <div class="stat-chip">加入Lv<span>7</span></div>
+      </div>
+      <div style="font-size:0.78rem;color:var(--purple);margin-bottom:0.4rem;">成長：HP+10 ATK+4 MP+11（全ステータス最高クラスで成長）</div>
+      <ul class="skill-list">
+        <li class="skill-item"><span class="sname">魔族の力</span><span class="sdesc">敵1体×3.5倍ダメージ（最高威力！）</span><span class="smp">MP15</span></li>
+        <li class="skill-item"><span class="sname">魔界門</span><span class="sdesc">敵全体×2.0倍ダメージ</span><span class="smp">MP18</span></li>
+        <li class="skill-item" style="border:1px solid #442266;"><span class="sname">✨ 魔族解放</span><span class="sdesc">自身の攻撃力大幅UP（Lv8習得）</span><span class="smp">MP14</span></li>
+      </ul>
+      <div class="tip" style="margin-top:0.6rem;font-size:0.78rem;">3人枠がある状態でラスボス前に砂漠遺跡へ行くと仲間にできる。枠が埋まっていると加入不可。</div>
+    </div>
+
+  </div><!-- /card-grid -->
+
+  <h3>おすすめパーティ構成</h3>
+  <div class="tbl-wrap">
+    <table>
+      <tr><th>構成タイプ</th><th>メンバー</th><th>特徴</th></tr>
+      <tr><td>🔰 序盤安定</td><td><a href="#c-gares">ガレス</a>・<a href="#c-liz">リズ</a>・<a href="#c-noa">ノア</a></td><td>タンク+ヒーラー+全体攻撃で安定。序盤で全員勧誘可能</td></tr>
+      <tr><td>💥 高火力</td><td><a href="#c-logan">ローガン</a>・<a href="#c-cecil">セシル</a>・<a href="#c-zeno">ゼノ</a></td><td>ATK・魔法で圧倒的火力。ラスボス戦最強クラス</td></tr>
+      <tr><td>⚡ バランス最強</td><td><a href="#c-logan">ローガン</a>・<a href="#c-iris">イリス</a>・<a href="#c-zeno">ゼノ</a></td><td>物理+魔法+最高ATK。終盤の定番パーティ</td></tr>
+      <tr><td>🛡️ 超耐久</td><td><a href="#c-gares">ガレス</a>・<a href="#c-bram">ブラム</a>・<a href="#c-elk">エルク</a></td><td>HP合計340超。長期戦に強い</td></tr>
+    </table>
+  </div>
+</section>
+
+<!-- ===== LOCATIONS ===== -->
+<section id="locations">
+  <h2>ロケーション一覧（全21ヶ所）</h2>
+  <div style="display:flex;gap:0.8rem;flex-wrap:wrap;margin-bottom:1rem;font-size:0.8rem;">
+    <span class="chip chip-warn">🏰 都市（6）</span>
+    <span class="chip chip-ok">🏨 中継地点（9）</span>
+    <span class="chip chip-info">⛏️ ダンジョン（4）</span>
+    <span style="background:#1a0a30;color:#cc88ff;border:1px solid #440077;padding:0.15rem 0.5rem;border-radius:6px;font-size:0.72rem;font-weight:bold;">🌑 最終決戦地（1）</span>
+  </div>
+
+  <div class="loc-grid">
+    <div class="loc-card town"><div class="loc-title">🏰 アルセリア王都</div><span class="loc-type town">都市</span><div class="loc-desc">スタート地点。騎士団が守る首都。ガレス・リズが加入。</div><div class="loc-meta"><strong>接続：</strong>旅人の宿(1日)・東関所(1日)・大橋(2日)<br><strong>ショップ：</strong>ポーション・エーテル・毒消し<br><strong>仲間：</strong>ガレス</div></div>
+    <div class="loc-card town"><div class="loc-title">🏛️ ベルン商業都市</div><span class="loc-type town">都市</span><div class="loc-desc">東の商業都市。ノアが加入。品揃えが良い。</div><div class="loc-meta"><strong>接続：</strong>東関所(2日)・見張り塔(2日)・交易所(1日)<br><strong>ショップ：</strong>ポーション・ハイポ・エーテル・毒消し<br><strong>仲間：</strong>ノア</div></div>
+    <div class="loc-card town"><div class="loc-title">🏜️ サハル砂漠都市</div><span class="loc-type town">都市</span><div class="loc-desc">砂漠の都市。ローガンが加入。高品質ショップ。</div><div class="loc-meta"><strong>接続：</strong>盗賊アジト(2日)・海岸街道(1日)・砂漠遺跡(3日)<br><strong>ショップ：</strong>ハイポ・エーテル・万能薬・毒消し<br><strong>仲間：</strong>ローガン</div></div>
+    <div class="loc-card town"><div class="loc-title">⚓ ミレア港町</div><span class="loc-type town">都市</span><div class="loc-desc">南の港町。シグが加入。万能薬が買える。</div><div class="loc-meta"><strong>接続：</strong>川辺の村(2日)・灯台岬(1日)・海岸街道(2日)<br><strong>ショップ：</strong>ポーション・ハイポ・エーテル・万能薬<br><strong>仲間：</strong>シグ</div></div>
+    <div class="loc-card town"><div class="loc-title">🌲 エルナの里</div><span class="loc-type town">都市</span><div class="loc-desc">森の里。ブラムが加入。精霊の泉・森の入口に隣接。</div><div class="loc-meta"><strong>接続：</strong>森の入口(1日)・精霊の泉(1日)<br><strong>ショップ：</strong>ポーション・ハイポ・エーテル<br><strong>仲間：</strong>ブラム</div></div>
+    <div class="loc-card town"><div class="loc-title">🏯 ガルド皆都市</div><span class="loc-type town">都市</span><div class="loc-desc">北方の軍事都市。セシルが加入。廃鉱山・竜の峠の拠点。</div><div class="loc-meta"><strong>接続：</strong>旅人の宿(2日)・見張り塔(2日)・廃鉱山(2日)・竜の峠(3日)<br><strong>ショップ：</strong>ハイポ・万能薬・エーテル・毒消し<br><strong>仲間：</strong>セシル</div></div>
+
+    <div class="loc-card relay"><div class="loc-title">🏨 旅人の宿</div><span class="loc-type relay">中継</span><div class="loc-desc">アルセリア↔ガルドの中間宿屋。HP/MP回復拠点。</div><div class="loc-meta"><strong>接続：</strong>アルセリア(1日)・ガルド(2日)・森の入口(1日)<br><strong>施設：</strong>宿屋あり・ポーション・毒消し販売</div></div>
+    <div class="loc-card relay"><div class="loc-title">🚧 東関所</div><span class="loc-type relay">中継</span><div class="loc-desc">アルセリア↔ベルン間の関所。盗賊・ゴブリンに注意。</div><div class="loc-meta"><strong>接続：</strong>アルセリア(1日)・ベルン(2日)<br><strong>施設：</strong>ポーション販売</div></div>
+    <div class="loc-card relay"><div class="loc-title">🌉 大橋</div><span class="loc-type relay">中継</span><div class="loc-desc">ルーテ大河の橋。川辺の村への最短ルート。</div><div class="loc-meta"><strong>接続：</strong>アルセリア(2日)・川辺の村(1日)</div></div>
+    <div class="loc-card relay"><div class="loc-title">🏡 川辺の村</div><span class="loc-type relay">中継</span><div class="loc-desc">フィンが加入する村。河川系の敵が出現。</div><div class="loc-meta"><strong>接続：</strong>大橋(1日)・ミレア(2日)・灯台岬(1日)<br><strong>仲間：</strong>フィン</div></div>
+    <div class="loc-card relay"><div class="loc-title">🗼 見張り塔</div><span class="loc-type relay">中継</span><div class="loc-desc">ベルン↔ガルド間の中継。山岳系の敵が出現。</div><div class="loc-meta"><strong>接続：</strong>ベルン(2日)・ガルド(2日)</div></div>
+    <div class="loc-card relay"><div class="loc-title">🏮 灯台岬</div><span class="loc-type relay">中継</span><div class="loc-desc">南西の岬。川系の敵が出現。</div><div class="loc-meta"><strong>接続：</strong>ミレア(1日)・川辺の村(1日)<br><strong>施設：</strong>ポーション・毒消し</div></div>
+    <div class="loc-card relay"><div class="loc-title">💧 精霊の泉</div><span class="loc-type relay">中継</span><div class="loc-desc">エルナの里から古代神殿への通路。</div><div class="loc-meta"><strong>接続：</strong>エルナ(1日)・古代神殿(2日)<br><strong>出現敵：</strong>モフネズ・キノボック・ハリオオカミ</div></div>
+    <div class="loc-card relay"><div class="loc-title">🏪 交易所</div><span class="loc-type relay">中継</span><div class="loc-desc">ベルン↔サハル間の商業拠点。品揃え良し。</div><div class="loc-meta"><strong>接続：</strong>ベルン(1日)・東関所(2日)・盗賊アジト(2日)・サハル(2日)<br><strong>施設：</strong>ハイポ・エーテル・ポーション・毒消し</div></div>
+    <div class="loc-card relay"><div class="loc-title">🌊 海岸街道</div><span class="loc-type relay">中継</span><div class="loc-desc">ミレア↔サハル間の沿岸ルート。</div><div class="loc-meta"><strong>接続：</strong>ミレア(2日)・サハル(1日)</div></div>
+    <div class="loc-card relay"><div class="loc-title">🌿 森の入口</div><span class="loc-type relay">中継</span><div class="loc-desc">旅人の宿↔エルナ間の森。森系の敵が出現。</div><div class="loc-meta"><strong>接続：</strong>旅人の宿(1日)・エルナ(1日)<br><strong>出現敵：</strong>モフネズ・キノボック</div></div>
+
+    <div class="loc-card dungeon"><div class="loc-title">⛏️ 廃鉱山</div><span class="loc-type dungeon">ダンジョン</span><div class="loc-desc">炎の封印石が眠る。イリスが加入。ボス：鉱王グラドル。</div><div class="loc-meta"><strong>接続：</strong>ガルド(2日) ／ 消費：1日<br><strong>封印石：</strong>🔥 炎<br><strong>出現敵：</strong>ゴロミン・ツルハンマー・カベミミ・ガンセキ坊</div></div>
+    <div class="loc-card dungeon"><div class="loc-title">🐲 竜の峠</div><span class="loc-type dungeon">ダンジョン</span><div class="loc-desc">嵐の封印石が眠る。エルクが加入。ボス：嵐竜ストームレックス。</div><div class="loc-meta"><strong>接続：</strong>ガルド(3日) ／ 消費：1日<br><strong>封印石：</strong>⚡ 嵐<br><strong>出現敵：</strong>ゴロミン・ツルハンマー・カベミミ・ガンセキ坊</div></div>
+    <div class="loc-card dungeon"><div class="loc-title">💀 盗賊アジト</div><span class="loc-type dungeon">ダンジョン</span><div class="loc-desc">ヴァイスが加入。封印石はなし。ボス：盗賊王カルド。</div><div class="loc-meta"><strong>接続：</strong>交易所(2日)・サハル(2日) ／ 消費：1日<br><strong>出現敵：</strong>盗賊・ゴブリン・山狼</div></div>
+    <div class="loc-card dungeon"><div class="loc-title">🏛️ 古代神殿</div><span class="loc-type dungeon">ダンジョン</span><div class="loc-desc">闇の封印石が眠る。ミラが加入。ボス：森王モルガ。</div><div class="loc-meta"><strong>接続：</strong>精霊の泉(2日) ／ 消費：1日<br><strong>封印石：</strong>🌑 闇<br><strong>出現敵：</strong>モフネズ・キノボック・ドングラー・ハリオオカミ・森人形</div></div>
+
+    <div class="loc-card castle"><div class="loc-title">🌑 砂漠遺跡</div><span class="loc-type" style="background:#1a0a30;color:#cc88ff;">最終決戦地</span><div class="loc-desc">3つの封印石を持った状態でのみラスボスに挑める。ゼノが加入。</div><div class="loc-meta"><strong>接続：</strong>サハル(3日) ／ 消費：1日<br><strong>条件：</strong>封印石3個必須<br><strong>仲間：</strong>ゼノ（隠しキャラ）<br><strong>出現敵：</strong>砂漠系＋魔王軍一般＋魔王軍幹部</div></div>
+  </div>
+</section>
+
+<!-- ===== DUNGEONS ===== -->
+<section id="dungeons">
+  <h2>ダンジョン攻略</h2>
+
+  <h3>⛏️ 廃鉱山（炎の封印石）</h3>
+  <div class="route-box">
+    <p><strong>推奨Lv：</strong>8〜10 ／ <strong>到達日数：</strong>ガルドから2日（ガルドまでアルセリアから3日）</p>
+    <p><strong>出現敵：</strong>ゴロミン / ツルハンマー / カベミミ / ガンセキ坊（→ <a href="#enemies" style="color:var(--blue);">敵一覧</a>）</p>
+    <p><strong>内部仲間：</strong><a href="#c-iris" style="color:var(--accent2);">イリス</a>（ダンジョン内で遭遇 → クリア後加入）</p>
+    <p><strong>ボス：</strong><a href="#boss-mine" style="color:#ff8888;">💎 鉱王グラドル</a></p>
+    <div class="strategy-box"><strong>攻略のコツ：</strong>ガンセキ坊はDEF17で硬い。魔法攻撃（<a href="#c-cecil" style="color:var(--accent2);">セシル</a>・<a href="#c-iris" style="color:var(--accent2);">イリス</a>）か「鼓舞」後の物理攻撃が有効。ボスのグラドルは大地の怒り×2.8を食らうと壊滅的なので、<a href="#c-gares" style="color:var(--accent2);">ガレス</a>の「鉄壁」か「守護の誓い」で守ろう。</div>
+  </div>
+
+  <h3>🐲 竜の峠（嵐の封印石）</h3>
+  <div class="route-box">
+    <p><strong>推奨Lv：</strong>12〜14 ／ <strong>到達日数：</strong>ガルドから3日</p>
+    <p><strong>出現敵：</strong>ゴロミン / ツルハンマー / カベミミ / ガンセキ坊（→ <a href="#enemies" style="color:var(--blue);">敵一覧</a>）</p>
+    <p><strong>内部仲間：</strong><a href="#c-elk" style="color:var(--accent2);">エルク</a>（クリア後加入）</p>
+    <p><strong>ボス：</strong><a href="#boss-dragon" style="color:#ff8888;">🌩️ 嵐竜ストームレックス</a></p>
+    <div class="strategy-box"><strong>攻略のコツ：</strong>ボスの嵐竜はSPD17で先手を取ってくる。「嵐の爆風」×1.4全体が毎ターン来る。<a href="#c-liz" style="color:var(--accent2);">リズ</a>の全体回復が必須。<a href="#c-logan" style="color:var(--accent2);">ローガン</a>の「威圧」で攻撃DOWN後に「封印解放」で一気に削ろう。</div>
+  </div>
+
+  <h3>💀 盗賊アジト（封印石なし）</h3>
+  <div class="route-box">
+    <p><strong>推奨Lv：</strong>8〜10 ／ <strong>到達日数：</strong>交易所から2日 / サハルから2日</p>
+    <p><strong>出現敵：</strong>盗賊 / ゴブリン / 山狼（→ <a href="#enemies" style="color:var(--blue);">敵一覧</a>）</p>
+    <p><strong>仲間：</strong><a href="#c-vais" style="color:var(--accent2);">ヴァイス</a>（ボスクリア後加入）</p>
+    <p><strong>ボス：</strong><a href="#boss-bandit" style="color:#ff8888;">👑 盗賊王カルド</a></p>
+    <div class="strategy-box"><strong>攻略のコツ：</strong>ボスのカルドはSPD14で早い。「煙幕爆弾」で全体攻撃DOWN後に強化攻撃を仕掛けてくる。スタンスキル（<a href="#c-gares" style="color:var(--accent2);">ガレス</a>の盾撃・<a href="#c-sig" style="color:var(--accent2);">シグ</a>の急所突き）が有効。</div>
+  </div>
+
+  <h3>🏛️ 古代神殿（闇の封印石）</h3>
+  <div class="route-box">
+    <p><strong>推奨Lv：</strong>14〜16 ／ <strong>到達日数：</strong>精霊の泉から2日（エルナから3日）</p>
+    <p><strong>出現敵：</strong>モフネズ / キノボック / ドングラー / ハリオオカミ / 森人形（→ <a href="#enemies" style="color:var(--blue);">敵一覧</a>）</p>
+    <p><strong>仲間：</strong><a href="#c-mira" style="color:var(--accent2);">ミラ</a>（クリア後加入）</p>
+    <p><strong>ボス：</strong><a href="#boss-forest" style="color:#ff8888;">🦌 森王モルガ</a></p>
+    <div class="strategy-box"><strong>攻略のコツ：</strong>キノボックの「ねむりほうし（スタン）」と「どくほうし（毒）」が厄介。毒消しを多めに持って行くこと。ボスの森王モルガはHP400・毒全体攻撃あり。毒消しが尽きる前に「封印解放」で高威力を出し続けよう。<a href="#c-liz" style="color:var(--accent2);">リズ</a>の全体回復必須。</div>
+  </div>
+
+  <h3>🌑 砂漠遺跡（最終決戦地）</h3>
+  <div class="route-box">
+    <p><strong>推奨Lv：</strong>18〜22 ／ <strong>到達日数：</strong>サハルから3日</p>
+    <p><strong>条件：</strong>🔥⚡🌑 封印石3個必携（なければボスに挑めない）</p>
+    <p><strong>出現敵：</strong>砂漠系 / 遺跡守ラザーム / ツギハギ兵 / バケツ兵 / メモ兵 / <a href="#enemies" style="color:var(--blue);">魔王軍幹部</a>（三秒将軍 / 鏡面婦人 / 糸切り郷）</p>
+    <p><strong>仲間：</strong><a href="#c-zeno" style="color:var(--purple);">ゼノ（隠しキャラ）</a>（枠があれば加入）</p>
+    <p><strong>ラスボス：</strong><a href="#bosses" style="color:#cc88ff;">📚 終末記録体アーカイブ</a></p>
+    <div class="strategy-box"><strong>攻略のコツ：</strong>魔王軍幹部（三秒将軍・鏡面婦人・糸切り郷）が登場するため消耗戦になりやすい。万能薬・ハイポを10個以上持って入ること。<a href="#c-zeno" style="color:var(--purple);">ゼノ</a>を加入させてから潜ると戦力が大幅に上がる。</div>
+  </div>
+</section>
+
+<!-- ===== BOSSES ===== -->
+<section id="bosses">
+  <h2>ボス攻略</h2>
+
+  <div class="boss-detail" id="boss-bandit">
+    <h3>👑 盗賊王カルド</h3>
+    <span class="boss-phase">第1ボス ／ 盗賊アジト</span>
+    <div class="boss-stats">
+      <div class="stat-chip">HP<span>200</span></div>
+      <div class="stat-chip">ATK<span>22</span></div>
+      <div class="stat-chip">DEF<span>10</span></div>
+      <div class="stat-chip">SPD<span>14</span></div>
+    </div>
+    <p style="font-size:0.85rem;color:#ccd;">封印石なし。仲間ヴァイスを加入させるために攻略価値あり。</p>
+    <p style="font-size:0.83rem;"><strong>スキル：</strong>三連斬り（1体×2.0）/ 煙幕爆弾（全体攻撃DOWN）</p>
+    <div class="strategy-box"><strong>対策：</strong>煙幕爆弾で攻撃DOWN後に三連斬りが来るパターンに注意。「鼓舞」で先に攻撃UPしておくと煙幕爆弾で相殺される。スタン（盾撃）で行動を止めるか、「封印解放」でゴリ押しも有効。推奨Lv8以上。</div>
+  </div>
+
+  <div class="boss-detail" id="boss-mine">
+    <h3>💎 鉱王グラドル <span class="chip chip-fire">炎の封印石</span></h3>
+    <span class="boss-phase">第2ボス ／ 廃鉱山</span>
+    <div class="boss-stats">
+      <div class="stat-chip">HP<span>320</span></div>
+      <div class="stat-chip">ATK<span>29</span></div>
+      <div class="stat-chip">DEF<span>20</span></div>
+      <div class="stat-chip">SPD<span>8</span></div>
+    </div>
+    <p style="font-size:0.83rem;"><strong>スキル：</strong>クリスタルラッシュ（全体×1.3）/ 鉱石の盾（自己防御UP）/ 大地の怒り（1体×2.8）</p>
+    <div class="strategy-box"><strong>対策：</strong>DEF20が高く物理は通りにくい。セシルの「雷撃」×2.5が最も有効。鉱石の盾を使った次ターンが最も危険（防御UP+大地の怒り）。ガレスの「鉄壁」＋「守護の誓い」で主人公を守りながら魔法で削ろう。推奨Lv10以上。</div>
+  </div>
+
+  <div class="boss-detail" id="boss-dragon">
+    <h3>🌩️ 嵐竜ストームレックス <span class="chip chip-storm">嵐の封印石</span></h3>
+    <span class="boss-phase">第3ボス ／ 竜の峠</span>
+    <div class="boss-stats">
+      <div class="stat-chip">HP<span>340</span></div>
+      <div class="stat-chip">ATK<span>30</span></div>
+      <div class="stat-chip">DEF<span>13</span></div>
+      <div class="stat-chip">SPD<span>17</span></div>
+    </div>
+    <p style="font-size:0.83rem;"><strong>スキル：</strong>嵐の爆風（全体×1.4）/ 雷撃落とし（1体×2.6）</p>
+    <div class="strategy-box"><strong>対策：</strong>SPD17で常に先手を取ってくる。毎ターン全体攻撃があるため回復が追いつかなくなりやすい。リズの「大いなる癒し」（全体HP+60）を温存。ローガンの「威圧」で攻撃DOWN必須。「封印解放」（Lv15習得）があれば半分以上削れる。推奨Lv13以上。</div>
+  </div>
+
+  <div class="boss-detail" id="boss-forest">
+    <h3>🦌 森王モルガ <span class="chip chip-dark">闇の封印石</span></h3>
+    <span class="boss-phase">第4ボス ／ 古代神殿</span>
+    <div class="boss-stats">
+      <div class="stat-chip">HP<span>400</span></div>
+      <div class="stat-chip">ATK<span>31</span></div>
+      <div class="stat-chip">DEF<span>17</span></div>
+      <div class="stat-chip">SPD<span>11</span></div>
+    </div>
+    <p style="font-size:0.83rem;"><strong>スキル：</strong>ひっかく（1体×1.5）/ ふみつけ（全体×1.2）/ たねまき（全体毒）/ つるのよびごえ（自己攻撃UP）</p>
+    <div class="strategy-box"><strong>対策：</strong>「たねまき」で全体毒→「つるのよびごえ」攻撃UP→「ふみつけ」全体が最凶コンボ。毒消しを必ず複数持参。毒状態になったら即解除。「封印解放」を主人公で連打しつつ、ローガン・ゼノの高火力スキルで一気に削ること。推奨Lv16以上。</div>
+  </div>
+
+  <div class="boss-detail" style="border-color:#7700aa;background:linear-gradient(135deg,#0d0020 0%,#1a0a30 100%);">
+    <h3 style="color:#cc88ff;">📚 終末記録体アーカイブ <span style="font-size:0.75rem;background:#2a0a4a;color:#cc88ff;padding:0.15rem 0.5rem;border-radius:4px;">ラスボス</span></h3>
+    <span class="boss-phase" style="background:#1a0030;color:#cc88ff;">最終ボス ／ 砂漠遺跡（封印石3個必須）</span>
+    <div class="boss-stats">
+      <div class="stat-chip">HP<span>460</span></div>
+      <div class="stat-chip">ATK<span>36</span></div>
+      <div class="stat-chip">DEF<span>20</span></div>
+      <div class="stat-chip">SPD<span>14</span></div>
+      <div class="stat-chip">MP<span>150</span></div>
+    </div>
+    <p style="font-size:0.83rem;margin-bottom:0.5rem;"><strong>スキル：</strong></p>
+    <ul style="font-size:0.82rem;margin-bottom:0.7rem;">
+      <li>きろくのさばき（全体×1.7ダメージ）— 最頻出</li>
+      <li>かこのこだま（全体攻撃DOWN）— ATKを下げてくる</li>
+      <li>みらいのふういん（1体スタン）— 主人公を狙い行動不能に</li>
+      <li>せかいのきろく（1体×3.5ダメージ）— 最高威力の必殺技。HP200以下で多用</li>
+    </ul>
+    <div class="strategy-box" style="background:#0a0a18;">
+      <strong style="color:#cc88ff;">推奨Lv：20以上（理想：25）</strong><br><br>
+      <strong>必須準備：</strong>万能薬×10・ハイポ×10・毒消し×5・封印石3個<br><br>
+      <strong>攻略手順：</strong><br>
+      ① 先手でローガン/エルクの「威圧」「群狼の咆哮」で攻撃DOWN<br>
+      ② ゼノが加入していれば「魔族解放」→「魔族の力」で大ダメージ<br>
+      ③ 主人公Lv15以上なら「封印解放」（×3.5+ボス特効）を毎ターン使用<br>
+      ④ HP残り半分でせかいのきろく連発 → 「守護の誓い」+ガレスの「鉄壁」で耐える<br>
+      ⑤ リズ/ミラで回復を絶やさないこと<br><br>
+      <strong>注意：</strong>「かこのこだま」で攻撃DOWN後に「きろくのさばき」が来ると全体大ダメージ。このターンは必ず全体回復を使うこと。
+    </div>
+  </div>
+</section>
+
+<!-- ===== ENEMIES ===== -->
+<section id="enemies">
+  <h2>敵一覧</h2>
+
+  <h3>🌲 序盤の敵</h3>
+  <div class="tbl-wrap"><table>
+    <tr><th>名前</th><th>HP</th><th>ATK</th><th>DEF</th><th>SPD</th><th>EXP</th><th>G</th><th>主な行動</th></tr>
+    <tr><td>🐺 山狼</td><td class="num">32</td><td class="num">9</td><td class="num">4</td><td class="num">10</td><td class="num">16</td><td class="num">10</td><td>通常攻撃のみ</td></tr>
+    <tr><td>👺 ゴブリン兵</td><td class="num">45</td><td class="num">12</td><td class="num">6</td><td class="num">9</td><td class="num">24</td><td class="num">18</td><td>突き（MP4、1体×1.3）</td></tr>
+    <tr><td>🗡️ 盗賊</td><td class="num">50</td><td class="num">14</td><td class="num">7</td><td class="num">12</td><td class="num">28</td><td class="num">24</td><td>毒ナイフ（毒状態）</td></tr>
+  </table></div>
+
+  <h3>⛰️ 山岳エリアの敵（廃鉱山・竜の峠）</h3>
+  <div class="tbl-wrap"><table>
+    <tr><th>名前</th><th>HP</th><th>ATK</th><th>DEF</th><th>SPD</th><th>EXP</th><th>G</th><th>主な行動</th></tr>
+    <tr><td>🪨 ゴロミン</td><td class="num">40</td><td class="num">11</td><td class="num">7</td><td class="num">6</td><td class="num">14</td><td class="num">9</td><td>体当たり</td></tr>
+    <tr><td>⛏️ ツルハンマー</td><td class="num">35</td><td class="num">15</td><td class="num">4</td><td class="num">10</td><td class="num">17</td><td class="num">11</td><td>ハンマーぶり（×1.6）/ スタン</td></tr>
+    <tr><td>🦇 カベミミ</td><td class="num">50</td><td class="num">13</td><td class="num">9</td><td class="num">7</td><td class="num">20</td><td class="num">14</td><td>攻撃DOWN</td></tr>
+    <tr><td>🗿 ガンセキ坊</td><td class="num">78</td><td class="num">14</td><td class="num">17</td><td class="num">3</td><td class="num">27</td><td class="num">19</td><td>重い押しつぶし（×1.8）/ 防御UP<br><span style="color:#ff8888;font-size:0.75rem;">⚠ DEF17で硬い。魔法推奨</span></td></tr>
+  </table></div>
+
+  <h3>🌲 森エリアの敵（古代神殿・精霊の泉周辺）</h3>
+  <div class="tbl-wrap"><table>
+    <tr><th>名前</th><th>HP</th><th>ATK</th><th>DEF</th><th>SPD</th><th>EXP</th><th>G</th><th>主な行動</th></tr>
+    <tr><td>🐿️ モフネズ</td><td class="num">28</td><td class="num">8</td><td class="num">3</td><td class="num">10</td><td class="num">10</td><td class="num">6</td><td>体当たり・かじる</td></tr>
+    <tr><td>🍄 キノボック</td><td class="num">42</td><td class="num">11</td><td class="num">6</td><td class="num">7</td><td class="num">18</td><td class="num">12</td><td>毒胞子・スタン胞子・全体攻撃<br><span style="color:#ff8888;font-size:0.75rem;">⚠ 毒+スタンのダブル妨害に注意</span></td></tr>
+    <tr><td>🌰 ドングラー</td><td class="num">68</td><td class="num">14</td><td class="num">13</td><td class="num">5</td><td class="num">25</td><td class="num">18</td><td>体当たり・防御UP</td></tr>
+    <tr><td>🐺 ハリオオカミ</td><td class="num">58</td><td class="num">19</td><td class="num">8</td><td class="num">17</td><td class="num">32</td><td class="num">24</td><td>引っかく・ハリとばし（全体）・噛みつく（×1.8）<br><span style="color:#ff8888;font-size:0.75rem;">⚠ SPD17で先手。噛みつきは強力</span></td></tr>
+    <tr><td>🪆 森人形</td><td class="num">72</td><td class="num">16</td><td class="num">11</td><td class="num">6</td><td class="num">38</td><td class="num">30</td><td>スタン・攻撃DOWN</td></tr>
+  </table></div>
+
+  <h3>🌵 砂漠エリアの敵</h3>
+  <div class="tbl-wrap"><table>
+    <tr><th>名前</th><th>HP</th><th>ATK</th><th>DEF</th><th>SPD</th><th>EXP</th><th>G</th><th>主な行動</th></tr>
+    <tr><td>🌵 サボテヌ</td><td class="num">55</td><td class="num">14</td><td class="num">7</td><td class="num">9</td><td class="num">22</td><td class="num">16</td><td>とげあたり（毒）・キック</td></tr>
+    <tr><td>🎒 スナブクロ</td><td class="num">70</td><td class="num">12</td><td class="num">13</td><td class="num">5</td><td class="num">24</td><td class="num">18</td><td>砂嵐（全体）・押しつぶし</td></tr>
+    <tr><td>🗺️ ヒビカメン</td><td class="num">60</td><td class="num">17</td><td class="num">8</td><td class="num">10</td><td class="num">26</td><td class="num">20</td><td>全体攻撃DOWN（のろい）・炎攻撃</td></tr>
+    <tr><td>🫙 ミズノミン</td><td class="num">45</td><td class="num">11</td><td class="num">6</td><td class="num">13</td><td class="num">20</td><td class="num">14</td><td>水噴射・防御UP</td></tr>
+  </table></div>
+
+  <h3>🌊 河川・海岸エリアの敵</h3>
+  <div class="tbl-wrap"><table>
+    <tr><th>名前</th><th>HP</th><th>ATK</th><th>DEF</th><th>SPD</th><th>EXP</th><th>G</th><th>主な行動</th></tr>
+    <tr><td>🐸 ポヨガエル</td><td class="num">48</td><td class="num">10</td><td class="num">5</td><td class="num">14</td><td class="num">14</td><td class="num">9</td><td>スタン・舌攻撃</td></tr>
+    <tr><td>🫙 ヤドツボ</td><td class="num">62</td><td class="num">12</td><td class="num">15</td><td class="num">4</td><td class="num">19</td><td class="num">14</td><td>防御UP（超硬くなる）・大ハサミ</td></tr>
+    <tr><td>🌊 モクモクモ</td><td class="num">70</td><td class="num">11</td><td class="num">8</td><td class="num">8</td><td class="num">21</td><td class="num">15</td><td>スタン・毒</td></tr>
+    <tr><td>🐡 クチパク</td><td class="num">55</td><td class="num">17</td><td class="num">5</td><td class="num">15</td><td class="num">23</td><td class="num">17</td><td>がぶのみ（×1.9）・全体攻撃</td></tr>
+  </table></div>
+
+  <h3>⚔️ 魔王軍一般兵（砂漠遺跡 前半）</h3>
+  <div class="tbl-wrap"><table>
+    <tr><th>名前</th><th>HP</th><th>ATK</th><th>DEF</th><th>SPD</th><th>EXP</th><th>G</th><th>主な行動</th></tr>
+    <tr><td>🪡 ツギハギ兵</td><td class="num">72</td><td class="num">21</td><td class="num">11</td><td class="num">11</td><td class="num">42</td><td class="num">34</td><td>つぎはぎぎり・攻撃UP</td></tr>
+    <tr><td>🪣 バケツ兵</td><td class="num">80</td><td class="num">19</td><td class="num">16</td><td class="num">7</td><td class="num">44</td><td class="num">36</td><td>バケツ殴り・スタン</td></tr>
+    <tr><td>📝 メモ兵</td><td class="num">65</td><td class="num">17</td><td class="num">9</td><td class="num">13</td><td class="num">40</td><td class="num">32</td><td>メモ投げ・攻撃DOWN</td></tr>
+  </table></div>
+
+  <h3>🎭 魔王軍幹部（砂漠遺跡 深部）</h3>
+  <div class="tbl-wrap"><table>
+    <tr><th>名前</th><th>HP</th><th>ATK</th><th>DEF</th><th>SPD</th><th>EXP</th><th>G</th><th>主な行動</th></tr>
+    <tr class="boss-row"><td>🎭 三秒将軍</td><td class="num">110</td><td class="num">25</td><td class="num">14</td><td class="num">13</td><td class="num">75</td><td class="num">58</td><td>気まぐれぎり（×1.6）・攻撃UP</td></tr>
+    <tr class="boss-row"><td>🪞 鏡面婦人</td><td class="num">95</td><td class="num">22</td><td class="num">12</td><td class="num">15</td><td class="num">80</td><td class="num">62</td><td>光反射攻撃・スタン・攻撃DOWN</td></tr>
+    <tr class="boss-row"><td>🕷️ 糸切り郷</td><td class="num">105</td><td class="num">23</td><td class="num">11</td><td class="num">16</td><td class="num">85</td><td class="num">66</td><td>いとしばり（スタン）・全体攻撃・攻撃UP</td></tr>
+  </table></div>
+
+  <h3>👑 ボス一覧</h3>
+  <div class="tbl-wrap"><table>
+    <tr><th>ボス名</th><th>場所</th><th>HP</th><th>ATK</th><th>DEF</th><th>SPD</th><th>EXP</th><th>封印石</th></tr>
+    <tr class="boss-row"><td>👑 盗賊王カルド</td><td>盗賊アジト</td><td class="num">200</td><td class="num">22</td><td class="num">10</td><td class="num">14</td><td class="num">150</td><td>—</td></tr>
+    <tr class="boss-row"><td>💎 鉱王グラドル</td><td>廃鉱山</td><td class="num">320</td><td class="num">29</td><td class="num">20</td><td class="num">8</td><td class="num">300</td><td>🔥 炎</td></tr>
+    <tr class="boss-row"><td>🌩️ 嵐竜ストームレックス</td><td>竜の峠</td><td class="num">340</td><td class="num">30</td><td class="num">13</td><td class="num">17</td><td class="num">280</td><td>⚡ 嵐</td></tr>
+    <tr class="boss-row"><td>🦌 森王モルガ</td><td>古代神殿</td><td class="num">400</td><td class="num">31</td><td class="num">17</td><td class="num">11</td><td class="num">330</td><td>🌑 闇</td></tr>
+    <tr class="boss-row"><td>🐳 潮王ネブラ</td><td>（海エリア）</td><td class="num">380</td><td class="num">28</td><td class="num">15</td><td class="num">13</td><td class="num">200</td><td>—</td></tr>
+    <tr class="boss-row"><td>🗿 遺跡守ラザーム</td><td>砂漠遺跡内</td><td class="num">200</td><td class="num">26</td><td class="num">16</td><td class="num">9</td><td class="num">90</td><td>—</td></tr>
+    <tr class="hidden-row"><td>📚 終末記録体アーカイブ</td><td>砂漠遺跡</td><td class="num">460</td><td class="num">36</td><td class="num">20</td><td class="num">14</td><td class="num">600</td><td>—（ラスボス）</td></tr>
+  </table></div>
+</section>
+
+<!-- ===== ITEMS ===== -->
+<section id="items">
+  <h2>アイテム一覧</h2>
+  <div class="tbl-wrap"><table>
+    <tr><th>名前</th><th>効果</th><th>回復量</th><th>価格</th><th>購入場所</th></tr>
+    <tr><td>🧪 ポーション</td><td>HP回復</td><td class="num">+50</td><td class="num">100G</td><td>アルセリア・旅人の宿・東関所・川辺の村・エルナなど全域</td></tr>
+    <tr><td>💊 ハイポーション</td><td>HP大回復</td><td class="num">+120</td><td class="num">250G</td><td>ベルン・サハル・ガルド・ミレア・交易所</td></tr>
+    <tr><td>✨ エーテル</td><td>MP回復</td><td class="num">+30</td><td class="num">120G</td><td>アルセリア・ベルン・ガルド・サハル・川辺の村など</td></tr>
+    <tr><td>🌿 万能薬</td><td>HP・MP回復</td><td class="num">HP+100 / MP+40</td><td class="num">300G</td><td>サハル・ガルド・ミレア</td></tr>
+    <tr><td>🫙 毒消し</td><td>毒・スタン回復</td><td>状態異常解除</td><td class="num">80G</td><td>アルセリア・ベルン・ガルド・サハル・灯台岬・交易所・旅人の宿</td></tr>
+  </table></div>
+  <div class="tip"><strong>ボス戦前の推奨在庫：</strong>ハイポーション×8〜10 ／ 万能薬×5 ／ 毒消し×5。特に古代神殿（毒多用）と砂漠遺跡（消耗戦）では多めに確保すること。</div>
+</section>
+
+<!-- ===== ROUTE ===== -->
+<section id="route">
+  <h2>攻略ルート（推奨・ノーマル想定）</h2>
+  <div class="tip"><strong>目安日数：100日のうち移動・休憩・ダンジョンを含めて65〜75日で3つの封印石を集め、残り日数でラスボスに挑むのが理想。</strong></div>
+
+  <div class="route-box">
+
+    <div class="route-step">
+      <div class="route-num">1</div>
+      <div class="route-content">
+        <div class="route-title">アルセリア王都でガレス・リズを仲間に（0日目）</div>
+        <div class="route-body">スタート地点。<a href="#c-gares">ガレス</a>と<a href="#c-liz">リズ</a>は無条件で仲間になる。パーティに編成してから出発。初期所持金300Gでポーション×2〜3、毒消し×2を購入しておく。</div>
+      </div>
+    </div>
+
+    <div class="route-step">
+      <div class="route-num">2</div>
+      <div class="route-content">
+        <div class="route-title">旅人の宿→ガルド皆都市へ（3日消費）</div>
+        <div class="route-body">アルセリア→旅人の宿（1日）→ガルド（2日）。ガルドで<a href="#c-cecil">セシル</a>を仲間に。ここで3人枠が埋まる（<a href="#c-gares">ガレス</a>・<a href="#c-liz">リズ</a>・<a href="#c-cecil">セシル</a> or <a href="#c-gares">ガレス</a>・<a href="#c-liz">リズ</a>・<a href="#c-noa">ノア</a>）。ガルドショップでハイポ・万能薬を購入。</div>
+        <div class="route-days">⏰ 累計：3日経過</div>
+      </div>
+    </div>
+
+    <div class="route-step">
+      <div class="route-num">3</div>
+      <div class="route-content">
+        <div class="route-title">廃鉱山を攻略→炎の封印石入手🔥（6日消費）</div>
+        <div class="route-body">ガルド→<a href="#dungeons">廃鉱山</a>（2日）+ 潜入（1日）= 3日。推奨Lv8〜10。<a href="#c-cecil">セシル</a>の魔法でガンセキ坊を処理。ボスの<a href="#boss-mine">グラドル</a>は「封印解放」か「雷撃」連発。<a href="#c-iris">イリス</a>が仲間に加わる（枠があれば）。クリア後ガルドに戻り休む（宿：1日）。</div>
+        <div class="route-days">⏰ 累計：7日経過</div>
+      </div>
+    </div>
+
+    <div class="route-step">
+      <div class="route-num">4</div>
+      <div class="route-content">
+        <div class="route-title">竜の峠を攻略→嵐の封印石入手⚡（4日消費）</div>
+        <div class="route-body">ガルド→<a href="#dungeons">竜の峠</a>（3日）+ 潜入（1日）= 4日。推奨Lv12〜14。「威圧」で攻撃DOWN後に「封印解放」。<a href="#boss-dragon">嵐竜</a>はSPD17で先手→全体攻撃のため回復スキルを優先。<a href="#c-elk">エルク</a>が仲間に加わる（枠があれば）。</div>
+        <div class="route-days">⏰ 累計：11日経過</div>
+      </div>
+    </div>
+
+    <div class="route-step">
+      <div class="route-num">5</div>
+      <div class="route-content">
+        <div class="route-title">エルナの里経由→古代神殿を攻略→闇の封印石入手🌑（12日消費）</div>
+        <div class="route-body">竜の峠→ガルド（3日）→旅人の宿（2日）→森の入口（1日）→エルナの里（1日）。エルナで<a href="#c-bram">ブラム</a>を仲間に（枠があれば）。エルナ→精霊の泉（1日）→<a href="#dungeons">古代神殿</a>（2日）+ 潜入（1日）。毒消しを多めに。<a href="#c-mira">ミラ</a>が仲間に。</div>
+        <div class="route-days">⏰ 累計：23日経過</div>
+      </div>
+    </div>
+
+    <div class="route-step">
+      <div class="route-num">6</div>
+      <div class="route-content">
+        <div class="route-title">サハル砂漠都市へ→最終準備（14日消費）</div>
+        <div class="route-body">古代神殿→精霊の泉（2日）→エルナ（1日）→森の入口（1日）→旅人の宿（1日）→アルセリア（1日）→東関所（1日）→ベルン（2日）→交易所（1日）→サハル（2日）。サハルで<a href="#c-logan">ローガン</a>を仲間に（パーティ編成を調整）。ハイポ×10、万能薬×5、毒消し×5を購入。宿屋でHP/MP全回復。</div>
+        <div class="route-days">⏰ 累計：37日経過（残り63日）</div>
+      </div>
+    </div>
+
+    <div class="route-step">
+      <div class="route-num">7</div>
+      <div class="route-content">
+        <div class="route-title">砂漠遺跡でゼノを仲間に→ラスボス撃破！（4日消費）</div>
+        <div class="route-body">サハル→<a href="#dungeons">砂漠遺跡</a>（3日）+ 潜入（1日）。到着時に<a href="#c-zeno">ゼノ</a>が加入可能（枠があれば必ず加入させる）。魔王軍幹部を倒しながら進み、3つの封印石を持った状態でラスボス「<a href="#bosses">終末記録体アーカイブ</a>」に挑む。推奨Lv20以上。</div>
+        <div class="route-days">⏰ 累計：41日でクリア（残り59日で勝利可能）</div>
+      </div>
+    </div>
+
+  </div>
+
+  <h3>効率的な仲間収集ルート（3枠の使い方）</h3>
+  <div class="tbl-wrap"><table>
+    <tr><th>序盤（3枠）</th><th>中盤（入れ替え推奨）</th><th>終盤・ラスボス前（最終）</th></tr>
+    <tr><td>ガレス・リズ・セシル</td><td>ローガン・セシル・イリス</td><td>ローガン・ゼノ・エルク（or イリス）</td></tr>
+    <tr><td>回復+魔法で安定攻略</td><td>高火力で中盤のダンジョンを突破</td><td>最高火力でラスボスを圧倒</td></tr>
+  </table></div>
+</section>
+
+<!-- ===== TIPS ===== -->
+<section id="tips">
+  <h2>ヒント＆テクニック</h2>
+
+  <h3>序盤のコツ</h3>
+  <div class="tip"><strong>ガルドへ先に向かえ：</strong>アルセリア→旅人の宿→ガルドのルートは3日。早めにセシル（魔法全体攻撃）を入手すると序盤の敵処理が格段に楽になる。</div>
+  <div class="tip"><strong>宿屋は戦略的に使う：</strong>宿屋は1日消費。HP半分以上残っているなら宿泊しない判断も重要。毒消し・ポーションで凌げるなら進もう。</div>
+  <div class="tip"><strong>逃げるのも戦術：</strong>通常戦闘は60%の確率で逃走成功。レベルが低い序盤はフィールドの敵に巻き込まれたら積極的に逃げてEXPより日数を優先することも考えよう。</div>
+
+  <h3>中盤のコツ</h3>
+  <div class="tip"><strong>仲間3枠の管理：</strong>仲間は全体で最大3人しか加入できない。ゼノを加入させたいなら砂漠遺跡訪問時に1枠空けておくこと。ゼノはATK32で最強クラスのため絶対に加入させたい。</div>
+  <div class="tip"><strong>「封印解放」（Lv15）を最優先で習得：</strong>ボス相手に×3.5+特効が乗る。Lv14→15の昇格直前にサハルやガルドで宿を活用してレベリングしておくのが理想。</div>
+  <div class="tip danger"><strong>日数管理は常に意識：</strong>残り40日でオレンジ警告、残り20日で赤警告。移動に無駄な回り道をしないこと。竜の峠まで攻略すれば半分以上クリアと思ってよい。</div>
+
+  <h3>ボス戦のコツ</h3>
+  <div class="tip"><strong>デバフ先行：</strong>ローガンの「威圧」やシグ・エルクの「煙幕」「群狼の咆哮」で先に攻撃DOWN。ボスの火力を30〜40%落とせるだけで生存率が大幅に上がる。</div>
+  <div class="tip"><strong>「封印解放」はボス専用に温存：</strong>フィールドの雑魚戦でMP消費しすぎない。ボス戦の最初のターンから「封印解放」を使えるようMPを満タンに保とう。宿泊 or エーテルで調整。</div>
+  <div class="tip"><strong>スタンスキルで行動阻止：</strong>ガレスの「盾撃」、シグの「急所突き」などスタンスキルはボスにも有効。最強技（せかいのきろく等）の前にスタンを入れると大ダメージを回避できる。</div>
+
+  <h3>隠しキャラ「ゼノ」の入手条件</h3>
+  <div class="tip"><strong>条件：</strong>① 封印石を3つ全て持つ ② 仲間が3人未満（1枠以上空いている）③ 砂漠遺跡に訪問する<br>3つ全て満たした状態で砂漠遺跡に到着すると加入イベントが発生。仲間が3人いると会えない。</div>
+
+  <h3>ハードモード攻略のコツ</h3>
+  <div class="tip danger"><strong>仲間永続死に注意：</strong>ハードでは仲間がHPゼロになると永久に失う。ガレスの「守護の誓い」やリズの「大いなる癒し」で意識的に守ること。</div>
+  <div class="tip"><strong>80日間で3ダンジョン+移動は厳しい：</strong>最短ルートで動き、寄り道は最小限に。廃鉱山→竜の峠→古代神殿を連続で攻略するルートで移動を最小化しよう。</div>
+</section>
+
+</div><!-- /container -->
+
+<button class="scroll-top" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+</body>
+</html>
