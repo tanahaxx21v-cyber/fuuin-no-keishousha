@@ -121,7 +121,7 @@ export default function GameRoot() {
   }
 
   const handleCloseParty = () => {
-    setGs(prev => ({ ...prev, phase: 'location' }))
+    setGs(prev => ({ ...prev, phase: prev.battle ? 'battle' : 'location' }))
   }
 
   const handleSetParty = (party: CompanionId[]) => {

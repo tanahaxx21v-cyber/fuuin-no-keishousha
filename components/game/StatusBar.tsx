@@ -69,10 +69,11 @@ export default function StatusBar({ gs, onOpenParty, onSave }: Props) {
         {loc.emoji} {loc.name}
       </div>
 
-      {/* Party */}
+      {/* Party — disabled during battle */}
       <button
-        onClick={onOpenParty}
-        className="text-xs bg-gray-700 hover:bg-gray-600 px-2 py-1 rounded-lg transition"
+        onClick={gs.phase === 'battle' ? undefined : onOpenParty}
+        disabled={gs.phase === 'battle'}
+        className={`text-xs px-2 py-1 rounded-lg transition ${gs.phase === 'battle' ? 'bg-gray-800 text-gray-600 cursor-default' : 'bg-gray-700 hover:bg-gray-600'}`}
       >
         👥 仲間 {gs.party.filter(id => gs.companions[id].alive).length}/3
       </button>

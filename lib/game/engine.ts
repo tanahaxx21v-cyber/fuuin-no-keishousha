@@ -285,15 +285,19 @@ export function startBattle(state: GameState, enemyIds: string[], isBoss: boolea
     turn: 1,
   }
 
-  // If first actor is enemy, auto-resolve immediately
-  const firstUnit = allUnits.find(u => u.uid === turnQueue[0])
-  if (firstUnit && !firstUnit.isAlly) {
-    s.battle = battle
-    return processEnemyTurn(s)
-  }
-
   s.battle = battle
   s.phase = 'battle'
+
+  // If first actor is not the player, auto-resolve immediately
+  const firstUnit = allUnits.find(u => u.uid === turnQueue[0])
+  if (firstUnit && !firstUnit.isPlayer) {
+    if (firstUnit.isAlly) {
+      return processCompanionTurn(s)
+    } else {
+      return processEnemyTurn(s)
+    }
+  }
+
   return s
 }
 
@@ -455,6 +459,69 @@ function processEnemyTurn(state: GameState): GameState {
   return advanceTurn(s)
 }
 
+// ===== COMPANION AI =====
+
+function processCompanionTurn(state: GameState): GameState {
+  if (!state.battle) return state
+  const s = deepClone(state)
+  const b = s.battle!
+  const actor = b.units.find(u => u.uid === b.currentUid)!
+  if (!actor || actor.hp <= 0 || !actor.isAlly || actor.isPlayer) return s
+
+  // Stun check
+  const stun = actor.statusEffects.find(e => e.id === 'stun')
+  if (stun) {
+    stun.turnsLeft -= 1
+    if (stun.turnsLeft <= 0) actor.statusEffects = actor.statusEffects.filter(e => e.id !== 'stun')
+    b.logs.push({ text: `💫 ${actor.name}はスタンして動けない！`, type: 'status' })
+    return advanceTurn(s)
+  }
+
+  const aliveEnemies = b.units.filter(u => !u.isAlly && u.hp > 0)
+  if (aliveEnemies.length === 0) return advanceTurn(s)
+
+  const aliveAllies = b.units.filter(u => u.isAlly && u.hp > 0)
+
+  // Use healing skill if any ally is below 30% HP
+  const lowHpAlly = aliveAllies
+    .filter(u => u.hp < u.maxHp * 0.3)
+    .sort((a, b) => a.hp - b.hp)[0]
+  const healSkill = actor.skills.find(sk => sk.target === 'ally_one' && sk.effect === 'heal' && actor.mp >= sk.mpCost)
+  if (lowHpAlly && healSkill) {
+    actor.mp -= healSkill.mpCost
+    applySkillEffect(b, actor, lowHpAlly, healSkill)
+    b.logs.push({ text: `💚 ${actor.name}は「${healSkill.name}」を使った！`, type: 'heal' })
+    return advanceTurn(s)
+  }
+
+  // Occasionally use offensive/support skill
+  const offSkills = actor.skills.filter(sk =>
+    (sk.target === 'enemy_one' || sk.target === 'enemy_all') && actor.mp >= sk.mpCost
+  )
+  const useSkill = offSkills.length > 0 && Math.random() < 0.35
+  if (useSkill) {
+    const skill = offSkills[Math.floor(Math.random() * offSkills.length)]
+    actor.mp -= skill.mpCost
+    const targets = skill.target === 'enemy_all' ? aliveEnemies : [aliveEnemies[Math.floor(Math.random() * aliveEnemies.length)]]
+    for (const tgt of targets) applySkillEffect(b, actor, tgt, skill)
+    b.logs.push({ text: `✨ ${actor.name}は「${skill.name}」を使った！`, type: 'status' })
+    return advanceTurn(s)
+  }
+
+  // Normal attack on weakest enemy
+  const target = aliveEnemies.reduce((weakest, e) => e.hp < weakest.hp ? e : weakest)
+  const result = calcDamage(actor, target)
+  applyDamage(b, target, result.dmg, result.crit)
+  b.logs.push({
+    text: result.crit
+      ? `💥 ${actor.name}の会心！${target.name}に${result.dmg}ダメージ！`
+      : `⚔️ ${actor.name}の攻撃！${target.name}に${result.dmg}ダメージ`,
+    type: result.crit ? 'critical' : 'damage',
+  })
+
+  return advanceTurn(s)
+}
+
 // ===== TURN MANAGEMENT =====
 
 function advanceTurn(state: GameState): GameState {
@@ -514,10 +581,11 @@ function advanceTurn(state: GameState): GameState {
   }
 
   const nextActor = b.units.find(u => u.uid === b.currentUid)
-  if (!nextActor || nextActor.isAlly) {
+  if (!nextActor || nextActor.isPlayer) {
     b.phase = 'select_action'
+  } else if (nextActor.isAlly) {
+    return processCompanionTurn(s)
   } else {
-    b.phase = 'select_action'
     return processEnemyTurn(s)
   }
 
