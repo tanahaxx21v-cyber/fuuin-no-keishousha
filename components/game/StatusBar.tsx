@@ -1,7 +1,6 @@
 'use client'
 
 import type { GameState } from '@/lib/game/types'
-import { LOCATIONS } from '@/lib/game/data'
 
 interface Props {
   gs: GameState
@@ -9,84 +8,113 @@ interface Props {
   onSave?: () => void
 }
 
-const SEAL_ICONS: Record<string, string> = { fire: '🔥', storm: '⚡', dark: '🌑' }
-
 export default function StatusBar({ gs, onOpenParty, onSave }: Props) {
-  const loc = LOCATIONS[gs.currentLocId]
   const hpPct = Math.max(0, (gs.playerHp / gs.playerMaxHp) * 100)
   const mpPct = Math.max(0, (gs.playerMp / gs.playerMaxMp) * 100)
+  const daysUrgent = gs.daysLeft <= 20
+  const daysWarn = gs.daysLeft <= 40
 
   return (
-    <div className="bg-gray-900/95 border-b border-gray-800 px-3 py-2 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm sticky top-0 z-30">
-      {/* Days left */}
-      <div className={`font-bold ${gs.daysLeft <= 20 ? 'text-red-400 animate-pulse' : gs.daysLeft <= 40 ? 'text-orange-400' : 'text-yellow-300'}`}>
-        ⏰ 残{gs.daysLeft}日
-        {gs.daysLeft <= 40 && gs.daysLeft > 20 && <span className="text-xs ml-1 font-normal opacity-80">！急いで</span>}
-        {gs.daysLeft <= 20 && <span className="text-xs ml-1 font-normal">！！タイムリミット</span>}
-      </div>
+    <div className="sticky top-0 z-30 bg-[#07071a] border-b-2 border-indigo-800 px-2 py-1.5 shadow-xl">
+      <div className="flex items-center gap-2 flex-wrap max-w-4xl mx-auto">
 
-      {/* HP */}
-      <div className="flex items-center gap-1">
-        <span className="text-red-400 text-xs">HP</span>
-        <div className="w-20 h-2 bg-gray-700 rounded-full overflow-hidden">
-          <div
-            className={`h-full rounded-full transition-all ${hpPct > 50 ? 'bg-green-500' : hpPct > 25 ? 'bg-yellow-500' : 'bg-red-500'}`}
-            style={{ width: `${hpPct}%` }}
-          />
+        {/* Days */}
+        <div className={`flex items-center gap-1 border-2 rounded px-2 py-0.5 font-black text-sm ${
+          daysUrgent
+            ? 'border-red-500 bg-red-950 text-red-400 animate-pulse'
+            : daysWarn
+            ? 'border-orange-600 bg-orange-950 text-orange-300'
+            : 'border-indigo-700 bg-indigo-950 text-indigo-200'
+        }`}>
+          ⏰ <span className="text-lg font-black">{gs.daysLeft}</span>日
         </div>
-        <span className="text-xs text-gray-300">{gs.playerHp}/{gs.playerMaxHp}</span>
-      </div>
 
-      {/* MP */}
-      <div className="flex items-center gap-1">
-        <span className="text-blue-400 text-xs">MP</span>
-        <div className="w-16 h-2 bg-gray-700 rounded-full overflow-hidden">
-          <div className="h-full bg-blue-500 rounded-full transition-all" style={{ width: `${mpPct}%` }} />
+        {/* Name / Level */}
+        <div className="flex items-center gap-1 bg-slate-900 border-2 border-slate-700 rounded px-2 py-0.5">
+          <span className="text-xs font-bold text-slate-200">{gs.playerName}</span>
+          <span className="text-slate-600">·</span>
+          <span className="text-xs text-slate-400">Lv</span>
+          <span className="text-sm font-black text-white">{gs.playerLevel}</span>
         </div>
-        <span className="text-xs text-gray-300">{gs.playerMp}/{gs.playerMaxMp}</span>
-      </div>
 
-      {/* Name & Level & Gold */}
-      <div className="text-xs text-purple-300 font-semibold">{gs.playerName}</div>
-      <div className="text-xs text-gray-400">Lv{gs.playerLevel}</div>
-      <div className="text-xs text-yellow-400">💰 {gs.gold}G</div>
-
-      {/* Seal stones */}
-      <div className="flex gap-1">
-        {(['fire', 'storm', 'dark'] as const).map(stone => (
-          <span
-            key={stone}
-            className={`text-base ${gs.sealStones.includes(stone) ? 'opacity-100' : 'opacity-20'}`}
-            title={stone === 'fire' ? '炎の封印石' : stone === 'storm' ? '嵐の封印石' : '闇の封印石'}
-          >
-            {SEAL_ICONS[stone]}
+        {/* HP */}
+        <div className="flex items-center gap-1.5">
+          <span className="text-xs font-black text-red-400 w-5">HP</span>
+          <div className="w-20 h-3.5 bg-gray-900 rounded-sm border border-gray-700 overflow-hidden">
+            <div
+              className={`h-full transition-all duration-300 ${
+                hpPct > 50 ? 'bg-gradient-to-r from-green-700 to-green-500'
+                : hpPct > 25 ? 'bg-gradient-to-r from-yellow-700 to-yellow-500'
+                : 'bg-gradient-to-r from-red-800 to-red-600'
+              }`}
+              style={{ width: `${hpPct}%` }}
+            />
+          </div>
+          <span className="text-xs font-bold text-white">
+            {gs.playerHp}<span className="text-gray-600 font-normal">/{gs.playerMaxHp}</span>
           </span>
-        ))}
-      </div>
+        </div>
 
-      {/* Location */}
-      <div className="text-xs text-gray-500 ml-auto hidden sm:block">
-        {loc.emoji} {loc.name}
-      </div>
+        {/* MP */}
+        <div className="flex items-center gap-1.5">
+          <span className="text-xs font-black text-blue-400 w-5">MP</span>
+          <div className="w-14 h-3.5 bg-gray-900 rounded-sm border border-gray-700 overflow-hidden">
+            <div
+              className="h-full bg-gradient-to-r from-blue-800 to-blue-500 transition-all duration-300"
+              style={{ width: `${mpPct}%` }}
+            />
+          </div>
+          <span className="text-xs font-bold text-white">
+            {gs.playerMp}<span className="text-gray-600 font-normal">/{gs.playerMaxMp}</span>
+          </span>
+        </div>
 
-      {/* Party — disabled during battle */}
-      <button
-        onClick={gs.phase === 'battle' ? undefined : onOpenParty}
-        disabled={gs.phase === 'battle'}
-        className={`text-xs px-2 py-1 rounded-lg transition ${gs.phase === 'battle' ? 'bg-gray-800 text-gray-600 cursor-default' : 'bg-gray-700 hover:bg-gray-600'}`}
-      >
-        👥 仲間 {gs.party.filter(id => gs.companions[id].alive).length}/3
-      </button>
+        {/* Gold */}
+        <div className="flex items-center gap-1 bg-amber-950 border-2 border-amber-800 rounded px-2 py-0.5">
+          <span className="text-xs">💰</span>
+          <span className="text-sm font-black text-amber-300">{gs.gold}</span>
+          <span className="text-xs text-amber-700">G</span>
+        </div>
 
-      {/* Save */}
-      {onSave && (
+        {/* Seal stones */}
+        <div className="flex gap-1">
+          {(['fire', 'storm', 'dark'] as const).map(stone => (
+            <div
+              key={stone}
+              className={`w-6 h-6 rounded-full border-2 flex items-center justify-center text-xs transition-all ${
+                gs.sealStones.includes(stone)
+                  ? 'border-amber-500 bg-amber-950 shadow shadow-amber-900/60'
+                  : 'border-gray-700 bg-gray-900 opacity-30 grayscale'
+              }`}
+            >
+              {stone === 'fire' ? '🔥' : stone === 'storm' ? '⚡' : '🌑'}
+            </div>
+          ))}
+        </div>
+
+        {/* Party */}
         <button
-          onClick={onSave}
-          className="text-xs bg-indigo-800 hover:bg-indigo-700 px-2 py-1 rounded-lg transition"
+          onClick={gs.phase === 'battle' ? undefined : onOpenParty}
+          disabled={gs.phase === 'battle'}
+          className={`ml-auto text-xs px-3 py-1 rounded border-2 font-black transition ${
+            gs.phase === 'battle'
+              ? 'bg-slate-900 border-slate-800 text-slate-700 cursor-default'
+              : 'bg-indigo-900 hover:bg-indigo-800 border-indigo-600 text-white'
+          }`}
         >
-          💾
+          👥 仲間 {gs.party.filter(id => gs.companions[id].alive).length}/3
         </button>
-      )}
+
+        {/* Save */}
+        {onSave && (
+          <button
+            onClick={onSave}
+            className="text-xs bg-slate-900 hover:bg-slate-800 border-2 border-slate-700 px-2 py-1 rounded font-bold text-slate-300 transition"
+          >
+            💾
+          </button>
+        )}
+      </div>
     </div>
   )
 }

@@ -185,26 +185,27 @@ export default function GameRoot() {
 
       {/* Level up overlay */}
       {gs.levelUpPending && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70">
-          <div className="bg-yellow-900/90 border-2 border-yellow-400 rounded-2xl p-8 text-center shadow-2xl max-w-sm w-full mx-4">
-            <div className="text-4xl mb-2">⭐</div>
-            <div className="text-2xl font-bold text-yellow-300">レベルアップ！</div>
-            <div className="text-xl text-yellow-100 mt-1">{gs.playerName} → Lv {gs.playerLevel}</div>
-            <div className="text-sm text-yellow-200 mt-3 space-y-1">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80">
+          <div className="bg-[#0c0c24] border-2 border-amber-500 rounded-2xl p-8 text-center shadow-2xl max-w-sm w-full mx-4"
+               style={{ boxShadow: '0 0 40px rgba(245,158,11,0.3)' }}>
+            <div className="text-5xl mb-3">⭐</div>
+            <div className="text-3xl font-black text-amber-300">LEVEL UP!</div>
+            <div className="text-xl text-white font-bold mt-1">{gs.playerName} → <span className="text-amber-400">Lv {gs.playerLevel}</span></div>
+            <div className="text-sm text-gray-300 mt-3 space-y-1 font-bold">
               <div>HP / MP / ATK / DEF / SPD が上昇！</div>
               {gs.playerSkills.length > 0 && (() => {
                 const lastSkill = gs.playerSkills[gs.playerSkills.length - 1]
                 const newLvSkill = [5,10,15,20,25].includes(gs.playerLevel)
                 return newLvSkill ? (
-                  <div className="text-purple-300 font-semibold mt-2">✨ 新スキル「{lastSkill.name}」を習得！</div>
+                  <div className="text-purple-300 font-black mt-2">✨ 新スキル「{lastSkill.name}」を習得！</div>
                 ) : null
               })()}
             </div>
             <button
               onClick={handleDismissLevelUp}
-              className="mt-4 px-6 py-2 bg-yellow-500 hover:bg-yellow-400 text-black font-bold rounded-lg"
+              className="mt-5 px-8 py-2.5 bg-amber-700 hover:bg-amber-600 border-2 border-amber-500 text-white font-black rounded-xl transition active:scale-95"
             >
-              確認
+              確認 ▶
             </button>
           </div>
         </div>
@@ -212,28 +213,28 @@ export default function GameRoot() {
 
       {/* Save notification */}
       {saveMsg && (
-        <div className="fixed bottom-4 right-4 z-50 bg-green-900/90 border border-green-600 text-green-300 px-4 py-2 rounded-lg text-sm shadow-lg">
+        <div className="fixed bottom-4 right-4 z-50 bg-green-950 border-2 border-green-600 text-green-300 px-4 py-2 rounded-xl text-sm font-black shadow-xl">
           💾 {saveMsg}
         </div>
       )}
 
       {/* Party hint after companion joins */}
       {showPartyHint && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60">
-          <div className="bg-indigo-950 border-2 border-indigo-500 rounded-2xl p-6 text-center max-w-xs mx-4 shadow-2xl">
-            <div className="text-3xl mb-2">👥</div>
-            <div className="text-white font-bold mb-1">仲間が加入しました！</div>
-            <div className="text-gray-300 text-sm mb-4">パーティに編成してから冒険を続けましょう。</div>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80">
+          <div className="bg-[#0c0c24] border-2 border-indigo-500 rounded-2xl p-6 text-center max-w-xs mx-4 shadow-2xl">
+            <div className="text-4xl mb-3">👥</div>
+            <div className="text-white font-black text-lg mb-1">仲間が加入！</div>
+            <div className="text-gray-300 text-sm mb-5 font-bold">パーティに編成してから冒険を続けましょう。</div>
             <div className="flex gap-2">
               <button
                 onClick={() => { setShowPartyHint(false); setGs(prev => ({ ...prev, phase: 'party_manage' })) }}
-                className="flex-1 py-2 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold rounded-lg transition text-sm"
+                className="flex-1 py-2.5 bg-indigo-800 hover:bg-indigo-700 border-2 border-indigo-600 text-white font-black rounded-xl transition active:scale-95"
               >
                 👥 パーティ編成
               </button>
               <button
                 onClick={() => setShowPartyHint(false)}
-                className="px-4 py-2 bg-gray-700 hover:bg-gray-600 text-gray-300 rounded-lg transition text-sm"
+                className="px-4 py-2.5 bg-slate-800 hover:bg-slate-700 border-2 border-slate-600 text-gray-300 font-bold rounded-xl transition active:scale-95"
               >
                 後で
               </button>
@@ -244,11 +245,11 @@ export default function GameRoot() {
 
       {/* Message toast */}
       {gs.message && (
-        <div className="fixed top-20 left-1/2 -translate-x-1/2 z-40 bg-red-900/90 border border-red-500 text-red-200 px-4 py-2 rounded-lg text-sm shadow-lg">
+        <div className="fixed top-20 left-1/2 -translate-x-1/2 z-40 bg-red-950 border-2 border-red-600 text-red-200 px-4 py-2 rounded-xl text-sm font-black shadow-xl">
           {gs.message}
           <button
             onClick={() => setGs(prev => ({ ...prev, message: undefined }))}
-            className="ml-3 text-red-400 hover:text-red-200"
+            className="ml-3 text-red-400 hover:text-white font-black"
           >✕</button>
         </div>
       )}
@@ -305,25 +306,25 @@ export default function GameRoot() {
 function NamingScreen({ onConfirm }: { onConfirm: (name: string) => void }) {
   const [name, setName] = useState('レオン')
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-950 p-6">
+    <div className="min-h-screen flex items-center justify-center bg-[#07071a] p-6">
       <div className="max-w-md w-full">
-        <div className="bg-gray-900/80 border border-gray-700 rounded-2xl p-8 shadow-2xl text-center">
+        <div className="bg-[#0c0c24] border-2 border-indigo-700 rounded-2xl p-8 shadow-2xl text-center">
           <div className="text-5xl mb-4">⚔️</div>
-          <h2 className="text-2xl font-bold text-white mb-2">勇者の名前</h2>
-          <p className="text-gray-400 text-sm mb-6">あなたの名前を入力してください（最大8文字）</p>
+          <h2 className="text-2xl font-black text-white mb-2">勇者の名前</h2>
+          <p className="text-gray-400 text-sm mb-6 font-bold">あなたの名前を入力してください（最大8文字）</p>
           <input
             type="text"
             value={name}
             onChange={e => setName(e.target.value.slice(0, 8))}
             maxLength={8}
-            className="w-full bg-gray-800 border border-gray-600 rounded-lg px-4 py-3 text-white text-center text-xl mb-6 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500"
+            className="w-full bg-slate-900 border-2 border-slate-700 rounded-xl px-4 py-3 text-white text-center text-xl font-black mb-6 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
             placeholder="レオン"
           />
           <button
             onClick={() => onConfirm((name.trim() || 'レオン'))}
-            className="w-full py-3 bg-purple-700 hover:bg-purple-600 text-white font-bold rounded-lg transition text-lg"
+            className="w-full py-3.5 bg-indigo-800 hover:bg-indigo-700 border-2 border-indigo-500 text-white font-black rounded-xl transition text-lg active:scale-95"
           >
-            この名前で冒険へ →
+            この名前で冒険へ ▶
           </button>
         </div>
       </div>
@@ -350,24 +351,24 @@ function PrologueScreen({ onDone, playerName }: { onDone: () => void; playerName
 
   const current = pages[page]
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-950 p-6">
+    <div className="min-h-screen flex items-center justify-center bg-[#07071a] p-6">
       <div className="max-w-2xl w-full">
-        <div className="bg-gray-900/80 border border-gray-700 rounded-2xl p-8 shadow-2xl">
-          <div className="text-sm text-purple-400 mb-2 tracking-wider">プロローグ {page + 1}/{pages.length}</div>
-          <h2 className="text-2xl font-bold text-white mb-4">{current.title}</h2>
-          <p className="text-gray-300 leading-relaxed whitespace-pre-line text-base">{current.text}</p>
+        <div className="bg-[#0c0c24] border-2 border-indigo-700 rounded-2xl p-8 shadow-2xl">
+          <div className="text-xs font-black text-indigo-400 mb-2 tracking-widest">PROLOGUE {page + 1}/{pages.length}</div>
+          <h2 className="text-2xl font-black text-white mb-4">{current.title}</h2>
+          <p className="text-gray-300 leading-relaxed whitespace-pre-line text-base font-medium">{current.text}</p>
           <div className="mt-8 flex justify-end">
             {page < pages.length - 1 ? (
               <button
                 onClick={() => setPage(p => p + 1)}
-                className="px-6 py-2 bg-purple-700 hover:bg-purple-600 text-white font-semibold rounded-lg transition"
+                className="px-8 py-2.5 bg-indigo-800 hover:bg-indigo-700 border-2 border-indigo-600 text-white font-black rounded-xl transition active:scale-95"
               >
-                次へ →
+                次へ ▶
               </button>
             ) : (
               <button
                 onClick={onDone}
-                className="px-6 py-2 bg-yellow-600 hover:bg-yellow-500 text-white font-bold rounded-lg transition"
+                className="px-8 py-2.5 bg-amber-700 hover:bg-amber-600 border-2 border-amber-500 text-white font-black rounded-xl transition active:scale-95"
               >
                 旅に出る ⚔️
               </button>

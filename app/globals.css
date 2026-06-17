@@ -3,25 +3,58 @@
 @tailwind utilities;
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --background: #07071a;
+  --foreground: #e2e8f0;
 }
 
 body {
   color: var(--foreground);
   background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', 'Yu Gothic', 'Meiryo', sans-serif;
 }
 
 @layer utilities {
   .text-balance {
     text-wrap: balance;
+  }
+
+  .jrpg-window {
+    @apply bg-[#0c0c24] border-2 border-indigo-700 rounded-xl shadow-lg;
+  }
+
+  .jrpg-window-amber {
+    @apply bg-[#0c0c24] border-2 border-amber-700 rounded-xl shadow-lg;
+  }
+
+  .jrpg-window-red {
+    @apply bg-[#0c0c24] border-2 border-red-800 rounded-xl shadow-lg;
+  }
+
+  .btn-game {
+    @apply font-black border-2 rounded-lg py-3 transition-all active:scale-95;
+  }
+
+  .btn-attack {
+    @apply btn-game bg-red-900 hover:bg-red-800 border-red-600 text-white;
+  }
+
+  .btn-skill {
+    @apply btn-game bg-purple-900 hover:bg-purple-800 border-purple-600 text-white;
+  }
+
+  .btn-item {
+    @apply btn-game bg-green-900 hover:bg-green-800 border-green-600 text-white;
+  }
+
+  .btn-flee {
+    @apply btn-game bg-slate-800 hover:bg-slate-700 border-slate-600 text-gray-300;
+  }
+
+  .btn-primary {
+    @apply btn-game bg-indigo-800 hover:bg-indigo-700 border-indigo-500 text-white;
+  }
+
+  .btn-secondary {
+    @apply btn-game bg-slate-800 hover:bg-slate-700 border-slate-600 text-gray-300;
   }
 }
