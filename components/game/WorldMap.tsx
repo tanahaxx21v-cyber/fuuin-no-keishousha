@@ -9,28 +9,29 @@ interface Props {
   onEnterLocation: () => void
 }
 
+// Calibrated to actual positions on map.jpg
 const MAP_POSITIONS: Partial<Record<LocationId, { x: number; y: number }>> = {
-  galdo:           { x: 52, y: 25 },
-  alseria:         { x: 45, y: 47 },
-  bern:            { x: 72, y: 43 },
-  elna:            { x: 14, y: 44 },
-  sahal:           { x: 82, y: 63 },
-  mirea:           { x: 50, y: 78 },
-  watchtower:      { x: 82, y: 25 },
-  traveler_inn:    { x: 44, y: 35 },
-  checkpoint:      { x: 57, y: 47 },
-  great_bridge:    { x: 44, y: 58 },
-  riverside:       { x: 45, y: 68 },
-  lighthouse:      { x: 34, y: 78 },
-  spirit_spring:   { x: 27, y: 55 },
-  trading_post:    { x: 65, y: 58 },
-  coastal_road:    { x: 68, y: 73 },
-  forest_entrance: { x: 22, y: 42 },
-  demon_mine:      { x: 27, y: 22 },
-  dragon_pass:     { x: 55, y: 8  },
-  bandit_hideout:  { x: 68, y: 62 },
-  ancient_temple:  { x: 10, y: 70 },
-  desert_ruins:    { x: 88, y: 78 },
+  galdo:           { x: 57, y: 31 },  // ガルド都市 ⑥
+  alseria:         { x: 43, y: 47 },  // アルセリア王都 ①
+  bern:            { x: 68, y: 42 },  // ベルン商業都市 ②
+  elna:            { x: 16, y: 60 },  // エルナの里 ⑤
+  sahal:           { x: 78, y: 68 },  // サハル砂漠都市 ③
+  mirea:           { x: 44, y: 80 },  // ミレア港町 ④
+  watchtower:      { x: 74, y: 27 },  // 見張り塔
+  traveler_inn:    { x: 34, y: 38 },  // 旅人の宿
+  checkpoint:      { x: 59, y: 44 },  // 関所
+  great_bridge:    { x: 44, y: 57 },  // 大橋
+  riverside:       { x: 35, y: 64 },  // 川辺の村
+  lighthouse:      { x: 50, y: 88 },  // 灯台岬
+  spirit_spring:   { x: 20, y: 52 },  // 浅緑の森
+  trading_post:    { x: 61, y: 60 },  // 取引所
+  coastal_road:    { x: 64, y: 73 },  // 沿岸街道
+  forest_entrance: { x: 24, y: 34 },  // 魔獣の森
+  demon_mine:      { x: 47, y: 21 },  // 魔鉱山
+  dragon_pass:     { x: 60, y: 11 },  // 竜の峠
+  bandit_hideout:  { x: 73, y: 55 },  // 盗賊の隠れ家
+  ancient_temple:  { x: 15, y: 73 },  // 古代神殿
+  desert_ruins:    { x: 88, y: 50 },  // 砂漠遺跡
 }
 
 export default function WorldMap({ gs, onTravel, onEnterLocation }: Props) {
