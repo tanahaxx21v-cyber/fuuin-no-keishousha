@@ -93,67 +93,45 @@ export default function WorldMap({ gs, onTravel, onEnterLocation }: Props) {
             const isLocked = id === 'desert_ruins' && finalBossLocked
             const canTravel = isConnected && !isCurrent && !isLocked
 
-            // Icon style based on state
-            let iconBg = ''
-            let iconRing = ''
-            let iconOpacity = ''
-            if (isCurrent) {
-              iconBg = 'bg-amber-400 border-2 border-white shadow-lg shadow-amber-500/60'
-              iconRing = 'ring-2 ring-white/70'
-            } else if (isLocked) {
-              iconBg = 'bg-gray-800/80 border border-gray-600'
-              iconOpacity = 'opacity-40'
-            } else if (canTravel) {
-              iconBg = 'bg-white/90 border-2 border-indigo-400 hover:bg-white shadow-md'
-              iconRing = 'hover:ring-2 hover:ring-indigo-300/70'
-            } else if (isVisited) {
-              iconBg = 'bg-white/60 border border-gray-400'
-              iconOpacity = 'opacity-75'
-            } else {
-              iconBg = 'bg-gray-700/50 border border-gray-600'
-              iconOpacity = 'opacity-25'
-            }
-
-            const shortName = loc.name
-              .replace(/の\S+$/, '') // 「〜の〜」から後半除去
-              .replace(/王都|商業|港町|廃|古代|砂漠/, '') // 修飾語除去
-              .slice(0, 4)
+            // Dot size and color
+            const dotSize = isCurrent ? 16 : canTravel ? 12 : isVisited ? 8 : 6
+            const dotColor = isCurrent ? '#ffdd00'
+              : canTravel ? '#60aaff'
+              : isVisited ? '#888888'
+              : '#303030'
+            const dotBorder = isCurrent ? '2.5px solid #fff'
+              : canTravel ? '2px solid #a0d0ff'
+              : isVisited ? '1px solid #555'
+              : '1px solid #222'
+            const dotShadow = isCurrent
+              ? '0 0 14px 5px rgba(255,220,0,0.9), 0 0 4px rgba(255,220,0,1)'
+              : canTravel ? '0 0 8px 2px rgba(100,180,255,0.6)' : 'none'
+            const dotOpacity = isLocked ? 0.25 : (!isVisited && !canTravel && !isCurrent) ? 0.18 : 1
 
             return (
               <button
                 key={id}
                 disabled={!canTravel}
                 onClick={() => canTravel && onTravel(id)}
-                className={`absolute z-10 flex flex-col items-center transform -translate-x-1/2 -translate-y-1/2 transition-all ${iconOpacity} ${canTravel ? 'cursor-pointer hover:scale-110 active:scale-95' : 'cursor-default'} ${isCurrent ? 'scale-110' : ''}`}
-                style={{ left: `${pos.x}%`, top: `${pos.y}%` }}
-              >
-                {/* Town icon */}
-                <div className={`w-9 h-9 rounded-full flex items-center justify-center text-lg ${iconBg} ${iconRing} transition-all`}>
-                  {isLocked ? '🔒' : loc.emoji}
-                </div>
-                {/* Name label */}
-                <div
-                  className="mt-0.5 px-1 py-0.5 rounded text-[8px] font-black leading-none whitespace-nowrap"
-                  style={{
-                    background: isCurrent ? 'rgba(245,158,11,0.95)' : 'rgba(0,0,0,0.75)',
-                    color: isCurrent ? '#000' : '#fff',
-                    textShadow: isCurrent ? 'none' : '0 1px 2px rgba(0,0,0,0.8)',
-                  }}
-                >
-                  {shortName}
-                </div>
-                {/* Travel days */}
-                {canTravel && (
-                  <div className="text-[7px] font-bold text-amber-300 mt-0.5"
-                       style={{ textShadow: '0 1px 3px rgba(0,0,0,1)' }}>
-                    {loc.travelDays[gs.currentLocId] ?? currentLoc.travelDays[id]}日
-                  </div>
-                )}
-                {/* Current marker */}
-                {isCurrent && (
-                  <div className="absolute -top-1 left-1/2 -translate-x-1/2 text-[10px] animate-bounce">▼</div>
-                )}
-              </button>
+                title={loc.name + (canTravel ? ` (${loc.travelDays[gs.currentLocId] ?? currentLoc.travelDays[id]}日)` : '')}
+                style={{
+                  position: 'absolute',
+                  left: `${pos.x}%`,
+                  top: `${pos.y}%`,
+                  width: dotSize,
+                  height: dotSize,
+                  borderRadius: '50%',
+                  backgroundColor: dotColor,
+                  border: dotBorder,
+                  boxShadow: dotShadow,
+                  opacity: dotOpacity,
+                  cursor: canTravel ? 'pointer' : 'default',
+                  transform: 'translate(-50%, -50%)',
+                  zIndex: 10,
+                  transition: 'all 0.2s',
+                  padding: 0,
+                }}
+              />
             )
           })}
         </div>
