@@ -6,9 +6,11 @@ import { COMPANIONS } from '@/lib/game/data'
 interface Props {
   gs: GameState
   onSave?: () => void
+  isMuted?: boolean
+  onToggleMute?: () => void
 }
 
-export default function StatusBar({ gs, onSave }: Props) {
+export default function StatusBar({ gs, onSave, isMuted, onToggleMute }: Props) {
   const hpPct = Math.max(0, (gs.playerHp / gs.playerMaxHp) * 100)
   const mpPct = Math.max(0, (gs.playerMp / gs.playerMaxMp) * 100)
   const daysUrgent = gs.daysLeft <= 20
@@ -103,6 +105,17 @@ export default function StatusBar({ gs, onSave }: Props) {
             <span className="text-xs text-gray-600 font-bold">仲間なし</span>
           )}
         </div>
+
+        {/* Mute */}
+        {onToggleMute && (
+          <button
+            onClick={onToggleMute}
+            title={isMuted ? '音楽ON' : '音楽OFF'}
+            className="text-xs bg-slate-900 hover:bg-slate-800 border-2 border-slate-700 px-2 py-1 rounded font-bold text-slate-300 transition"
+          >
+            {isMuted ? '🔇' : '🔊'}
+          </button>
+        )}
 
         {/* Save */}
         {onSave && (

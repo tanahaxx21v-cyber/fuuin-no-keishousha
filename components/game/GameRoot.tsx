@@ -8,6 +8,10 @@ import {
   battleSkill, battleUseItem, battleFlee, closeBattle,
   processNonPlayerTurn,
 } from '@/lib/game/engine'
+import {
+  playBgm, stopBgm, toggleMute, isMuted,
+  sfxAttack, sfxSkill, sfxHeal, sfxVictory, sfxDefeat, sfxLevelUp, sfxMenuSelect, sfxCoin,
+} from '@/lib/game/audio'
 import TitleScreen from './TitleScreen'
 import WorldMap from './WorldMap'
 import LocationView from './LocationView'
@@ -45,6 +49,7 @@ export default function GameRoot() {
   const [hasSave, setHasSave] = useState(false)
   const [pendingDiff, setPendingDiff] = useState<Difficulty | null>(null)
   const [saveMsg, setSaveMsg] = useState<string | null>(null)
+  const [muted, setMuted] = useState(false)
 
   useEffect(() => {
     const saved = loadGame()
@@ -141,14 +146,18 @@ export default function GameRoot() {
   }
 
   const handleBattleAttack = (targetUid: string) => {
+    sfxAttack()
     update(s => battleAttack(s, targetUid))
   }
 
   const handleBattleSkill = (skill: Skill, targetUid?: string) => {
+    if (['heal', 'heal_hp', 'heal_ally_hp', 'def_up', 'atk_up'].includes(skill.effect)) sfxHeal()
+    else sfxSkill()
     update(s => battleSkill(s, skill, targetUid))
   }
 
   const handleBattleItem = (itemId: string, targetUid: string) => {
+    sfxHeal()
     update(s => battleUseItem(s, itemId, targetUid))
   }
 
@@ -163,6 +172,30 @@ export default function GameRoot() {
   const handleDismissLevelUp = () => {
     setGs(prev => ({ ...prev, levelUpPending: false }))
   }
+
+  // フェーズ変化に応じてBGMを切り替え
+  useEffect(() => {
+    if (gs.phase === 'worldmap' || gs.phase === 'location' || gs.phase === 'shop') {
+      playBgm('field')
+    } else if (gs.phase === 'battle' && gs.battle) {
+      playBgm(gs.battle.isBoss ? 'boss' : 'battle')
+    } else if (gs.phase === 'title' || gs.phase === 'prologue') {
+      stopBgm()
+    }
+    // win / gameover は battle終了時にSFXで対応済み
+  }, [gs.phase, gs.battle?.isBoss])
+
+  // バトル終了時のSFX
+  useEffect(() => {
+    if (!gs.battle) return
+    if (gs.battle.phase === 'victory') { sfxVictory(); stopBgm() }
+    if (gs.battle.phase === 'defeat') { sfxDefeat(); stopBgm() }
+  }, [gs.battle?.phase])
+
+  // レベルアップSFX
+  useEffect(() => {
+    if (gs.levelUpPending) sfxLevelUp()
+  }, [gs.levelUpPending])
 
   // バトル中に仲間・敵のターンを自動処理（バトル開始時は全員MAXHPで表示してから実行）
   useEffect(() => {
@@ -182,7 +215,15 @@ export default function GameRoot() {
     <div className="min-h-screen bg-gray-950 text-gray-100 flex flex-col">
       {/* Status bar — shown during gameplay */}
       {['worldmap', 'location', 'battle', 'shop'].includes(gs.phase) && (
-        <StatusBar gs={gs} onSave={handleManualSave} />
+        <StatusBar
+          gs={gs}
+          onSave={handleManualSave}
+          isMuted={muted}
+          onToggleMute={() => {
+            const next = toggleMute()
+            setMuted(next)
+          }}
+        />
       )}
 
       {/* Level up overlay */}

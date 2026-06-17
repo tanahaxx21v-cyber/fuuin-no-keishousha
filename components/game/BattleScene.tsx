@@ -15,8 +15,18 @@ interface Props {
 
 type ActionMode = 'select' | 'skill' | 'item' | 'target_attack' | 'target_skill' | 'target_item'
 
-// characters.jpg: 7 columns × 2 rows grid
-// bgPos formula: X = (col/6)*100 %, Y = row*100 %
+// ===== キャラクタースプライト設定 =====
+// characters.jpg: 1988×1194px, 7列×2行
+// タイトルバー: 上部約70px
+// 行0 (レオン〜フィン): y=70〜y=632px (高さ562px)
+// 行1 (ヴァイス〜ゼノ): y=632〜y=1194px (高さ562px)
+// 各列幅: 1988/7 ≈ 284px
+const CHAR_ORIG_W = 1988
+const CHAR_ORIG_H = 1194
+const CHAR_COLS = 7
+const CHAR_TITLE_PX = 70     // タイトルバー高さ（元画像px）
+const CHAR_ROW_PX = 562       // 1行の高さ（元画像px）
+
 const CHAR_GRID: Record<string, { col: number; row: number }> = {
   player: { col: 0, row: 0 },
   gares:  { col: 1, row: 0 },
@@ -38,45 +48,71 @@ function CharPortrait({ charId, size, isActive = false, isDead = false }: {
   charId: string; size: number; isActive?: boolean; isDead?: boolean
 }) {
   const pos = CHAR_GRID[charId] ?? { col: 0, row: 0 }
-  const bgPosX = `${(pos.col / 6) * 100}%`
-  const bgPosY = `${pos.row * 100}%`
+
+  // imgWidth = 7 * size でスケール（1列 = size px になる）
+  const imgW = CHAR_COLS * size
+  const scale = imgW / CHAR_ORIG_W
+
+  // 各列・行のオフセット計算
+  const imgX = -pos.col * size
+  const imgY = -(CHAR_TITLE_PX * scale + pos.row * CHAR_ROW_PX * scale)
+
   return (
     <div
       style={{
         width: size,
         height: size,
-        backgroundImage: "url('/fuuin-no-keishousha/images/characters.jpg')",
-        backgroundSize: '700% 200%',
-        backgroundPosition: `${bgPosX} ${bgPosY}`,
-        imageRendering: 'pixelated',
-        borderRadius: '4px',
-        border: isActive ? '2px solid #ffdd00' : '2px solid rgba(255,255,255,0.2)',
-        opacity: isDead ? 0.3 : 1,
-        filter: isDead ? 'grayscale(100%)' : 'none',
+        overflow: 'hidden',
+        position: 'relative',
         flexShrink: 0,
+        borderRadius: 4,
+        border: isActive
+          ? '2px solid #ffd700'
+          : isDead
+          ? '2px solid rgba(255,80,80,0.4)'
+          : '2px solid rgba(255,255,255,0.15)',
+        opacity: isDead ? 0.35 : 1,
+        filter: isDead ? 'grayscale(80%)' : 'none',
+        boxShadow: isActive ? '0 0 8px 2px rgba(255,215,0,0.5)' : 'none',
       }}
-    />
+    >
+      <img
+        src="/fuuin-no-keishousha/images/characters.jpg"
+        alt={charId}
+        style={{
+          width: imgW,
+          height: 'auto',
+          position: 'absolute',
+          left: imgX,
+          top: imgY,
+          imageRendering: 'pixelated',
+        }}
+      />
+    </div>
   )
 }
 
-// Enemy sprite sheet crop using CSS background
+// ===== 敵スプライト設定 =====
 type EnemyBg = { file: 'enemies1' | 'enemies2'; bgSize: string; bgPos: string }
+
 function getEnemyBg(locId: LocationId, isBoss: boolean): EnemyBg {
-  if (isBoss && locId === 'desert_ruins') return { file: 'enemies1', bgSize: '200% auto', bgPos: '100% 100%' }
-  if (isBoss) return { file: 'enemies1', bgSize: '200% auto', bgPos: '0% 100%' }
+  // enemies1.jpg: 1536×1024px（2列×5行程度）
+  // enemies2.jpg: 1322×1190px
+  if (isBoss && locId === 'desert_ruins') return { file: 'enemies1', bgSize: '200% auto', bgPos: '100% 90%' }
+  if (isBoss) return { file: 'enemies1', bgSize: '200% auto', bgPos: '0% 90%' }
   switch (locId) {
     case 'demon_mine':
     case 'dragon_pass':
-      return { file: 'enemies1', bgSize: '200% auto', bgPos: '0% 8%' }
+      return { file: 'enemies1', bgSize: '200% auto', bgPos: '0% 5%' }
     case 'desert_ruins':
-      return { file: 'enemies1', bgSize: '200% auto', bgPos: '100% 8%' }
+      return { file: 'enemies1', bgSize: '200% auto', bgPos: '100% 5%' }
     case 'bandit_hideout':
-      return { file: 'enemies1', bgSize: '200% auto', bgPos: '100% 48%' }
+      return { file: 'enemies1', bgSize: '200% auto', bgPos: '100% 45%' }
     case 'ancient_temple':
     case 'forest_entrance':
-      return { file: 'enemies2', bgSize: 'cover', bgPos: 'center' }
+      return { file: 'enemies2', bgSize: '200% auto', bgPos: '0% 5%' }
     default:
-      return { file: 'enemies1', bgSize: '200% auto', bgPos: '0% 55%' }
+      return { file: 'enemies1', bgSize: '200% auto', bgPos: '0% 50%' }
   }
 }
 
@@ -105,11 +141,11 @@ export default function BattleScene({ gs, onAttack, onSkill, onItem, onFlee, onC
   const aliveEnemies = enemies.filter(u => u.hp > 0)
   const availableItems = gs.inventory.filter(i => i.qty > 0)
   const latestLog = b.logs[b.logs.length - 1]
-  const prevLogs = b.logs.slice(-4, -1)
+  const prevLogs = b.logs.slice(-3, -1)
   const isOver = b.phase === 'victory' || b.phase === 'defeat'
 
-  const bg = getEnemyBg(gs.currentLocId, b.isBoss)
-  const imgSrc = `/fuuin-no-keishousha/images/${bg.file}.jpg`
+  const enemyBg = getEnemyBg(gs.currentLocId, b.isBoss)
+  const enemyImgSrc = `/fuuin-no-keishousha/images/${enemyBg.file}.jpg`
 
   function handleSelectTarget(unit: BattleUnit) {
     if (mode === 'target_attack') { onAttack(unit.uid); setMode('select') }
@@ -126,55 +162,65 @@ export default function BattleScene({ gs, onAttack, onSkill, onItem, onFlee, onC
   const cancelTarget = () => { setMode('select'); setPendingSkill(null); setPendingItemId(null) }
 
   return (
-    <div className="bg-[#07071a] flex flex-col">
+    <div className="bg-[#07071a] flex flex-col min-h-screen">
 
-      {/* ===== STATUS BAR ===== */}
-      <div className="flex items-stretch bg-[#12123a] border-b-2 border-[#2a2a6a] px-2 py-1 shrink-0 gap-2">
-        <div className="flex items-center gap-1.5">
-          <span className={`text-xs font-black px-2 py-0.5 rounded border ${b.isBoss ? 'border-red-500 bg-red-950 text-red-300' : 'border-yellow-700 bg-yellow-950 text-yellow-400'}`}>
+      {/* ===== ステータスバー（上部）===== */}
+      <div className="flex items-stretch bg-[#12123a] border-b-2 border-[#2848c0] px-2 py-1 shrink-0 gap-2">
+        <div className="flex items-center gap-1.5 shrink-0">
+          <span className={`text-xs font-black px-2 py-0.5 rounded border ${
+            b.isBoss
+              ? 'border-red-500 bg-red-950 text-red-300'
+              : 'border-yellow-700 bg-yellow-950 text-yellow-400'
+          }`}>
             {b.isBoss ? '👑BOSS' : `T${b.turn}`}
           </span>
-          <span className={`text-xs font-bold px-2 py-0.5 rounded border ${isPlayerTurn ? 'border-green-600 bg-green-950 text-green-300' : 'border-slate-700 bg-slate-950 text-slate-400'}`}>
-            {isPlayerTurn ? '▶ あなたのターン' : '⏳ 待機中...'}
+          <span className={`text-xs font-bold px-2 py-0.5 rounded border ${
+            isPlayerTurn
+              ? 'border-green-600 bg-green-950 text-green-300'
+              : 'border-slate-700 bg-slate-950 text-slate-400'
+          }`}>
+            {isPlayerTurn ? '▶ あなたのターン' : `⏳ ${currentActor?.name ?? ''}のターン`}
           </span>
         </div>
-        <div className="flex-1 flex flex-col justify-center gap-0.5">
+        <div className="flex-1 flex flex-col justify-center gap-0.5 min-w-0">
           <div className="flex items-center gap-1">
             <span className="text-[9px] font-black text-green-300 w-4">HP</span>
             <HpBar hp={playerUnit.hp} maxHp={playerUnit.maxHp} />
-            <span className="text-[9px] text-white w-16 text-right">{playerUnit.hp}/{playerUnit.maxHp}</span>
+            <span className="text-[9px] text-white w-16 text-right shrink-0">{playerUnit.hp}/{playerUnit.maxHp}</span>
           </div>
           <div className="flex items-center gap-1">
             <span className="text-[9px] font-black text-blue-300 w-4">MP</span>
             <HpBar hp={playerUnit.mp} maxHp={playerUnit.maxMp} color="blue" />
-            <span className="text-[9px] text-blue-200 w-16 text-right">{playerUnit.mp}/{playerUnit.maxMp}</span>
+            <span className="text-[9px] text-blue-200 w-16 text-right shrink-0">{playerUnit.mp}/{playerUnit.maxMp}</span>
           </div>
         </div>
       </div>
 
-      {/* ===== BATTLE FIELD ===== */}
+      {/* ===== バトルフィールド ===== */}
       <div className="relative shrink-0" style={{ height: '220px' }}>
 
-        {/* Sky + grass background */}
+        {/* 空 + 草地の背景（パワポケ4スタイル）*/}
         <div className="absolute inset-0" style={{
           background: 'linear-gradient(to bottom, #5ab4e8 0%, #90d0f0 52%, #70c840 52%, #3a9a20 72%, #287010 100%)',
         }} />
-        <div className="absolute top-3 left-8 w-20 h-5 bg-white/70 rounded-full" style={{ filter: 'blur(4px)' }} />
-        <div className="absolute top-1 right-16 w-28 h-5 bg-white/60 rounded-full" style={{ filter: 'blur(4px)' }} />
+        {/* 雲 */}
+        <div className="absolute" style={{ top: 6, left: 24, width: 72, height: 18, background: 'rgba(255,255,255,0.75)', borderRadius: '50%', filter: 'blur(4px)' }} />
+        <div className="absolute" style={{ top: 2, right: 56, width: 96, height: 18, background: 'rgba(255,255,255,0.6)', borderRadius: '50%', filter: 'blur(4px)' }} />
+        <div className="absolute" style={{ top: 12, right: 20, width: 48, height: 12, background: 'rgba(255,255,255,0.5)', borderRadius: '50%', filter: 'blur(3px)' }} />
 
-        {/* LEFT: Player + ally portraits */}
-        <div className="absolute left-2 bottom-4 flex flex-col-reverse gap-1 items-start" style={{ zIndex: 10 }}>
-          {/* Player character (largest) */}
-          <div className="flex flex-col items-center">
+        {/* 左エリア: プレイヤー + 仲間スプライト */}
+        <div className="absolute left-2 bottom-3 flex flex-col-reverse gap-1 items-start" style={{ zIndex: 10, maxWidth: '38%' }}>
+          {/* 主人公（最大サイズ）*/}
+          <div className="flex flex-col items-center gap-0.5">
             <CharPortrait
               charId="player"
               size={80}
               isActive={currentActor?.isPlayer}
               isDead={playerUnit.hp <= 0}
             />
-            <div className="w-20 mt-0.5"><HpBar hp={playerUnit.hp} maxHp={playerUnit.maxHp} /></div>
+            <div style={{ width: 80 }}><HpBar hp={playerUnit.hp} maxHp={playerUnit.maxHp} /></div>
           </div>
-          {/* Allies */}
+          {/* 仲間 */}
           {allies.filter(a => !a.isPlayer).map(a => {
             const charId = a.companionId ?? 'gares'
             return (
@@ -185,32 +231,33 @@ export default function BattleScene({ gs, onAttack, onSkill, onItem, onFlee, onC
                   isActive={a.uid === b.currentUid}
                   isDead={a.hp <= 0}
                 />
-                <div className="flex flex-col gap-0.5" style={{ width: 44 }}>
+                <div className="flex flex-col gap-0.5" style={{ width: 42 }}>
                   <HpBar hp={a.hp} maxHp={a.maxHp} />
-                  <span className="text-[8px] text-white font-bold" style={{ textShadow: '0 1px 2px #000' }}>{a.name}</span>
+                  <span className="text-[8px] text-white font-bold leading-none" style={{ textShadow: '0 1px 3px #000' }}>
+                    {a.name}
+                  </span>
                 </div>
               </div>
             )
           })}
         </div>
 
-        {/* RIGHT: Enemy sprite sheet */}
+        {/* 右エリア: 敵スプライト */}
         <div
-          className="absolute right-2"
+          className="absolute right-1"
           style={{
-            top: '8px',
-            width: 'calc(60% - 8px)',
-            height: '175px',
-            backgroundImage: `url('${imgSrc}')`,
-            backgroundSize: bg.bgSize,
-            backgroundPosition: bg.bgPos,
+            top: 6,
+            width: 'calc(58% - 4px)',
+            height: 178,
+            backgroundImage: `url('${enemyImgSrc}')`,
+            backgroundSize: enemyBg.bgSize,
+            backgroundPosition: enemyBg.bgPos,
             backgroundRepeat: 'no-repeat',
             imageRendering: 'pixelated',
-            borderRadius: '4px',
             zIndex: 5,
           }}
         >
-          {/* Target select overlay */}
+          {/* 敵ターゲット選択オーバーレイ */}
           {(mode === 'target_attack' || (mode === 'target_skill' && pendingSkill?.target === 'enemy_one')) && (
             <div className="absolute inset-0 flex flex-col items-center justify-center gap-1.5 bg-black/30 rounded">
               {aliveEnemies.map(e => (
@@ -225,15 +272,15 @@ export default function BattleScene({ gs, onAttack, onSkill, onItem, onFlee, onC
           )}
         </div>
 
-        {/* Enemy HP labels */}
+        {/* 敵HPラベル（通常時）*/}
         {mode === 'select' && (
-          <div className="absolute right-2" style={{ bottom: '2px', width: 'calc(60% - 8px)' }}>
-            <div className="flex flex-wrap justify-center gap-2">
+          <div className="absolute right-1" style={{ bottom: 2, width: 'calc(58% - 4px)', zIndex: 6 }}>
+            <div className="flex flex-wrap justify-center gap-1.5">
               {enemies.map(e => (
-                <div key={e.uid} className={`flex flex-col items-center ${e.hp <= 0 ? 'opacity-20' : ''}`} style={{ minWidth: 60 }}>
-                  <div style={{ width: 60 }}><HpBar hp={e.hp} maxHp={e.maxHp} /></div>
+                <div key={e.uid} className={`flex flex-col items-center ${e.hp <= 0 ? 'opacity-20' : ''}`} style={{ minWidth: 52 }}>
+                  <div style={{ width: 52 }}><HpBar hp={e.hp} maxHp={e.maxHp} /></div>
                   <span className="text-[8px] font-black" style={{ color: '#fff', textShadow: '0 1px 3px #000,0 0 6px #000' }}>
-                    {e.name} {e.hp}/{e.maxHp}
+                    {e.name}
                   </span>
                 </div>
               ))}
@@ -242,65 +289,96 @@ export default function BattleScene({ gs, onAttack, onSkill, onItem, onFlee, onC
         )}
       </div>
 
-      {/* ===== ALLY TARGET (for items/heal skills) ===== */}
+      {/* ===== 味方ターゲット選択（アイテム/回復スキル用）===== */}
       {(mode === 'target_item' || (mode === 'target_skill' && pendingSkill?.target === 'ally_one')) && (
-        <div className="mx-2 mt-1 flex gap-2">
+        <div className="mx-2 mt-1 flex gap-1.5">
           {allies.filter(a => a.hp > 0).map(a => (
             <button key={a.uid} onClick={() => handleSelectTarget(a)}
-              className="flex-1 flex items-center gap-2 bg-green-900 border-2 border-green-500 rounded-xl p-2 hover:bg-green-800 active:scale-95 transition">
+              className="flex-1 flex items-center gap-2 bg-green-900/90 border-2 border-green-500 rounded-xl p-2 hover:bg-green-800 active:scale-95 transition">
               <CharPortrait charId={a.companionId ?? (a.isPlayer ? 'player' : 'gares')} size={40} />
-              <div className="flex-1">
-                <span className="text-xs font-black text-white block">{a.name}</span>
+              <div className="flex-1 min-w-0">
+                <span className="text-xs font-black text-white block truncate">{a.name}</span>
                 <div className="w-full mt-0.5"><HpBar hp={a.hp} maxHp={a.maxHp} /></div>
-                <span className="text-[9px] text-green-300">HP {a.hp}/{a.maxHp}</span>
+                <span className="text-[9px] text-green-300">{a.hp}/{a.maxHp}</span>
               </div>
             </button>
           ))}
-          <button onClick={cancelTarget} className="px-3 text-xs text-gray-400 border border-gray-700 rounded-xl">← もどる</button>
+          <button onClick={cancelTarget} className="px-3 text-xs text-gray-400 border border-gray-700 rounded-xl shrink-0">← もどる</button>
         </div>
       )}
 
-      {/* ===== MESSAGE BOX ===== */}
-      <div className="mx-2 mt-1 shrink-0">
+      {/* ===== メッセージボックス（パワポケ4スタイル：濃紺・下部）===== */}
+      <div className="mx-2 mt-1.5 shrink-0">
         <div className="border-2 rounded-xl px-3 py-2"
-          style={{ backgroundColor: '#080f38', borderColor: '#2848c0', boxShadow: 'inset 0 0 16px rgba(50,70,190,0.2)', minHeight: '56px' }}>
+          style={{
+            backgroundColor: '#080f38',
+            borderColor: '#2848c0',
+            boxShadow: 'inset 0 0 18px rgba(50,70,190,0.2), 0 0 10px rgba(40,72,192,0.15)',
+            minHeight: '62px',
+          }}>
           {latestLog ? (
             <>
               <div className="text-sm font-black text-white leading-snug">▶ {latestLog.text}</div>
-              {prevLogs.reverse().map((log, i) => (
+              {[...prevLogs].reverse().map((log, i) => (
                 <div key={i} className="text-xs text-gray-500 leading-snug mt-0.5 ml-3">{log.text}</div>
               ))}
             </>
-          ) : <div className="text-sm text-gray-600">…</div>}
-          {isPlayerTurn && mode === 'select' && <div className="text-xs text-yellow-300 mt-1 font-bold">▼ コマンドを選択</div>}
+          ) : (
+            <div className="text-sm text-gray-600">…</div>
+          )}
+          {isPlayerTurn && mode === 'select' && (
+            <div className="text-xs text-yellow-300 mt-1 font-bold animate-pulse">▼ コマンドを選択</div>
+          )}
           {!isPlayerTurn && !isOver && (
             <div className="text-xs text-blue-400 mt-1 animate-pulse">
-              {currentActor ? `${currentActor.name}のターン...` : '処理中...'}
+              {currentActor ? `${currentActor.name} のターン...` : '処理中...'}
             </div>
           )}
         </div>
       </div>
 
-      {/* ===== COMMANDS ===== */}
+      {/* ===== コマンド ===== */}
       {!isOver && (
         <div className="mx-2 mt-1.5 mb-3">
 
           {isPlayerTurn && mode === 'select' && (
             <div className="grid grid-cols-4 gap-1.5">
               {[
-                { label: 'こうげき', icon: '⚔️', bg: 'bg-[#8a1515] hover:bg-[#aa2020] border-[#dd3030]',
-                  action: () => aliveEnemies.length === 1 ? onAttack(aliveEnemies[0].uid) : setMode('target_attack') },
-                { label: 'スキル', icon: '✨', bg: 'bg-[#2a1060] hover:bg-[#3a1880] border-[#7030e0]',
-                  action: () => setMode('skill') },
-                { label: 'どうぐ', icon: '🧪',
-                  bg: availableItems.length === 0 ? 'bg-gray-900 border-gray-700 opacity-40 cursor-not-allowed' : 'bg-[#0e3a18] hover:bg-[#186028] border-[#30b040]',
-                  action: () => availableItems.length > 0 && setMode('item') },
-                { label: 'にげる', icon: '💨',
-                  bg: b.isBoss ? 'bg-gray-900 border-gray-700 opacity-40 cursor-not-allowed' : 'bg-[#1a1a2a] hover:bg-[#252540] border-[#505070]',
-                  action: () => !b.isBoss && onFlee() },
+                {
+                  label: 'こうげき', icon: '⚔️',
+                  bg: 'bg-[#8a1515] hover:bg-[#aa2020] border-[#dd3030]',
+                  action: () => aliveEnemies.length === 1 ? onAttack(aliveEnemies[0].uid) : setMode('target_attack'),
+                  disabled: false,
+                },
+                {
+                  label: 'スキル', icon: '✨',
+                  bg: 'bg-[#2a1060] hover:bg-[#3a1880] border-[#7030e0]',
+                  action: () => setMode('skill'),
+                  disabled: false,
+                },
+                {
+                  label: 'どうぐ', icon: '🧪',
+                  bg: availableItems.length === 0
+                    ? 'bg-gray-900 border-gray-700 opacity-40 cursor-not-allowed'
+                    : 'bg-[#0e3a18] hover:bg-[#186028] border-[#30b040]',
+                  action: () => availableItems.length > 0 && setMode('item'),
+                  disabled: availableItems.length === 0,
+                },
+                {
+                  label: 'にげる', icon: '💨',
+                  bg: b.isBoss
+                    ? 'bg-gray-900 border-gray-700 opacity-40 cursor-not-allowed'
+                    : 'bg-[#1a1a2a] hover:bg-[#252540] border-[#505070]',
+                  action: () => !b.isBoss && onFlee(),
+                  disabled: b.isBoss,
+                },
               ].map(btn => (
-                <button key={btn.label} onClick={btn.action}
-                  className={`flex flex-col items-center justify-center py-3 border-2 rounded-xl transition active:scale-95 ${btn.bg}`}>
+                <button
+                  key={btn.label}
+                  onClick={btn.action}
+                  disabled={btn.disabled}
+                  className={`flex flex-col items-center justify-center py-3 border-2 rounded-xl transition active:scale-95 ${btn.bg}`}
+                >
                   <span className="text-2xl leading-none">{btn.icon}</span>
                   <span className="text-xs font-black text-white mt-1">{btn.label}</span>
                 </button>
@@ -314,12 +392,16 @@ export default function BattleScene({ gs, onAttack, onSkill, onItem, onFlee, onC
                 <span className="text-sm font-black text-white">✨ スキルを選択</span>
                 <button onClick={cancelTarget} className="text-xs text-gray-400 border border-gray-700 px-2 py-0.5 rounded">← もどる</button>
               </div>
-              <div className="flex flex-col gap-1.5">
+              <div className="flex flex-col gap-1.5 max-h-40 overflow-y-auto">
                 {(playerUnit?.skills ?? []).map(skill => {
                   const ok = (playerUnit?.mp ?? 0) >= skill.mpCost
                   return (
                     <button key={skill.id} disabled={!ok} onClick={() => handleSkillSelect(skill)}
-                      className={`text-left px-3 py-2 rounded-lg border-2 transition ${ok ? 'border-purple-700 bg-purple-950 hover:bg-purple-900 text-white active:scale-95' : 'border-gray-800 bg-gray-900/50 text-gray-600 cursor-not-allowed'}`}>
+                      className={`text-left px-3 py-2 rounded-lg border-2 transition ${
+                        ok
+                          ? 'border-purple-700 bg-purple-950 hover:bg-purple-900 text-white active:scale-95'
+                          : 'border-gray-800 bg-gray-900/50 text-gray-600 cursor-not-allowed'
+                      }`}>
                       <div className="flex justify-between">
                         <span className="font-black text-sm">{skill.name}</span>
                         <span className="text-blue-400 text-xs">MP {skill.mpCost}</span>
@@ -338,13 +420,18 @@ export default function BattleScene({ gs, onAttack, onSkill, onItem, onFlee, onC
                 <span className="text-sm font-black text-white">🧪 どうぐを選択</span>
                 <button onClick={cancelTarget} className="text-xs text-gray-400 border border-gray-700 px-2 py-0.5 rounded">← もどる</button>
               </div>
-              <div className="flex flex-col gap-1.5">
+              <div className="flex flex-col gap-1.5 max-h-40 overflow-y-auto">
                 {availableItems.map(({ itemId, qty }) => {
                   const item = ITEMS[itemId]
                   if (!item) return null
                   return (
                     <button key={itemId}
-                      onClick={() => { if (['heal_hp','heal_mp','heal_both','cure_status'].includes(item.effect)) { setPendingItemId(itemId); setMode('target_item') } }}
+                      onClick={() => {
+                        if (['heal_hp', 'heal_mp', 'heal_both', 'cure_status'].includes(item.effect)) {
+                          setPendingItemId(itemId)
+                          setMode('target_item')
+                        }
+                      }}
                       className="text-left px-3 py-2 rounded-lg border-2 border-green-800 bg-green-950 hover:bg-green-900 text-white transition active:scale-95">
                       <div className="flex justify-between">
                         <span className="font-black text-sm">{item.emoji} {item.name}</span>
@@ -372,18 +459,30 @@ export default function BattleScene({ gs, onAttack, onSkill, onItem, onFlee, onC
         </div>
       )}
 
-      {/* ===== VICTORY / DEFEAT ===== */}
+      {/* ===== 勝利 / 敗北 ===== */}
       {isOver && (
-        <div className={`mx-2 mt-2 mb-3 rounded-xl p-5 text-center border-2 ${b.phase === 'victory' ? 'bg-amber-950 border-amber-500' : 'bg-red-950 border-red-700'}`}>
-          <div className="text-3xl font-black mb-2">{b.phase === 'victory' ? '🎉 VICTORY！' : '💀 DEFEAT...'}</div>
+        <div className={`mx-2 mt-2 mb-3 rounded-xl p-5 text-center border-2 ${
+          b.phase === 'victory'
+            ? 'bg-amber-950 border-amber-500'
+            : 'bg-red-950 border-red-700'
+        }`}>
+          <div className="text-3xl font-black mb-2">
+            {b.phase === 'victory' ? '🎉 VICTORY！' : '💀 DEFEAT...'}
+          </div>
           {b.phase === 'victory' && (
             <div className="text-sm text-gray-300 mb-3 font-bold">
               EXP +{b.rewardExp} / Gold +{b.rewardGold}G
               {b.sealStoneFound && <div className="text-amber-300 font-black mt-1">💎 封印石を入手！</div>}
             </div>
           )}
-          <button onClick={onClose}
-            className={`px-8 py-2.5 rounded-xl font-black border-2 transition active:scale-95 ${b.phase === 'victory' ? 'bg-amber-700 hover:bg-amber-600 border-amber-500 text-white' : 'bg-red-900 hover:bg-red-800 border-red-600 text-white'}`}>
+          <button
+            onClick={onClose}
+            className={`px-8 py-2.5 rounded-xl font-black border-2 transition active:scale-95 ${
+              b.phase === 'victory'
+                ? 'bg-amber-700 hover:bg-amber-600 border-amber-500 text-white'
+                : 'bg-red-900 hover:bg-red-800 border-red-600 text-white'
+            }`}
+          >
             {b.phase === 'victory' ? '続ける ▶' : 'ゲームオーバーへ'}
           </button>
         </div>
