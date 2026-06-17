@@ -71,6 +71,17 @@ export default function PartyManage({ gs, onSetParty, onClose }: Props) {
         </div>
       </div>
 
+      {/* Characters reference image */}
+      <div className="bg-[#0c0c24] border-2 border-indigo-700 rounded-xl overflow-hidden">
+        <div className="text-xs font-black text-indigo-400 px-3 pt-3 pb-1 tracking-widest">— 仲間キャラクター図鑑 —</div>
+        <img
+          src="/fuuin-no-keishousha/images/characters.jpg"
+          alt="characters"
+          className="w-full object-contain max-h-40"
+          style={{ imageRendering: 'pixelated' }}
+        />
+      </div>
+
       {/* Companion list */}
       <div className="bg-[#0c0c24] border-2 border-indigo-700 rounded-xl p-3">
         <div className="text-xs font-black text-indigo-400 mb-2 tracking-widest">— 仲間一覧（タップで選択） —</div>

@@ -288,17 +288,20 @@ export function startBattle(state: GameState, enemyIds: string[], isBoss: boolea
   s.battle = battle
   s.phase = 'battle'
 
-  // If first actor is not the player, auto-resolve immediately
-  const firstUnit = allUnits.find(u => u.uid === turnQueue[0])
-  if (firstUnit && !firstUnit.isPlayer) {
-    if (firstUnit.isAlly) {
-      return processCompanionTurn(s)
-    } else {
-      return processEnemyTurn(s)
-    }
-  }
-
   return s
+}
+
+// Process non-player turn (companion or enemy) — called from GameRoot useEffect
+export function processNonPlayerTurn(state: GameState): GameState {
+  if (!state.battle) return state
+  const b = state.battle
+  if (b.phase === 'victory' || b.phase === 'defeat') return state
+  const actor = b.units.find(u => u.uid === b.currentUid)
+  if (!actor || actor.isPlayer) return state
+  const s = deepClone(state)
+  const a = s.battle!.units.find(u => u.uid === s.battle!.currentUid)!
+  if (a.isAlly) return processCompanionTurn(s)
+  return processEnemyTurn(s)
 }
 
 function buildTurnQueue(units: BattleUnit[]): string[] {

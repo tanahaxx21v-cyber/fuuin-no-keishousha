@@ -33,13 +33,6 @@ const MAP_POSITIONS: Partial<Record<LocationId, { x: number; y: number }>> = {
   desert_ruins:    { x: 88, y: 78 },
 }
 
-const NODE_STYLE: Record<string, string> = {
-  town:    'bg-blue-900 border-blue-500 hover:bg-blue-800',
-  dungeon: 'bg-orange-900 border-orange-600 hover:bg-orange-800',
-  castle:  'bg-red-950 border-red-700 hover:bg-red-900',
-  relay:   'bg-slate-800 border-slate-600 hover:bg-slate-700',
-}
-
 export default function WorldMap({ gs, onTravel, onEnterLocation }: Props) {
   const currentLoc = LOCATIONS[gs.currentLocId]
   const connectedIds = currentLoc.connections
@@ -50,10 +43,20 @@ export default function WorldMap({ gs, onTravel, onEnterLocation }: Props) {
 
       {/* Map */}
       <div className="flex-1">
-        <div className="text-xs font-black text-indigo-400 mb-2 tracking-widest">🗺️ WORLD MAP</div>
+        <div className="text-xs font-black text-amber-400 mb-2 tracking-widest drop-shadow">🗺️ WORLD MAP — ルミナ大陸</div>
 
-        <div className="relative bg-[#0c0c24] border-2 border-indigo-800 rounded-xl overflow-hidden shadow-xl" style={{ paddingBottom: '72%' }}>
-          <div className="absolute inset-0 bg-gradient-to-br from-indigo-950/40 via-[#080818] to-purple-950/30" />
+        <div className="relative border-2 border-amber-800 rounded-xl overflow-hidden shadow-2xl" style={{ paddingBottom: '68%' }}>
+          {/* Map background image */}
+          <div
+            className="absolute inset-0"
+            style={{
+              backgroundImage: "url('/fuuin-no-keishousha/images/map.jpg')",
+              backgroundSize: 'cover',
+              backgroundPosition: 'center',
+            }}
+          />
+          {/* Very light overlay for contrast */}
+          <div className="absolute inset-0 bg-black/10" />
 
           {/* Connection lines */}
           <svg className="absolute inset-0 w-full h-full" style={{ zIndex: 1 }}>
@@ -62,18 +65,16 @@ export default function WorldMap({ gs, onTravel, onEnterLocation }: Props) {
                 const from = MAP_POSITIONS[id as LocationId]
                 const to = MAP_POSITIONS[connId]
                 if (!from || !to) return null
-                const isActive = id === gs.currentLocId || connId === gs.currentLocId
-                const isConnected = id === gs.currentLocId && connectedIds.includes(connId as LocationId)
-                  || connId === gs.currentLocId && connectedIds.includes(id as LocationId)
+                const isConnected = (id === gs.currentLocId && connectedIds.includes(connId as LocationId))
+                  || (connId === gs.currentLocId && connectedIds.includes(id as LocationId))
                 return (
                   <line
                     key={`${id}-${connId}`}
                     x1={`${from.x}%`} y1={`${from.y}%`}
                     x2={`${to.x}%`} y2={`${to.y}%`}
-                    stroke={isConnected ? '#6366f1' : isActive ? '#4338ca' : '#1e1e3a'}
-                    strokeWidth={isConnected ? 2.5 : isActive ? 1.5 : 1}
-                    strokeDasharray={isConnected ? 'none' : isActive ? 'none' : '4,4'}
-                    opacity={isConnected ? 0.9 : isActive ? 0.5 : 0.4}
+                    stroke={isConnected ? '#fbbf24' : 'rgba(255,255,255,0.3)'}
+                    strokeWidth={isConnected ? 2.5 : 1}
+                    strokeDasharray={isConnected ? 'none' : '4,4'}
                   />
                 )
               })
@@ -91,48 +92,76 @@ export default function WorldMap({ gs, onTravel, onEnterLocation }: Props) {
             const isLocked = id === 'desert_ruins' && finalBossLocked
             const canTravel = isConnected && !isCurrent && !isLocked
 
-            let nodeClass = ''
+            // Icon style based on state
+            let iconBg = ''
+            let iconRing = ''
+            let iconOpacity = ''
             if (isCurrent) {
-              nodeClass = 'bg-amber-700 border-amber-400 ring-2 ring-amber-400/50 shadow-lg shadow-amber-900/60'
+              iconBg = 'bg-amber-400 border-2 border-white shadow-lg shadow-amber-500/60'
+              iconRing = 'ring-2 ring-white/70'
             } else if (isLocked) {
-              nodeClass = 'bg-gray-900 border-gray-700 opacity-50 cursor-not-allowed'
+              iconBg = 'bg-gray-800/80 border border-gray-600'
+              iconOpacity = 'opacity-40'
             } else if (canTravel) {
-              nodeClass = `${NODE_STYLE[loc.type] ?? NODE_STYLE.relay} cursor-pointer shadow-md`
+              iconBg = 'bg-white/90 border-2 border-indigo-400 hover:bg-white shadow-md'
+              iconRing = 'hover:ring-2 hover:ring-indigo-300/70'
             } else if (isVisited) {
-              nodeClass = 'bg-slate-800 border-slate-600 opacity-60 cursor-default'
+              iconBg = 'bg-white/60 border border-gray-400'
+              iconOpacity = 'opacity-75'
             } else {
-              nodeClass = 'bg-gray-900 border-gray-800 opacity-30 cursor-default'
+              iconBg = 'bg-gray-700/50 border border-gray-600'
+              iconOpacity = 'opacity-25'
             }
+
+            const shortName = loc.name
+              .replace(/の\S+$/, '') // 「〜の〜」から後半除去
+              .replace(/王都|商業|港町|廃|古代|砂漠/, '') // 修飾語除去
+              .slice(0, 4)
 
             return (
               <button
                 key={id}
                 disabled={!canTravel}
                 onClick={() => canTravel && onTravel(id)}
-                className={`absolute z-10 flex flex-col items-center transform -translate-x-1/2 -translate-y-1/2 transition-all border-2 rounded-lg px-1.5 py-1 text-center ${nodeClass}`}
-                style={{ left: `${pos.x}%`, top: `${pos.y}%`, minWidth: '58px' }}
+                className={`absolute z-10 flex flex-col items-center transform -translate-x-1/2 -translate-y-1/2 transition-all ${iconOpacity} ${canTravel ? 'cursor-pointer hover:scale-110 active:scale-95' : 'cursor-default'} ${isCurrent ? 'scale-110' : ''}`}
+                style={{ left: `${pos.x}%`, top: `${pos.y}%` }}
               >
-                <span className="text-base leading-none">{loc.emoji}</span>
-                <span className="text-[9px] text-white leading-tight mt-0.5 font-black">
-                  {loc.name.split('の').slice(-1)[0].slice(0, 5)}
-                </span>
+                {/* Town icon */}
+                <div className={`w-9 h-9 rounded-full flex items-center justify-center text-lg ${iconBg} ${iconRing} transition-all`}>
+                  {isLocked ? '🔒' : loc.emoji}
+                </div>
+                {/* Name label */}
+                <div
+                  className="mt-0.5 px-1 py-0.5 rounded text-[8px] font-black leading-none whitespace-nowrap"
+                  style={{
+                    background: isCurrent ? 'rgba(245,158,11,0.95)' : 'rgba(0,0,0,0.75)',
+                    color: isCurrent ? '#000' : '#fff',
+                    textShadow: isCurrent ? 'none' : '0 1px 2px rgba(0,0,0,0.8)',
+                  }}
+                >
+                  {shortName}
+                </div>
+                {/* Travel days */}
                 {canTravel && (
-                  <span className="text-[8px] text-indigo-300 font-bold">
+                  <div className="text-[7px] font-bold text-amber-300 mt-0.5"
+                       style={{ textShadow: '0 1px 3px rgba(0,0,0,1)' }}>
                     {loc.travelDays[gs.currentLocId] ?? currentLoc.travelDays[id]}日
-                  </span>
+                  </div>
                 )}
-                {isLocked && <span className="text-[8px] text-red-400">🔒</span>}
+                {/* Current marker */}
+                {isCurrent && (
+                  <div className="absolute -top-1 left-1/2 -translate-x-1/2 text-[10px] animate-bounce">▼</div>
+                )}
               </button>
             )
           })}
         </div>
 
         {/* Legend */}
-        <div className="flex flex-wrap gap-3 mt-2 text-xs text-gray-500">
-          <div className="flex items-center gap-1"><div className="w-3 h-3 rounded border border-amber-500 bg-amber-700" /> 現在地</div>
-          <div className="flex items-center gap-1"><div className="w-3 h-3 rounded border border-blue-500 bg-blue-900" /> 町</div>
-          <div className="flex items-center gap-1"><div className="w-3 h-3 rounded border border-orange-600 bg-orange-900" /> ダンジョン</div>
-          <div className="flex items-center gap-1"><div className="w-3 h-3 rounded border border-red-700 bg-red-950" /> 城</div>
+        <div className="flex flex-wrap gap-3 mt-2 text-xs text-gray-400">
+          <div className="flex items-center gap-1"><div className="w-3 h-3 rounded border-2 border-amber-300 bg-amber-500" /> 現在地</div>
+          <div className="flex items-center gap-1"><div className="w-3 h-3 rounded border-2 border-indigo-400 bg-indigo-900" /> 移動可</div>
+          <div className="flex items-center gap-1"><div className="w-3 h-3 rounded border-2 border-slate-500 bg-slate-800 opacity-70" /> 訪問済</div>
         </div>
       </div>
 

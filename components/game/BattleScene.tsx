@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import type { GameState, BattleUnit, Skill } from '@/lib/game/types'
+import type { GameState, BattleUnit, Skill, LocationId } from '@/lib/game/types'
 import { ITEMS } from '@/lib/game/data'
 
 interface Props {
@@ -15,19 +15,51 @@ interface Props {
 
 type ActionMode = 'select' | 'skill' | 'item' | 'target_attack' | 'target_skill' | 'target_item'
 
-function HpBar({ hp, maxHp, size = 'md' }: { hp: number; maxHp: number; size?: 'sm' | 'md' }) {
+// Enemy image crop: which section of the sprite sheet to show
+type EnemyImgConfig = {
+  file: 'enemies1' | 'enemies2'
+  // Clip the image using a container with overflow:hidden
+  // imgLeft/imgTop move the image within the container (negative = shift left/up)
+  imgLeft: string
+  imgTop: string
+  imgWidth: string  // width of img element (>100% = zoom in)
+}
+
+function getEnemyImageConfig(locId: LocationId, isBoss: boolean): EnemyImgConfig {
+  if (isBoss && (locId === 'desert_ruins' || locId === 'dragon_pass')) {
+    // ラスボスエリア (bottom section of enemies1)
+    return { file: 'enemies1', imgLeft: '-10%', imgTop: '-160%', imgWidth: '120%' }
+  }
+  switch (locId) {
+    case 'demon_mine':
+    case 'dragon_pass':
+      // 山岳エリア enemies — top-left of enemies1
+      return { file: 'enemies1', imgLeft: '0%', imgTop: '0%', imgWidth: '195%' }
+    case 'desert_ruins':
+      // 砂漠エリア enemies — top-right of enemies1
+      return { file: 'enemies1', imgLeft: '-100%', imgTop: '0%', imgWidth: '200%' }
+    case 'bandit_hideout':
+      // 魔王軍 — right-center of enemies1
+      return { file: 'enemies1', imgLeft: '-95%', imgTop: '-58%', imgWidth: '200%' }
+    case 'ancient_temple':
+    case 'forest_entrance':
+      // 森エリア enemies
+      return { file: 'enemies2', imgLeft: '0%', imgTop: '0%', imgWidth: '100%' }
+    default:
+      // 河川エリア / その他 — left-center of enemies1
+      return { file: 'enemies1', imgLeft: '0%', imgTop: '-52%', imgWidth: '195%' }
+  }
+}
+
+function HpBar({ hp, maxHp, color = 'green' }: { hp: number; maxHp: number; color?: 'green' | 'red' | 'blue' }) {
   const pct = Math.max(0, (hp / maxHp) * 100)
-  const h = size === 'sm' ? 'h-2' : 'h-3'
+  const fill = color === 'red'
+    ? (pct > 50 ? 'bg-green-500' : pct > 25 ? 'bg-yellow-400' : 'bg-red-500')
+    : color === 'blue' ? 'bg-blue-400'
+    : (pct > 50 ? 'bg-green-400' : pct > 25 ? 'bg-yellow-400' : 'bg-red-500')
   return (
-    <div className={`w-full ${h} bg-gray-900 rounded-sm border border-gray-700 overflow-hidden`}>
-      <div
-        className={`h-full transition-all duration-300 ${
-          pct > 50 ? 'bg-gradient-to-r from-green-700 to-green-500'
-          : pct > 25 ? 'bg-gradient-to-r from-yellow-700 to-yellow-500'
-          : 'bg-gradient-to-r from-red-800 to-red-600'
-        }`}
-        style={{ width: `${pct}%` }}
-      />
+    <div className="w-full h-2.5 bg-black/60 border border-white/20 overflow-hidden rounded-sm">
+      <div className={`h-full transition-all duration-300 ${fill}`} style={{ width: `${pct}%` }} />
     </div>
   )
 }
@@ -42,13 +74,15 @@ export default function BattleScene({ gs, onAttack, onSkill, onItem, onFlee, onC
   const enemies = b.units.filter(u => !u.isAlly)
   const currentActor = b.units.find(u => u.uid === b.currentUid)
   const isPlayerTurn = currentActor?.isPlayer && b.phase === 'select_action'
-
   const playerUnit = b.units.find(u => u.isPlayer)!
   const aliveEnemies = enemies.filter(u => u.hp > 0)
-
   const availableItems = gs.inventory.filter(i => i.qty > 0)
-  const recentLogs = b.logs.slice(-5)
+  const recentLogs = b.logs.slice(-4)
   const isOver = b.phase === 'victory' || b.phase === 'defeat'
+  const latestLog = b.logs[b.logs.length - 1]
+
+  const imgCfg = getEnemyImageConfig(gs.currentLocId, b.isBoss)
+  const imgSrc = `/fuuin-no-keishousha/images/${imgCfg.file}.jpg`
 
   function handleSelectTarget(unit: BattleUnit) {
     if (mode === 'target_attack') {
@@ -79,250 +113,297 @@ export default function BattleScene({ gs, onAttack, onSkill, onItem, onFlee, onC
   }
 
   return (
-    <div className="min-h-screen bg-[#07071a] flex flex-col p-2 gap-2">
+    <div className="flex flex-col min-h-screen bg-[#07071a]">
 
-      {/* Header */}
-      <div className="flex items-center justify-between bg-[#0c0c24] border-2 border-indigo-800 rounded-xl px-3 py-2">
-        <div className="font-black text-white text-sm">
-          {b.isBoss ? '👑 BOSS BATTLE' : '⚔️ BATTLE'}
-          <span className="text-indigo-500 font-normal text-xs ml-2">TURN {b.turn}</span>
+      {/* ===== TOP STATUS BAR (パワポケ風) ===== */}
+      <div className="flex items-stretch gap-1 bg-[#1a1a3a] border-b-2 border-[#3a3a6a] px-2 py-1.5 shrink-0">
+        {/* Turn / boss indicator */}
+        <div className="flex items-center gap-1 mr-2">
+          <span className="text-[10px] font-black text-yellow-300 bg-yellow-950/60 border border-yellow-700 px-1.5 py-0.5 rounded">
+            {b.isBoss ? '👑BOSS' : `T${b.turn}`}
+          </span>
         </div>
-        <div className={`text-xs font-black px-2 py-0.5 rounded border-2 ${
-          isPlayerTurn
-            ? 'border-green-600 bg-green-950 text-green-400'
-            : 'border-orange-700 bg-orange-950 text-orange-400'
-        }`}>
-          {isPlayerTurn ? '▶ あなたのターン' : '⏳ 待機中...'}
-        </div>
-      </div>
 
-      {/* Enemies */}
-      <div className="bg-[#0c0c24] border-2 border-red-900 rounded-xl p-3">
-        <div className="text-xs font-black text-red-500 mb-2 tracking-widest">ENEMY</div>
-        <div className="flex flex-wrap gap-2 justify-center">
-          {enemies.map(e => {
-            const isSelectable = (mode === 'target_attack' || mode === 'target_skill') && e.hp > 0
-            return (
-              <button
-                key={e.uid}
-                disabled={!isSelectable}
-                onClick={() => isSelectable && handleSelectTarget(e)}
-                className={`flex flex-col items-center rounded-xl p-3 min-w-[80px] transition-all border-2 ${
-                  e.hp <= 0 ? 'opacity-25 border-gray-800 bg-gray-950'
-                  : isSelectable ? 'border-red-500 bg-red-950/60 hover:bg-red-900/60 cursor-pointer scale-105 shadow-lg shadow-red-900/40'
-                  : 'border-red-900/50 bg-red-950/20'
-                }`}
-              >
-                <div className="text-4xl mb-1 drop-shadow">{e.emoji}</div>
-                <div className="text-xs font-black text-white">{e.name}</div>
-                <div className="w-full mt-1.5">
-                  <HpBar hp={e.hp} maxHp={e.maxHp} />
-                </div>
-                <div className="text-xs text-gray-400 mt-0.5">{e.hp}/{e.maxHp}</div>
-                {e.statusEffects.length > 0 && (
-                  <div className="text-xs mt-0.5">
-                    {e.statusEffects.map(se => se.id === 'poison' ? '☠️' : se.id === 'stun' ? '💫' : '⬆️').join('')}
-                  </div>
-                )}
-                {isSelectable && <div className="text-[10px] text-red-400 font-black mt-0.5">▲ タップ</div>}
-              </button>
-            )
-          })}
+        {/* Player HP/MP */}
+        <div className="flex-1 flex flex-col justify-center">
+          <div className="flex items-center gap-1 mb-0.5">
+            <span className="text-[9px] font-black text-green-300 w-3">HP</span>
+            <HpBar hp={playerUnit.hp} maxHp={playerUnit.maxHp} color="red" />
+            <span className="text-[9px] text-white w-12 text-right">{playerUnit.hp}/{playerUnit.maxHp}</span>
+          </div>
+          <div className="flex items-center gap-1">
+            <span className="text-[9px] font-black text-blue-300 w-3">MP</span>
+            <HpBar hp={playerUnit.mp} maxHp={playerUnit.maxMp} color="blue" />
+            <span className="text-[9px] text-blue-200 w-12 text-right">{playerUnit.mp}/{playerUnit.maxMp}</span>
+          </div>
         </div>
-      </div>
 
-      {/* Battle log */}
-      <div className="bg-[#080818] border-2 border-indigo-900/60 rounded-xl p-3 min-h-[72px] flex-1">
-        <div className="flex flex-col-reverse gap-0.5">
-          {recentLogs.map((log, i) => (
-            <div key={i} className={`text-sm font-medium ${
-              i === 0 ? 'font-black' : 'opacity-60'
-            } ${
-              log.type === 'damage' ? 'text-red-400'
-              : log.type === 'heal' ? 'text-green-400'
-              : log.type === 'critical' ? 'text-yellow-300'
-              : log.type === 'death' ? 'text-gray-600 line-through'
-              : log.type === 'status' ? 'text-purple-400'
-              : log.type === 'system' ? 'text-cyan-300'
-              : 'text-gray-300'
-            }`}>
-              {i === 0 ? '▶ ' : '　'}{log.text}
+        {/* Ally compact status */}
+        {allies.filter(a => !a.isPlayer).map(a => (
+          <div key={a.uid} className="flex flex-col items-center justify-center px-1.5 border-l border-white/10">
+            <span className="text-base leading-none">{a.emoji}</span>
+            <div className="w-10 mt-0.5">
+              <HpBar hp={a.hp} maxHp={a.maxHp} color="red" />
             </div>
+            <span className="text-[8px] text-gray-400">{a.hp}</span>
+          </div>
+        ))}
+      </div>
+
+      {/* ===== BATTLE FIELD ===== */}
+      <div className="relative shrink-0" style={{ height: '220px' }}>
+
+        {/* Sky background */}
+        <div
+          className="absolute inset-0"
+          style={{
+            background: 'linear-gradient(to bottom, #87ceeb 0%, #b0e0ff 55%, #c8f0a0 55%, #5aaa30 75%, #3d8020 100%)',
+          }}
+        />
+
+        {/* Clouds */}
+        <div className="absolute top-2 left-8 w-16 h-5 bg-white/80 rounded-full blur-sm" />
+        <div className="absolute top-4 left-16 w-10 h-4 bg-white/60 rounded-full blur-sm" />
+        <div className="absolute top-1 right-12 w-20 h-5 bg-white/70 rounded-full blur-sm" />
+
+        {/* Enemy sprite sheet display */}
+        <div className="absolute left-1/2 -translate-x-1/2" style={{ top: '10px', width: '85%', maxWidth: '400px', height: '150px', overflow: 'hidden', borderRadius: '4px' }}>
+          <img
+            src={imgSrc}
+            alt="enemies"
+            style={{
+              position: 'absolute',
+              left: imgCfg.imgLeft,
+              top: imgCfg.imgTop,
+              width: imgCfg.imgWidth,
+              imageRendering: 'pixelated',
+              objectFit: 'none',
+            }}
+          />
+          {/* Target overlay buttons for enemies */}
+          {(mode === 'target_attack' || mode === 'target_skill') && (
+            <div className="absolute inset-0 flex items-center justify-center gap-2 bg-black/20">
+              {aliveEnemies.map(e => (
+                <button
+                  key={e.uid}
+                  onClick={() => handleSelectTarget(e)}
+                  className="flex flex-col items-center bg-red-600/80 border-2 border-red-300 rounded-lg px-3 py-2 hover:bg-red-500/80 active:scale-95 transition shadow-lg"
+                >
+                  <span className="text-white font-black text-xs">{e.name}</span>
+                  <div className="w-16 mt-1">
+                    <HpBar hp={e.hp} maxHp={e.maxHp} color="red" />
+                  </div>
+                  <span className="text-[10px] text-red-200">{e.hp}/{e.maxHp}</span>
+                  <span className="text-[10px] text-yellow-300 font-black">▲ 選択</span>
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* Enemy names + HP below sprites */}
+        {mode === 'select' && (
+          <div className="absolute bottom-4 left-0 right-0 flex justify-center gap-3">
+            {enemies.map(e => (
+              <div key={e.uid} className={`flex flex-col items-center ${e.hp <= 0 ? 'opacity-20' : ''}`}>
+                <div className="w-16">
+                  <HpBar hp={e.hp} maxHp={e.maxHp} color="red" />
+                </div>
+                <span className="text-[9px] text-white font-black drop-shadow" style={{ textShadow: '1px 1px 0 #000' }}>
+                  {e.name} {e.hp}/{e.maxHp}
+                </span>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* ===== MESSAGE BOX (パワポケ風: dark blue border) ===== */}
+      <div className="mx-2 mt-1 shrink-0">
+        <div
+          className="border-2 rounded-lg px-3 py-2 min-h-[60px]"
+          style={{
+            backgroundColor: '#0a1040',
+            borderColor: '#4060d0',
+            boxShadow: 'inset 0 0 12px rgba(80,100,220,0.25)',
+          }}
+        >
+          {latestLog ? (
+            <div>
+              <div className="text-sm font-black text-white leading-snug">
+                ▶ {latestLog.text}
+              </div>
+              {recentLogs.slice(1, 3).map((log, i) => (
+                <div key={i} className="text-xs text-gray-400 opacity-60 leading-snug mt-0.5">
+                  　{log.text}
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="text-sm text-gray-500">…</div>
+          )}
+          {!isPlayerTurn && !isOver && (
+            <div className="text-xs text-blue-300 mt-1 animate-pulse">
+              {currentActor ? `${currentActor.name}のターン...` : '処理中...'}
+            </div>
+          )}
+          {isPlayerTurn && mode === 'select' && (
+            <div className="text-xs text-yellow-300 mt-1 font-bold">▼ コマンドを選択</div>
+          )}
+          {(mode === 'target_attack' || mode === 'target_skill' || mode === 'target_item') && (
+            <div className="text-xs text-yellow-300 mt-1 font-bold">
+              {mode === 'target_attack' ? '⚔️ 攻撃対象を選択してください'
+               : mode === 'target_item' ? '🧪 使用対象を選択してください'
+               : `✨ ${pendingSkill?.name}の対象を選択`}
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* ===== ALLY TARGET SELECTION ===== */}
+      {mode === 'target_item' || (mode === 'target_skill' && pendingSkill?.target === 'ally_one') ? (
+        <div className="mx-2 mt-1 flex gap-2 shrink-0">
+          {allies.filter(a => a.hp > 0).map(a => (
+            <button
+              key={a.uid}
+              onClick={() => handleSelectTarget(a)}
+              className="flex-1 flex flex-col items-center bg-green-900 border-2 border-green-500 rounded-lg py-2 hover:bg-green-800 active:scale-95 transition"
+            >
+              <span className="text-2xl">{a.emoji}</span>
+              <span className="text-xs font-black text-white">{a.name}</span>
+              <div className="w-14 mt-0.5"><HpBar hp={a.hp} maxHp={a.maxHp} color="red" /></div>
+              <span className="text-[10px] text-green-300">HP {a.hp}/{a.maxHp}</span>
+            </button>
           ))}
         </div>
+      ) : null}
+
+      {/* ===== COMMAND WINDOW ===== */}
+      <div className="mx-2 mt-1 mb-2 flex-1 flex flex-col justify-end">
+
+        {!isOver && isPlayerTurn && mode === 'select' && (
+          <div className="grid grid-cols-4 gap-1">
+            {[
+              {
+                label: 'こうげき', icon: '⚔️',
+                color: 'bg-[#a02020] hover:bg-[#c02020] border-[#ff4040]',
+                action: () => aliveEnemies.length === 1 ? onAttack(aliveEnemies[0].uid) : setMode('target_attack'),
+              },
+              {
+                label: 'スキル', icon: '✨',
+                color: 'bg-[#301860] hover:bg-[#401880] border-[#8040ff]',
+                action: () => setMode('skill'),
+              },
+              {
+                label: 'どうぐ', icon: '🧪',
+                color: availableItems.length === 0
+                  ? 'bg-gray-900 border-gray-700 opacity-40 cursor-not-allowed'
+                  : 'bg-[#104820] hover:bg-[#186030] border-[#30c040]',
+                action: () => availableItems.length > 0 && setMode('item'),
+              },
+              {
+                label: 'にげる', icon: '💨',
+                color: b.isBoss
+                  ? 'bg-gray-900 border-gray-700 opacity-40 cursor-not-allowed'
+                  : 'bg-[#202030] hover:bg-[#303050] border-[#606080]',
+                action: () => !b.isBoss && onFlee(),
+              },
+            ].map(btn => (
+              <button
+                key={btn.label}
+                onClick={btn.action}
+                className={`flex flex-col items-center justify-center py-2.5 border-2 rounded-lg transition active:scale-95 ${btn.color}`}
+              >
+                <span className="text-lg leading-none">{btn.icon}</span>
+                <span className="text-[10px] font-black text-white mt-0.5">{btn.label}</span>
+              </button>
+            ))}
+          </div>
+        )}
+
+        {/* Skill list */}
+        {mode === 'skill' && (
+          <div className="bg-[#0a1040] border-2 border-[#4060d0] rounded-lg p-2">
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-xs font-black text-white">✨ スキル</span>
+              <button onClick={() => setMode('select')} className="text-[10px] text-gray-400 border border-gray-700 px-2 py-0.5 rounded">← もどる</button>
+            </div>
+            <div className="flex flex-col gap-1">
+              {(playerUnit?.skills ?? []).map(skill => {
+                const canUse = (playerUnit?.mp ?? 0) >= skill.mpCost
+                return (
+                  <button
+                    key={skill.id}
+                    disabled={!canUse}
+                    onClick={() => handleSkillSelect(skill)}
+                    className={`text-left px-2 py-1.5 rounded border-2 transition text-sm ${
+                      canUse
+                        ? 'border-purple-700 bg-purple-950 hover:bg-purple-900 text-white active:scale-95'
+                        : 'border-gray-800 bg-gray-900/50 text-gray-600 cursor-not-allowed'
+                    }`}
+                  >
+                    <div className="flex justify-between">
+                      <span className="font-black">{skill.name}</span>
+                      <span className="text-blue-400 text-xs">MP {skill.mpCost}</span>
+                    </div>
+                    <div className="text-xs text-gray-400">{skill.desc}</div>
+                  </button>
+                )
+              })}
+            </div>
+          </div>
+        )}
+
+        {/* Item list */}
+        {mode === 'item' && (
+          <div className="bg-[#0a1040] border-2 border-[#4060d0] rounded-lg p-2">
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-xs font-black text-white">🧪 どうぐ</span>
+              <button onClick={() => setMode('select')} className="text-[10px] text-gray-400 border border-gray-700 px-2 py-0.5 rounded">← もどる</button>
+            </div>
+            <div className="flex flex-col gap-1">
+              {availableItems.map(({ itemId, qty }) => {
+                const item = ITEMS[itemId]
+                if (!item) return null
+                return (
+                  <button
+                    key={itemId}
+                    onClick={() => {
+                      if (['heal_hp', 'heal_mp', 'heal_both', 'cure_status'].includes(item.effect)) {
+                        setPendingItemId(itemId)
+                        setMode('target_item')
+                      }
+                    }}
+                    className="text-left px-2 py-1.5 rounded border-2 border-green-800 bg-green-950 hover:bg-green-900 text-white transition active:scale-95 text-sm"
+                  >
+                    <div className="flex justify-between">
+                      <span className="font-black">{item.emoji} {item.name}</span>
+                      <span className="text-xs text-gray-400">x{qty}</span>
+                    </div>
+                    <div className="text-xs text-gray-400">{item.desc}</div>
+                  </button>
+                )
+              })}
+            </div>
+          </div>
+        )}
+
+        {/* Back button while targeting */}
+        {(mode === 'target_attack' || mode === 'target_skill' || mode === 'target_item') && (
+          <button
+            onClick={() => { setMode('select'); setPendingSkill(null); setPendingItemId(null) }}
+            className="mt-1 text-xs text-gray-400 hover:text-white border border-gray-700 px-3 py-1.5 rounded-lg"
+          >
+            ← もどる
+          </button>
+        )}
       </div>
 
-      {/* Allies */}
-      <div className="bg-[#0c0c24] border-2 border-indigo-800 rounded-xl p-3">
-        <div className="text-xs font-black text-indigo-400 mb-2 tracking-widest">PARTY</div>
-        <div className="flex flex-wrap gap-2">
-          {allies.map(a => {
-            const isSelectable = (mode === 'target_item' || (mode === 'target_skill' && pendingSkill?.target === 'ally_one')) && a.hp > 0
-            const mpPct = (a.mp / a.maxMp) * 100
-            const isActing = a.uid === b.currentUid
-            return (
-              <button
-                key={a.uid}
-                disabled={!isSelectable}
-                onClick={() => isSelectable && handleSelectTarget(a)}
-                className={`flex flex-col items-center rounded-xl p-2 min-w-[70px] transition-all border-2 ${
-                  a.hp <= 0 ? 'opacity-25 border-gray-800'
-                  : isActing ? 'border-yellow-500 bg-yellow-950/40 ring-1 ring-yellow-400/30'
-                  : isSelectable ? 'border-green-500 bg-green-950/40 hover:bg-green-900/40 cursor-pointer scale-105'
-                  : 'border-indigo-800/50 bg-indigo-950/20'
-                }`}
-              >
-                <div className="text-2xl mb-0.5">{a.emoji}</div>
-                <div className="text-xs font-black text-white">{a.name}</div>
-                <div className="w-full mt-1">
-                  <HpBar hp={a.hp} maxHp={a.maxHp} size="sm" />
-                </div>
-                <div className="text-xs text-gray-400">{a.hp}/{a.maxHp}</div>
-                <div className="w-full h-1.5 bg-gray-900 rounded-sm border border-gray-700 overflow-hidden mt-0.5">
-                  <div className="h-full bg-gradient-to-r from-blue-800 to-blue-600" style={{ width: `${mpPct}%` }} />
-                </div>
-                <div className="text-xs text-blue-400">{a.mp}</div>
-                {isSelectable && <div className="text-[10px] text-green-400 font-black mt-0.5">▲ タップ</div>}
-              </button>
-            )
-          })}
-        </div>
-      </div>
-
-      {/* Command window */}
-      {!isOver && (
-        <div className="bg-[#0c0c24] border-2 border-amber-800 rounded-xl p-3">
-
-          {mode === 'select' && isPlayerTurn && (
-            <div className="grid grid-cols-2 gap-2">
-              <button
-                onClick={() => aliveEnemies.length === 1 ? onAttack(aliveEnemies[0].uid) : setMode('target_attack')}
-                className="py-3 bg-red-900 hover:bg-red-800 border-2 border-red-600 text-white font-black rounded-xl transition text-base active:scale-95"
-              >
-                ⚔️ こうげき
-              </button>
-              <button
-                onClick={() => setMode('skill')}
-                className="py-3 bg-purple-900 hover:bg-purple-800 border-2 border-purple-600 text-white font-black rounded-xl transition text-base active:scale-95"
-              >
-                ✨ スキル
-              </button>
-              <button
-                onClick={() => setMode('item')}
-                disabled={availableItems.length === 0}
-                className="py-3 bg-green-900 hover:bg-green-800 border-2 border-green-600 disabled:opacity-40 disabled:cursor-not-allowed text-white font-black rounded-xl transition text-base active:scale-95"
-              >
-                🧪 アイテム
-              </button>
-              <button
-                onClick={onFlee}
-                disabled={b.isBoss}
-                className="py-3 bg-slate-800 hover:bg-slate-700 border-2 border-slate-600 disabled:opacity-40 disabled:cursor-not-allowed text-gray-300 font-black rounded-xl transition text-base active:scale-95"
-              >
-                💨 にげる
-              </button>
-            </div>
-          )}
-
-          {mode === 'skill' && (
-            <div>
-              <div className="flex items-center justify-between mb-2">
-                <div className="text-sm font-black text-white">✨ スキルを選択</div>
-                <button onClick={() => setMode('select')} className="text-xs text-gray-400 hover:text-white border border-gray-700 px-2 py-0.5 rounded">← もどる</button>
-              </div>
-              <div className="flex flex-col gap-1.5">
-                {(playerUnit?.skills ?? []).map(skill => {
-                  const canUse = (playerUnit?.mp ?? 0) >= skill.mpCost
-                  return (
-                    <button
-                      key={skill.id}
-                      disabled={!canUse}
-                      onClick={() => handleSkillSelect(skill)}
-                      className={`text-left px-3 py-2 rounded-xl border-2 transition ${
-                        canUse
-                          ? 'border-purple-700 bg-purple-950 hover:bg-purple-900 text-white active:scale-95'
-                          : 'border-gray-800 bg-gray-900/50 text-gray-600 cursor-not-allowed'
-                      }`}
-                    >
-                      <div className="flex justify-between">
-                        <span className="font-black text-sm">{skill.name}</span>
-                        <span className="text-xs text-blue-400 font-bold">MP {skill.mpCost}</span>
-                      </div>
-                      <div className="text-xs text-gray-400 mt-0.5">{skill.desc}</div>
-                    </button>
-                  )
-                })}
-              </div>
-            </div>
-          )}
-
-          {mode === 'item' && (
-            <div>
-              <div className="flex items-center justify-between mb-2">
-                <div className="text-sm font-black text-white">🧪 アイテムを選択</div>
-                <button onClick={() => setMode('select')} className="text-xs text-gray-400 hover:text-white border border-gray-700 px-2 py-0.5 rounded">← もどる</button>
-              </div>
-              {availableItems.length === 0 ? (
-                <div className="text-sm text-gray-500 text-center py-3">アイテムがない</div>
-              ) : (
-                <div className="flex flex-col gap-1.5">
-                  {availableItems.map(({ itemId, qty }) => {
-                    const item = ITEMS[itemId]
-                    if (!item) return null
-                    return (
-                      <button
-                        key={itemId}
-                        onClick={() => {
-                          if (['heal_hp', 'heal_mp', 'heal_both', 'cure_status'].includes(item.effect)) {
-                            setPendingItemId(itemId)
-                            setMode('target_item')
-                          }
-                        }}
-                        className="text-left px-3 py-2 rounded-xl border-2 border-green-800 bg-green-950 hover:bg-green-900 text-white transition active:scale-95"
-                      >
-                        <div className="flex justify-between">
-                          <span className="font-black text-sm">{item.emoji} {item.name}</span>
-                          <span className="text-xs text-gray-400 font-bold">x{qty}</span>
-                        </div>
-                        <div className="text-xs text-gray-400 mt-0.5">{item.desc}</div>
-                      </button>
-                    )
-                  })}
-                </div>
-              )}
-            </div>
-          )}
-
-          {(mode === 'target_attack' || mode === 'target_skill' || mode === 'target_item') && (
-            <div>
-              <div className="flex items-center justify-between mb-2">
-                <div className="text-sm font-black text-yellow-300">
-                  {mode === 'target_attack' ? '⚔️ 攻撃対象を選択'
-                   : mode === 'target_item' ? '🧪 使用対象を選択'
-                   : `✨ ${pendingSkill?.name}の対象を選択`}
-                </div>
-                <button
-                  onClick={() => { setMode('select'); setPendingSkill(null); setPendingItemId(null) }}
-                  className="text-xs text-gray-400 hover:text-white border border-gray-700 px-2 py-0.5 rounded"
-                >← もどる</button>
-              </div>
-              <div className="text-xs text-gray-400">↑ 上のキャラクターをタップしてください</div>
-            </div>
-          )}
-
-          {!isPlayerTurn && !isOver && (
-            <div className="text-center text-sm text-gray-400 py-2 font-bold">
-              {currentActor ? `${currentActor.name} のターン...` : '処理中...'}
-            </div>
-          )}
-        </div>
-      )}
-
-      {/* Victory / Defeat */}
+      {/* ===== VICTORY / DEFEAT ===== */}
       {isOver && (
-        <div className={`rounded-xl p-4 text-center border-2 ${
+        <div className={`mx-2 mb-3 rounded-xl p-4 text-center border-2 ${
           b.phase === 'victory'
-            ? 'bg-amber-950 border-amber-600 shadow-lg shadow-amber-900/40'
+            ? 'bg-amber-950 border-amber-500 shadow-xl shadow-amber-900/40'
             : 'bg-red-950 border-red-700'
         }`}>
           <div className="text-3xl font-black mb-1">

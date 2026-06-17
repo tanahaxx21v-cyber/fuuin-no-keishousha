@@ -1,11 +1,12 @@
 'use client'
 
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useEffect } from 'react'
 import type { GameState, Difficulty, LocationId, CompanionId, Skill } from '@/lib/game/types'
 import {
   createInitialState, travel, joinCompanion, skipCompanion,
   restAtInn, buyItem, enterDungeon, fightBoss, battleAttack,
-  battleSkill, battleUseItem, battleFlee, closeBattle, setParty
+  battleSkill, battleUseItem, battleFlee, closeBattle, setParty,
+  processNonPlayerTurn,
 } from '@/lib/game/engine'
 import TitleScreen from './TitleScreen'
 import WorldMap from './WorldMap'
@@ -17,7 +18,7 @@ import WinScreen from './WinScreen'
 import GameOverScreen from './GameOverScreen'
 import StatusBar from './StatusBar'
 
-const SAVE_KEY = 'fuuin_save_v1'
+const SAVE_KEY = 'fuuin_save_v2'
 
 function saveGame(gs: GameState) {
   try { localStorage.setItem(SAVE_KEY, JSON.stringify(gs)) } catch {}
@@ -28,11 +29,8 @@ function loadGame(): GameState | null {
     const raw = localStorage.getItem(SAVE_KEY)
     if (!raw) return null
     const parsed = JSON.parse(raw) as GameState
-    // 基本バリデーション
     if (!parsed.phase || !parsed.playerLevel) return null
-    // ゲームオーバー/クリア済みセーブはロードしない
     if (parsed.phase === 'gameover' || parsed.phase === 'win') return null
-    // learnedSkillsが旧セーブにない場合は補完
     if (parsed.companions) {
       for (const id of Object.keys(parsed.companions) as (keyof typeof parsed.companions)[]) {
         if (!parsed.companions[id].learnedSkills) parsed.companions[id].learnedSkills = []
@@ -43,10 +41,20 @@ function loadGame(): GameState | null {
 }
 
 export default function GameRoot() {
-  const [gs, setGs] = useState<GameState>(() => loadGame() ?? createInitialState('normal'))
+  // SSRとクライアントのlocalStorageミスマッチを防ぐため、初期状態はtitleで固定しuseEffectで読み込む
+  const [gs, setGs] = useState<GameState>(() => createInitialState('normal'))
+  const [hasSave, setHasSave] = useState(false)
   const [pendingDiff, setPendingDiff] = useState<Difficulty | null>(null)
   const [saveMsg, setSaveMsg] = useState<string | null>(null)
   const [showPartyHint, setShowPartyHint] = useState(false)
+
+  useEffect(() => {
+    const saved = loadGame()
+    if (saved) {
+      setGs(saved)
+      setHasSave(true)
+    }
+  }, [])
 
   const update = useCallback((fn: (s: GameState) => GameState) => {
     setGs(prev => {
@@ -63,6 +71,7 @@ export default function GameRoot() {
 
   const handleManualSave = () => {
     saveGame(gs)
+    setHasSave(true)
     setSaveMsg('セーブしました！')
     setTimeout(() => setSaveMsg(null), 2000)
   }
@@ -70,6 +79,7 @@ export default function GameRoot() {
   const handleDeleteSave = () => {
     try { localStorage.removeItem(SAVE_KEY) } catch {}
     setGs(createInitialState('normal'))
+    setHasSave(false)
     setPendingDiff(null)
   }
 
@@ -176,6 +186,20 @@ export default function GameRoot() {
     setGs(prev => ({ ...prev, levelUpPending: false }))
   }
 
+  // バトル中に仲間・敵のターンを自動処理（バトル開始時は全員MAXHPで表示してから実行）
+  useEffect(() => {
+    if (gs.phase !== 'battle' || !gs.battle) return
+    const b = gs.battle
+    if (b.phase === 'victory' || b.phase === 'defeat') return
+    const currentActor = b.units.find(u => u.uid === b.currentUid)
+    if (!currentActor || currentActor.isPlayer) return
+    // 非プレイヤーターンを900ms後に処理（UI表示後）
+    const timer = setTimeout(() => {
+      update(s => processNonPlayerTurn(s))
+    }, 900)
+    return () => clearTimeout(timer)
+  }, [gs.battle?.currentUid, gs.battle?.phase, gs.phase])
+
   return (
     <div className="min-h-screen bg-gray-950 text-gray-100 flex flex-col">
       {/* Status bar — shown during gameplay */}
@@ -260,7 +284,7 @@ export default function GameRoot() {
           <TitleScreen
             onStart={handleStart}
             onDeleteSave={handleDeleteSave}
-            hasSave={!!loadGame()}
+            hasSave={hasSave}
           />
         )}
         {gs.phase === 'title' && pendingDiff && <NamingScreen onConfirm={handleNameConfirm} />}
