@@ -8,6 +8,7 @@ import {
   battleSkill, battleUseItem, battleFlee, closeBattle,
   processNonPlayerTurn,
 } from '@/lib/game/engine'
+import { LOCATIONS } from '@/lib/game/data'
 import {
   playBgm, stopBgm, toggleMute, isMuted,
   sfxAttack, sfxSkill, sfxHeal, sfxVictory, sfxDefeat, sfxLevelUp, sfxMenuSelect, sfxCoin,
@@ -173,17 +174,20 @@ export default function GameRoot() {
     setGs(prev => ({ ...prev, levelUpPending: false }))
   }
 
-  // フェーズ変化に応じてBGMを切り替え
+  // フェーズ・ロケーション変化に応じてBGMを切り替え
   useEffect(() => {
-    if (gs.phase === 'worldmap' || gs.phase === 'location' || gs.phase === 'shop') {
+    if (gs.phase === 'worldmap') {
       playBgm('field')
+    } else if (gs.phase === 'location' || gs.phase === 'shop') {
+      const loc = LOCATIONS[gs.currentLocId]
+      if (loc?.type === 'dungeon') playBgm('dungeon')
+      else playBgm('town')
     } else if (gs.phase === 'battle' && gs.battle) {
       playBgm(gs.battle.isBoss ? 'boss' : 'battle')
     } else if (gs.phase === 'title' || gs.phase === 'prologue') {
       stopBgm()
     }
-    // win / gameover は battle終了時にSFXで対応済み
-  }, [gs.phase, gs.battle?.isBoss])
+  }, [gs.phase, gs.battle?.isBoss, gs.currentLocId])
 
   // バトル終了時のSFX
   useEffect(() => {
@@ -204,10 +208,10 @@ export default function GameRoot() {
     if (b.phase === 'victory' || b.phase === 'defeat') return
     const currentActor = b.units.find(u => u.uid === b.currentUid)
     if (!currentActor || currentActor.isPlayer) return
-    // 非プレイヤーターンを900ms後に処理（UI表示後）
+    // 非プレイヤーターンを1600ms後に処理（行動が人間の目で見えるよう）
     const timer = setTimeout(() => {
       update(s => processNonPlayerTurn(s))
-    }, 900)
+    }, 1600)
     return () => clearTimeout(timer)
   }, [gs.battle?.currentUid, gs.battle?.phase, gs.phase])
 

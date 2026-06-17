@@ -12,14 +12,13 @@ function getCtx(): AudioContext {
   if (!ctx) {
     ctx = new (window.AudioContext || (window as any).webkitAudioContext)()
     masterGain = ctx.createGain()
-    masterGain.gain.value = 0.22
+    masterGain.gain.value = 0.35
     masterGain.connect(ctx.destination)
   }
   if (ctx.state === 'suspended') ctx.resume().catch(() => {})
   return ctx
 }
 
-// 音名 → 周波数テーブル
 const F: Record<string, number> = {
   R: 0,
   C3: 130.8, D3: 146.8, E3: 164.8, F3: 174.6, G3: 196.0, A3: 220.0, Bb3: 233.1, B3: 246.9,
@@ -45,7 +44,7 @@ function schedNote(
   osc.stop(t + dur + 0.05)
 }
 
-type NoteSeq = Array<[string, number]>  // [音名, 拍数]
+type NoteSeq = Array<[string, number]>
 
 function secPerBeat(bpm: number) { return 60 / bpm }
 
@@ -53,7 +52,6 @@ function seqDuration(seq: NoteSeq, bpm: number) {
   return seq.reduce((s, [, b]) => s + b * secPerBeat(bpm), 0)
 }
 
-// BGMをループ再生。返り値は停止関数。
 function playLoop(
   seq: NoteSeq, bpm: number,
   type: OscillatorType = 'square', vol = 0.10
@@ -94,6 +92,32 @@ const FIELD_SEQ: NoteSeq = [
   ['G4', 2.0],
 ]
 
+// 町BGM — Fメジャー、穏やか・生活感 (BPM 108、triangle波でやわらかく)
+const TOWN_SEQ: NoteSeq = [
+  ['F4', 1.0], ['G4', 0.5], ['A4', 0.5],
+  ['Bb4', 1.0], ['A4', 0.5], ['G4', 0.5],
+  ['F4', 0.5], ['G4', 0.5], ['C5', 1.0],
+  ['F4', 2.0],
+
+  ['C5', 0.5], ['Bb4', 0.5], ['A4', 1.0],
+  ['G4', 0.5], ['A4', 0.5], ['Bb4', 0.5], ['C5', 0.5],
+  ['D5', 0.5], ['C5', 0.5], ['Bb4', 0.5], ['A4', 0.5],
+  ['F4', 2.0],
+]
+
+// ダンジョンBGM — Dマイナー、重く不気味 (BPM 125)
+const DUNGEON_SEQ: NoteSeq = [
+  ['D4', 0.5], ['R', 0.25], ['D4', 0.25], ['F4', 0.5], ['R', 0.5],
+  ['Eb4', 0.5], ['R', 0.25], ['Eb4', 0.25], ['G4', 0.5], ['R', 0.5],
+  ['C4', 0.5], ['Bb3', 0.5], ['A3', 0.5], ['D4', 0.5],
+  ['D4', 2.0],
+
+  ['A4', 0.5], ['R', 0.25], ['G4', 0.25], ['F4', 0.5], ['Eb4', 0.5],
+  ['D4', 0.5], ['R', 0.25], ['C4', 0.25], ['Bb3', 0.5], ['R', 0.5],
+  ['A3', 0.5], ['Bb3', 0.5], ['C4', 0.5], ['D4', 0.5],
+  ['D4', 2.0],
+]
+
 // バトルBGM — Eマイナー、緊張感・疾走感 (BPM 168)
 const BATTLE_SEQ: NoteSeq = [
   ['E4', 0.25], ['E4', 0.25], ['G4', 0.25], ['R', 0.25],
@@ -122,7 +146,7 @@ const BOSS_SEQ: NoteSeq = [
 
 // ===== BGM制御 =====
 
-export type BgmType = 'field' | 'battle' | 'boss'
+export type BgmType = 'field' | 'town' | 'dungeon' | 'battle' | 'boss'
 
 export function playBgm(type: BgmType) {
   stopBgm()
@@ -131,6 +155,12 @@ export function playBgm(type: BgmType) {
   switch (type) {
     case 'field':
       currentBgmStop = playLoop(FIELD_SEQ, 130, 'square', 0.10)
+      break
+    case 'town':
+      currentBgmStop = playLoop(TOWN_SEQ, 108, 'triangle', 0.12)
+      break
+    case 'dungeon':
+      currentBgmStop = playLoop(DUNGEON_SEQ, 125, 'square', 0.10)
       break
     case 'battle':
       currentBgmStop = playLoop(BATTLE_SEQ, 168, 'square', 0.11)
@@ -149,7 +179,7 @@ export function stopBgm() {
 export function setMuted(v: boolean) {
   isMuted = v
   if (masterGain && ctx) {
-    masterGain.gain.setValueAtTime(v ? 0 : 0.22, ctx.currentTime)
+    masterGain.gain.setValueAtTime(v ? 0 : 0.35, ctx.currentTime)
   }
   if (v) stopBgm()
 }
@@ -159,39 +189,39 @@ export function toggleMute(): boolean {
   return isMuted
 }
 
-// ===== SFX（効果音）=====
+// ===== SFX（効果音）— 全体的に音量2.5倍増大 =====
 
 export function sfxAttack() {
   if (isMuted) return
   const c = getCtx(); const t = c.currentTime
-  schedNote(F.A4, t, 0.06, 'sawtooth', 0.18)
-  schedNote(F.E4, t + 0.05, 0.06, 'sawtooth', 0.14)
-  schedNote(F.C4, t + 0.10, 0.08, 'sawtooth', 0.10)
+  schedNote(F.A4, t, 0.06, 'sawtooth', 0.45)
+  schedNote(F.E4, t + 0.05, 0.06, 'sawtooth', 0.35)
+  schedNote(F.C4, t + 0.10, 0.08, 'sawtooth', 0.25)
 }
 
 export function sfxSkill() {
   if (isMuted) return
   const c = getCtx(); const t = c.currentTime
-  schedNote(F.C4, t, 0.08, 'square', 0.12)
-  schedNote(F.E4, t + 0.07, 0.08, 'square', 0.12)
-  schedNote(F.G4, t + 0.14, 0.08, 'square', 0.12)
-  schedNote(F.C5, t + 0.21, 0.20, 'square', 0.15)
+  schedNote(F.C4, t, 0.08, 'square', 0.30)
+  schedNote(F.E4, t + 0.07, 0.08, 'square', 0.30)
+  schedNote(F.G4, t + 0.14, 0.08, 'square', 0.30)
+  schedNote(F.C5, t + 0.21, 0.20, 'square', 0.38)
 }
 
 export function sfxHeal() {
   if (isMuted) return
   const c = getCtx(); const t = c.currentTime
-  schedNote(F.E5, t, 0.10, 'triangle', 0.11)
-  schedNote(F.G5, t + 0.09, 0.10, 'triangle', 0.11)
-  schedNote(F.C5, t + 0.18, 0.28, 'triangle', 0.14)
+  schedNote(F.E5, t, 0.10, 'triangle', 0.28)
+  schedNote(F.G5, t + 0.09, 0.10, 'triangle', 0.28)
+  schedNote(F.C5, t + 0.18, 0.28, 'triangle', 0.35)
 }
 
 export function sfxDamage() {
   if (isMuted) return
   const c = getCtx(); const t = c.currentTime
-  schedNote(F.C4, t, 0.04, 'sawtooth', 0.22)
-  schedNote(F.A3, t + 0.04, 0.04, 'sawtooth', 0.18)
-  schedNote(F.G3, t + 0.08, 0.06, 'sawtooth', 0.12)
+  schedNote(F.C4, t, 0.04, 'sawtooth', 0.55)
+  schedNote(F.A3, t + 0.04, 0.04, 'sawtooth', 0.45)
+  schedNote(F.G3, t + 0.08, 0.06, 'sawtooth', 0.30)
 }
 
 export function sfxVictory() {
@@ -206,7 +236,7 @@ export function sfxVictory() {
   ]
   let cur = t
   for (const [n, b] of fan) {
-    schedNote(F[n] ?? 0, cur, b * 0.85, 'square', 0.14)
+    schedNote(F[n] ?? 0, cur, b * 0.85, 'square', 0.35)
     cur += b
   }
 }
@@ -214,10 +244,10 @@ export function sfxVictory() {
 export function sfxDefeat() {
   if (isMuted) return
   const c = getCtx(); const t = c.currentTime
-  schedNote(F.G4, t, 0.35, 'triangle', 0.12)
-  schedNote(F.Eb5, t + 0.35, 0.35, 'triangle', 0.10)
-  schedNote(F.C4, t + 0.70, 0.45, 'triangle', 0.08)
-  schedNote(F.G3, t + 1.15, 0.65, 'triangle', 0.06)
+  schedNote(F.G4, t, 0.35, 'triangle', 0.30)
+  schedNote(F.Eb5, t + 0.35, 0.35, 'triangle', 0.25)
+  schedNote(F.C4, t + 0.70, 0.45, 'triangle', 0.20)
+  schedNote(F.G3, t + 1.15, 0.65, 'triangle', 0.15)
 }
 
 export function sfxLevelUp() {
@@ -229,7 +259,7 @@ export function sfxLevelUp() {
   ]
   let cur = t
   for (const [n, b] of rise) {
-    schedNote(F[n] ?? 0, cur, b * 0.82, 'square', 0.13)
+    schedNote(F[n] ?? 0, cur, b * 0.82, 'square', 0.33)
     cur += b
   }
 }
@@ -237,12 +267,12 @@ export function sfxLevelUp() {
 export function sfxMenuSelect() {
   if (isMuted) return
   const c = getCtx(); const t = c.currentTime
-  schedNote(F.C5, t, 0.04, 'square', 0.07)
+  schedNote(F.C5, t, 0.04, 'square', 0.22)
 }
 
 export function sfxCoin() {
   if (isMuted) return
   const c = getCtx(); const t = c.currentTime
-  schedNote(F.E5, t, 0.06, 'square', 0.09)
-  schedNote(F.G5, t + 0.06, 0.09, 'square', 0.09)
+  schedNote(F.E5, t, 0.06, 'square', 0.27)
+  schedNote(F.G5, t + 0.06, 0.09, 'square', 0.27)
 }

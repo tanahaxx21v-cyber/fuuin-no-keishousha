@@ -583,14 +583,9 @@ function advanceTurn(state: GameState): GameState {
     b.turn += 1
   }
 
-  const nextActor = b.units.find(u => u.uid === b.currentUid)
-  if (!nextActor || nextActor.isPlayer) {
-    b.phase = 'select_action'
-  } else if (nextActor.isAlly) {
-    return processCompanionTurn(s)
-  } else {
-    return processEnemyTurn(s)
-  }
+  // 常に select_action で返す。仲間/敵ターンの処理は GameRoot の useEffect が遅延実行する。
+  // ここで再帰すると全ターンが同期的に一瞬で終わってしまうため禁止。
+  b.phase = 'select_action'
 
   return s
 }

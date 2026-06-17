@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import type { GameState, BattleUnit, Skill, LocationId } from '@/lib/game/types'
+import type { GameState, BattleUnit, Skill } from '@/lib/game/types'
 import { ITEMS } from '@/lib/game/data'
 
 interface Props {
@@ -17,15 +17,12 @@ type ActionMode = 'select' | 'skill' | 'item' | 'target_attack' | 'target_skill'
 
 // ===== キャラクタースプライト設定 =====
 // characters.jpg: 1988×1194px, 7列×2行
-// タイトルバー: 上部約70px
-// 行0 (レオン〜フィン): y=70〜y=632px (高さ562px)
-// 行1 (ヴァイス〜ゼノ): y=632〜y=1194px (高さ562px)
-// 各列幅: 1988/7 ≈ 284px
+// タイトルバー: 上部70px, 行0: y=70〜632 (562px), 行1: y=632〜1194 (562px)
 const CHAR_ORIG_W = 1988
 const CHAR_ORIG_H = 1194
 const CHAR_COLS = 7
-const CHAR_TITLE_PX = 70     // タイトルバー高さ（元画像px）
-const CHAR_ROW_PX = 562       // 1行の高さ（元画像px）
+const CHAR_TITLE_PX = 70
+const CHAR_ROW_PX = 562
 
 const CHAR_GRID: Record<string, { col: number; row: number }> = {
   player: { col: 0, row: 0 },
@@ -44,26 +41,29 @@ const CHAR_GRID: Record<string, { col: number; row: number }> = {
   zeno:   { col: 6, row: 1 },
 }
 
+// background-size: '700% auto' でアスペクト比を保ちながら正確な位置を計算
+function calcPortraitBgPos(col: number, row: number, size: number) {
+  const scale = (CHAR_COLS * size) / CHAR_ORIG_W
+  const bgH = CHAR_ORIG_H * scale
+  const scrollW = CHAR_COLS * size - size
+  const scrollH = bgH - size
+  const bgPosX = scrollW > 0 ? `${(col * size / scrollW) * 100}%` : '0%'
+  const targetY = (CHAR_TITLE_PX + row * CHAR_ROW_PX) * scale
+  const bgPosY = scrollH > 0 ? `${Math.min(100, (targetY / scrollH) * 100)}%` : '0%'
+  return { bgPosX, bgPosY }
+}
+
 function CharPortrait({ charId, size, isActive = false, isDead = false }: {
   charId: string; size: number; isActive?: boolean; isDead?: boolean
 }) {
   const pos = CHAR_GRID[charId] ?? { col: 0, row: 0 }
-
-  // imgWidth = 7 * size でスケール（1列 = size px になる）
-  const imgW = CHAR_COLS * size
-  const scale = imgW / CHAR_ORIG_W
-
-  // 各列・行のオフセット計算
-  const imgX = -pos.col * size
-  const imgY = -(CHAR_TITLE_PX * scale + pos.row * CHAR_ROW_PX * scale)
+  const { bgPosX, bgPosY } = calcPortraitBgPos(pos.col, pos.row, size)
 
   return (
     <div
       style={{
         width: size,
         height: size,
-        overflow: 'hidden',
-        position: 'relative',
         flexShrink: 0,
         borderRadius: 4,
         border: isActive
@@ -74,46 +74,91 @@ function CharPortrait({ charId, size, isActive = false, isDead = false }: {
         opacity: isDead ? 0.35 : 1,
         filter: isDead ? 'grayscale(80%)' : 'none',
         boxShadow: isActive ? '0 0 8px 2px rgba(255,215,0,0.5)' : 'none',
+        backgroundImage: `url('/fuuin-no-keishousha/images/characters.jpg')`,
+        backgroundSize: `${CHAR_COLS * 100}% auto`,
+        backgroundPosition: `${bgPosX} ${bgPosY}`,
+        backgroundRepeat: 'no-repeat',
       }}
-    >
-      <img
-        src="/fuuin-no-keishousha/images/characters.jpg"
-        alt={charId}
-        style={{
-          width: imgW,
-          height: 'auto',
-          position: 'absolute',
-          left: imgX,
-          top: imgY,
-          imageRendering: 'pixelated',
-        }}
-      />
-    </div>
+    />
   )
 }
 
-// ===== 敵スプライト設定 =====
-type EnemyBg = { file: 'enemies1' | 'enemies2'; bgSize: string; bgPos: string }
+// ===== 敵絵文字マッピング =====
+const ENEMY_EMOJI_MAP: [string, string][] = [
+  ['goblin', '👺'], ['wolf', '🐺'], ['bandit', '🗡️'], ['skeleton', '💀'],
+  ['zombie', '🧟'], ['orc', '👹'], ['slime', '🫧'], ['bat', '🦇'],
+  ['spider', '🕷️'], ['snake', '🐍'], ['dragon', '🐉'], ['wyvern', '🐉'],
+  ['ghost', '👻'], ['golem', '🗿'], ['demon', '😈'], ['dark', '🌑'],
+  ['fire', '🔥'], ['ice', '❄️'], ['thunder', '⚡'], ['poison', '☠️'],
+  ['knight', '🛡️'], ['witch', '🧙'], ['mage', '🔮'], ['archer', '🏹'],
+  ['troll', '👹'], ['undead', '💀'], ['wyrm', '🐉'], ['archive', '👁️'],
+  ['ruler', '🌑'], ['king', '👑'], ['lord', '👑'],
+]
 
-function getEnemyBg(locId: LocationId, isBoss: boolean): EnemyBg {
-  // enemies1.jpg: 1536×1024px（2列×5行程度）
-  // enemies2.jpg: 1322×1190px
-  if (isBoss && locId === 'desert_ruins') return { file: 'enemies1', bgSize: '200% auto', bgPos: '100% 90%' }
-  if (isBoss) return { file: 'enemies1', bgSize: '200% auto', bgPos: '0% 90%' }
-  switch (locId) {
-    case 'demon_mine':
-    case 'dragon_pass':
-      return { file: 'enemies1', bgSize: '200% auto', bgPos: '0% 5%' }
-    case 'desert_ruins':
-      return { file: 'enemies1', bgSize: '200% auto', bgPos: '100% 5%' }
-    case 'bandit_hideout':
-      return { file: 'enemies1', bgSize: '200% auto', bgPos: '100% 45%' }
-    case 'ancient_temple':
-    case 'forest_entrance':
-      return { file: 'enemies2', bgSize: '200% auto', bgPos: '0% 5%' }
-    default:
-      return { file: 'enemies1', bgSize: '200% auto', bgPos: '0% 50%' }
+function getEnemyEmoji(uid: string, name: string): string {
+  const key = (uid + ' ' + name).toLowerCase()
+  for (const [pattern, emoji] of ENEMY_EMOJI_MAP) {
+    if (key.includes(pattern)) return emoji
   }
+  return '👾'
+}
+
+function EnemyDisplay({ enemies, isBoss, isTargetingEnemies, onSelectTarget }: {
+  enemies: BattleUnit[]
+  isBoss: boolean
+  isTargetingEnemies: boolean
+  onSelectTarget: (e: BattleUnit) => void
+}) {
+  const isLarge = isBoss || enemies.length === 1
+  const fontSize = isLarge ? '5rem' : enemies.length <= 2 ? '3.5rem' : '2.5rem'
+
+  return (
+    <div className="absolute right-1 top-1" style={{ width: 'calc(58% - 4px)', bottom: 4, zIndex: 5 }}>
+      <div className="flex flex-col items-center justify-center h-full gap-2">
+        {enemies.map(e => {
+          const dead = e.hp <= 0
+          const emoji = getEnemyEmoji(e.uid, e.name)
+          const hpPct = Math.max(0, (e.hp / e.maxHp) * 100)
+          const hpFill = hpPct > 50 ? '#4ade80' : hpPct > 25 ? '#facc15' : '#ef4444'
+
+          return (
+            <div key={e.uid} className={`flex flex-col items-center gap-0.5 transition-opacity ${dead ? 'opacity-20' : ''}`}>
+              <button
+                onClick={() => isTargetingEnemies && !dead && onSelectTarget(e)}
+                disabled={!isTargetingEnemies || dead}
+                className={`relative flex items-center justify-center transition-transform ${
+                  isTargetingEnemies && !dead
+                    ? 'cursor-pointer scale-110 animate-pulse'
+                    : 'cursor-default'
+                }`}
+                style={{
+                  filter: isBoss && !dead
+                    ? 'drop-shadow(0 0 12px rgba(255,50,50,0.8))'
+                    : isTargetingEnemies && !dead
+                    ? 'drop-shadow(0 0 8px rgba(255,200,0,0.7))'
+                    : 'drop-shadow(0 0 4px rgba(255,255,255,0.3))',
+                }}
+              >
+                <span style={{ fontSize, lineHeight: 1 }}>{emoji}</span>
+                {isTargetingEnemies && !dead && (
+                  <span className="absolute -top-3 left-1/2 -translate-x-1/2 text-yellow-300 font-black text-base animate-bounce">▼</span>
+                )}
+              </button>
+              {/* HP bar + name */}
+              <div style={{ width: isLarge ? 80 : 56 }}>
+                <div className="w-full h-1.5 bg-black/60 border border-white/20 rounded-sm overflow-hidden">
+                  <div className="h-full transition-all duration-300" style={{ width: `${hpPct}%`, backgroundColor: hpFill }} />
+                </div>
+                <div className="text-[8px] font-black text-center mt-0.5" style={{ color: '#fff', textShadow: '0 1px 3px #000,0 0 6px #000' }}>
+                  {e.name}
+                </div>
+              </div>
+            </div>
+          )
+        })}
+      </div>
+    </div>
+  )
 }
 
 function HpBar({ hp, maxHp, color = 'green' }: { hp: number; maxHp: number; color?: 'green' | 'blue' }) {
@@ -144,8 +189,7 @@ export default function BattleScene({ gs, onAttack, onSkill, onItem, onFlee, onC
   const prevLogs = b.logs.slice(-3, -1)
   const isOver = b.phase === 'victory' || b.phase === 'defeat'
 
-  const enemyBg = getEnemyBg(gs.currentLocId, b.isBoss)
-  const enemyImgSrc = `/fuuin-no-keishousha/images/${enemyBg.file}.jpg`
+  const isTargetingEnemies = mode === 'target_attack' || (mode === 'target_skill' && pendingSkill?.target === 'enemy_one')
 
   function handleSelectTarget(unit: BattleUnit) {
     if (mode === 'target_attack') { onAttack(unit.uid); setMode('select') }
@@ -203,34 +247,21 @@ export default function BattleScene({ gs, onAttack, onSkill, onItem, onFlee, onC
         <div className="absolute inset-0" style={{
           background: 'linear-gradient(to bottom, #5ab4e8 0%, #90d0f0 52%, #70c840 52%, #3a9a20 72%, #287010 100%)',
         }} />
-        {/* 雲 */}
         <div className="absolute" style={{ top: 6, left: 24, width: 72, height: 18, background: 'rgba(255,255,255,0.75)', borderRadius: '50%', filter: 'blur(4px)' }} />
         <div className="absolute" style={{ top: 2, right: 56, width: 96, height: 18, background: 'rgba(255,255,255,0.6)', borderRadius: '50%', filter: 'blur(4px)' }} />
         <div className="absolute" style={{ top: 12, right: 20, width: 48, height: 12, background: 'rgba(255,255,255,0.5)', borderRadius: '50%', filter: 'blur(3px)' }} />
 
         {/* 左エリア: プレイヤー + 仲間スプライト */}
         <div className="absolute left-2 bottom-3 flex flex-col-reverse gap-1 items-start" style={{ zIndex: 10, maxWidth: '38%' }}>
-          {/* 主人公（最大サイズ）*/}
           <div className="flex flex-col items-center gap-0.5">
-            <CharPortrait
-              charId="player"
-              size={80}
-              isActive={currentActor?.isPlayer}
-              isDead={playerUnit.hp <= 0}
-            />
+            <CharPortrait charId="player" size={80} isActive={currentActor?.isPlayer} isDead={playerUnit.hp <= 0} />
             <div style={{ width: 80 }}><HpBar hp={playerUnit.hp} maxHp={playerUnit.maxHp} /></div>
           </div>
-          {/* 仲間 */}
           {allies.filter(a => !a.isPlayer).map(a => {
             const charId = a.companionId ?? 'gares'
             return (
               <div key={a.uid} className="flex items-center gap-1">
-                <CharPortrait
-                  charId={charId}
-                  size={52}
-                  isActive={a.uid === b.currentUid}
-                  isDead={a.hp <= 0}
-                />
+                <CharPortrait charId={charId} size={52} isActive={a.uid === b.currentUid} isDead={a.hp <= 0} />
                 <div className="flex flex-col gap-0.5" style={{ width: 42 }}>
                   <HpBar hp={a.hp} maxHp={a.maxHp} />
                   <span className="text-[8px] text-white font-bold leading-none" style={{ textShadow: '0 1px 3px #000' }}>
@@ -242,51 +273,13 @@ export default function BattleScene({ gs, onAttack, onSkill, onItem, onFlee, onC
           })}
         </div>
 
-        {/* 右エリア: 敵スプライト */}
-        <div
-          className="absolute right-1"
-          style={{
-            top: 6,
-            width: 'calc(58% - 4px)',
-            height: 178,
-            backgroundImage: `url('${enemyImgSrc}')`,
-            backgroundSize: enemyBg.bgSize,
-            backgroundPosition: enemyBg.bgPos,
-            backgroundRepeat: 'no-repeat',
-            imageRendering: 'pixelated',
-            zIndex: 5,
-          }}
-        >
-          {/* 敵ターゲット選択オーバーレイ */}
-          {(mode === 'target_attack' || (mode === 'target_skill' && pendingSkill?.target === 'enemy_one')) && (
-            <div className="absolute inset-0 flex flex-col items-center justify-center gap-1.5 bg-black/30 rounded">
-              {aliveEnemies.map(e => (
-                <button key={e.uid} onClick={() => handleSelectTarget(e)}
-                  className="flex items-center gap-2 bg-red-800/90 border-2 border-red-300 rounded-lg px-3 py-1.5 hover:bg-red-600 active:scale-95 transition shadow-xl w-4/5">
-                  <span className="text-white font-black text-xs flex-1 text-left">{e.name}</span>
-                  <div className="w-16"><HpBar hp={e.hp} maxHp={e.maxHp} /></div>
-                  <span className="text-yellow-300 text-[10px] font-black">▲</span>
-                </button>
-              ))}
-            </div>
-          )}
-        </div>
-
-        {/* 敵HPラベル（通常時）*/}
-        {mode === 'select' && (
-          <div className="absolute right-1" style={{ bottom: 2, width: 'calc(58% - 4px)', zIndex: 6 }}>
-            <div className="flex flex-wrap justify-center gap-1.5">
-              {enemies.map(e => (
-                <div key={e.uid} className={`flex flex-col items-center ${e.hp <= 0 ? 'opacity-20' : ''}`} style={{ minWidth: 52 }}>
-                  <div style={{ width: 52 }}><HpBar hp={e.hp} maxHp={e.maxHp} /></div>
-                  <span className="text-[8px] font-black" style={{ color: '#fff', textShadow: '0 1px 3px #000,0 0 6px #000' }}>
-                    {e.name}
-                  </span>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
+        {/* 右エリア: 敵（絵文字ベース）*/}
+        <EnemyDisplay
+          enemies={enemies}
+          isBoss={b.isBoss}
+          isTargetingEnemies={isTargetingEnemies}
+          onSelectTarget={handleSelectTarget}
+        />
       </div>
 
       {/* ===== 味方ターゲット選択（アイテム/回復スキル用）===== */}
