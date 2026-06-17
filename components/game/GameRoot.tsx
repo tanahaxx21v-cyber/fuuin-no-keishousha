@@ -5,7 +5,7 @@ import type { GameState, Difficulty, LocationId, CompanionId, Skill } from '@/li
 import {
   createInitialState, travel, joinCompanion, skipCompanion,
   restAtInn, buyItem, enterDungeon, fightBoss, battleAttack,
-  battleSkill, battleUseItem, battleFlee, closeBattle, setParty,
+  battleSkill, battleUseItem, battleFlee, closeBattle,
   processNonPlayerTurn,
 } from '@/lib/game/engine'
 import TitleScreen from './TitleScreen'
@@ -13,7 +13,6 @@ import WorldMap from './WorldMap'
 import LocationView from './LocationView'
 import BattleScene from './BattleScene'
 import ShopView from './ShopView'
-import PartyManage from './PartyManage'
 import WinScreen from './WinScreen'
 import GameOverScreen from './GameOverScreen'
 import StatusBar from './StatusBar'
@@ -46,7 +45,6 @@ export default function GameRoot() {
   const [hasSave, setHasSave] = useState(false)
   const [pendingDiff, setPendingDiff] = useState<Difficulty | null>(null)
   const [saveMsg, setSaveMsg] = useState<string | null>(null)
-  const [showPartyHint, setShowPartyHint] = useState(false)
 
   useEffect(() => {
     const saved = loadGame()
@@ -126,28 +124,8 @@ export default function GameRoot() {
     setGs(prev => ({ ...prev, phase: 'location' }))
   }
 
-  const handleOpenParty = () => {
-    setGs(prev => ({ ...prev, phase: 'party_manage' }))
-  }
-
-  const handleCloseParty = () => {
-    setGs(prev => ({ ...prev, phase: prev.battle ? 'battle' : 'location' }))
-  }
-
-  const handleSetParty = (party: CompanionId[]) => {
-    update(s => setParty(s, party))
-  }
-
   const handleJoinCompanion = (id: CompanionId) => {
-    update(s => {
-      const next = joinCompanion(s, id)
-      // 加入成功時（エラーメッセージなし）にパーティ誘導を表示
-      const joinedCount = Object.values(next.companions).filter(c => c.joined).length
-      if (joinedCount > Object.values(s.companions).filter(c => c.joined).length) {
-        setShowPartyHint(true)
-      }
-      return next
-    })
+    update(s => joinCompanion(s, id))
   }
 
   const handleSkipCompanion = () => {
@@ -203,8 +181,8 @@ export default function GameRoot() {
   return (
     <div className="min-h-screen bg-gray-950 text-gray-100 flex flex-col">
       {/* Status bar — shown during gameplay */}
-      {['worldmap', 'location', 'battle', 'shop', 'party_manage'].includes(gs.phase) && (
-        <StatusBar gs={gs} onOpenParty={handleOpenParty} onSave={handleManualSave} />
+      {['worldmap', 'location', 'battle', 'shop'].includes(gs.phase) && (
+        <StatusBar gs={gs} onSave={handleManualSave} />
       )}
 
       {/* Level up overlay */}
@@ -239,31 +217,6 @@ export default function GameRoot() {
       {saveMsg && (
         <div className="fixed bottom-4 right-4 z-50 bg-green-950 border-2 border-green-600 text-green-300 px-4 py-2 rounded-xl text-sm font-black shadow-xl">
           💾 {saveMsg}
-        </div>
-      )}
-
-      {/* Party hint after companion joins */}
-      {showPartyHint && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80">
-          <div className="bg-[#0c0c24] border-2 border-indigo-500 rounded-2xl p-6 text-center max-w-xs mx-4 shadow-2xl">
-            <div className="text-4xl mb-3">👥</div>
-            <div className="text-white font-black text-lg mb-1">仲間が加入！</div>
-            <div className="text-gray-300 text-sm mb-5 font-bold">パーティに編成してから冒険を続けましょう。</div>
-            <div className="flex gap-2">
-              <button
-                onClick={() => { setShowPartyHint(false); setGs(prev => ({ ...prev, phase: 'party_manage' })) }}
-                className="flex-1 py-2.5 bg-indigo-800 hover:bg-indigo-700 border-2 border-indigo-600 text-white font-black rounded-xl transition active:scale-95"
-              >
-                👥 パーティ編成
-              </button>
-              <button
-                onClick={() => setShowPartyHint(false)}
-                className="px-4 py-2.5 bg-slate-800 hover:bg-slate-700 border-2 border-slate-600 text-gray-300 font-bold rounded-xl transition active:scale-95"
-              >
-                後で
-              </button>
-            </div>
-          </div>
         </div>
       )}
 
@@ -316,9 +269,6 @@ export default function GameRoot() {
         )}
         {gs.phase === 'shop' && (
           <ShopView gs={gs} onBuy={handleBuyItem} onClose={handleCloseShop} />
-        )}
-        {gs.phase === 'party_manage' && (
-          <PartyManage gs={gs} onSetParty={handleSetParty} onClose={handleCloseParty} />
         )}
         {gs.phase === 'win' && <WinScreen gs={gs} onRestart={() => { setGs(createInitialState('normal')); setPendingDiff(null) }} />}
         {gs.phase === 'gameover' && <GameOverScreen gs={gs} onRestart={() => { setGs(createInitialState('normal')); setPendingDiff(null) }} />}

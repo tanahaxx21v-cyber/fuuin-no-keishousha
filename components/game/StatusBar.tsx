@@ -1,14 +1,14 @@
 'use client'
 
 import type { GameState } from '@/lib/game/types'
+import { COMPANIONS } from '@/lib/game/data'
 
 interface Props {
   gs: GameState
-  onOpenParty: () => void
   onSave?: () => void
 }
 
-export default function StatusBar({ gs, onOpenParty, onSave }: Props) {
+export default function StatusBar({ gs, onSave }: Props) {
   const hpPct = Math.max(0, (gs.playerHp / gs.playerMaxHp) * 100)
   const mpPct = Math.max(0, (gs.playerMp / gs.playerMaxMp) * 100)
   const daysUrgent = gs.daysLeft <= 20
@@ -92,18 +92,17 @@ export default function StatusBar({ gs, onOpenParty, onSave }: Props) {
           ))}
         </div>
 
-        {/* Party */}
-        <button
-          onClick={gs.phase === 'battle' ? undefined : onOpenParty}
-          disabled={gs.phase === 'battle'}
-          className={`ml-auto text-xs px-3 py-1 rounded border-2 font-black transition ${
-            gs.phase === 'battle'
-              ? 'bg-slate-900 border-slate-800 text-slate-700 cursor-default'
-              : 'bg-indigo-900 hover:bg-indigo-800 border-indigo-600 text-white'
-          }`}
-        >
-          👥 仲間 {gs.party.filter(id => gs.companions[id].alive).length}/3
-        </button>
+        {/* Party display (non-clickable) */}
+        <div className="ml-auto flex items-center gap-1.5">
+          {gs.party.filter(id => gs.companions[id].alive).map(id => (
+            <span key={id} className="text-xl leading-none" title={COMPANIONS[id]?.name}>
+              {COMPANIONS[id]?.emoji ?? '👤'}
+            </span>
+          ))}
+          {gs.party.filter(id => gs.companions[id].alive).length === 0 && (
+            <span className="text-xs text-gray-600 font-bold">仲間なし</span>
+          )}
+        </div>
 
         {/* Save */}
         {onSave && (
