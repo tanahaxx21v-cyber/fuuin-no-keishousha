@@ -1,4 +1,4 @@
-import type { CompanionDef, EnemyDef, ItemDef, LocationDef, Skill, LevelSkill, CompanionId, LocationId } from './types'
+import type { CompanionDef, EnemyDef, ItemDef, LocationDef, Skill, LevelSkill, CompanionId, LocationId, GameEvent } from './types'
 
 // ===== PLAYER SKILLS — 全習得スキル一覧 =====
 export const PLAYER_SKILLS: Skill[] = [
@@ -792,3 +792,191 @@ export function getDifficultyMultiplier(difficulty: string): { days: number; ene
     default:      return { days: 100, enemyHpMult: 1.0,  playerHpMult: 1.0 }
   }
 }
+
+// ===== EVENTS (パワポケ4スタイル: 条件付きイベント) =====
+export const EVENTS: GameEvent[] = [
+  {
+    id: 'alseria_gares_homecoming', title: 'ガレスの帰還',
+    condition: { atLoc: 'alseria', requiredCompanions: ['gares'] },
+    dialogues: [
+      { speaker: 'narrator', speakerName: '', text: 'アルセリア王都。かつてこの国を守った騎士団の本拠地。ガレスは城門の前で足を止めた。' },
+      { speaker: 'gares', speakerName: 'ガレス', text: '……久しぶりだな。この城の門構えは変わらない。' },
+      { speaker: 'player', speakerName: 'レオン', text: 'ガレス、あなたはここで騎士団長を務めていたんですよね？' },
+      { speaker: 'gares', speakerName: 'ガレス', text: '三年前まではな。だが魔王の呪いで仲間を次々と失い……俺は団長の資格を失った。' },
+      { speaker: 'gares', speakerName: 'ガレス', text: '今は違う。お前と共に戦うことで、あの日の誓いを果たせる。…行くぞ、レオン。' },
+      { speaker: 'narrator', speakerName: '', text: 'ガレスの瞳に、かつての騎士の炎が戻った気がした。' },
+    ],
+    reward: { exp: 30, message: 'ガレスとの絆が深まった！（EXP +30）' },
+  },
+  {
+    id: 'alseria_liz_prayer', title: 'リズの祈り',
+    condition: { atLoc: 'alseria', requiredCompanions: ['liz'] },
+    dialogues: [
+      { speaker: 'narrator', speakerName: '', text: '王都の礼拝堂。リズは静かに祭壇の前に膝をついた。' },
+      { speaker: 'liz', speakerName: 'リズ', text: '……神様。どうか、このルミナ大陸に平和をお与えください。' },
+      { speaker: 'player', speakerName: 'レオン', text: 'リズ……いつもそんな風に祈ってるんですか？' },
+      { speaker: 'liz', speakerName: 'リズ', text: 'ええ。でも今日は少し違います。……あなたのために、祈っています。' },
+      { speaker: 'liz', speakerName: 'リズ', text: '封印石を集める旅は危険です。でも私は信じています。あなたなら必ずできる。' },
+      { speaker: 'player', speakerName: 'レオン', text: 'リズ……ありがとう。必ずやり遂げてみせます。' },
+    ],
+    reward: { exp: 20, message: 'リズの祈りで心が安らいだ！（EXP +20）' },
+  },
+  {
+    id: 'bern_noa_market', title: 'ノアと商業都市',
+    condition: { atLoc: 'bern', requiredCompanions: ['noa'] },
+    dialogues: [
+      { speaker: 'noa', speakerName: 'ノア', text: 'うわあ！すごい！めちゃくちゃ賑わってる！こんな大きな市場、生まれて初めて見た！' },
+      { speaker: 'player', speakerName: 'レオン', text: 'ここはルミナ大陸最大の商業都市だからね。' },
+      { speaker: 'noa', speakerName: 'ノア', text: 'ちょっと待って、あそこの屋台めっちゃ旨そう！…レオン、お金ちょっと貸してくれない？' },
+      { speaker: 'noa', speakerName: 'ノア', text: 'ヘヘ！あ、そうだ！さっきの商人が言ってた。北の廃鉱山に強い魔物が増えてるって！気をつけて行こうぜ！' },
+    ],
+    reward: { gold: 60, message: '商人との縁でゴールドを得た！（+60G）' },
+  },
+  {
+    id: 'galdo_cecil_library', title: 'セシルの魔法塔',
+    condition: { atLoc: 'galdo', requiredCompanions: ['cecil'] },
+    dialogues: [
+      { speaker: 'narrator', speakerName: '', text: 'ガルドの奥、山間に建つ魔法塔。セシルはここにかつて暮らしていた。' },
+      { speaker: 'cecil', speakerName: 'セシル', text: 'ここが私の研究室があった塔。…懐かしい。' },
+      { speaker: 'player', speakerName: 'レオン', text: 'セシル、なんでここを出たんですか？' },
+      { speaker: 'cecil', speakerName: 'セシル', text: '…魔王の封印が解けると知ったから。塔で研究するより、現場に出た方が役に立てると思って。' },
+      { speaker: 'cecil', speakerName: 'セシル', text: '私は感情が苦手。でも、あなたを見ていると……なんというか。不思議な気持ちになる。' },
+    ],
+    reward: { exp: 50, message: 'セシルが封印の知識を共有した！（EXP +50）' },
+  },
+  {
+    id: 'elna_bram_hometown', title: 'ブラムの故郷',
+    condition: { atLoc: 'elna', requiredCompanions: ['bram'] },
+    dialogues: [
+      { speaker: 'narrator', speakerName: '', text: '森の里エルナ。ブラムは懐かしそうに木々を見上げた。' },
+      { speaker: 'bram', speakerName: 'ブラム', text: 'ガッハッハ！ここだここだ！俺の故郷！懐かしい匂いがする！' },
+      { speaker: 'bram', speakerName: 'ブラム', text: '……実はな、親父がここに住んでいた。魔物にやられちまったんだ、昔。だから俺は旅に出た。' },
+      { speaker: 'bram', speakerName: 'ブラム', text: '魔王を倒すことは……親父への誓いでもある。レオン、頼んだぞ！' },
+    ],
+    reward: { exp: 40, gold: 30, message: 'ブラムの気合いで全員鼓舞！（EXP +40, +30G）' },
+  },
+  {
+    id: 'riverside_finn_dream', title: 'フィンの夢',
+    condition: { atLoc: 'riverside', requiredCompanions: ['finn'] },
+    dialogues: [
+      { speaker: 'narrator', speakerName: '', text: '夕暮れの川辺。フィンは静かに川を見つめていた。' },
+      { speaker: 'finn', speakerName: 'フィン', text: '……なあレオンさん、俺、子供の頃からずっと夢があって。' },
+      { speaker: 'finn', speakerName: 'フィン', text: '「伝説の冒険者」になること！昔、旅の人が話してくれた冒険譚がすごくかっこよくて。俺もそうなりたいって。' },
+      { speaker: 'player', speakerName: 'レオン', text: 'フィン……必ず一緒に伝説を作ろう。' },
+    ],
+    reward: { exp: 35, message: 'フィンの気持ちが通じた！（EXP +35）' },
+  },
+  {
+    id: 'demon_mine_iris_confession', title: 'イリスの告白',
+    condition: { atLoc: 'demon_mine', requiredCompanions: ['iris'] },
+    dialogues: [
+      { speaker: 'narrator', speakerName: '', text: '廃鉱山の深部。イリスは古い魔法陣の前で立ち止まった。' },
+      { speaker: 'iris', speakerName: 'イリス', text: '……ここは、私が魔王軍として初めて使役魔法を使った場所。' },
+      { speaker: 'iris', speakerName: 'イリス', text: 'いいえ。ここに来たかったの。……ちゃんとけじめをつけたかった。' },
+      { speaker: 'iris', speakerName: 'イリス', text: '私は過去から逃げ続けていた。でもあなたと一緒に魔王を倒せば、少しは贖罪になれるかもしれない。' },
+      { speaker: 'player', speakerName: 'レオン', text: '過去は変えられない。でも今のあなたは確かに仲間だ。それで十分です。' },
+    ],
+    reward: { exp: 60, message: 'イリスの力が目覚めた！（EXP +60）' },
+  },
+  {
+    id: 'bandit_hideout_vais_past', title: 'ヴァイスの傷跡',
+    condition: { atLoc: 'bandit_hideout', requiredCompanions: ['vais'] },
+    dialogues: [
+      { speaker: 'vais', speakerName: 'ヴァイス', text: 'チッ……まだこいつらの巣がある。' },
+      { speaker: 'vais', speakerName: 'ヴァイス', text: '……ある。俺はここの盗賊団の一員だった。昔の話だ。' },
+      { speaker: 'vais', speakerName: 'ヴァイス', text: '仲間だと思ってたやつらに裏切られた。金のために俺を売った。……だから俺は人を信じない。' },
+      { speaker: 'player', speakerName: 'レオン', text: 'でも今、あなたはここにいる。信じることを諦めてないから、でしょう？' },
+      { speaker: 'vais', speakerName: 'ヴァイス', text: '……うるせえ。でも……悪くない、とは思ってる。今の旅が。' },
+    ],
+    reward: { exp: 55, message: 'ヴァイスの技が研ぎ澄まされた！（EXP +55）' },
+  },
+  {
+    id: 'sahal_logan_atonement', title: 'ローガンの贖罪',
+    condition: { atLoc: 'sahal', requiredCompanions: ['logan'] },
+    dialogues: [
+      { speaker: 'narrator', speakerName: '', text: 'サハルの砂漠市場。ローガンは見覚えのある顔を見つけ、立ち止まった。' },
+      { speaker: 'logan', speakerName: 'ローガン', text: '……私はかつて、あなたの息子を処刑した者です。' },
+      { speaker: 'narrator', speakerName: '', text: '老婆は長い沈黙の後、ゆっくりとローガンの手を握った。' },
+      { speaker: 'logan', speakerName: 'ローガン', text: 'レオン……私が旅に出た理由は、力だけじゃない。罪を背負って生きることの意味を、探している。' },
+      { speaker: 'player', speakerName: 'レオン', text: 'ローガンさん……あなたの力は今、世界を救うために使われている。それもまた、贖罪になるはずです。' },
+    ],
+    reward: { exp: 65, message: 'ローガンの決意が固まった！（EXP +65）' },
+  },
+  {
+    id: 'mirea_sig_identity', title: 'シグの秘密',
+    condition: { atLoc: 'mirea', requiredCompanions: ['sig'] },
+    dialogues: [
+      { speaker: 'narrator', speakerName: '', text: 'ミレア港。夕日が海を赤く染める中、シグは港の一隅で海を見つめていた。' },
+      { speaker: 'sig', speakerName: 'シグ', text: '…この海か。五年ぶりだな。' },
+      { speaker: 'sig', speakerName: 'シグ', text: 'まあね。……実はさ。俺、本当は商人の息子なんだ。親父が海賊に船を沈められてね。全部無くした。' },
+      { speaker: 'sig', speakerName: 'シグ', text: 'だから詐欺師をやって生きてきた。でもそれも、いつか親父の夢だった商船を買うための金を稼ぐためで。' },
+      { speaker: 'player', speakerName: 'レオン', text: 'シグ……その夢、諦めるなよ。魔王を倒したら、一緒に考えよう。' },
+    ],
+    reward: { gold: 80, message: 'シグが隠し財産を分けてくれた！（+80G）' },
+  },
+  {
+    id: 'dragon_pass_elk_clan', title: 'エルクの誓い',
+    condition: { atLoc: 'dragon_pass', requiredCompanions: ['elk'] },
+    dialogues: [
+      { speaker: 'narrator', speakerName: '', text: '嵐吹き荒れる竜の峠。エルクは峠の頂で大きく深呼吸をした。' },
+      { speaker: 'elk', speakerName: 'エルク', text: 'ここは……俺の一族の地だった。百年前、魔王に滅ぼされた。' },
+      { speaker: 'elk', speakerName: 'エルク', text: 'いい。この峠を守ることは、一族への誓いだ。……だが今は、より大きな戦いがある。' },
+      { speaker: 'elk', speakerName: 'エルク', text: 'お前と共に魔王を倒すことで、一族の魂も報われる。俺の槍、全力で振るう。' },
+    ],
+    reward: { exp: 70, message: 'エルクの獣人の力が覚醒した！（EXP +70）' },
+  },
+  {
+    id: 'ancient_temple_mira_seal_history', title: '封印の歴史',
+    condition: { atLoc: 'ancient_temple', requiredCompanions: ['mira'] },
+    dialogues: [
+      { speaker: 'narrator', speakerName: '', text: '月光差し込む古代神殿。ミラは祭壇の前で静かに語り始めた。' },
+      { speaker: 'mira', speakerName: 'ミラ', text: '三百年前、七人の賢者が世界を救うために魔王の力を三つに分けて封じた。それが炎・嵐・闇の封印石。' },
+      { speaker: 'mira', speakerName: 'ミラ', text: 'その勇者こそが……あなただと、古文書は記している。レオン。' },
+      { speaker: 'player', speakerName: 'レオン', text: 'ミラ……俺が、勇者？' },
+      { speaker: 'narrator', speakerName: '', text: '封印石が淡く輝いた。レオンの中で何かが目覚めていく感覚があった。' },
+    ],
+    reward: { exp: 80, message: '封印の真実が明かされた！（EXP +80）' },
+  },
+  {
+    id: 'desert_ruins_zeno_revelation', title: 'ゼノの真実',
+    condition: { atLoc: 'desert_ruins', anyCompanion: ['zeno'] },
+    dialogues: [
+      { speaker: 'narrator', speakerName: '', text: '砂漠遺跡の入口。ゼノが現れ、レオンの前に立ちはだかった。' },
+      { speaker: 'zeno', speakerName: 'ゼノ', text: 'ここまで来たか、勇者。私はゼノ。魔族だが……魔王の敵だ。' },
+      { speaker: 'zeno', speakerName: 'ゼノ', text: '魔王はただの支配者に成り下がった。私の見る「力」とは、強さで他者を縛ることではない。だから反逆した。' },
+      { speaker: 'zeno', speakerName: 'ゼノ', text: '一つだけ教えよう。アーカイブの弱点は封印石の共鳴。封印解放スキルが最大の効果を発揮する。使え。' },
+    ],
+    reward: { exp: 100, message: 'ゼノから戦術を学んだ！（EXP +100）' },
+  },
+  {
+    id: 'spirit_spring_healing_miracle', title: '精霊の祝福',
+    condition: { atLoc: 'spirit_spring' },
+    dialogues: [
+      { speaker: 'narrator', speakerName: '', text: '精霊の泉。水面が青白く輝き、小さな光の粒子が漂っている。' },
+      { speaker: 'narrator', speakerName: '精霊', text: '「勇者よ。汝の旅の意志を感じた。我らが加護を受けよ……」' },
+      { speaker: 'narrator', speakerName: '', text: '温かな光がパーティ全員を包み込んだ。傷が癒え、疲れが消えていく。' },
+    ],
+    reward: { exp: 25, message: '精霊の祝福で回復した！（EXP +25）' },
+  },
+  {
+    id: 'great_bridge_merchant_encounter', title: '怪しい商人',
+    condition: { atLoc: 'great_bridge', minDaysLeft: 70 },
+    dialogues: [
+      { speaker: 'narrator', speakerName: '', text: '大橋の上。フードを深くかぶった商人が荷車を止めて待っていた。' },
+      { speaker: 'narrator', speakerName: '怪しい商人', text: '「旅人よ。私はルミナ中を旅する商人。良いものをお見せしましょう……」' },
+      { speaker: 'narrator', speakerName: '', text: '商人は特製のハイポーションを渡してくれた。本物だった。' },
+    ],
+    reward: { itemId: 'hi_potion', itemQty: 2, message: '特製ハイポーションを2本入手！' },
+  },
+  {
+    id: 'traveler_inn_rumor_about_seals', title: '旅人の噂話',
+    condition: { atLoc: 'traveler_inn', maxDaysLeft: 90 },
+    dialogues: [
+      { speaker: 'narrator', speakerName: '', text: '旅人の宿の酒場。冒険者風の男が声をかけてきた。' },
+      { speaker: 'narrator', speakerName: '旅の冒険者', text: '「おい、お前さん封印石を探してるだろう？俺にはわかる。」' },
+      { speaker: 'narrator', speakerName: '冒険者', text: '「廃鉱山と竜の峠は特に手強い。ボスは封印解放を使え。」' },
+      { speaker: 'narrator', speakerName: '', text: '先人の言葉が重くのしかかった。でも同時に、力をもらった気がした。' },
+    ],
+    reward: { gold: 50, message: '先人の餞別を受け取った！（+50G）' },
+  },
+]

@@ -1,6 +1,40 @@
 export type GamePhase =
   | 'title' | 'prologue' | 'worldmap' | 'location'
-  | 'battle' | 'shop' | 'party_manage' | 'win' | 'gameover'
+  | 'battle' | 'shop' | 'party_manage' | 'event' | 'win' | 'gameover'
+
+// ===== EVENTS =====
+export interface DialogueLine {
+  speaker: string
+  speakerName: string
+  text: string
+}
+
+export interface EventCondition {
+  atLoc: LocationId
+  requiredCompanions?: string[]
+  anyCompanion?: string[]
+  maxDaysLeft?: number
+  minDaysLeft?: number
+  requiredSeals?: ('fire'|'storm'|'dark')[]
+  requiredDefeated?: string[]
+  minPlayerLevel?: number
+}
+
+export interface EventReward {
+  gold?: number
+  exp?: number
+  itemId?: string
+  itemQty?: number
+  message: string
+}
+
+export interface GameEvent {
+  id: string
+  title: string
+  condition: EventCondition
+  dialogues: DialogueLine[]
+  reward?: EventReward
+}
 
 export type Difficulty = 'easy' | 'normal' | 'hard'
 
@@ -243,4 +277,9 @@ export interface GameState {
   pendingCompanionJoin?: CompanionId
   levelUpPending?: boolean
   message?: string
+
+  // イベントシステム
+  completedEvents: string[]
+  activeEventId?: string
+  activeEventLine?: number
 }

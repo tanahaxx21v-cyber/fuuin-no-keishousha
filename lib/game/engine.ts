@@ -2,7 +2,7 @@ import type {
   GameState, BattleState, BattleUnit, CompanionState,
   Skill, StatusEffect, SealStone, CompanionId, Difficulty, LocationId
 } from './types'
-import { COMPANIONS, ENEMIES, ITEMS, LOCATIONS, PLAYER_SKILL_SCHEDULE, getExpToNext, getDifficultyMultiplier } from './data'
+import { COMPANIONS, ENEMIES, ITEMS, LOCATIONS, EVENTS, PLAYER_SKILL_SCHEDULE, getExpToNext, getDifficultyMultiplier } from './data'
 
 // ===== INITIALIZATION =====
 
@@ -66,7 +66,118 @@ export function createInitialState(difficulty: Difficulty, playerName = 'レオ�
     defeatedBosses: [],
     companions,
     party: [],
+    completedEvents: [],
   }
+}
+
+// ===== ストーリー進行: エリアアクセス制限 =====
+export function getAvailableConnections(state: GameState, locId: LocationId): LocationId[] {
+  const loc = LOCATIONS[locId]
+  if (!loc) return []
+  return loc.connections.filter(connId => isLocationUnlocked(state, connId as LocationId))
+}
+
+function isLocationUnlocked(s: GameState, locId: LocationId): boolean {
+  const lv = s.playerLevel
+  const seals = s.sealStones
+  const defeated = s.defeatedBosses
+  const joined = Object.values(s.companions).filter(c => c.joined).map(c => c.id as string)
+  switch (locId) {
+    case 'alseria': case 'traveler_inn': case 'checkpoint':
+    case 'galdo': case 'bern': case 'great_bridge': case 'watchtower':
+      return true
+    case 'riverside': case 'lighthouse':
+      return lv >= 4 || joined.includes('gares')
+    case 'spirit_spring': case 'forest_entrance':
+      return lv >= 4
+    case 'elna':
+      return lv >= 5 || seals.length >= 1
+    case 'ancient_temple':
+      return seals.length >= 2
+    case 'demon_mine':
+      return lv >= 4
+    case 'dragon_pass':
+      return seals.includes('fire')
+    case 'bandit_hideout':
+      return lv >= 5
+    case 'trading_post':
+      return lv >= 5
+    case 'sahal':
+      return defeated.includes('bandit_king') || seals.length >= 1
+    case 'coastal_road':
+      return seals.length >= 1
+    case 'mirea':
+      return seals.length >= 2
+    case 'desert_ruins':
+      return seals.length >= 3
+    default:
+      return true
+  }
+}
+
+// ===== イベント判定・実行 =====
+export function checkLocationEvent(state: GameState): string | null {
+  const joinedIds: string[] = Object.values(state.companions).filter(c => c.joined).map(c => c.id as string)
+  for (const ev of EVENTS) {
+    if (state.completedEvents.includes(ev.id)) continue
+    const cond = ev.condition
+    if (cond.atLoc !== state.currentLocId) continue
+    if (cond.requiredCompanions && !cond.requiredCompanions.every(c => joinedIds.includes(c))) continue
+    if (cond.anyCompanion && !cond.anyCompanion.some(c => joinedIds.includes(c))) continue
+    if (cond.maxDaysLeft !== undefined && state.daysLeft > cond.maxDaysLeft) continue
+    if (cond.minDaysLeft !== undefined && state.daysLeft < cond.minDaysLeft) continue
+    if (cond.requiredSeals && !cond.requiredSeals.every(seal => state.sealStones.includes(seal))) continue
+    if (cond.requiredDefeated && !cond.requiredDefeated.every(b => state.defeatedBosses.includes(b))) continue
+    if (cond.minPlayerLevel !== undefined && state.playerLevel < cond.minPlayerLevel) continue
+    return ev.id
+  }
+  return null
+}
+
+export function startEvent(state: GameState, eventId: string): GameState {
+  const s = deepClone(state)
+  s.activeEventId = eventId
+  s.activeEventLine = 0
+  s.phase = 'event'
+  return s
+}
+
+export function advanceEvent(state: GameState): GameState {
+  const s = deepClone(state)
+  const ev = EVENTS.find(e => e.id === s.activeEventId)
+  if (!ev) { s.phase = 'location'; s.activeEventId = undefined; s.activeEventLine = undefined; return s }
+  const nextLine = (s.activeEventLine ?? 0) + 1
+  if (nextLine >= ev.dialogues.length) {
+    s.completedEvents.push(ev.id)
+    s.activeEventId = undefined
+    s.activeEventLine = undefined
+    if (ev.reward) {
+      if (ev.reward.gold) s.gold += ev.reward.gold
+      if (ev.reward.exp) {
+        s.playerExp += ev.reward.exp
+        while (s.playerExp >= getExpToNext(s.playerLevel) && s.playerLevel < 30) {
+          s.playerExp -= getExpToNext(s.playerLevel)
+          s.playerLevel++
+          s.playerMaxHp += 12; s.playerHp = Math.min(s.playerHp + 12, s.playerMaxHp)
+          s.playerMaxMp += 5; s.playerMp = Math.min(s.playerMp + 5, s.playerMaxMp)
+          s.playerAtk += 2; s.playerDef += 2; s.playerSpd += 1
+          s.levelUpPending = true
+          const newSkill = PLAYER_SKILL_SCHEDULE.find(ps => ps.level === s.playerLevel)
+          if (newSkill && !s.playerSkills.some(sk => sk.id === newSkill.skill.id)) s.playerSkills.push(newSkill.skill)
+        }
+      }
+      if (ev.reward.itemId) {
+        const ex = s.inventory.find(i => i.itemId === ev.reward!.itemId)
+        if (ex) ex.qty += ev.reward.itemQty ?? 1
+        else s.inventory.push({ itemId: ev.reward.itemId, qty: ev.reward.itemQty ?? 1 })
+      }
+      if (ev.reward.message) s.message = ev.reward.message
+    }
+    s.phase = 'location'
+  } else {
+    s.activeEventLine = nextLine
+  }
+  return s
 }
 
 // ===== TRAVEL =====

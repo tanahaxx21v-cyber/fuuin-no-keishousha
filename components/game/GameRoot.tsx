@@ -6,7 +6,8 @@ import {
   createInitialState, travel, joinCompanion, skipCompanion,
   restAtInn, buyItem, enterDungeon, fightBoss, battleAttack,
   battleSkill, battleUseItem, battleFlee, closeBattle,
-  processNonPlayerTurn,
+  processNonPlayerTurn, checkLocationEvent, startEvent, advanceEvent,
+  getAvailableConnections,
 } from '@/lib/game/engine'
 import { LOCATIONS } from '@/lib/game/data'
 import {
@@ -21,6 +22,7 @@ import ShopView from './ShopView'
 import WinScreen from './WinScreen'
 import GameOverScreen from './GameOverScreen'
 import StatusBar from './StatusBar'
+import EventScene from './EventScene'
 
 const SAVE_KEY = 'fuuin_save_v2'
 
@@ -40,6 +42,7 @@ function loadGame(): GameState | null {
         if (!parsed.companions[id].learnedSkills) parsed.companions[id].learnedSkills = []
       }
     }
+    if (!parsed.completedEvents) parsed.completedEvents = []
     return parsed
   } catch { return null }
 }
@@ -107,7 +110,16 @@ export default function GameRoot() {
   }
 
   const handleEnterLocation = () => {
-    setGs(prev => ({ ...prev, phase: 'location' }))
+    setGs(prev => {
+      const withLoc = { ...prev, phase: 'location' as const }
+      const eventId = checkLocationEvent(withLoc)
+      if (eventId) return startEvent(withLoc, eventId)
+      return withLoc
+    })
+  }
+
+  const handleEventAdvance = () => {
+    update(s => advanceEvent(s))
   }
 
   const handleBackToMap = () => {
@@ -218,7 +230,7 @@ export default function GameRoot() {
   return (
     <div className="min-h-screen bg-gray-950 text-gray-100 flex flex-col">
       {/* Status bar — shown during gameplay */}
-      {['worldmap', 'location', 'battle', 'shop'].includes(gs.phase) && (
+      {['worldmap', 'location', 'battle', 'shop', 'event'].includes(gs.phase) && (
         <StatusBar
           gs={gs}
           onSave={handleManualSave}
@@ -288,7 +300,12 @@ export default function GameRoot() {
         {gs.phase === 'title' && pendingDiff && <NamingScreen onConfirm={handleNameConfirm} />}
         {gs.phase === 'prologue' && <PrologueScreen onDone={handlePrologueDone} playerName={gs.playerName} />}
         {gs.phase === 'worldmap' && (
-          <WorldMap gs={gs} onTravel={handleTravel} onEnterLocation={handleEnterLocation} />
+          <WorldMap
+            gs={gs}
+            onTravel={handleTravel}
+            onEnterLocation={handleEnterLocation}
+            getAvailableConnections={(locId) => getAvailableConnections(gs, locId)}
+          />
         )}
         {gs.phase === 'location' && (
           <LocationView
@@ -314,6 +331,17 @@ export default function GameRoot() {
         )}
         {gs.phase === 'shop' && (
           <ShopView gs={gs} onBuy={handleBuyItem} onClose={handleCloseShop} />
+        )}
+        {gs.phase === 'event' && gs.activeEventId && (
+          <div className="relative">
+            <LocationView
+              gs={{ ...gs, phase: 'location' }}
+              onBackToMap={() => {}} onInn={() => {}} onOpenShop={() => {}}
+              onEnterDungeon={() => {}} onFightBoss={() => {}}
+              onJoinCompanion={() => {}} onSkipCompanion={() => {}}
+            />
+            <EventScene gs={gs} onAdvance={handleEventAdvance} />
+          </div>
         )}
         {gs.phase === 'win' && <WinScreen gs={gs} onRestart={() => { setGs(createInitialState('normal')); setPendingDiff(null) }} />}
         {gs.phase === 'gameover' && <GameOverScreen gs={gs} onRestart={() => { setGs(createInitialState('normal')); setPendingDiff(null) }} />}
