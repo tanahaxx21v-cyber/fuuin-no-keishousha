@@ -25,8 +25,9 @@ export default function LocationView({
 
   const bossDefeated = loc.bossId ? gs.defeatedBosses.some(id => id.includes(loc.bossId!)) : false
   const sealObtained = loc.sealStone ? gs.sealStones.includes(loc.sealStone) : false
+  const joinedCount = Object.values(gs.companions).filter(c => c.joined).length
 
-  const typeLabel = loc.type === 'town' ? '🏘️ 町' : loc.type === 'dungeon' ? '⚔️ ダンジョン' : '🏯 城'
+  const typeLabel = loc.type === 'town' ? '🏘️ 町' : loc.type === 'dungeon' ? '⚔️ ダンジョン' : loc.type === 'relay' ? '🛖 中継地' : '🏯 城'
   const typeBorder = loc.type === 'town' ? 'border-indigo-700' : loc.type === 'dungeon' ? 'border-orange-800' : 'border-red-800'
 
   return (
@@ -90,10 +91,19 @@ export default function LocationView({
             </div>
           </div>
           <p className="text-sm text-gray-300 italic mb-4 border-l-2 border-indigo-700 pl-3">「{companion!.joinText}」</p>
+          <p className="text-xs text-gray-400 mb-3 leading-relaxed">{companion!.desc}</p>
+          {joinedCount >= 3 ? (
+            <div className="bg-red-950/60 border border-red-700 rounded-lg p-2 mb-2 text-xs text-red-300 font-bold text-center">
+              ⚠️ 仲間は3人まで。現在 {joinedCount}/3 人加入済み。
+            </div>
+          ) : (
+            <div className="text-xs text-gray-500 mb-2">仲間枠: {joinedCount}/3 人</div>
+          )}
           <div className="flex gap-2">
             <button
               onClick={() => onJoinCompanion(companion!.id)}
-              className="flex-1 py-2.5 bg-indigo-800 hover:bg-indigo-700 border-2 border-indigo-600 text-white font-black rounded-xl transition active:scale-95"
+              disabled={joinedCount >= 3}
+              className="flex-1 py-2.5 bg-indigo-800 hover:bg-indigo-700 disabled:bg-slate-900 disabled:opacity-40 disabled:cursor-not-allowed border-2 border-indigo-600 text-white font-black rounded-xl transition active:scale-95"
             >
               ✅ 仲間にする
             </button>
