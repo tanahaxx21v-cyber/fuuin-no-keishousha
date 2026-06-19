@@ -51,7 +51,7 @@ const LOC_CFG: Partial<Record<LocationId, { icon: string; color: string; border:
   spirit_spring:   { icon: '💧', color: '#182418', border: '#408040', shape: 'relay', label: '精霊の泉' },
   trading_post:    { icon: '🛒', color: '#282018', border: '#806030', shape: 'relay', label: '交易所' },
   coastal_road:    { icon: '🛣️', color: '#182028', border: '#405868', shape: 'relay', label: '沿岸街道' },
-  forest_entrance: { icon: '🌑', color: '#101a10', border: '#40a040', shape: 'dungeon', label: '魔獣の森' },
+  forest_entrance: { icon: '🌿', color: '#101a10', border: '#40a040', shape: 'relay',   label: '森の入口' },
   demon_mine:      { icon: '⛏️', color: '#1a1010', border: '#d04040', shape: 'dungeon', label: '廃鉱山' },
   dragon_pass:     { icon: '🐉', color: '#1a1020', border: '#a040d0', shape: 'dungeon', label: '竜の峠' },
   bandit_hideout:  { icon: '🗡️', color: '#20180a', border: '#c08020', shape: 'dungeon', label: '盗賊アジト' },
