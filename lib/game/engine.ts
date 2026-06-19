@@ -477,10 +477,8 @@ export function processNonPlayerTurn(state: GameState): GameState {
   if (b.phase === 'victory' || b.phase === 'defeat') return state
   const actor = b.units.find(u => u.uid === b.currentUid)
   if (!actor || actor.isPlayer) return state
-  const s = deepClone(state)
-  const a = s.battle!.units.find(u => u.uid === s.battle!.currentUid)!
-  if (a.isAlly) return processCompanionTurn(s)
-  return processEnemyTurn(s)
+  if (actor.isAlly) return processCompanionTurn(state)
+  return processEnemyTurn(state)
 }
 
 function buildTurnQueue(units: BattleUnit[]): string[] {
@@ -496,8 +494,9 @@ export function battleAttack(state: GameState, targetUid: string): GameState {
   if (!state.battle) return state
   const s = deepClone(state)
   const b = s.battle!
-  const attacker = b.units.find(u => u.uid === b.currentUid)!
-  const target = b.units.find(u => u.uid === targetUid)!
+  const attacker = b.units.find(u => u.uid === b.currentUid)
+  const target = b.units.find(u => u.uid === targetUid)
+  if (!attacker || !target) return state
 
   const result = calcDamage(attacker, target)
   const died = applyDamage(target, result.dmg)
@@ -516,7 +515,8 @@ export function battleSkill(state: GameState, skill: Skill, targetUid?: string):
   if (!state.battle) return state
   const s = deepClone(state)
   const b = s.battle!
-  const actor = b.units.find(u => u.uid === b.currentUid)!
+  const actor = b.units.find(u => u.uid === b.currentUid)
+  if (!actor) return state
 
   if (actor.mp < skill.mpCost) {
     // MP不足 → 1ターン休憩して少し回復
@@ -548,7 +548,8 @@ export function battleUseItem(state: GameState, itemId: string, targetUid: strin
   invItem.qty -= 1
   if (invItem.qty === 0) s.inventory = s.inventory.filter(i => i.itemId !== itemId)
 
-  const target = b.units.find(u => u.uid === targetUid)!
+  const target = b.units.find(u => u.uid === targetUid)
+  if (!target) return state
 
   if (item.effect === 'heal_hp') {
     const healed = Math.min(item.power, target.maxHp - target.hp)
@@ -596,7 +597,7 @@ function processEnemyTurn(state: GameState): GameState {
   if (!state.battle) return state
   const s = deepClone(state)
   const b = s.battle!
-  const actor = b.units.find(u => u.uid === b.currentUid)!
+  const actor = b.units.find(u => u.uid === b.currentUid)
   if (!actor || actor.hp <= 0 || actor.isAlly) return s
 
   // Stun check
@@ -648,7 +649,7 @@ function processCompanionTurn(state: GameState): GameState {
   if (!state.battle) return state
   const s = deepClone(state)
   const b = s.battle!
-  const actor = b.units.find(u => u.uid === b.currentUid)!
+  const actor = b.units.find(u => u.uid === b.currentUid)
   if (!actor || actor.hp <= 0 || !actor.isAlly || actor.isPlayer) return s
 
   // Stun check
