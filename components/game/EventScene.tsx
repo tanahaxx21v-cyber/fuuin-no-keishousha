@@ -41,6 +41,7 @@ export default function EventScene({ gs, onAdvance }: Props) {
   const isNarrator = line.speaker === 'narrator'
   const isLast = lineIdx >= ev.dialogues.length - 1
   const cfg = getSpeakerConfig(line.speaker)
+  const displayName = line.speaker === 'player' ? gs.playerName : line.speakerName
 
   // 進行インジケーター
   const progress = lineIdx + 1
@@ -83,7 +84,7 @@ export default function EventScene({ gs, onAdvance }: Props) {
               {cfg.emoji}
             </div>
             <div className={`text-xs font-black px-3 py-0.5 rounded-full border ${cfg.bg} ${cfg.border} ${cfg.color}`}>
-              {line.speakerName}
+              {displayName}
             </div>
           </div>
         )}
@@ -105,7 +106,7 @@ export default function EventScene({ gs, onAdvance }: Props) {
           {!isNarrator && (
             <div className={`px-4 py-1.5 border-b ${cfg.border} bg-black/30`}>
               <span className={`text-sm font-black ${cfg.color}`}>
-                {cfg.emoji} {line.speakerName}
+                {cfg.emoji} {displayName}
               </span>
             </div>
           )}

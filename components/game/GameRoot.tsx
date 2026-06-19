@@ -203,7 +203,7 @@ export default function GameRoot() {
   }
 
   const handleBattleSkill = (skill: Skill, targetUid?: string) => {
-    if (['heal', 'heal_hp', 'heal_ally_hp', 'def_up', 'atk_up'].includes(skill.effect)) sfxHeal()
+    if (['heal', 'def_up', 'atk_up'].includes(skill.effect)) sfxHeal()
     else sfxSkill()
     update(s => battleSkill(s, skill, targetUid))
   }
