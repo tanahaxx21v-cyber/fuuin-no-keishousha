@@ -25,7 +25,7 @@ export default function LocationView({
   const showCompanionJoin = companion && companionState && !companionState.joined
   const pendingJoin = gs.pendingCompanionJoin ? COMPANIONS[gs.pendingCompanionJoin] : undefined
 
-  const bossDefeated = loc.bossId ? gs.defeatedBosses.some(id => id.includes(loc.bossId!)) : false
+  const bossDefeated = loc.bossId ? gs.defeatedBosses.includes(loc.bossId) : false
   const sealObtained = loc.sealStone ? gs.sealStones.includes(loc.sealStone) : false
   const joinedCount = Object.values(gs.companions).filter(c => c.joined).length
 

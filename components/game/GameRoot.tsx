@@ -207,7 +207,14 @@ export default function GameRoot() {
   }
 
   const handleCloseBattle = () => {
-    update(s => closeBattle(s))
+    update(s => {
+      const closed = closeBattle(s)
+      if (closed.phase === 'location') {
+        const eventId = checkLocationEvent(closed)
+        if (eventId) return startEvent(closed, eventId)
+      }
+      return closed
+    })
   }
 
   const handleDismissLevelUp = () => {

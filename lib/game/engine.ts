@@ -611,21 +611,20 @@ function processEnemyTurn(state: GameState): GameState {
   const aliveAllies = b.units.filter(u => u.isAlly && u.hp > 0)
   if (aliveAllies.length === 0) return s
 
-  // Occasionally use skill
-  const useSkill = actor.skills.length > 0 && actor.mp >= actor.skills[0].mpCost && Math.random() < 0.3
+  // Occasionally use skill (only pick from affordable skills)
+  const affordableSkills = actor.skills.filter(sk => actor.mp >= sk.mpCost)
+  const useSkill = affordableSkills.length > 0 && Math.random() < 0.3
   if (useSkill) {
-    const skill = actor.skills[Math.floor(Math.random() * actor.skills.length)]
-    if (actor.mp >= skill.mpCost) {
-      actor.mp -= skill.mpCost
-      b.logs.push({ text: `🔥 ${actor.name}は「${skill.name}」を使った！`, type: 'status' })
-      const targets = skill.target === 'enemy_all'
-        ? aliveAllies
-        : skill.target === 'self'
-        ? [actor]
-        : [aliveAllies[Math.floor(Math.random() * aliveAllies.length)]]
-      for (const tgt of targets) applySkillEffect(b, actor, tgt, skill)
-      return advanceTurn(s)
-    }
+    const skill = affordableSkills[Math.floor(Math.random() * affordableSkills.length)]
+    actor.mp -= skill.mpCost
+    b.logs.push({ text: `🔥 ${actor.name}は「${skill.name}」を使った！`, type: 'status' })
+    const targets = skill.target === 'enemy_all'
+      ? aliveAllies
+      : skill.target === 'self'
+      ? [actor]
+      : [aliveAllies[Math.floor(Math.random() * aliveAllies.length)]]
+    for (const tgt of targets) applySkillEffect(b, actor, tgt, skill)
+    return advanceTurn(s)
   }
 
   // Normal attack on random ally
@@ -867,8 +866,12 @@ function applyBattleRewards(state: GameState): GameState {
 
   // ===== ボス撃破 =====
   if (b.isBoss) {
-    const bossUid = b.units.find(u => u.isBoss)?.uid
-    if (bossUid) s.defeatedBosses.push(bossUid)
+    const bossUnit = b.units.find(u => u.isBoss)
+    if (bossUnit) {
+      // UID形式 "enemy_0_<bossId>" から実際のbossIdを抽出して格納
+      const actualBossId = bossUnit.uid.replace(/^enemy_\d+_/, '')
+      s.defeatedBosses.push(actualBossId)
+    }
 
     if (b.isFinalBoss) {
       b.logs.push({ text: `🏆 終末記録体アーカイブを討伐した！ルミナ大陸に平和が戻った！`, type: 'system' })
@@ -971,6 +974,7 @@ export function wander(state: GameState): GameState {
       const newSkill = PLAYER_SKILL_SCHEDULE.find(ps => ps.level === s.playerLevel)
       if (newSkill && !s.playerSkills.some(sk => sk.id === newSkill.skill.id)) s.playerSkills.push(newSkill.skill)
     }
+    const leveledUpNames: string[] = []
     for (const cid of s.party) {
       const c = s.companions[cid]
       if (!c.joined || !c.alive) continue
@@ -984,9 +988,11 @@ export function wander(state: GameState): GameState {
         c.atk += def.atkGrowth; c.def += def.defGrowth; c.spd += def.spdGrowth
         const newCompSkill = def.learnableSkills?.find(ls => ls.level === c.level)
         if (newCompSkill && !c.learnedSkills.some(sk => sk.id === newCompSkill.skill.id)) c.learnedSkills.push(newCompSkill.skill)
+        leveledUpNames.push(def.name)
       }
     }
-    s.message = `💪 うろついて体を動かした。（EXP +${expGain}）`
+    const lvMsg = leveledUpNames.length > 0 ? ` ⭐${leveledUpNames.join('・')}もレベルアップ！` : ''
+    s.message = `💪 うろついて体を動かした。（EXP +${expGain}）${lvMsg}`
   } else if (roll < 0.70) {
     const items: Array<{itemId: string; qty: number}> = [
       { itemId: 'potion', qty: 1 },
@@ -1047,7 +1053,7 @@ export function fightBoss(state: GameState): GameState {
   const s = deepClone(state)
   const loc = LOCATIONS[s.currentLocId]
   if (!loc.bossId) return s
-  if (s.defeatedBosses.some(id => id.includes(loc.bossId!))) {
+  if (s.defeatedBosses.includes(loc.bossId!)) {
     return { ...s, message: 'ボスは既に倒した。' }
   }
   return startBattle(s, [loc.bossId], true)

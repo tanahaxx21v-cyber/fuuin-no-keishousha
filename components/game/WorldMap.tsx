@@ -153,7 +153,7 @@ export default function WorldMap({ gs, onTravel, onEnterLocation, getAvailableCo
           const isConnected = connectedIds.includes(locId)
           const isVisited   = gs.visitedLocs.includes(locId)
           const isLocked    = locId === 'desert_ruins' && finalBossLocked
-          const isBossDefeated = loc.bossId ? gs.defeatedBosses.some(id => id.includes(loc.bossId!)) : false
+          const isBossDefeated = loc.bossId ? gs.defeatedBosses.includes(loc.bossId) : false
           const canTravel   = isConnected && !isCurrent && !isLocked
           const shape = cfg?.shape ?? 'relay'
           const isCastle = shape === 'castle' || shape === 'final'
