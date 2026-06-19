@@ -104,12 +104,21 @@ export default function StatusBar({ gs, onSave, isMuted, onToggleMute }: Props) 
 
         {/* Party display (non-clickable) */}
         <div className="ml-auto flex items-center gap-1.5">
-          {gs.party.filter(id => gs.companions[id].alive).map(id => (
-            <span key={id} className="text-xl leading-none" title={COMPANIONS[id]?.name}>
-              {COMPANIONS[id]?.emoji ?? '👤'}
-            </span>
-          ))}
-          {gs.party.filter(id => gs.companions[id].alive).length === 0 && (
+          {gs.party.map(id => {
+            const c = gs.companions[id]
+            const def = COMPANIONS[id]
+            if (!def) return null
+            return c.alive ? (
+              <span key={id} className="text-xl leading-none" title={def.name}>
+                {def.emoji}
+              </span>
+            ) : (
+              <span key={id} className="text-xl leading-none grayscale opacity-30" title={`${def.name}（永眠）`}>
+                {def.emoji}
+              </span>
+            )
+          })}
+          {gs.party.length === 0 && (
             <span className="text-xs text-gray-600 font-bold">仲間なし</span>
           )}
         </div>

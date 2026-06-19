@@ -153,6 +153,7 @@ export default function WorldMap({ gs, onTravel, onEnterLocation, getAvailableCo
           const isConnected = connectedIds.includes(locId)
           const isVisited   = gs.visitedLocs.includes(locId)
           const isLocked    = locId === 'desert_ruins' && finalBossLocked
+          const isBossDefeated = loc.bossId ? gs.defeatedBosses.some(id => id.includes(loc.bossId!)) : false
           const canTravel   = isConnected && !isCurrent && !isLocked
           const shape = cfg?.shape ?? 'relay'
           const isCastle = shape === 'castle' || shape === 'final'
@@ -183,8 +184,11 @@ export default function WorldMap({ gs, onTravel, onEnterLocation, getAvailableCo
                 className={canTravel ? 'hover:scale-110 active:scale-95' : ''}
               >
                 {cfg?.icon ?? '📍'}
-                {isVisited && !isCurrent && (
+                {isVisited && !isCurrent && !isBossDefeated && (
                   <span style={{ position:'absolute', top:-4, right:-4, fontSize:8, background:'#204820', border:'1px solid #40a040', borderRadius:'50%', width:10, height:10, display:'flex', alignItems:'center', justifyContent:'center', color:'#60c060', fontWeight:'bold' }}>✓</span>
+                )}
+                {isBossDefeated && !isCurrent && (
+                  <span style={{ position:'absolute', top:-5, right:-5, fontSize:9 }}>👑</span>
                 )}
                 {canTravel && days !== undefined && (
                   <span style={{ position:'absolute', bottom:-7, left:'50%', transform:'translateX(-50%)', fontSize:8, background:'#0a2040', border:'1px solid #4080c0', borderRadius:4, padding:'0 3px', color:'#80c8ff', fontWeight:'bold', whiteSpace:'nowrap' }}>{days}日</span>
