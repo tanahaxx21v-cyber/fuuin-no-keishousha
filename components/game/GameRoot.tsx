@@ -114,8 +114,8 @@ export default function GameRoot() {
   }
 
   const handleTravel = (destId: LocationId) => {
-    setGs(prev => {
-      const traveled = travel(prev, destId)
+    update(s => {
+      const traveled = travel(s, destId)
       if (traveled.phase !== 'location') return traveled
       const eventId = checkLocationEvent(traveled)
       if (eventId) return startEvent(traveled, eventId)
