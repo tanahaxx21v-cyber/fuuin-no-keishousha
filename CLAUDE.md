@@ -118,6 +118,13 @@
 - ✅ pendingBranch: コスト不足の選択肢をdisable化＋理由テキスト表示
 - ✅ pendingBranch: winChance選択肢に「⚡ 成功確率: XX%」を表示
 
+### 2026-06-20 第5セッション追加修正（自律改善継続）
+- ✅ WinScreen: ep.extra(gs.playerName)が同一render内で2回呼ばれていたのをextraLines変数に抽出
+- ✅ BattleState型: pendingSkill/pendingItemIdフィールドはengine.tsで未使用のdead fieldのため削除
+- ✅ GameRoot.handleBattleSkill: 無効なItemDef効果値'heal_hp'/'heal_ally_hp'をincludes配列から除去
+- ✅ EventScene: speakerが'player'の時はhardcoded speakerName('レオン')ではなくgs.playerNameを表示（47件のイベントセリフでプレイヤー名が反映されない問題修正）
+- ✅ engine.ts advanceTurn: プレイヤー死亡時に即ゲームオーバー適用（HP=0で仲間が勝利するとHP=0のまま移動画面に戻るバグ修正）
+
 ### 2026-06-20 第4セッション追加修正（自律改善継続）
 - ✅ TitleScreen: セーブあり時に自動ロードせず「コンティニュー」ボタンを表示（hasSave/onContinue対応）
 - ✅ GameRoot: hasSave状態がWin/GameOver後のリスタートでリセットされないバグを修正（setHasSave(false)追加）
