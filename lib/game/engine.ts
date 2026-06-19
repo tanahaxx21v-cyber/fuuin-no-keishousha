@@ -926,6 +926,14 @@ export function closeBattle(state: GameState): GameState {
   syncBattleToState(s)
   s.battle = undefined
 
+  // バトル終了時（勝利・敗北問わず）ステータス異常をクリア（JRPGスタンダード）
+  s.playerStatus = []
+  for (const id of Object.keys(s.companions) as CompanionId[]) {
+    if (s.companions[id].joined && s.companions[id].alive) {
+      s.companions[id].statusEffects = []
+    }
+  }
+
   if (defeated) {
     s.phase = 'gameover'
   } else if (isFinal) {
