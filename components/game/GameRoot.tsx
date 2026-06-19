@@ -414,20 +414,33 @@ export default function GameRoot() {
         {gs.pendingBranch && gs.phase === 'location' && (
           <div className="fixed inset-0 z-50 flex flex-col items-center justify-end pb-8 px-4" style={{ background: 'rgba(0,0,0,0.85)' }}>
             <div className="w-full max-w-md bg-[#0c0c24] border-2 border-amber-600 rounded-2xl p-5 shadow-2xl">
-              <div className="text-xs font-black text-amber-500 mb-1 tracking-widest text-center">— 選択 —</div>
+              <div className="flex items-center justify-between mb-1">
+                <div className="text-xs font-black text-amber-500 tracking-widest">— 選択 —</div>
+                <div className="text-xs font-black text-amber-300 bg-amber-950 border border-amber-800 rounded px-2 py-0.5">💰 {gs.gold}G</div>
+              </div>
               {gs.pendingBranch.prompt && (
                 <div className="text-base font-bold text-white text-center mb-4 px-2">{gs.pendingBranch.prompt}</div>
               )}
               <div className="flex flex-col gap-3">
-                {gs.pendingBranch.options.map((opt, i) => (
-                  <button
-                    key={i}
-                    onClick={() => handleChooseBranch(i)}
-                    className="w-full py-3 px-4 bg-indigo-900 hover:bg-indigo-800 border-2 border-indigo-500 text-white font-black rounded-xl transition active:scale-95 text-sm text-left"
-                  >
-                    ▶ {opt.label}
-                  </button>
-                ))}
+                {gs.pendingBranch.options.map((opt, i) => {
+                  const cantAfford = opt.cost !== undefined && gs.gold < opt.cost
+                  return (
+                    <button
+                      key={i}
+                      onClick={() => handleChooseBranch(i)}
+                      disabled={cantAfford}
+                      className="w-full py-3 px-4 bg-indigo-900 hover:bg-indigo-800 border-2 border-indigo-500 text-white font-black rounded-xl transition active:scale-95 text-sm text-left disabled:opacity-40 disabled:cursor-not-allowed"
+                    >
+                      <div>▶ {opt.label}</div>
+                      {opt.winChance !== undefined && (
+                        <div className="text-xs text-yellow-400 mt-0.5">⚡ 成功確率: {Math.round(opt.winChance * 100)}%</div>
+                      )}
+                      {cantAfford && (
+                        <div className="text-xs text-red-400 mt-0.5">所持金不足 （必要: {opt.cost}G）</div>
+                      )}
+                    </button>
+                  )
+                })}
               </div>
             </div>
           </div>
