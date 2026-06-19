@@ -144,7 +144,7 @@ function EnemyDisplay({ enemies, isBoss, isTargetingEnemies, onSelectTarget }: {
                   <span className="absolute -top-3 left-1/2 -translate-x-1/2 text-yellow-300 font-black text-base animate-bounce">▼</span>
                 )}
               </button>
-              {/* HP bar + name */}
+              {/* HP bar + name + status */}
               <div style={{ width: isLarge ? 80 : 56 }}>
                 <div className="w-full h-1.5 bg-black/60 border border-white/20 rounded-sm overflow-hidden">
                   <div className="h-full transition-all duration-300" style={{ width: `${hpPct}%`, backgroundColor: hpFill }} />
@@ -152,6 +152,13 @@ function EnemyDisplay({ enemies, isBoss, isTargetingEnemies, onSelectTarget }: {
                 <div className="text-[8px] font-black text-center mt-0.5" style={{ color: '#fff', textShadow: '0 1px 3px #000,0 0 6px #000' }}>
                   {e.name}
                 </div>
+                {e.statusEffects.length > 0 && (
+                  <div className="flex justify-center gap-0.5 mt-0.5">
+                    {e.statusEffects.map(ef => (
+                      <span key={ef.id} style={{ fontSize: 9 }}>{statusIcon(ef.id)}</span>
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
           )
@@ -159,6 +166,29 @@ function EnemyDisplay({ enemies, isBoss, isTargetingEnemies, onSelectTarget }: {
       </div>
     </div>
   )
+}
+
+function statusIcon(id: string): string {
+  switch (id) {
+    case 'poison': return '☠️'
+    case 'stun': return '💫'
+    case 'atk_up': return '⬆️'
+    case 'def_up': return '🛡️'
+    case 'atk_down': return '⬇️'
+    default: return ''
+  }
+}
+
+function logColor(type: string): string {
+  switch (type) {
+    case 'damage': return '#fca5a5'
+    case 'critical': return '#fde047'
+    case 'heal': return '#86efac'
+    case 'death': return '#f87171'
+    case 'status': return '#93c5fd'
+    case 'system': return '#fcd34d'
+    default: return '#ffffff'
+  }
 }
 
 function HpBar({ hp, maxHp, color = 'green' }: { hp: number; maxHp: number; color?: 'green' | 'blue' }) {
@@ -237,6 +267,15 @@ export default function BattleScene({ gs, onAttack, onSkill, onItem, onFlee, onC
             <HpBar hp={playerUnit.mp} maxHp={playerUnit.maxMp} color="blue" />
             <span className="text-[9px] text-blue-200 w-16 text-right shrink-0">{playerUnit.mp}/{playerUnit.maxMp}</span>
           </div>
+          {playerUnit.statusEffects.length > 0 && (
+            <div className="flex gap-1 flex-wrap">
+              {playerUnit.statusEffects.map(e => (
+                <span key={e.id} className="text-[9px] bg-slate-900 border border-slate-700 rounded px-1 leading-tight" style={{ color: e.id === 'poison' ? '#f87171' : e.id === 'stun' ? '#fde047' : e.id === 'atk_down' ? '#fca5a5' : '#86efac' }}>
+                  {statusIcon(e.id)}{e.turnsLeft}
+                </span>
+              ))}
+            </div>
+          )}
         </div>
       </div>
 
@@ -317,9 +356,9 @@ export default function BattleScene({ gs, onAttack, onSkill, onItem, onFlee, onC
           }}>
           {latestLog ? (
             <>
-              <div className="text-sm font-black text-white leading-snug">▶ {latestLog.text}</div>
+              <div className="text-sm font-black leading-snug" style={{ color: logColor(latestLog.type) }}>▶ {latestLog.text}</div>
               {[...prevLogs].reverse().map((log, i) => (
-                <div key={i} className="text-xs text-gray-500 leading-snug mt-0.5 ml-3">{log.text}</div>
+                <div key={i} className="text-xs leading-snug mt-0.5 ml-3" style={{ color: logColor(log.type), opacity: 0.55 }}>{log.text}</div>
               ))}
             </>
           ) : (
