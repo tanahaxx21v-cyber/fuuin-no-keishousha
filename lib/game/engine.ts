@@ -714,15 +714,29 @@ function advanceTurn(state: GameState): GameState {
   // バトルログの上限管理（最大25件）
   if (b.logs.length > 25) b.logs = b.logs.slice(b.logs.length - 25)
 
-  // Apply poison to all units
+  // Apply poison & decay buffs/debuffs for all units
   for (const unit of b.units) {
+    if (unit.hp <= 0) continue
     const poison = unit.statusEffects.find(e => e.id === 'poison')
-    if (poison && unit.hp > 0) {
+    if (poison) {
       const dmg = 8
       unit.hp = Math.max(0, unit.hp - dmg)
       b.logs.push({ text: `☠️ ${unit.name}は毒で${dmg}ダメージ！`, type: 'damage' })
       poison.turnsLeft -= 1
       if (poison.turnsLeft <= 0) unit.statusEffects = unit.statusEffects.filter(e => e.id !== 'poison')
+    }
+    // Decay atk_up, def_up, atk_down
+    for (const buffId of ['atk_up', 'def_up', 'atk_down'] as const) {
+      const eff = unit.statusEffects.find(e => e.id === buffId)
+      if (eff) {
+        eff.turnsLeft -= 1
+        if (eff.turnsLeft <= 0) {
+          unit.statusEffects = unit.statusEffects.filter(e => e.id !== buffId)
+          if (buffId === 'atk_up') b.logs.push({ text: `${unit.name}のATK UPが切れた`, type: 'status' })
+          else if (buffId === 'def_up') b.logs.push({ text: `${unit.name}のDEF UPが切れた`, type: 'status' })
+          else if (buffId === 'atk_down') b.logs.push({ text: `${unit.name}の攻撃力が戻った`, type: 'status' })
+        }
+      }
     }
   }
 
@@ -805,10 +819,10 @@ function applyBattleRewards(state: GameState): GameState {
     }
   }
 
-  // ===== 仲間EXP & レベルアップ（パーティメンバーのみ）=====
+  // ===== 仲間EXP & レベルアップ（生存パーティメンバーのみ）=====
   for (const cid of s.party) {
     const c = s.companions[cid]
-    if (!c.joined) continue
+    if (!c.joined || !c.alive) continue
     const def = COMPANIONS[cid]
     c.exp += expGain
     while (c.exp >= getExpToNext(c.level) && c.level < 30) {
@@ -1025,7 +1039,8 @@ export function checkWinCondition(state: GameState): GameState {
 // ===== HELPER FUNCTIONS =====
 
 function calcDamage(attacker: BattleUnit, target: BattleUnit): { dmg: number; crit: boolean } {
-  const atkMod = attacker.statusEffects.find(e => e.id === 'atk_up') ? 1.5 : 1
+  const atkMod = attacker.statusEffects.find(e => e.id === 'atk_up') ? 1.5
+    : attacker.statusEffects.find(e => e.id === 'atk_down') ? 0.65 : 1
   const defMod = target.statusEffects.find(e => e.id === 'def_up') ? 0.6 : 1
   const base = Math.max(1, (attacker.atk * atkMod) - (target.def * defMod / 2))
   const variance = base * 0.2 * (Math.random() * 2 - 1)
@@ -1061,7 +1076,8 @@ function applySkillEffect(battle: BattleState, actor: BattleUnit, target: Battle
   switch (skill.effect) {
     case 'damage':
     case 'boss_bonus': {
-      const atkMod = actor.statusEffects.find(e => e.id === 'atk_up') ? 1.5 : 1
+      const atkMod = actor.statusEffects.find(e => e.id === 'atk_up') ? 1.5
+        : actor.statusEffects.find(e => e.id === 'atk_down') ? 0.65 : 1
       const defMod = target.statusEffects.find(e => e.id === 'def_up') ? 0.6 : 1
       const sealBonus = skill.effect === 'boss_bonus' ? 1.5 : 1.0
       const base = Math.max(1, (actor.atk * atkMod * skill.power * sealBonus) - (target.def * defMod / 2))
@@ -1110,9 +1126,9 @@ function applySkillEffect(battle: BattleState, actor: BattleUnit, target: Battle
       break
     }
     case 'debuff_atk': {
-      // Remove atk_up if any, add debuff
       target.statusEffects = target.statusEffects.filter(e => e.id !== 'atk_up')
-      if (!target.statusEffects.find(e => e.id === 'atk_up')) {
+      if (!target.statusEffects.find(e => e.id === 'atk_down')) {
+        target.statusEffects.push({ id: 'atk_down', name: 'ATK DOWN', turnsLeft: 3 })
         battle.logs.push({ text: `⬇️ ${target.name}の攻撃力が下がった！`, type: 'status' })
       }
       break

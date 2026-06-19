@@ -99,7 +99,7 @@ export type CompanionId =
 
 export type SealStone = 'fire' | 'storm' | 'dark'
 
-export type StatusEffectId = 'poison' | 'stun' | 'atk_up' | 'def_up'
+export type StatusEffectId = 'poison' | 'stun' | 'atk_up' | 'def_up' | 'atk_down'
 
 export interface StatusEffect {
   id: StatusEffectId

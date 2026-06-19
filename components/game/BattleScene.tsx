@@ -260,7 +260,7 @@ export default function BattleScene({ gs, onAttack, onSkill, onItem, onFlee, onC
           {allies.filter(a => !a.isPlayer).map(a => {
             const charId = a.companionId ?? 'gares'
             const statusIcons = a.statusEffects.map(e =>
-              e.id === 'poison' ? '☠️' : e.id === 'stun' ? '💫' : e.id === 'atk_up' ? '⬆️' : e.id === 'def_up' ? '🛡️' : ''
+              e.id === 'poison' ? '☠️' : e.id === 'stun' ? '💫' : e.id === 'atk_up' ? '⬆️' : e.id === 'def_up' ? '🛡️' : e.id === 'atk_down' ? '⬇️' : ''
             ).filter(Boolean)
             return (
               <div key={a.uid} className="flex items-center gap-1">
