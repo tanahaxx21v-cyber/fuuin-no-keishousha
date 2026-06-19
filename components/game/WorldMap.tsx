@@ -47,7 +47,7 @@ const LOC_CFG: Partial<Record<LocationId, { icon: string; color: string; border:
   great_bridge:    { icon: '🌉', color: '#1a2030', border: '#507090', shape: 'relay', label: '大橋' },
   riverside:       { icon: '🌊', color: '#1a2828', border: '#407878', shape: 'relay', label: '川辺の村' },
   watchtower:      { icon: '🗼', color: '#282020', border: '#806040', shape: 'relay', label: '見張り塔' },
-  lighthouse:      { icon: '💡', color: '#101828', border: '#305080', shape: 'relay', label: '灯台岬' },
+  lighthouse:      { icon: '🏮', color: '#0a1520', border: '#2060a0', shape: 'dungeon', label: '灯台岬' },
   spirit_spring:   { icon: '💧', color: '#182418', border: '#408040', shape: 'relay', label: '精霊の泉' },
   trading_post:    { icon: '🛒', color: '#282018', border: '#806030', shape: 'relay', label: '交易所' },
   coastal_road:    { icon: '🛣️', color: '#182028', border: '#405868', shape: 'relay', label: '沿岸街道' },

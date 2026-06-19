@@ -699,12 +699,13 @@ export const LOCATIONS: Record<LocationId, LocationDef> = {
   },
   lighthouse: {
     id: 'lighthouse', name: '灯台岬', emoji: '🏮',
-    type: 'relay',
-    desc: '南西の岬に立つ灯台。海路の目印で、ミレアと川辺の村を結ぶ沿岸の中継地。',
+    type: 'dungeon',
+    desc: '南西の岬に立つ古い灯台。海の魔物が棲みつき、地下には潮王ネブラが支配する異空間が広がる。入口には小さな商人が店を開いている。',
     connections: ['mirea', 'riverside'],
     travelDays: { mirea: 1, riverside: 1 },
     shopItems: ['potion', 'antidote'],
-    travelEnemyPool: ['kuchipaku', 'mokumokumo'],
+    enemyPool: ['poyogaeru', 'yadotsubo', 'mokumokumo', 'kuchipaku'],
+    bossId: 'tidal_king',
   },
   spirit_spring: {
     id: 'spirit_spring', name: '精霊の泉', emoji: '💧',
