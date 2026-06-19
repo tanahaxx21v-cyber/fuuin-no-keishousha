@@ -108,7 +108,15 @@
 - ✅ processNonPlayerTurn: 二重deepClone除去（効率改善）
 - ✅ EnemyDisplay: getEnemyEmoji文字列マッチを廃止しe.emoji優先使用（tidal_king等の絵文字修正）
 - ✅ handleBattleFlee: 逃走成功後にcheckLocationEventを実行（イベント漏れ修正）
-- ✅ 全コミットをGitHubにpush済み（HEAD: 8666585）
+- ✅ processCompanionTurn: ally_all回復スキルのAI対応（リズの聖なる光・ガレスの聖騎士の誓いが使われない問題修正）
+- ✅ closeBattle: バトル終了時に全員のステータス異常をクリア（毒/スタン/バフ/デバフの次バトル持越し防止）
+
+### 2026-06-20 第3セッション追加修正（自律改善継続）
+- ✅ battleFlee: 成功時にsyncBattleToState未実行でHP/MPが逃走前に巻き戻るバグ修正
+- ✅ wander: 仲間レベルアップ時にスキル習得名もメッセージに表示（習得ログが出なかった問題修正）
+- ✅ pendingBranch選択肢オーバーレイ: StatusBar隠れ問題に対して手持ち金表示を追加
+- ✅ pendingBranch: コスト不足の選択肢をdisable化＋理由テキスト表示
+- ✅ pendingBranch: winChance選択肢に「⚡ 成功確率: XX%」を表示
 
 ---
 
