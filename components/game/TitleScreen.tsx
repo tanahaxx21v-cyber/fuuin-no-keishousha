@@ -5,6 +5,7 @@ import type { Difficulty } from '@/lib/game/types'
 
 interface Props {
   onStart: (diff: Difficulty) => void
+  onContinue?: () => void
   onDeleteSave?: () => void
   hasSave?: boolean
 }
@@ -15,8 +16,9 @@ const DIFFICULTIES: { id: Difficulty; name: string; desc: string; days: number; 
   { id: 'hard',   name: 'ハード',   desc: '日数80日 / 敵HP140% / 極限難易度',     days: 80,  color: 'border-red-700 bg-red-950 hover:bg-red-900',         textColor: 'text-red-400' },
 ]
 
-export default function TitleScreen({ onStart, onDeleteSave, hasSave }: Props) {
+export default function TitleScreen({ onStart, onContinue, onDeleteSave, hasSave }: Props) {
   const [selected, setSelected] = useState<Difficulty>('normal')
+  const [showNewGame, setShowNewGame] = useState(!hasSave)
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-[#07071a] relative overflow-hidden p-4">
@@ -51,40 +53,53 @@ export default function TitleScreen({ onStart, onDeleteSave, hasSave }: Props) {
           </div>
         </div>
 
-        {/* Difficulty select */}
-        <div className="bg-[#0c0c24] border-2 border-indigo-700 rounded-xl p-4 mb-4 shadow-xl">
-          <div className="text-xs font-black text-indigo-400 mb-3 tracking-wider">— 難易度を選択 —</div>
-          <div className="flex flex-col gap-2">
-            {DIFFICULTIES.map(d => (
-              <button
-                key={d.id}
-                onClick={() => setSelected(d.id)}
-                className={`border-2 rounded-lg px-4 py-3 text-left transition-all ${d.color} ${selected === d.id ? 'ring-2 ring-white/20 scale-[1.02]' : 'opacity-80'}`}
-              >
-                <div className="flex justify-between items-center">
-                  <span className={`font-black text-base ${d.textColor}`}>{d.name}</span>
-                  {selected === d.id && <span className="text-white text-xs font-bold">◀ 選択中</span>}
-                </div>
-                <div className="text-xs text-gray-400 mt-0.5">{d.desc}</div>
-              </button>
-            ))}
+        {/* Continue button — shown only when save exists */}
+        {hasSave && onContinue && (
+          <div className="mb-4">
+            <button
+              onClick={onContinue}
+              className="w-full py-4 bg-indigo-800 hover:bg-indigo-700 border-2 border-indigo-500 text-white font-black text-xl rounded-xl transition shadow-xl shadow-indigo-900/40 active:scale-95"
+            >
+              📂 コンティニュー
+            </button>
+            <button
+              onClick={() => setShowNewGame(v => !v)}
+              className="mt-2 w-full text-xs text-gray-500 hover:text-gray-300 transition text-center"
+            >
+              {showNewGame ? '▲ 新規ゲームを隠す' : '▼ 新規ゲームを開始する（セーブ上書き）'}
+            </button>
           </div>
-        </div>
+        )}
 
-        <button
-          onClick={() => onStart(selected)}
-          className="w-full py-4 bg-amber-700 hover:bg-amber-600 border-2 border-amber-500 text-white font-black text-xl rounded-xl transition shadow-xl shadow-amber-900/40 active:scale-95"
-        >
-          ⚔️ ゲームスタート
-        </button>
+        {/* Difficulty select */}
+        {showNewGame && (
+          <>
+            <div className="bg-[#0c0c24] border-2 border-indigo-700 rounded-xl p-4 mb-4 shadow-xl">
+              <div className="text-xs font-black text-indigo-400 mb-3 tracking-wider">— 難易度を選択 —</div>
+              <div className="flex flex-col gap-2">
+                {DIFFICULTIES.map(d => (
+                  <button
+                    key={d.id}
+                    onClick={() => setSelected(d.id)}
+                    className={`border-2 rounded-lg px-4 py-3 text-left transition-all ${d.color} ${selected === d.id ? 'ring-2 ring-white/20 scale-[1.02]' : 'opacity-80'}`}
+                  >
+                    <div className="flex justify-between items-center">
+                      <span className={`font-black text-base ${d.textColor}`}>{d.name}</span>
+                      {selected === d.id && <span className="text-white text-xs font-bold">◀ 選択中</span>}
+                    </div>
+                    <div className="text-xs text-gray-400 mt-0.5">{d.desc}</div>
+                  </button>
+                ))}
+              </div>
+            </div>
 
-        {hasSave && onDeleteSave && (
-          <button
-            onClick={onDeleteSave}
-            className="mt-3 w-full text-xs text-gray-600 hover:text-red-400 transition text-center"
-          >
-            🗑️ セーブデータを削除して最初から始める
-          </button>
+            <button
+              onClick={() => { if (hasSave && onDeleteSave) onDeleteSave(); onStart(selected) }}
+              className="w-full py-4 bg-amber-700 hover:bg-amber-600 border-2 border-amber-500 text-white font-black text-xl rounded-xl transition shadow-xl shadow-amber-900/40 active:scale-95"
+            >
+              ⚔️ {hasSave ? '新規ゲーム開始（セーブ上書き）' : 'ゲームスタート'}
+            </button>
+          </>
         )}
 
         <div className="mt-4 text-center text-xs text-gray-700">

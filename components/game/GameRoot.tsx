@@ -66,8 +66,8 @@ export default function GameRoot() {
   useEffect(() => {
     const saved = loadGame()
     if (saved) {
-      setGs(saved)
       setHasSave(true)
+      // Don't auto-load — show title screen so player can choose Continue vs New Game
     }
   }, [])
 
@@ -89,6 +89,11 @@ export default function GameRoot() {
     setHasSave(true)
     setSaveMsg('セーブしました！')
     setTimeout(() => setSaveMsg(null), 2000)
+  }
+
+  const handleContinue = () => {
+    const saved = loadGame()
+    if (saved) setGs(saved)
   }
 
   const handleDeleteSave = () => {
@@ -356,7 +361,8 @@ export default function GameRoot() {
         {gs.phase === 'title' && !pendingDiff && (
           <TitleScreen
             onStart={handleStart}
-            onDeleteSave={handleDeleteSave}
+            onContinue={hasSave ? handleContinue : undefined}
+            onDeleteSave={hasSave ? handleDeleteSave : undefined}
             hasSave={hasSave}
           />
         )}
@@ -445,8 +451,8 @@ export default function GameRoot() {
             </div>
           </div>
         )}
-        {gs.phase === 'win' && <WinScreen gs={gs} onRestart={() => { setGs(createInitialState('normal')); setPendingDiff(null) }} />}
-        {gs.phase === 'gameover' && <GameOverScreen gs={gs} onRestart={() => { setGs(createInitialState('normal')); setPendingDiff(null) }} />}
+        {gs.phase === 'win' && <WinScreen gs={gs} onRestart={() => { setGs(createInitialState('normal')); setPendingDiff(null); setHasSave(false) }} />}
+        {gs.phase === 'gameover' && <GameOverScreen gs={gs} onRestart={() => { setGs(createInitialState('normal')); setPendingDiff(null); setHasSave(false) }} />}
       </div>
     </div>
   )
