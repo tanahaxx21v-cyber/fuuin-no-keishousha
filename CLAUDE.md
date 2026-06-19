@@ -100,7 +100,15 @@
 - ✅ wanderで仲間がレベルアップした際にメッセージ通知追加
 - ✅ 灯台岬をrelay→dungeonに昇格・潮王ネブラ（tidal_king）を配置（未使用ボス解決）
 - ✅ types.tsコメント更新（lighthouse=dungeon反映）
-- ✅ 全コミットをGitHubにpush済み
+- ✅ chooseBranch: コスト不足時にpendingBranchを維持して再選択可能に（致命バグ修正）
+- ✅ loadGame: playerStatus/playerSkills/defeatedBosses等のnullガードを追加（防御的マイグレーション）
+- ✅ LocationView: pendingJoin満員時のボタンdisabled+警告表示
+- ✅ EventScene: branch付きイベント最終行インジケーター「▶ 選択肢へ」に修正
+- ✅ battleAttack/battleSkill/battleUseItem: non-null assertionを安全なチェックに変更
+- ✅ processNonPlayerTurn: 二重deepClone除去（効率改善）
+- ✅ EnemyDisplay: getEnemyEmoji文字列マッチを廃止しe.emoji優先使用（tidal_king等の絵文字修正）
+- ✅ handleBattleFlee: 逃走成功後にcheckLocationEventを実行（イベント漏れ修正）
+- ✅ 全コミットをGitHubにpush済み（HEAD: 8666585）
 
 ---
 
