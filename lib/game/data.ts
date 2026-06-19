@@ -1325,6 +1325,99 @@ export const EVENTS: GameEvent[] = [
     reward: { exp: 30, message: '敵の動向を把握した！（EXP +30）' },
   },
 
+  // ===== 仲間 Stage3（最終章・残り日数ベース）=====
+
+  {
+    id: 'galdo_cecil_final_study', title: 'セシルの最後の研究',
+    condition: { atLoc: 'galdo', requiredCompanions: ['cecil'], requiredEventCompleted: ['traveler_inn_cecil_research'], maxDaysLeft: 25 },
+    dialogues: [
+      { speaker: 'narrator', speakerName: '', text: 'ガルドの魔法塔。セシルは分厚い魔法書を抱えて現れた。' },
+      { speaker: 'cecil', speakerName: 'セシル', text: '……レオン。私はずっとこの旅のために準備していた。封印魔法の禁断書を解読した。' },
+      { speaker: 'player', speakerName: 'レオン', text: 'セシル、それは……？' },
+      { speaker: 'cecil', speakerName: 'セシル', text: '最終決戦で私が使える特殊な術式。魔王の防壁を一時的に破る魔法だ。危険だが、試す価値はある。' },
+      { speaker: 'narrator', speakerName: '', text: 'セシルの瞳が真剣な光を帯びた。知識の塊が、戦士へと変わる瞬間だった。' },
+    ],
+    reward: { exp: 90, message: '⭐ セシルの覚悟が伝わった！（EXP +90）' },
+  },
+
+  {
+    id: 'elna_bram_final_resolve', title: 'ブラムの覚悟',
+    condition: { atLoc: 'elna', requiredCompanions: ['bram'], requiredEventCompleted: ['forest_entrance_bram_wrestle'], maxDaysLeft: 25 },
+    dialogues: [
+      { speaker: 'narrator', speakerName: '', text: 'エルナの里。ブラムの故郷の墓地。彼は小さな墓石の前で頭を下げた。' },
+      { speaker: 'bram', speakerName: 'ブラム', text: 'おやじ……最後の戦いに行ってくる。俺が誇れる戦士になれたかはわからん。でも……前を向いて戦う。' },
+      { speaker: 'player', speakerName: 'レオン', text: 'ブラム……' },
+      { speaker: 'bram', speakerName: 'ブラム', text: 'ガハハ！泣いてねえぞ。目にゴミが入っただけだ！行くぞ、レオン！俺の大斧を振るわせてくれ！' },
+    ],
+    reward: { exp: 80, message: '⭐ ブラムとの絆が深まった！（EXP +80）' },
+  },
+
+  {
+    id: 'riverside_finn_final_growth', title: 'フィンの成長',
+    condition: { atLoc: 'riverside', requiredCompanions: ['finn'], requiredEventCompleted: ['checkpoint_finn_resolve'], maxDaysLeft: 25 },
+    dialogues: [
+      { speaker: 'narrator', speakerName: '', text: '川辺の村。水が静かに流れる。フィンが川面を見つめながら立っていた。' },
+      { speaker: 'finn', speakerName: 'フィン', text: 'レオン先輩……俺、最初は足手まといだって思ってたんです。でも今は違う。一人じゃないってわかって……強くなれた気がします。' },
+      { speaker: 'player', speakerName: 'レオン', text: 'フィン、お前は最初から強かった。成長したのは気持ちだ。' },
+      { speaker: 'finn', speakerName: 'フィン', text: '……！先輩！！ありがとうございます！最後まで、絶対ついていきます！！' },
+      { speaker: 'narrator', speakerName: '', text: 'フィンの目に力が宿った。見習い剣士が、真の戦士になった瞬間だった。' },
+    ],
+    reward: { exp: 85, message: '⭐ フィンが真の戦士に！（EXP +85）' },
+  },
+
+  {
+    id: 'demon_mine_iris_final_resolve', title: 'イリスの解放',
+    condition: { atLoc: 'demon_mine', requiredCompanions: ['iris'], requiredEventCompleted: ['dragon_pass_iris_freedom'], maxDaysLeft: 25 },
+    dialogues: [
+      { speaker: 'narrator', speakerName: '', text: '廃鉱山の入口。イリスは魔王軍の紋章が刻まれた石板を見つめた。' },
+      { speaker: 'iris', speakerName: 'イリス', text: '……私は長い間、この紋章を見るたびに恐怖を感じた。でも今は違う。' },
+      { speaker: 'iris', speakerName: 'イリス', text: 'レオン。私が魔王軍にいた時、こんな場所に何度も来た。次は敵として戻る。……それでいい。' },
+      { speaker: 'player', speakerName: 'レオン', text: 'イリス、お前の過去は関係ない。今一緒に戦ってくれる、それだけで充分だ。' },
+      { speaker: 'narrator', speakerName: '', text: 'イリスは静かに微笑んだ。過去から解き放たれた、清廉な笑顔だった。' },
+    ],
+    reward: { exp: 95, message: '⭐ イリスの過去から解放！（EXP +95）' },
+  },
+
+  {
+    id: 'mirea_sig_grand_plan', title: 'シグの大計画・最終版',
+    condition: { atLoc: 'mirea', requiredCompanions: ['sig'], requiredEventCompleted: ['lighthouse_sig_plan'], maxDaysLeft: 25 },
+    dialogues: [
+      { speaker: 'narrator', speakerName: '', text: 'ミレア港町の波止場。シグが複雑な図面を広げた。' },
+      { speaker: 'sig', speakerName: 'シグ', text: 'さあ、最後の大勝負だ！砂漠遺跡への最短ルートを完璧に計算した。それとね……魔王の弱点も調べといたよ。' },
+      { speaker: 'player', speakerName: 'レオン', text: 'シグ、本当に色々調べてたんですね。感心した。' },
+      { speaker: 'sig', speakerName: 'シグ', text: '詐欺師はね、情報が命なんだ。でも今回は本物の情報だよ。……レオン、信じてくれるよね？' },
+      { speaker: 'narrator', speakerName: '', text: 'シグの表情に、いつもの軽さの裏に熱いものが宿った。彼は本気だった。' },
+    ],
+    reward: { gold: 150, exp: 80, message: '💰 シグの情報力で補給金を確保！（EXP +80, +150G）' },
+  },
+
+  {
+    id: 'alseria_liz_final_blessing', title: 'リズの最後の祝福',
+    condition: { atLoc: 'alseria', requiredCompanions: ['liz'], requiredEventCompleted: ['spirit_spring_liz_miracle'], maxDaysLeft: 25 },
+    dialogues: [
+      { speaker: 'narrator', speakerName: '', text: 'アルセリアの礼拝堂。夜明け前。リズが一人で祈っていた。' },
+      { speaker: 'liz', speakerName: 'リズ', text: '……神様。どうかレオンをお守りください。この戦いを乗り越えられますように。' },
+      { speaker: 'narrator', speakerName: '', text: 'レオンが入ってきたことに気づいたリズは、驚いて立ち上がった。' },
+      { speaker: 'liz', speakerName: 'リズ', text: 'レ、レオン……いつからそこに？' },
+      { speaker: 'player', speakerName: 'レオン', text: 'リズ、いつも俺のために祈ってくれてありがとう。今度は俺があなたを守る番だ。' },
+      { speaker: 'liz', speakerName: 'リズ', text: '……（しばらく黙って、やがて微笑んで）　わかりました。最後まで共に戦います。あなたのそばで。' },
+    ],
+    reward: { exp: 90, fullHeal: true, message: '✨ リズの最後の祝福！パーティ全員HP/MPが全回復！（EXP +90）' },
+  },
+
+  {
+    id: 'checkpoint_noa_rival_finale', title: 'ノアの誓い',
+    condition: { atLoc: 'checkpoint', requiredCompanions: ['noa'], requiredEventCompleted: ['watchtower_noa_rival'], maxDaysLeft: 25 },
+    dialogues: [
+      { speaker: 'narrator', speakerName: '', text: '東関所。かつてノアが見張りをしていた場所。彼は懐かしそうに辺りを見回した。' },
+      { speaker: 'noa', speakerName: 'ノア', text: 'ここから旅が始まったんだよな……。あの頃は自分がこんな戦いに加わるとは思ってなかった。' },
+      { speaker: 'player', speakerName: 'レオン', text: 'ノア、もし怖ければ……' },
+      { speaker: 'noa', speakerName: 'ノア', text: '怖い？ははっ！怖いに決まってるよ！でも一つだけ確かなことがある。レオン、お前のそばにいたい。それだけだよ。' },
+      { speaker: 'narrator', speakerName: '', text: 'ノアの屈託のない笑顔が、最終決戦前夜の重い空気を吹き飛ばした。' },
+    ],
+    reward: { exp: 80, gold: 50, message: '⭐ ノアとの絆が最高潮に！（EXP +80, +50G）' },
+  },
+
   // ===== 残り日数ベース強制イベント（PP4スタイル）=====
   {
     id: 'alseria_day60_warning', title: '王都の危機',

@@ -234,23 +234,27 @@ export default function LocationView({
       {gs.party.length > 0 && (
         <div className="bg-[#0c0c24] border-2 border-slate-700 rounded-xl p-3">
           <div className="text-xs font-black text-slate-400 mb-2 tracking-widest">— 現在のパーティ —</div>
+          {gs.party.some(id => gs.companions[id].alive && gs.companions[id].hp < gs.companions[id].maxHp * 0.3) && (
+            <div className="text-xs text-yellow-400 font-bold mb-2">⚠️ HPが危険な仲間がいます。宿屋で回復を！</div>
+          )}
           <div className="flex flex-wrap gap-2">
             {gs.party.map(id => {
               const c = gs.companions[id]
               const def = COMPANIONS[id]
               if (!c.joined) return null
               const hpPct = (c.hp / c.maxHp) * 100
+              const isLowHp = c.alive && hpPct < 30
               return (
-                <div key={id} className={`flex items-center gap-2 bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 ${!c.alive ? 'opacity-40' : ''}`}>
+                <div key={id} className={`flex items-center gap-2 rounded-lg px-3 py-2 border ${!c.alive ? 'bg-slate-900 border-red-900 opacity-40' : isLowHp ? 'bg-red-950 border-red-700 animate-pulse' : 'bg-slate-800 border-slate-700'}`}>
                   <span className="text-xl">{def.emoji}</span>
                   <div>
                     <div className="text-xs font-black text-white">{def.name}</div>
                     <div className="w-16 h-1.5 bg-gray-900 rounded-sm overflow-hidden mt-0.5">
                       <div className={`h-full ${hpPct > 50 ? 'bg-green-600' : hpPct > 25 ? 'bg-yellow-600' : 'bg-red-700'}`} style={{ width: `${hpPct}%` }} />
                     </div>
-                    <div className="text-xs text-gray-500">HP {c.hp}/{c.maxHp}</div>
+                    <div className={`text-xs ${isLowHp ? 'text-red-400 font-bold' : 'text-gray-500'}`}>HP {c.hp}/{c.maxHp}</div>
                   </div>
-                  {!c.alive && <span className="text-xs text-red-500 font-black">💀</span>}
+                  {!c.alive && <span className="text-xs text-red-500 font-black">💀永眠</span>}
                 </div>
               )
             })}
