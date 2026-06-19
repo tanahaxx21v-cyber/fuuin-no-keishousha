@@ -7,7 +7,7 @@ import {
   restAtInn, buyItem, enterDungeon, fightBoss, battleAttack,
   battleSkill, battleUseItem, battleFlee, closeBattle,
   processNonPlayerTurn, checkLocationEvent, startEvent, advanceEvent,
-  chooseBranch, wander, getAvailableConnections,
+  chooseBranch, wander, setParty, getAvailableConnections,
 } from '@/lib/game/engine'
 import { LOCATIONS } from '@/lib/game/data'
 import {
@@ -23,6 +23,7 @@ import WinScreen from './WinScreen'
 import GameOverScreen from './GameOverScreen'
 import StatusBar from './StatusBar'
 import EventScene from './EventScene'
+import PartyManage from './PartyManage'
 
 const SAVE_KEY = 'fuuin_save_v2'
 
@@ -161,6 +162,18 @@ export default function GameRoot() {
     update(s => wander(s))
   }
 
+  const handleOpenPartyManage = () => {
+    setGs(prev => ({ ...prev, phase: 'party_manage' }))
+  }
+
+  const handleSetParty = (party: CompanionId[]) => {
+    update(s => setParty(s, party))
+  }
+
+  const handleClosePartyManage = () => {
+    setGs(prev => ({ ...prev, phase: 'location' }))
+  }
+
   const handleSkipCompanion = () => {
     update(s => skipCompanion(s))
   }
@@ -254,7 +267,7 @@ export default function GameRoot() {
   return (
     <div className="min-h-screen bg-gray-950 text-gray-100 flex flex-col">
       {/* Status bar — shown during gameplay */}
-      {['worldmap', 'location', 'battle', 'shop', 'event'].includes(gs.phase) && (
+      {['worldmap', 'location', 'battle', 'shop', 'event', 'party_manage'].includes(gs.phase) && (
         <StatusBar
           gs={gs}
           onSave={handleManualSave}
@@ -348,7 +361,11 @@ export default function GameRoot() {
             onJoinCompanion={handleJoinCompanion}
             onSkipCompanion={handleSkipCompanion}
             onWander={handleWander}
+            onOpenPartyManage={handleOpenPartyManage}
           />
+        )}
+        {gs.phase === 'party_manage' && (
+          <PartyManage gs={gs} onSetParty={handleSetParty} onClose={handleClosePartyManage} />
         )}
         {gs.phase === 'battle' && gs.battle && (
           <BattleScene

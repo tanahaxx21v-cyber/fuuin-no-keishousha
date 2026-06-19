@@ -73,13 +73,12 @@ export default function EventScene({ gs, onAdvance }: Props) {
         {!isNarrator && (
           <div className="mb-4 flex flex-col items-center gap-1">
             <div
-              className="flex items-center justify-center rounded-full border-2"
+              className={`flex items-center justify-center rounded-full border-2 ${cfg.border}`}
               style={{
                 width: 72, height: 72,
                 fontSize: 36,
                 background: 'rgba(10,10,30,0.9)',
-                borderColor: cfg.border.replace('border-', '').split('-').join('-'),
-                boxShadow: `0 0 20px rgba(99,102,241,0.3)`,
+                boxShadow: `0 0 24px rgba(99,102,241,0.4)`,
               }}
             >
               {cfg.emoji}

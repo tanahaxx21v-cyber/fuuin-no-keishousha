@@ -13,10 +13,11 @@ interface Props {
   onJoinCompanion: (id: CompanionId) => void
   onSkipCompanion: () => void
   onWander?: () => void
+  onOpenPartyManage?: () => void
 }
 
 export default function LocationView({
-  gs, onBackToMap, onInn, onOpenShop, onEnterDungeon, onFightBoss, onJoinCompanion, onSkipCompanion, onWander
+  gs, onBackToMap, onInn, onOpenShop, onEnterDungeon, onFightBoss, onJoinCompanion, onSkipCompanion, onWander, onOpenPartyManage
 }: Props) {
   const loc = LOCATIONS[gs.currentLocId]
   const companion = loc.companionId ? COMPANIONS[loc.companionId] : undefined
@@ -203,6 +204,19 @@ export default function LocationView({
               <div>
                 <div className="font-black text-sm">うろつく</div>
                 <div className="text-xs text-gray-400">1日消費・アイテム/EXP/Gをランダムに発見</div>
+              </div>
+            </button>
+          )}
+
+          {onOpenPartyManage && Object.values(gs.companions).some(c => c.joined && c.alive) && (
+            <button
+              onClick={onOpenPartyManage}
+              className="w-full py-3 px-4 bg-slate-900 hover:bg-slate-800 border-2 border-slate-700 text-white rounded-xl transition text-left flex items-center gap-3 active:scale-95"
+            >
+              <span className="text-xl">👥</span>
+              <div>
+                <div className="font-black text-sm">パーティ編成</div>
+                <div className="text-xs text-gray-400">仲間の組み合わせを変更する</div>
               </div>
             </button>
           )}
