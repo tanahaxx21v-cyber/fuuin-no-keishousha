@@ -78,22 +78,26 @@
 
 ### まだ不足している要素
 1. **アルバム/実績システム** — 周回欲求刺激
-2. **ショップ値上がりシステム** — 10日毎1割UP（PP4の経済的緊張感）
+2. ~~ショップ値上がりシステム~~ — ✅ 実装済み（getItemPrice・getInnPrice）
 
 ---
 
 ## 現在の実装状態
 
-- `lib/game/types.ts` — GameEvent型・DialogueLine・イベント関連型・locVisitCounts・fullHeal定義済み
-- `lib/game/data.ts` — EVENTS配列51件、仲間13人定義済み
-- `lib/game/engine.ts` — getAvailableConnections・checkLocationEvent（minVisitCount対応）・startEvent・advanceEvent・applyEventReward（fullHeal対応）・wander・setParty実装済み
+- `lib/game/types.ts` — GameEvent型・DialogueLine・イベント関連型・locVisitCounts・fullHeal・atk_down定義済み
+- `lib/game/data.ts` — EVENTS配列51件、仲間13人・getItemPrice・getInnPrice実装済み
+- `lib/game/engine.ts` — checkLocationEvent（minVisitCount対応）・applyEventReward（fullHeal対応）・wander・setParty・getInnPrice/getItemPrice totalDays対応・バフ/デバフターン管理・debuff_atk実装済み
 - `components/game/EventScene.tsx` — パワポケ4スタイルの会話画面（ボーダーカラーバグ修正済み）
-- `components/game/WorldMap.tsx` — 21拠点マップ
+- `components/game/WorldMap.tsx` — 21拠点マップ・ボス討伐👑表示
 - `components/game/GameRoot.tsx` — イベント統合・PartyManage統合・メッセージトースト色分け済み
-- `components/game/LocationView.tsx` — うろつく・パーティ編成ボタン・低HPパーティ警告表示
-- `components/game/StatusBar.tsx` — EXPバー追加済み
-- `components/game/PartyManage.tsx` — パーティ編成画面（GameRootに統合済み）
-- `components/game/BattleScene.tsx` — 状態異常アイコン・PP4スタイルバトル
+- `components/game/LocationView.tsx` — うろつく・パーティ編成ボタン・低HPパーティ警告・宿屋動的価格表示
+- `components/game/StatusBar.tsx` — EXPバー・死亡仲間グレーアウト表示
+- `components/game/PartyManage.tsx` — パーティ編成画面（死亡仲間スロット占有バグ修正済み）
+- `components/game/BattleScene.tsx` — 状態異常アイコン（atk_down⬇️含む）・PP4スタイルバトル
+- `components/game/ShopView.tsx` — 物価上昇バナー・赤字価格・difficulty対応totalDays
+- `components/game/TitleScreen.tsx` — 動的日数サブタイトル・正確な難易度説明
+- `components/game/WinScreen.tsx` — エピローグ死亡仲間💀バッジ・日本語難易度名
+- `components/game/GameOverScreen.tsx` — 日本語難易度名
 
 ## 直近の未解決課題
 
@@ -103,8 +107,13 @@
 - [x] 各仲間のStage3（最終章）イベント — 実装済み
 - [x] 残り日数ベース強制イベント — 実装済み
 - [x] 訪問回数カウントシステム — 実装済み
+- [x] ショップ・宿屋値上がりシステム — 実装済み
+- [x] debuff_atk・バフ永続バグ — 修正済み
+- [x] 価格計算totalDays難易度対応 — 修正済み
+- [x] PartyManage死亡仲間スロットバグ — 修正済み
 - [ ] QCスコア → 190点以上（採点待ち）
 - [ ] デプロイ（オーナー承認待ち）
+- [ ] アルバム/実績システム（optional）
 
 ---
 
