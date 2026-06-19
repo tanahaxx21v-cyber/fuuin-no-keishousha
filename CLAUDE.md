@@ -118,6 +118,12 @@
 - ✅ pendingBranch: コスト不足の選択肢をdisable化＋理由テキスト表示
 - ✅ pendingBranch: winChance選択肢に「⚡ 成功確率: XX%」を表示
 
+### 2026-06-20 第4セッション追加修正（自律改善継続）
+- ✅ TitleScreen: セーブあり時に自動ロードせず「コンティニュー」ボタンを表示（hasSave/onContinue対応）
+- ✅ GameRoot: hasSave状態がWin/GameOver後のリスタートでリセットされないバグを修正（setHasSave(false)追加）
+- ✅ fightBoss: engine側にrequireAllStonesガードを追加（UI依存だけでは不十分）
+- ✅ 全コードレビュー完了: WorldMap・LocationView・BattleScene・StatusBar・ShopView・data.tsイベント51件・engine.ts全関数に問題なし
+
 ---
 
 ## 現在の実装状態
