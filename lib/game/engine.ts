@@ -1,6 +1,6 @@
 import type {
   GameState, BattleState, BattleUnit, CompanionState,
-  Skill, StatusEffect, SealStone, CompanionId, Difficulty, LocationId
+  Skill, StatusEffect, SealStone, CompanionId, Difficulty, LocationId, BranchOption
 } from './types'
 import { COMPANIONS, ENEMIES, ITEMS, LOCATIONS, EVENTS, PLAYER_SKILL_SCHEDULE, getExpToNext, getDifficultyMultiplier } from './data'
 
@@ -129,6 +129,8 @@ export function checkLocationEvent(state: GameState): string | null {
     if (cond.requiredSeals && !cond.requiredSeals.every(seal => state.sealStones.includes(seal))) continue
     if (cond.requiredDefeated && !cond.requiredDefeated.every(b => state.defeatedBosses.includes(b))) continue
     if (cond.minPlayerLevel !== undefined && state.playerLevel < cond.minPlayerLevel) continue
+    if (cond.requiredEventCompleted && !cond.requiredEventCompleted.every(e => state.completedEvents.includes(e))) continue
+    if (cond.blockIfEventCompleted && cond.blockIfEventCompleted.some(e => state.completedEvents.includes(e))) continue
     return ev.id
   }
   return null
@@ -148,30 +150,19 @@ export function advanceEvent(state: GameState): GameState {
   if (!ev) { s.phase = 'location'; s.activeEventId = undefined; s.activeEventLine = undefined; return s }
   const nextLine = (s.activeEventLine ?? 0) + 1
   if (nextLine >= ev.dialogues.length) {
+    // 選択肢がある場合は分岐を保留
+    if (ev.branch) {
+      s.pendingBranch = { eventId: ev.id, options: ev.branch.options }
+      s.activeEventId = undefined
+      s.activeEventLine = undefined
+      s.phase = 'location'
+      return s
+    }
     s.completedEvents.push(ev.id)
     s.activeEventId = undefined
     s.activeEventLine = undefined
     if (ev.reward) {
-      if (ev.reward.gold) s.gold += ev.reward.gold
-      if (ev.reward.exp) {
-        s.playerExp += ev.reward.exp
-        while (s.playerExp >= getExpToNext(s.playerLevel) && s.playerLevel < 30) {
-          s.playerExp -= getExpToNext(s.playerLevel)
-          s.playerLevel++
-          s.playerMaxHp += 12; s.playerHp = Math.min(s.playerHp + 12, s.playerMaxHp)
-          s.playerMaxMp += 5; s.playerMp = Math.min(s.playerMp + 5, s.playerMaxMp)
-          s.playerAtk += 2; s.playerDef += 2; s.playerSpd += 1
-          s.levelUpPending = true
-          const newSkill = PLAYER_SKILL_SCHEDULE.find(ps => ps.level === s.playerLevel)
-          if (newSkill && !s.playerSkills.some(sk => sk.id === newSkill.skill.id)) s.playerSkills.push(newSkill.skill)
-        }
-      }
-      if (ev.reward.itemId) {
-        const ex = s.inventory.find(i => i.itemId === ev.reward!.itemId)
-        if (ex) ex.qty += ev.reward.itemQty ?? 1
-        else s.inventory.push({ itemId: ev.reward.itemId, qty: ev.reward.itemQty ?? 1 })
-      }
-      if (ev.reward.message) s.message = ev.reward.message
+      applyEventReward(s, ev.reward)
     }
     s.phase = 'location'
   } else {
@@ -262,6 +253,44 @@ export function joinCompanion(state: GameState, companionId: CompanionId): GameS
   }
   s.pendingCompanionJoin = undefined
   return s
+}
+
+// ===== 選択肢決定 =====
+
+export function chooseBranch(state: GameState, choiceIndex: number): GameState {
+  if (!state.pendingBranch) return state
+  const s = deepClone(state)
+  const { eventId, options } = s.pendingBranch!
+  const chosen = options[choiceIndex]
+  s.pendingBranch = undefined
+  s.completedEvents.push(eventId)
+  if (chosen?.reward) {
+    applyEventReward(s, chosen.reward)
+  }
+  return s
+}
+
+function applyEventReward(s: GameState, reward: { gold?: number; exp?: number; itemId?: string; itemQty?: number; message: string }) {
+  if (reward.gold) s.gold += reward.gold
+  if (reward.exp) {
+    s.playerExp += reward.exp
+    while (s.playerExp >= getExpToNext(s.playerLevel) && s.playerLevel < 30) {
+      s.playerExp -= getExpToNext(s.playerLevel)
+      s.playerLevel++
+      s.playerMaxHp += 12; s.playerHp = Math.min(s.playerHp + 12, s.playerMaxHp)
+      s.playerMaxMp += 5; s.playerMp = Math.min(s.playerMp + 5, s.playerMaxMp)
+      s.playerAtk += 2; s.playerDef += 2; s.playerSpd += 1
+      s.levelUpPending = true
+      const newSkill = PLAYER_SKILL_SCHEDULE.find(ps => ps.level === s.playerLevel)
+      if (newSkill && !s.playerSkills.some(sk => sk.id === newSkill.skill.id)) s.playerSkills.push(newSkill.skill)
+    }
+  }
+  if (reward.itemId) {
+    const ex = s.inventory.find(i => i.itemId === reward.itemId)
+    if (ex) ex.qty += reward.itemQty ?? 1
+    else s.inventory.push({ itemId: reward.itemId, qty: reward.itemQty ?? 1 })
+  }
+  if (reward.message) s.message = reward.message
 }
 
 export function skipCompanion(state: GameState): GameState {

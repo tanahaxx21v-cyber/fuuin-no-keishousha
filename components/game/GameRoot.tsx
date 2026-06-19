@@ -7,7 +7,7 @@ import {
   restAtInn, buyItem, enterDungeon, fightBoss, battleAttack,
   battleSkill, battleUseItem, battleFlee, closeBattle,
   processNonPlayerTurn, checkLocationEvent, startEvent, advanceEvent,
-  getAvailableConnections,
+  chooseBranch, getAvailableConnections,
 } from '@/lib/game/engine'
 import { LOCATIONS } from '@/lib/game/data'
 import {
@@ -120,6 +120,10 @@ export default function GameRoot() {
 
   const handleEventAdvance = () => {
     update(s => advanceEvent(s))
+  }
+
+  const handleChooseBranch = (idx: number) => {
+    update(s => chooseBranch(s, idx))
   }
 
   const handleBackToMap = () => {
@@ -341,6 +345,24 @@ export default function GameRoot() {
               onJoinCompanion={() => {}} onSkipCompanion={() => {}}
             />
             <EventScene gs={gs} onAdvance={handleEventAdvance} />
+          </div>
+        )}
+        {gs.pendingBranch && gs.phase === 'location' && (
+          <div className="fixed inset-0 z-50 flex flex-col items-center justify-end pb-8 px-4" style={{ background: 'rgba(0,0,0,0.80)' }}>
+            <div className="w-full max-w-md bg-[#0c0c24] border-2 border-amber-600 rounded-2xl p-5 shadow-2xl">
+              <div className="text-xs font-black text-amber-400 mb-3 tracking-widest text-center">— どうする？ —</div>
+              <div className="flex flex-col gap-3">
+                {gs.pendingBranch.options.map((opt, i) => (
+                  <button
+                    key={i}
+                    onClick={() => handleChooseBranch(i)}
+                    className="w-full py-3 px-4 bg-indigo-900 hover:bg-indigo-800 border-2 border-indigo-500 text-white font-black rounded-xl transition active:scale-95 text-base"
+                  >
+                    {opt.label}
+                  </button>
+                ))}
+              </div>
+            </div>
           </div>
         )}
         {gs.phase === 'win' && <WinScreen gs={gs} onRestart={() => { setGs(createInitialState('normal')); setPendingDiff(null) }} />}

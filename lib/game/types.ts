@@ -18,6 +18,8 @@ export interface EventCondition {
   requiredSeals?: ('fire'|'storm'|'dark')[]
   requiredDefeated?: string[]
   minPlayerLevel?: number
+  requiredEventCompleted?: string[]  // 前提イベントID（連続イベント用）
+  blockIfEventCompleted?: string[]   // これらが完了済みなら発生しない
 }
 
 export interface EventReward {
@@ -28,12 +30,23 @@ export interface EventReward {
   message: string
 }
 
+export interface BranchOption {
+  label: string
+  reward?: EventReward
+}
+
+export interface EventBranch {
+  prompt: string
+  options: BranchOption[]
+}
+
 export interface GameEvent {
   id: string
   title: string
   condition: EventCondition
   dialogues: DialogueLine[]
   reward?: EventReward
+  branch?: EventBranch  // 最後のセリフ後に選択肢表示
 }
 
 export type Difficulty = 'easy' | 'normal' | 'hard'
@@ -282,4 +295,5 @@ export interface GameState {
   completedEvents: string[]
   activeEventId?: string
   activeEventLine?: number
+  pendingBranch?: { eventId: string; options: BranchOption[] }
 }
