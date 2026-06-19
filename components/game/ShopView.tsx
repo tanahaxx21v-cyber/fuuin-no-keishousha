@@ -1,7 +1,7 @@
 'use client'
 
 import type { GameState } from '@/lib/game/types'
-import { LOCATIONS, ITEMS } from '@/lib/game/data'
+import { LOCATIONS, ITEMS, getItemPrice } from '@/lib/game/data'
 
 interface Props {
   gs: GameState
@@ -32,6 +32,19 @@ export default function ShopView({ gs, onBuy, onClose }: Props) {
         </div>
       </div>
 
+      {/* Price tier info */}
+      {(() => {
+        const daysSpent = 100 - gs.daysLeft
+        const tiers = Math.min(5, Math.floor(daysSpent / 10))
+        if (tiers === 0) return null
+        return (
+          <div className="bg-amber-950/60 border-2 border-amber-700 rounded-xl px-4 py-2 flex items-center gap-2">
+            <span className="text-amber-400 text-xl">📈</span>
+            <div className="text-xs text-amber-300 font-bold">物価上昇中（+{tiers * 10}%）経過日数: {daysSpent}日 — 早めに買おう！</div>
+          </div>
+        )
+      })()}
+
       {/* Items */}
       <div className="bg-[#0c0c24] border-2 border-amber-800 rounded-xl p-3">
         <div className="text-xs font-black text-amber-500 mb-3 tracking-widest">— ラインナップ —</div>
@@ -39,8 +52,10 @@ export default function ShopView({ gs, onBuy, onClose }: Props) {
           {shopItems.map(itemId => {
             const item = ITEMS[itemId]
             if (!item) return null
+            const currentPrice = getItemPrice(itemId, gs.daysLeft)
+            const isPriceUp = currentPrice > item.price
             const owned = gs.inventory.find(i => i.itemId === itemId)?.qty ?? 0
-            const canBuy = gs.gold >= item.price
+            const canBuy = gs.gold >= currentPrice
 
             return (
               <div key={itemId} className={`bg-slate-900 border-2 rounded-xl p-4 flex items-center gap-3 ${canBuy ? 'border-slate-700' : 'border-slate-800 opacity-60'}`}>
@@ -51,7 +66,11 @@ export default function ShopView({ gs, onBuy, onClose }: Props) {
                   {owned > 0 && <div className="text-xs text-blue-400 font-bold mt-0.5">所持: {owned}個</div>}
                 </div>
                 <div className="text-right shrink-0">
-                  <div className="text-amber-300 font-black text-base">{item.price}G</div>
+                  <div className={`font-black text-base ${isPriceUp ? 'text-red-400' : 'text-amber-300'}`}>
+                    {currentPrice}G
+                    {isPriceUp && <span className="text-xs text-red-500 ml-1">↑</span>}
+                  </div>
+                  {isPriceUp && <div className="text-xs text-gray-600 line-through">{item.price}G</div>}
                   <button
                     onClick={() => onBuy(itemId)}
                     disabled={!canBuy}

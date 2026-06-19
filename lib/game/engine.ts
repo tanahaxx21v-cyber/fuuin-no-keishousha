@@ -2,7 +2,7 @@ import type {
   GameState, BattleState, BattleUnit, CompanionState,
   Skill, StatusEffect, SealStone, CompanionId, Difficulty, LocationId, BranchOption
 } from './types'
-import { COMPANIONS, ENEMIES, ITEMS, LOCATIONS, EVENTS, PLAYER_SKILL_SCHEDULE, getExpToNext, getDifficultyMultiplier } from './data'
+import { COMPANIONS, ENEMIES, ITEMS, LOCATIONS, EVENTS, PLAYER_SKILL_SCHEDULE, getExpToNext, getDifficultyMultiplier, getItemPrice } from './data'
 
 // ===== INITIALIZATION =====
 
@@ -367,8 +367,9 @@ export function buyItem(state: GameState, itemId: string): GameState {
   const s = deepClone(state)
   const item = ITEMS[itemId]
   if (!item) return state
-  if (s.gold < item.price) return { ...s, message: '所持金が足りません' }
-  s.gold -= item.price
+  const price = getItemPrice(itemId, s.daysLeft)
+  if (s.gold < price) return { ...s, message: '所持金が足りません' }
+  s.gold -= price
   const existing = s.inventory.find(i => i.itemId === itemId)
   if (existing) existing.qty += 1
   else s.inventory.push({ itemId, qty: 1 })

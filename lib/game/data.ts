@@ -569,6 +569,15 @@ export const ITEMS: Record<string, ItemDef> = {
   antidote:  { id: 'antidote',  name: '毒消し',       emoji: '🫙', desc: '毒・スタン状態を回復する。', effect: 'cure_status',power: 0,  price: 80  },
 }
 
+// PP4スタイル値上がりシステム：10日消費ごとに1割UP（最大5割UP）
+export function getItemPrice(itemId: string, daysLeft: number, totalDays = 100): number {
+  const item = ITEMS[itemId]
+  if (!item) return 0
+  const daysSpent = totalDays - daysLeft
+  const tiers = Math.min(5, Math.floor(daysSpent / 10))
+  return Math.floor(item.price * (1 + tiers * 0.1))
+}
+
 // ===== LOCATIONS (ルミナ大陸) =====
 export const LOCATIONS: Record<LocationId, LocationDef> = {
   // ===== 6 TOWNS =====
