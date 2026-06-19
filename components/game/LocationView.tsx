@@ -1,7 +1,7 @@
 'use client'
 
 import type { GameState, CompanionId } from '@/lib/game/types'
-import { LOCATIONS, COMPANIONS, getInnPrice } from '@/lib/game/data'
+import { LOCATIONS, COMPANIONS, getInnPrice, getDifficultyMultiplier } from '@/lib/game/data'
 
 interface Props {
   gs: GameState
@@ -29,6 +29,7 @@ export default function LocationView({
   const sealObtained = loc.sealStone ? gs.sealStones.includes(loc.sealStone) : false
   const joinedCount = Object.values(gs.companions).filter(c => c.joined).length
 
+  const totalDays = getDifficultyMultiplier(gs.difficulty).days
   const typeLabel = loc.type === 'town' ? '🏘️ 町' : loc.type === 'dungeon' ? '⚔️ ダンジョン' : loc.type === 'relay' ? '🛖 中継地' : '🏯 城'
   const typeBorder = loc.type === 'town' ? 'border-indigo-700' : loc.type === 'dungeon' ? 'border-orange-800' : loc.type === 'relay' ? 'border-slate-600' : 'border-red-800'
 
@@ -132,7 +133,7 @@ export default function LocationView({
               <span className="text-xl">🏨</span>
               <div>
                 <div className="font-black text-sm">宿屋で休む</div>
-                <div className="text-xs text-gray-400">{getInnPrice(gs.daysLeft)}G・1日消費・HP/MP全回復</div>
+                <div className="text-xs text-gray-400">{getInnPrice(gs.daysLeft, totalDays)}G・1日消費・HP/MP全回復</div>
               </div>
             </button>
           )}

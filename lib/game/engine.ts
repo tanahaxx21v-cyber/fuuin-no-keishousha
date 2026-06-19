@@ -339,7 +339,8 @@ export function skipCompanion(state: GameState): GameState {
 
 export function restAtInn(state: GameState): GameState {
   const s = deepClone(state)
-  const cost = getInnPrice(s.daysLeft)
+  const totalDays = getDifficultyMultiplier(s.difficulty).days
+  const cost = getInnPrice(s.daysLeft, totalDays)
   if (s.gold < cost) return { ...s, message: `所持金が足りません（${cost}G必要）` }
   s.gold -= cost
   s.daysLeft -= 1
@@ -367,7 +368,8 @@ export function buyItem(state: GameState, itemId: string): GameState {
   const s = deepClone(state)
   const item = ITEMS[itemId]
   if (!item) return state
-  const price = getItemPrice(itemId, s.daysLeft)
+  const totalDays = getDifficultyMultiplier(s.difficulty).days
+  const price = getItemPrice(itemId, s.daysLeft, totalDays)
   if (s.gold < price) return { ...s, message: '所持金が足りません' }
   s.gold -= price
   const existing = s.inventory.find(i => i.itemId === itemId)

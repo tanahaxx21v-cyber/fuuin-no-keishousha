@@ -1,7 +1,7 @@
 'use client'
 
 import type { GameState } from '@/lib/game/types'
-import { LOCATIONS, ITEMS, getItemPrice } from '@/lib/game/data'
+import { LOCATIONS, ITEMS, getItemPrice, getDifficultyMultiplier } from '@/lib/game/data'
 
 interface Props {
   gs: GameState
@@ -12,6 +12,7 @@ interface Props {
 export default function ShopView({ gs, onBuy, onClose }: Props) {
   const loc = LOCATIONS[gs.currentLocId]
   const shopItems = loc.shopItems ?? []
+  const totalDays = getDifficultyMultiplier(gs.difficulty).days
 
   return (
     <div className="p-3 max-w-lg mx-auto flex flex-col gap-3">
@@ -34,9 +35,9 @@ export default function ShopView({ gs, onBuy, onClose }: Props) {
 
       {/* Price tier info */}
       {(() => {
-        const daysSpent = 100 - gs.daysLeft
+        const daysSpent = totalDays - gs.daysLeft
         const tiers = Math.min(5, Math.floor(daysSpent / 10))
-        if (tiers === 0) return null
+        if (tiers <= 0) return null
         return (
           <div className="bg-amber-950/60 border-2 border-amber-700 rounded-xl px-4 py-2 flex items-center gap-2">
             <span className="text-amber-400 text-xl">📈</span>
@@ -52,7 +53,7 @@ export default function ShopView({ gs, onBuy, onClose }: Props) {
           {shopItems.map(itemId => {
             const item = ITEMS[itemId]
             if (!item) return null
-            const currentPrice = getItemPrice(itemId, gs.daysLeft)
+            const currentPrice = getItemPrice(itemId, gs.daysLeft, totalDays)
             const isPriceUp = currentPrice > item.price
             const owned = gs.inventory.find(i => i.itemId === itemId)?.qty ?? 0
             const canBuy = gs.gold >= currentPrice
