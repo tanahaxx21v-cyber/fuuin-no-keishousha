@@ -816,13 +816,13 @@ export const EVENTS: GameEvent[] = [
   // ===== チュートリアルイベント（最初のアルセリア到着時） =====
   {
     id: 'alseria_tutorial', title: '勇者の旅立ち',
-    condition: { atLoc: 'alseria', minDaysLeft: 95 },
+    condition: { atLoc: 'alseria', minDaysLeft: 70 },
     dialogues: [
       { speaker: 'narrator', speakerName: '', text: 'ルミナ大陸の中心、アルセリア王都。あなたの旅はここから始まる。' },
       { speaker: 'narrator', speakerName: '老賢者', text: '「若き勇者よ。三つの封印石を集め、魔王の力を封じよ。炎・嵐・闇の石が各地に眠っている。」' },
       { speaker: 'narrator', speakerName: '老賢者', text: '「北の廃鉱山に炎の石、北東の竜の峠に嵐の石、南の古代神殿に闇の石がある。仲間を集め、力をつけて挑め。」' },
       { speaker: 'player', speakerName: 'レオン', text: '……わかった。必ず三つ揃えて魔王を倒す！' },
-      { speaker: 'narrator', speakerName: '', text: '残り100日。旅を始めよう。' },
+      { speaker: 'narrator', speakerName: '', text: 'いざ、旅を始めよう。' },
     ],
     reward: { exp: 20, message: '✨ 旅の目的を確認した！（EXP +20）' },
   },

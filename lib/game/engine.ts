@@ -620,6 +620,8 @@ function processEnemyTurn(state: GameState): GameState {
       b.logs.push({ text: `🔥 ${actor.name}は「${skill.name}」を使った！`, type: 'status' })
       const targets = skill.target === 'enemy_all'
         ? aliveAllies
+        : skill.target === 'self'
+        ? [actor]
         : [aliveAllies[Math.floor(Math.random() * aliveAllies.length)]]
       for (const tgt of targets) applySkillEffect(b, actor, tgt, skill)
       return advanceTurn(s)
@@ -673,6 +675,16 @@ function processCompanionTurn(state: GameState): GameState {
     actor.mp -= healSkill.mpCost
     b.logs.push({ text: `💚 ${actor.name}は「${healSkill.name}」を使った！`, type: 'heal' })
     applySkillEffect(b, actor, lowHpAlly, healSkill)
+    return advanceTurn(s)
+  }
+
+  // Occasionally use self-buff when HP is healthy
+  const selfBuffSkills = actor.skills.filter(sk => sk.target === 'self' && actor.mp >= sk.mpCost)
+  if (selfBuffSkills.length > 0 && actor.hp > actor.maxHp * 0.5 && Math.random() < 0.25) {
+    const skill = selfBuffSkills[Math.floor(Math.random() * selfBuffSkills.length)]
+    actor.mp -= skill.mpCost
+    b.logs.push({ text: `✨ ${actor.name}は「${skill.name}」を使った！`, type: 'status' })
+    applySkillEffect(b, actor, actor, skill)
     return advanceTurn(s)
   }
 
