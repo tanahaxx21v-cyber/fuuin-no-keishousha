@@ -341,7 +341,7 @@ export default function GameRoot() {
           />
         )}
         {gs.phase === 'title' && pendingDiff && <NamingScreen onConfirm={handleNameConfirm} />}
-        {gs.phase === 'prologue' && <PrologueScreen onDone={handlePrologueDone} playerName={gs.playerName} />}
+        {gs.phase === 'prologue' && <PrologueScreen onDone={handlePrologueDone} playerName={gs.playerName} daysLeft={gs.daysLeft} />}
         {gs.phase === 'worldmap' && (
           <WorldMap
             gs={gs}
@@ -448,7 +448,7 @@ function NamingScreen({ onConfirm }: { onConfirm: (name: string) => void }) {
   )
 }
 
-function PrologueScreen({ onDone, playerName }: { onDone: () => void; playerName: string }) {
+function PrologueScreen({ onDone, playerName, daysLeft }: { onDone: () => void; playerName: string; daysLeft: number }) {
   const [page, setPage] = useState(0)
   const pages = [
     {
@@ -457,11 +457,11 @@ function PrologueScreen({ onDone, playerName }: { onDone: () => void; playerName
     },
     {
       title: '崩壊する封印',
-      text: 'そして今、100日後に封印は完全に崩壊する。\n\n魔王が復活すれば、この世界は闇に覆われる。\n\nそれを防げるのは——伝説の勇者の血を引く者だけ。',
+      text: `そして今、${daysLeft}日後に封印は完全に崩壊する。\n\n魔王が復活すれば、この世界は闇に覆われる。\n\nそれを防げるのは——伝説の勇者の血を引く者だけ。`,
     },
     {
       title: '旅の始まり',
-      text: `王都アルセリアの城で、王が告げた。\n\n「${playerName}よ。3つの封印石を集め、魔王を再び封じよ。\n仲間を集め、ダンジョンを攻略し、100日以内に砂漠遺跡へ向かえ。」\n\n${playerName}は剣を握り、旅立つ決意をした。`,
+      text: `王都アルセリアの城で、王が告げた。\n\n「${playerName}よ。3つの封印石を集め、魔王を再び封じよ。\n仲間を集め、ダンジョンを攻略し、${daysLeft}日以内に砂漠遺跡へ向かえ。」\n\n${playerName}は剣を握り、旅立つ決意をした。`,
     },
   ]
 

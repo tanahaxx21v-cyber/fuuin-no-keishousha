@@ -118,11 +118,24 @@ const EPILOGUE_PAGES = [
   },
 ]
 
+const NAME_TO_ID: Record<string, string> = {
+  'ガレス': 'gares', 'リズ': 'liz', 'ノア': 'noa', 'セシル': 'cecil',
+  'ブラム': 'bram', 'フィン': 'finn', 'ヴァイス': 'vais', 'ローガン': 'logan',
+  'イリス': 'iris', 'シグ': 'sig', 'エルク': 'elk', 'ミラ': 'mira', 'ゼノ（隠しキャラ）': 'zeno',
+}
+
 export default function WinScreen({ gs, onRestart }: Props) {
   const [page, setPage] = useState(0)
   const joinedCompanions = Object.values(gs.companions).filter(c => c.joined && c.alive)
   const deadCompanions = Object.values(gs.companions).filter(c => c.joined && !c.alive)
   const hasZeno = gs.companions.zeno?.joined
+
+  const isCompanionDead = (name: string) => {
+    const id = NAME_TO_ID[name]
+    if (!id) return false
+    const c = gs.companions[id as keyof typeof gs.companions]
+    return c?.joined && !c?.alive
+  }
 
   const totalPages = EPILOGUE_PAGES.length + 1 // +1 for stats page
 
@@ -143,7 +156,7 @@ export default function WinScreen({ gs, onRestart }: Props) {
                 <div><span className="text-gray-400">最終レベル: </span><span className="text-white font-bold">Lv{gs.playerLevel}</span></div>
                 <div><span className="text-gray-400">残り日数: </span><span className="text-yellow-300 font-bold">{gs.daysLeft}日</span></div>
                 <div><span className="text-gray-400">所持金: </span><span className="text-yellow-400 font-bold">{gs.gold}G</span></div>
-                <div><span className="text-gray-400">難易度: </span><span className="text-white font-bold capitalize">{gs.difficulty}</span></div>
+                <div><span className="text-gray-400">難易度: </span><span className="text-white font-bold">{{ easy: 'イージー', normal: 'ノーマル', hard: 'ハード' }[gs.difficulty] ?? gs.difficulty}</span></div>
               </div>
             </div>
 
@@ -223,13 +236,15 @@ export default function WinScreen({ gs, onRestart }: Props) {
                           </div>
                         )
                       }
+                      const dead = isCompanionDead(ch.name)
                       return (
-                        <div key={ch.name} className="bg-black/30 border border-gray-700 rounded-xl p-4">
+                        <div key={ch.name} className={`bg-black/30 border rounded-xl p-4 ${dead ? 'border-red-900/60' : 'border-gray-700'}`}>
                           <div className="flex items-center gap-2 mb-2">
-                            <span className="text-xl">{ch.emoji}</span>
-                            <span className={`${ep.accent} font-semibold text-sm`}>{ch.name}</span>
+                            <span className={`text-xl ${dead ? 'grayscale opacity-60' : ''}`}>{ch.emoji}</span>
+                            <span className={`${dead ? 'text-gray-500' : ep.accent} font-semibold text-sm`}>{ch.name}</span>
+                            {dead && <span className="text-xs text-red-700 font-bold ml-auto">💀 この旅で命を落とした</span>}
                           </div>
-                          <p className="text-gray-300 text-sm leading-relaxed">{ch.text}</p>
+                          <p className={`text-sm leading-relaxed ${dead ? 'text-gray-600 italic' : 'text-gray-300'}`}>{ch.text}</p>
                         </div>
                       )
                     })}

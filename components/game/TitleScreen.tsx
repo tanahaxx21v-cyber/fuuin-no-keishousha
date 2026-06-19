@@ -9,10 +9,10 @@ interface Props {
   hasSave?: boolean
 }
 
-const DIFFICULTIES: { id: Difficulty; name: string; desc: string; color: string; textColor: string }[] = [
-  { id: 'easy',   name: 'イージー', desc: '日数120日 / 敵HP70% / 推奨：初心者', color: 'border-green-600 bg-green-950 hover:bg-green-900', textColor: 'text-green-400' },
-  { id: 'normal', name: 'ノーマル', desc: '日数100日 / 通常設定 / 推奨プレイ',   color: 'border-amber-600 bg-amber-950 hover:bg-amber-900',   textColor: 'text-amber-400' },
-  { id: 'hard',   name: 'ハード',   desc: '日数80日 / 敵HP140% / 仲間永続死',   color: 'border-red-700 bg-red-950 hover:bg-red-900',         textColor: 'text-red-400' },
+const DIFFICULTIES: { id: Difficulty; name: string; desc: string; days: number; color: string; textColor: string }[] = [
+  { id: 'easy',   name: 'イージー', desc: '日数120日 / 敵HP70% / 推奨：初心者',   days: 120, color: 'border-green-600 bg-green-950 hover:bg-green-900', textColor: 'text-green-400' },
+  { id: 'normal', name: 'ノーマル', desc: '日数100日 / 通常設定 / 推奨プレイ',     days: 100, color: 'border-amber-600 bg-amber-950 hover:bg-amber-900',   textColor: 'text-amber-400' },
+  { id: 'hard',   name: 'ハード',   desc: '日数80日 / 敵HP140% / 極限難易度',     days: 80,  color: 'border-red-700 bg-red-950 hover:bg-red-900',         textColor: 'text-red-400' },
 ]
 
 export default function TitleScreen({ onStart, onDeleteSave, hasSave }: Props) {
@@ -34,7 +34,7 @@ export default function TitleScreen({ onStart, onDeleteSave, hasSave }: Props) {
               style={{ textShadow: '0 0 30px rgba(99,102,241,0.5)' }}>
             封印の継承者
           </h1>
-          <div className="text-gray-400 text-sm mt-2">100日で3つの封印石を集め、魔王を倒せ</div>
+          <div className="text-gray-400 text-sm mt-2">{DIFFICULTIES.find(d => d.id === selected)!.days}日で3つの封印石を集め、魔王を倒せ</div>
 
           {/* Seal stones preview */}
           <div className="flex justify-center gap-6 mt-5">
@@ -88,7 +88,7 @@ export default function TitleScreen({ onStart, onDeleteSave, hasSave }: Props) {
         )}
 
         <div className="mt-4 text-center text-xs text-gray-700">
-          ハードモードでは仲間の死が永続します
+          ※ 全難易度: 仲間がHP0になると永続的に死亡します（復活不可）
         </div>
       </div>
     </div>

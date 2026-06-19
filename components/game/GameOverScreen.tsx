@@ -38,7 +38,7 @@ export default function GameOverScreen({ gs, onRestart }: Props) {
             </div>
             <div>
               <span className="text-gray-500 font-bold">難易度</span>
-              <div className="text-white font-black text-lg capitalize">{gs.difficulty}</div>
+              <div className="text-white font-black text-lg">{{ easy: 'イージー', normal: 'ノーマル', hard: 'ハード' }[gs.difficulty] ?? gs.difficulty}</div>
             </div>
           </div>
         </div>
