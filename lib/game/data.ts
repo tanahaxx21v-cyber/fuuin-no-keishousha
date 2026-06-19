@@ -1227,8 +1227,14 @@ export const EVENTS: GameEvent[] = [
     branch: {
       prompt: '賭け勝負を受けるか？',
       options: [
-        { label: '50G賭けて勝負する（50%で勝ち）', reward: { gold: 100, exp: 20, message: '賭けに勝った！（+100G, EXP +20）' } },
-        { label: '断って休む', reward: { exp: 15, message: '賢明な判断をした。（EXP +15）' } },
+        {
+          label: '50G賭けて勝負する',
+          cost: 50,
+          winChance: 0.5,
+          reward: { gold: 150, exp: 20, message: '賭けに勝った！運が良かった！（+150G, EXP +20）' },
+          loseReward: { exp: 10, message: '賭けに負けた……50G失った。（EXP +10）' },
+        },
+        { label: '断って早く休む', reward: { exp: 15, message: '賢明な判断だった。（EXP +15）' } },
       ],
     },
   },
@@ -1268,20 +1274,20 @@ export const EVENTS: GameEvent[] = [
   // ===== ロケーション特殊イベント（PP4の訪問回数スタイル） =====
 
   {
-    id: 'desert_ruins_premonition', title: '遺跡の予感',
-    condition: { atLoc: 'desert_ruins', requiredSeals: [] },
+    id: 'desert_ruins_arrival', title: '決戦の地へ',
+    condition: { atLoc: 'desert_ruins', requiredSeals: ['fire', 'storm', 'dark'] },
     dialogues: [
-      { speaker: 'narrator', speakerName: '', text: '砂漠遺跡の入口。封印石を持たずにここまで来てしまった。' },
-      { speaker: 'narrator', speakerName: '', text: '遺跡の奥から不気味な気配が漂ってくる。終末記録体の巨大な力が、まるで待ち構えているかのように感じられた。' },
-      { speaker: 'player', speakerName: 'レオン', text: '……まだ封印石が揃っていない。今は引き返すしかない。' },
-      { speaker: 'narrator', speakerName: '', text: 'だが、この場所への道は覚えた。三つの封印石を集め、必ずここに戻ってくる。' },
+      { speaker: 'narrator', speakerName: '', text: '砂漠遺跡の入口。三つの封印石が揃い、ここへ来ることができた。' },
+      { speaker: 'narrator', speakerName: '', text: '遺跡の奥から、言いようのない力の気配が漂ってくる。これが……終末記録体アーカイブの気配か。' },
+      { speaker: 'player', speakerName: 'レオン', text: '……これで全部揃った。あとは前に進むだけだ。' },
+      { speaker: 'narrator', speakerName: '', text: '封印石が三つ、静かに輝き始めた。まるで「準備ができた」と告げているかのように。' },
     ],
-    reward: { exp: 20, message: '砂漠遺跡の位置を把握した！（EXP +20）' },
+    reward: { exp: 80, message: '決戦の覚悟が固まった！（EXP +80）' },
   },
 
   {
     id: 'alseria_seal_two_report', title: '王への中間報告',
-    condition: { atLoc: 'alseria', requiredSeals: ['fire', 'storm'], blockIfEventCompleted: ['alseria_seal_two_report'] },
+    condition: { atLoc: 'alseria', requiredSeals: ['fire', 'storm'], blockIfEventCompleted: ['desert_ruins_arrival'] },
     dialogues: [
       { speaker: 'narrator', speakerName: '', text: 'アルセリア王都。封印石を二つ持ってここへ戻ってきた。街の人々が驚いた目でこちらを見る。' },
       { speaker: 'narrator', speakerName: '街の人', text: '「あなたが封印石を集めている勇者様ですか！？王都中で話題になっています！」' },

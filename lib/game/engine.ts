@@ -152,7 +152,7 @@ export function advanceEvent(state: GameState): GameState {
   if (nextLine >= ev.dialogues.length) {
     // 選択肢がある場合は分岐を保留
     if (ev.branch) {
-      s.pendingBranch = { eventId: ev.id, options: ev.branch.options }
+      s.pendingBranch = { eventId: ev.id, prompt: ev.branch.prompt, options: ev.branch.options }
       s.activeEventId = undefined
       s.activeEventLine = undefined
       s.phase = 'location'
@@ -263,9 +263,25 @@ export function chooseBranch(state: GameState, choiceIndex: number): GameState {
   const { eventId, options } = s.pendingBranch!
   const chosen = options[choiceIndex]
   s.pendingBranch = undefined
+
+  // コスト不足チェック
+  if (chosen?.cost && s.gold < chosen.cost) {
+    s.message = `所持金が足りない！（${chosen.cost}G必要）`
+    return s
+  }
+  if (chosen?.cost) s.gold -= chosen.cost
+
   s.completedEvents.push(eventId)
-  if (chosen?.reward) {
-    applyEventReward(s, chosen.reward)
+
+  if (chosen) {
+    // 確率分岐
+    if (chosen.winChance !== undefined) {
+      const won = Math.random() < chosen.winChance
+      const appliedReward = won ? chosen.reward : chosen.loseReward
+      if (appliedReward) applyEventReward(s, appliedReward)
+    } else if (chosen.reward) {
+      applyEventReward(s, chosen.reward)
+    }
   }
   return s
 }
@@ -672,6 +688,9 @@ function advanceTurn(state: GameState): GameState {
   const s = deepClone(state)
   const b = s.battle!
 
+  // バトルログの上限管理（最大25件）
+  if (b.logs.length > 25) b.logs = b.logs.slice(b.logs.length - 25)
+
   // Apply poison to all units
   for (const unit of b.units) {
     const poison = unit.statusEffects.find(e => e.id === 'poison')
@@ -872,6 +891,66 @@ export function setParty(state: GameState, newParty: CompanionId[]): GameState {
   return s
 }
 
+// ===== うろつく（町・中継地での探索） =====
+
+export function wander(state: GameState): GameState {
+  const s = deepClone(state)
+  s.daysLeft -= 1
+  if (s.daysLeft <= 0) {
+    s.daysLeft = 0
+    s.phase = 'gameover'
+    return s
+  }
+
+  const roll = Math.random()
+  if (roll < 0.35) {
+    const gold = Math.floor(Math.random() * 50) + 20
+    s.gold += gold
+    s.message = `💰 うろついていたら ${gold}G を見つけた！`
+  } else if (roll < 0.55) {
+    s.playerExp += 15
+    while (s.playerExp >= getExpToNext(s.playerLevel) && s.playerLevel < 30) {
+      s.playerExp -= getExpToNext(s.playerLevel)
+      s.playerLevel++
+      s.playerMaxHp += 12; s.playerHp = Math.min(s.playerHp + 12, s.playerMaxHp)
+      s.playerMaxMp += 5; s.playerMp = Math.min(s.playerMp + 5, s.playerMaxMp)
+      s.playerAtk += 2; s.playerDef += 2; s.playerSpd += 1
+      s.levelUpPending = true
+      const newSkill = PLAYER_SKILL_SCHEDULE.find(ps => ps.level === s.playerLevel)
+      if (newSkill && !s.playerSkills.some(sk => sk.id === newSkill.skill.id)) s.playerSkills.push(newSkill.skill)
+    }
+    s.message = '💪 うろついて体を動かした。（EXP +15）'
+  } else if (roll < 0.70) {
+    const items: Array<{itemId: string; qty: number}> = [
+      { itemId: 'potion', qty: 1 },
+      { itemId: 'ether', qty: 1 },
+      { itemId: 'antidote', qty: 1 },
+    ]
+    const found = items[Math.floor(Math.random() * items.length)]
+    const ex = s.inventory.find(i => i.itemId === found.itemId)
+    if (ex) ex.qty += 1
+    else s.inventory.push({ itemId: found.itemId, qty: 1 })
+    const itemNames: Record<string, string> = { potion: 'ポーション', ether: 'エーテル', antidote: '毒消し' }
+    s.message = `🎁 うろついていたら${itemNames[found.itemId]}を見つけた！`
+  } else if (roll < 0.80) {
+    const heal = Math.floor(s.playerMaxHp * 0.15)
+    s.playerHp = Math.min(s.playerMaxHp, s.playerHp + heal)
+    s.message = `✨ 静かに休んでいたら回復した。（HP +${heal}）`
+  } else {
+    // 稀に小さな敵エンカウント（中継地のenemy pool使用）
+    const loc = LOCATIONS[s.currentLocId]
+    const pool = loc.travelEnemyPool ?? loc.enemyPool ?? []
+    if (pool.length > 0) {
+      const enemyId = pool[Math.floor(Math.random() * pool.length)]
+      s.message = '⚠️ 怪しい影に気づいた！'
+      return startBattle(s, [enemyId], false)
+    }
+    s.message = '……何も見つからなかった。1日が過ぎた。'
+  }
+
+  return s
+}
+
 // ===== DUNGEON =====
 
 export function enterDungeon(state: GameState): GameState {
@@ -888,10 +967,11 @@ export function enterDungeon(state: GameState): GameState {
   }
 
   const pool = loc.enemyPool
-  const enemies = [
-    pool[Math.floor(Math.random() * pool.length)],
-    pool[Math.floor(Math.random() * pool.length)],
-  ]
+  const count = Math.floor(Math.random() * 3) + 1  // 1〜3体
+  const enemies: string[] = []
+  for (let i = 0; i < count; i++) {
+    enemies.push(pool[Math.floor(Math.random() * pool.length)])
+  }
 
   return startBattle(s, enemies, false)
 }

@@ -33,6 +33,9 @@ export interface EventReward {
 export interface BranchOption {
   label: string
   reward?: EventReward
+  winChance?: number      // 0〜1の確率でrewardを得る（省略時は100%）
+  loseReward?: EventReward // winChance失敗時の報酬
+  cost?: number           // 選択に必要なG（不足時はブロック）
 }
 
 export interface EventBranch {
@@ -295,5 +298,5 @@ export interface GameState {
   completedEvents: string[]
   activeEventId?: string
   activeEventLine?: number
-  pendingBranch?: { eventId: string; options: BranchOption[] }
+  pendingBranch?: { eventId: string; prompt?: string; options: BranchOption[] }
 }

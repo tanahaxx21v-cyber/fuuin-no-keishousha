@@ -12,10 +12,11 @@ interface Props {
   onFightBoss: () => void
   onJoinCompanion: (id: CompanionId) => void
   onSkipCompanion: () => void
+  onWander?: () => void
 }
 
 export default function LocationView({
-  gs, onBackToMap, onInn, onOpenShop, onEnterDungeon, onFightBoss, onJoinCompanion, onSkipCompanion
+  gs, onBackToMap, onInn, onOpenShop, onEnterDungeon, onFightBoss, onJoinCompanion, onSkipCompanion, onWander
 }: Props) {
   const loc = LOCATIONS[gs.currentLocId]
   const companion = loc.companionId ? COMPANIONS[loc.companionId] : undefined
@@ -191,6 +192,19 @@ export default function LocationView({
                 </div>
               </button>
             </>
+          )}
+
+          {(loc.type === 'town' || loc.type === 'relay') && onWander && (
+            <button
+              onClick={onWander}
+              className="w-full py-3 px-4 bg-slate-800 hover:bg-slate-700 border-2 border-slate-600 text-white rounded-xl transition text-left flex items-center gap-3 active:scale-95"
+            >
+              <span className="text-xl">🚶</span>
+              <div>
+                <div className="font-black text-sm">うろつく</div>
+                <div className="text-xs text-gray-400">1日消費・アイテム/EXP/Gをランダムに発見</div>
+              </div>
+            </button>
           )}
 
           {loc.type === 'castle' && (

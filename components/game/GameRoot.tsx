@@ -7,7 +7,7 @@ import {
   restAtInn, buyItem, enterDungeon, fightBoss, battleAttack,
   battleSkill, battleUseItem, battleFlee, closeBattle,
   processNonPlayerTurn, checkLocationEvent, startEvent, advanceEvent,
-  chooseBranch, getAvailableConnections,
+  chooseBranch, wander, getAvailableConnections,
 } from '@/lib/game/engine'
 import { LOCATIONS } from '@/lib/game/data'
 import {
@@ -106,7 +106,13 @@ export default function GameRoot() {
   }
 
   const handleTravel = (destId: LocationId) => {
-    update(s => travel(s, destId))
+    setGs(prev => {
+      const traveled = travel(prev, destId)
+      if (traveled.phase !== 'location') return traveled
+      const eventId = checkLocationEvent(traveled)
+      if (eventId) return startEvent(traveled, eventId)
+      return traveled
+    })
   }
 
   const handleEnterLocation = () => {
@@ -148,6 +154,10 @@ export default function GameRoot() {
 
   const handleJoinCompanion = (id: CompanionId) => {
     update(s => joinCompanion(s, id))
+  }
+
+  const handleWander = () => {
+    update(s => wander(s))
   }
 
   const handleSkipCompanion = () => {
@@ -321,6 +331,7 @@ export default function GameRoot() {
             onFightBoss={handleFightBoss}
             onJoinCompanion={handleJoinCompanion}
             onSkipCompanion={handleSkipCompanion}
+            onWander={handleWander}
           />
         )}
         {gs.phase === 'battle' && gs.battle && (
@@ -348,17 +359,20 @@ export default function GameRoot() {
           </div>
         )}
         {gs.pendingBranch && gs.phase === 'location' && (
-          <div className="fixed inset-0 z-50 flex flex-col items-center justify-end pb-8 px-4" style={{ background: 'rgba(0,0,0,0.80)' }}>
+          <div className="fixed inset-0 z-50 flex flex-col items-center justify-end pb-8 px-4" style={{ background: 'rgba(0,0,0,0.85)' }}>
             <div className="w-full max-w-md bg-[#0c0c24] border-2 border-amber-600 rounded-2xl p-5 shadow-2xl">
-              <div className="text-xs font-black text-amber-400 mb-3 tracking-widest text-center">— どうする？ —</div>
+              <div className="text-xs font-black text-amber-500 mb-1 tracking-widest text-center">— 選択 —</div>
+              {gs.pendingBranch.prompt && (
+                <div className="text-base font-bold text-white text-center mb-4 px-2">{gs.pendingBranch.prompt}</div>
+              )}
               <div className="flex flex-col gap-3">
                 {gs.pendingBranch.options.map((opt, i) => (
                   <button
                     key={i}
                     onClick={() => handleChooseBranch(i)}
-                    className="w-full py-3 px-4 bg-indigo-900 hover:bg-indigo-800 border-2 border-indigo-500 text-white font-black rounded-xl transition active:scale-95 text-base"
+                    className="w-full py-3 px-4 bg-indigo-900 hover:bg-indigo-800 border-2 border-indigo-500 text-white font-black rounded-xl transition active:scale-95 text-sm text-left"
                   >
-                    {opt.label}
+                    ▶ {opt.label}
                   </button>
                 ))}
               </div>
