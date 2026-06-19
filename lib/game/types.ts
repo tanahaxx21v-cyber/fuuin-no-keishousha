@@ -251,8 +251,6 @@ export interface BattleState {
   turnQueue: string[]
   currentUid: string
   logs: BattleLog[]
-  pendingSkill?: Skill
-  pendingItemId?: string
   rewardExp: number
   rewardGold: number
   sealStoneFound?: SealStone

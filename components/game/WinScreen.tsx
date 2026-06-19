@@ -254,9 +254,12 @@ export default function WinScreen({ gs, onRestart }: Props) {
                 {/* Extra text (last epilogue page) */}
                 {'extra' in ep && ep.extra && (
                   <div className="mt-4 space-y-2 border-t border-gray-700/50 pt-4">
-                    {ep.extra(gs.playerName).map((line, i) => (
-                      <p key={i} className={`text-sm leading-relaxed ${i === 0 ? 'text-gray-200 font-semibold' : i === ep.extra(gs.playerName).length - 1 ? 'text-gray-400 italic' : 'text-gray-300'}`}>{line}</p>
-                    ))}
+                    {(() => {
+                      const extraLines = ep.extra(gs.playerName)
+                      return extraLines.map((line, i) => (
+                        <p key={i} className={`text-sm leading-relaxed ${i === 0 ? 'text-gray-200 font-semibold' : i === extraLines.length - 1 ? 'text-gray-400 italic' : 'text-gray-300'}`}>{line}</p>
+                      ))
+                    })()}
                   </div>
                 )}
 
