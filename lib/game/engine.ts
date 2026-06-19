@@ -1078,6 +1078,9 @@ export function fightBoss(state: GameState): GameState {
   if (s.defeatedBosses.includes(loc.bossId!)) {
     return { ...s, message: 'ボスは既に倒した。' }
   }
+  if (loc.requireAllStones && s.sealStones.length < 3) {
+    return { ...s, message: '3つの封印石が全て必要だ。' }
+  }
   return startBattle(s, [loc.bossId], true)
 }
 
