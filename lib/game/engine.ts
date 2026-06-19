@@ -765,6 +765,14 @@ function advanceTurn(state: GameState): GameState {
   // Check victory/defeat
   const aliveEnemies = b.units.filter(u => !u.isAlly && u.hp > 0)
   const aliveAllies = b.units.filter(u => u.isAlly && u.hp > 0)
+  const playerUnit = b.units.find(u => u.isPlayer)
+
+  // プレイヤー死亡はゲームオーバー（JRPGスタンダード：主人公が倒れたら全滅扱い）
+  if (playerUnit && playerUnit.hp <= 0) {
+    b.phase = 'defeat'
+    b.logs.push({ text: `💀 ${playerUnit.name}は倒れた... 旅はここで終わった。`, type: 'death' })
+    return s
+  }
 
   if (aliveEnemies.length === 0) {
     b.phase = 'victory'
