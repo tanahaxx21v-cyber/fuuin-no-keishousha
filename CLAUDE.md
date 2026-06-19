@@ -56,39 +56,54 @@
 - 選択肢によって報酬・仲間加入・フラグが同時に変わる
 - 値上がりシステム：10日毎に1割価格上昇（経済的緊張感）
 
-### 実装済み（2026-06-19）
+### 実装済み（2026-06-19以降）
 - ✅ **連続イベント**（requiredEventCompletedで前提イベント条件）
 - ✅ **選択肢分岐**（EventBranch・pendingBranch・chooseBranch）
 - ✅ **各仲間の連続イベントStage2**（13人分）
+- ✅ **各仲間のStage3最終章イベント**（ガレス除く9人分 ← gares は elna_gares_final_oath が兼任）
 - ✅ **選択肢イベント5件**（精霊の問い・商人取引・賭け・老人・灯台）
 - ✅ **ガレス・リズ重複バグ修正**（gares→checkpoint）
+- ✅ **訪問回数カウントシステム**（locVisitCounts + minVisitCount条件）
+- ✅ **残り日数ベース強制イベント**（日数60日・30日警告）
+- ✅ **チュートリアルイベント**（アルセリア初訪問時）
+- ✅ **fullHeal報酬**（精霊の泉・リズ奇跡イベント）
+- ✅ **パーティ編成UI**（PartyManage.tsx統合）
+- ✅ **仲間死亡システム**（alive=false永続・復活手段なし、PP4スタイル）
+- ✅ **メッセージトースト色分け**（成功=緑/警告=黄/情報=紺）
+- ✅ **EXPバー**（StatusBar）
+- ✅ **うろつくコマンド**（町・中継地で1日消費ランダム報酬）
+- ✅ **EventSceneボーダーカラーバグ修正**
+- ✅ **travel後イベント発火修正**（最重要バグ）
+- ✅ **EVENTS総数51件**
 
 ### まだ不足している要素
-1. **仲間死亡システム** — 現状は alive=false になるが復活可能。PP4は永続死亡
-2. **残り日数ベースの強制イベント** — PP4のオオガミ連続イベントスタイル
-3. **訪問回数カウント** — PP4の「暗黒の城（7段階）」「クリフのがけ（訪問回数累積）」
-4. **アルバム/実績システム** — 周回欲求刺激
+1. **アルバム/実績システム** — 周回欲求刺激
+2. **ショップ値上がりシステム** — 10日毎1割UP（PP4の経済的緊張感）
 
 ---
 
 ## 現在の実装状態
 
-- `lib/game/types.ts` — GameEvent型・DialogueLine・イベント関連型定義済み
-- `lib/game/data.ts` — EVENTS配列38件（現在）、仲間13人定義済み
-- `lib/game/engine.ts` — getAvailableConnections・checkLocationEvent・startEvent・advanceEvent実装済み
-- `components/game/EventScene.tsx` — パワポケ4スタイルの会話画面
-- `components/game/WorldMap.tsx` — 21拠点マップ（重なり解消済み）
-- `components/game/GameRoot.tsx` — イベント統合済み
+- `lib/game/types.ts` — GameEvent型・DialogueLine・イベント関連型・locVisitCounts・fullHeal定義済み
+- `lib/game/data.ts` — EVENTS配列51件、仲間13人定義済み
+- `lib/game/engine.ts` — getAvailableConnections・checkLocationEvent（minVisitCount対応）・startEvent・advanceEvent・applyEventReward（fullHeal対応）・wander・setParty実装済み
+- `components/game/EventScene.tsx` — パワポケ4スタイルの会話画面（ボーダーカラーバグ修正済み）
+- `components/game/WorldMap.tsx` — 21拠点マップ
+- `components/game/GameRoot.tsx` — イベント統合・PartyManage統合・メッセージトースト色分け済み
+- `components/game/LocationView.tsx` — うろつく・パーティ編成ボタン・低HPパーティ警告表示
+- `components/game/StatusBar.tsx` — EXPバー追加済み
+- `components/game/PartyManage.tsx` — パーティ編成画面（GameRootに統合済み）
+- `components/game/BattleScene.tsx` — 状態異常アイコン・PP4スタイルバトル
 
 ## 直近の未解決課題
 
 - [x] 連続イベント（requiredEventCompleted条件）— 実装済み
 - [x] 選択肢システム（EventBranch分岐）— 実装済み
 - [x] ガレス・リズ重複バグ — 修正済み
-- [ ] 各仲間のStage3（最終章）イベント追加
-- [ ] 残り日数ベース強制イベント
-- [ ] 訪問回数カウントシステム
-- [ ] QCスコア → 190点以上
+- [x] 各仲間のStage3（最終章）イベント — 実装済み
+- [x] 残り日数ベース強制イベント — 実装済み
+- [x] 訪問回数カウントシステム — 実装済み
+- [ ] QCスコア → 190点以上（採点待ち）
 - [ ] デプロイ（オーナー承認待ち）
 
 ---
