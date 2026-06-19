@@ -583,6 +583,7 @@ export function battleFlee(state: GameState): GameState {
   }
   const success = Math.random() < 0.6
   if (success) {
+    syncBattleToState(s)
     s.battle = undefined
     s.phase = 'location'
     return s
@@ -991,6 +992,7 @@ export function wander(state: GameState): GameState {
       if (newSkill && !s.playerSkills.some(sk => sk.id === newSkill.skill.id)) s.playerSkills.push(newSkill.skill)
     }
     const leveledUpNames: string[] = []
+    const learnedSkillMsgs: string[] = []
     for (const cid of s.party) {
       const c = s.companions[cid]
       if (!c.joined || !c.alive) continue
@@ -1003,12 +1005,16 @@ export function wander(state: GameState): GameState {
         c.maxMp += def.mpGrowth; c.mp = Math.min(c.mp + def.mpGrowth, c.maxMp)
         c.atk += def.atkGrowth; c.def += def.defGrowth; c.spd += def.spdGrowth
         const newCompSkill = def.learnableSkills?.find(ls => ls.level === c.level)
-        if (newCompSkill && !c.learnedSkills.some(sk => sk.id === newCompSkill.skill.id)) c.learnedSkills.push(newCompSkill.skill)
+        if (newCompSkill && !c.learnedSkills.some(sk => sk.id === newCompSkill.skill.id)) {
+          c.learnedSkills.push(newCompSkill.skill)
+          learnedSkillMsgs.push(`${def.name}が「${newCompSkill.skill.name}」を習得！`)
+        }
         leveledUpNames.push(def.name)
       }
     }
     const lvMsg = leveledUpNames.length > 0 ? ` ⭐${leveledUpNames.join('・')}もレベルアップ！` : ''
-    s.message = `💪 うろついて体を動かした。（EXP +${expGain}）${lvMsg}`
+    const skMsg = learnedSkillMsgs.length > 0 ? ` ✨${learnedSkillMsgs.join(' ')}` : ''
+    s.message = `💪 うろついて体を動かした。（EXP +${expGain}）${lvMsg}${skMsg}`
   } else if (roll < 0.70) {
     const items: Array<{itemId: string; qty: number}> = [
       { itemId: 'potion', qty: 1 },
