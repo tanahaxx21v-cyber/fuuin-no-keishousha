@@ -138,7 +138,9 @@ export default function EventScene({ gs, onAdvance }: Props) {
             </div>
             <div className={`text-xs font-black ${isLast ? 'text-amber-400 animate-pulse' : 'text-gray-500'}`}>
               {isLast
-                ? ev.reward ? '▶ 完了して報酬を受け取る' : '▶ 閉じる'
+                ? ev.branch ? '▶ 選択肢へ'
+                : ev.reward ? '▶ 完了して報酬を受け取る'
+                : '▶ 閉じる'
                 : '画面タップで続ける ▶'
               }
             </div>

@@ -269,13 +269,13 @@ export function chooseBranch(state: GameState, choiceIndex: number): GameState {
   const s = deepClone(state)
   const { eventId, options } = s.pendingBranch!
   const chosen = options[choiceIndex]
-  s.pendingBranch = undefined
 
-  // コスト不足チェック
+  // コスト不足チェック（pendingBranchは維持して再選択できるようにする）
   if (chosen?.cost && s.gold < chosen.cost) {
     s.message = `所持金が足りない！（${chosen.cost}G必要）`
     return s
   }
+  s.pendingBranch = undefined
   if (chosen?.cost) s.gold -= chosen.cost
 
   s.completedEvents.push(eventId)

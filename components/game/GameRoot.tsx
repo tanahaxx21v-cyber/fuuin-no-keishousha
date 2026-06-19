@@ -45,6 +45,12 @@ function loadGame(): GameState | null {
     }
     if (!parsed.completedEvents) parsed.completedEvents = []
     if (!parsed.locVisitCounts) parsed.locVisitCounts = {}
+    if (!parsed.playerStatus) parsed.playerStatus = []
+    if (!parsed.playerSkills) parsed.playerSkills = []
+    if (!parsed.defeatedBosses) parsed.defeatedBosses = []
+    if (!parsed.party) parsed.party = []
+    if (!parsed.inventory) parsed.inventory = []
+    if (!parsed.sealStones) parsed.sealStones = []
     return parsed
   } catch { return null }
 }

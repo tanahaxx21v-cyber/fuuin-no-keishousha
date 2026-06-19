@@ -93,6 +93,15 @@
 - ✅ 敵の状態異常アイコンをHP/名前バー下に表示
 - ✅ WorldMapのforest_entrance表示修正（dungeon→relay形状・ラベル修正）
 
+### 2026-06-19 第2セッション追加修正（自律改善継続）
+- ✅ defeatedBossesにUID（enemy_0_xxx）ではなく実際のbossIdを格納（LocationView/WorldMap/fightBossの.includes()ハック排除）
+- ✅ processEnemyTurnのスキル選択バグ修正（MP不足スキルが選ばれる可能性を排除）
+- ✅ handleCloseBattle後にcheckLocationEventを実行（リレー経由バトル後イベント漏れ修正）
+- ✅ wanderで仲間がレベルアップした際にメッセージ通知追加
+- ✅ 灯台岬をrelay→dungeonに昇格・潮王ネブラ（tidal_king）を配置（未使用ボス解決）
+- ✅ types.tsコメント更新（lighthouse=dungeon反映）
+- ✅ 全コミットをGitHubにpush済み
+
 ---
 
 ## 現在の実装状態

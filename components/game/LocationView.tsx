@@ -65,10 +65,14 @@ export default function LocationView({
             </div>
           </div>
           <p className="text-sm text-gray-300 italic mb-4 border-l-2 border-purple-700 pl-3">「{pendingJoin.joinText}」</p>
+          {joinedCount >= 3 && (
+            <div className="text-xs text-amber-400 font-bold mb-2 text-center">⚠️ 仲間は3人まで。断るか、現在の仲間と交代できません。</div>
+          )}
           <div className="flex gap-2">
             <button
               onClick={() => onJoinCompanion(gs.pendingCompanionJoin!)}
-              className="flex-1 py-2.5 bg-purple-800 hover:bg-purple-700 border-2 border-purple-600 text-white font-black rounded-xl transition active:scale-95"
+              disabled={joinedCount >= 3}
+              className="flex-1 py-2.5 bg-purple-800 hover:bg-purple-700 border-2 border-purple-600 text-white font-black rounded-xl transition active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed"
             >
               ✅ 仲間にする
             </button>
