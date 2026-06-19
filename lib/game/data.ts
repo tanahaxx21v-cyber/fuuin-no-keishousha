@@ -1217,7 +1217,7 @@ export const EVENTS: GameEvent[] = [
 
   {
     id: 'spirit_spring_fairy_wish', title: '精霊の問い',
-    condition: { atLoc: 'spirit_spring', blockIfEventCompleted: ['spirit_spring_healing_miracle'] },
+    condition: { atLoc: 'spirit_spring', requiredEventCompleted: ['spirit_spring_healing_miracle'] },
     dialogues: [
       { speaker: 'narrator', speakerName: '', text: '精霊の泉。水面に映る光が揺れ、小さな声が聞こえた気がした。' },
       { speaker: 'narrator', speakerName: '精霊の声', text: '「……勇者よ。一つだけ願いを叶えよう。何を望む？」' },
