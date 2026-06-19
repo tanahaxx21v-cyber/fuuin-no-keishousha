@@ -578,6 +578,13 @@ export function getItemPrice(itemId: string, daysLeft: number, totalDays = 100):
   return Math.floor(item.price * (1 + tiers * 0.1))
 }
 
+// 宿屋も同じ値上がりシステム（基本50G）
+export function getInnPrice(daysLeft: number, totalDays = 100): number {
+  const daysSpent = totalDays - daysLeft
+  const tiers = Math.min(5, Math.floor(daysSpent / 10))
+  return Math.floor(50 * (1 + tiers * 0.1))
+}
+
 // ===== LOCATIONS (ルミナ大陸) =====
 export const LOCATIONS: Record<LocationId, LocationDef> = {
   // ===== 6 TOWNS =====

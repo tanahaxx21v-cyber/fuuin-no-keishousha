@@ -2,7 +2,7 @@ import type {
   GameState, BattleState, BattleUnit, CompanionState,
   Skill, StatusEffect, SealStone, CompanionId, Difficulty, LocationId, BranchOption
 } from './types'
-import { COMPANIONS, ENEMIES, ITEMS, LOCATIONS, EVENTS, PLAYER_SKILL_SCHEDULE, getExpToNext, getDifficultyMultiplier, getItemPrice } from './data'
+import { COMPANIONS, ENEMIES, ITEMS, LOCATIONS, EVENTS, PLAYER_SKILL_SCHEDULE, getExpToNext, getDifficultyMultiplier, getItemPrice, getInnPrice } from './data'
 
 // ===== INITIALIZATION =====
 
@@ -339,8 +339,8 @@ export function skipCompanion(state: GameState): GameState {
 
 export function restAtInn(state: GameState): GameState {
   const s = deepClone(state)
-  const cost = 50
-  if (s.gold < cost) return { ...s, message: '所持金が足りません（50G必要）' }
+  const cost = getInnPrice(s.daysLeft)
+  if (s.gold < cost) return { ...s, message: `所持金が足りません（${cost}G必要）` }
   s.gold -= cost
   s.daysLeft -= 1
   s.playerHp = s.playerMaxHp
