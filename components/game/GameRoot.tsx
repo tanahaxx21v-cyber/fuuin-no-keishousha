@@ -209,7 +209,14 @@ export default function GameRoot() {
   }
 
   const handleBattleFlee = () => {
-    update(s => battleFlee(s))
+    update(s => {
+      const fled = battleFlee(s)
+      if (fled.phase === 'location') {
+        const eventId = checkLocationEvent(fled)
+        if (eventId) return startEvent(fled, eventId)
+      }
+      return fled
+    })
   }
 
   const handleCloseBattle = () => {
