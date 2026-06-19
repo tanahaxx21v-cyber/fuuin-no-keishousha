@@ -20,6 +20,7 @@ export interface EventCondition {
   minPlayerLevel?: number
   requiredEventCompleted?: string[]  // 前提イベントID（連続イベント用）
   blockIfEventCompleted?: string[]   // これらが完了済みなら発生しない
+  minVisitCount?: number             // 訪問回数が指定値以上の時に発生
 }
 
 export interface EventReward {
@@ -27,6 +28,7 @@ export interface EventReward {
   exp?: number
   itemId?: string
   itemQty?: number
+  fullHeal?: boolean   // パーティ全員HP/MPを全回復
   message: string
 }
 
@@ -299,4 +301,7 @@ export interface GameState {
   activeEventId?: string
   activeEventLine?: number
   pendingBranch?: { eventId: string; prompt?: string; options: BranchOption[] }
+
+  // 訪問回数カウント（PP4スタイル）
+  locVisitCounts: Partial<Record<LocationId, number>>
 }

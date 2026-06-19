@@ -1,7 +1,7 @@
 'use client'
 
 import type { GameState } from '@/lib/game/types'
-import { COMPANIONS } from '@/lib/game/data'
+import { COMPANIONS, getExpToNext } from '@/lib/game/data'
 
 interface Props {
   gs: GameState
@@ -13,6 +13,8 @@ interface Props {
 export default function StatusBar({ gs, onSave, isMuted, onToggleMute }: Props) {
   const hpPct = Math.max(0, (gs.playerHp / gs.playerMaxHp) * 100)
   const mpPct = Math.max(0, (gs.playerMp / gs.playerMaxMp) * 100)
+  const expToNext = getExpToNext(gs.playerLevel)
+  const expPct = Math.min(100, (gs.playerExp / expToNext) * 100)
   const daysUrgent = gs.daysLeft <= 20
   const daysWarn = gs.daysLeft <= 40
 
@@ -31,12 +33,18 @@ export default function StatusBar({ gs, onSave, isMuted, onToggleMute }: Props) 
           ⏰ <span className="text-lg font-black">{gs.daysLeft}</span>日
         </div>
 
-        {/* Name / Level */}
+        {/* Name / Level / EXP */}
         <div className="flex items-center gap-1 bg-slate-900 border-2 border-slate-700 rounded px-2 py-0.5">
           <span className="text-xs font-bold text-slate-200">{gs.playerName}</span>
           <span className="text-slate-600">·</span>
           <span className="text-xs text-slate-400">Lv</span>
           <span className="text-sm font-black text-white">{gs.playerLevel}</span>
+          <div className="w-12 h-2 bg-gray-900 rounded-sm border border-gray-700 overflow-hidden ml-1" title={`EXP ${gs.playerExp}/${expToNext}`}>
+            <div
+              className="h-full bg-gradient-to-r from-purple-700 to-purple-400 transition-all duration-500"
+              style={{ width: `${expPct}%` }}
+            />
+          </div>
         </div>
 
         {/* HP */}

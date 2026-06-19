@@ -796,6 +796,22 @@ export function getDifficultyMultiplier(difficulty: string): { days: number; ene
 
 // ===== EVENTS (パワポケ4スタイル: 条件付きイベント) =====
 export const EVENTS: GameEvent[] = [
+
+  // ===== チュートリアルイベント（最初のアルセリア到着時） =====
+  {
+    id: 'alseria_tutorial', title: '勇者の旅立ち',
+    condition: { atLoc: 'alseria', minDaysLeft: 95 },
+    dialogues: [
+      { speaker: 'narrator', speakerName: '', text: 'ルミナ大陸の中心、アルセリア王都。あなたの旅はここから始まる。' },
+      { speaker: 'narrator', speakerName: '老賢者', text: '「若き勇者よ。三つの封印石を集め、魔王の力を封じよ。炎・嵐・闇の石が各地に眠っている。」' },
+      { speaker: 'narrator', speakerName: '老賢者', text: '「北の廃鉱山に炎の石、北東の竜の峠に嵐の石、南の古代神殿に闇の石がある。仲間を集め、力をつけて挑め。」' },
+      { speaker: 'player', speakerName: 'レオン', text: '……わかった。必ず三つ揃えて魔王を倒す！' },
+      { speaker: 'narrator', speakerName: '', text: '残り100日。旅を始めよう。' },
+    ],
+    reward: { exp: 20, message: '✨ 旅の目的を確認した！（EXP +20）' },
+  },
+
+
   {
     id: 'alseria_gares_homecoming', title: 'ガレスの帰還',
     condition: { atLoc: 'alseria', requiredCompanions: ['gares'] },
@@ -958,7 +974,7 @@ export const EVENTS: GameEvent[] = [
       { speaker: 'narrator', speakerName: '精霊', text: '「勇者よ。汝の旅の意志を感じた。我らが加護を受けよ……」' },
       { speaker: 'narrator', speakerName: '', text: '温かな光がパーティ全員を包み込んだ。傷が癒え、疲れが消えていく。' },
     ],
-    reward: { exp: 25, message: '精霊の祝福で回復した！（EXP +25）' },
+    reward: { exp: 25, fullHeal: true, message: '✨ 精霊の祝福でパーティ全員のHP/MPが全回復！（EXP +25）' },
   },
   {
     id: 'great_bridge_merchant_encounter', title: '怪しい商人',
@@ -1032,7 +1048,7 @@ export const EVENTS: GameEvent[] = [
       { speaker: 'player', speakerName: 'レオン', text: 'リズ……これは？' },
       { speaker: 'liz', speakerName: 'リズ', text: '精霊の力を少し借りました。……みんなのために、私にできる最大のことです。' },
     ],
-    reward: { exp: 70, itemId: 'panacea', itemQty: 2, message: 'リズの奇跡が発動！（EXP +70・万能薬×2）' },
+    reward: { exp: 70, fullHeal: true, itemId: 'panacea', itemQty: 2, message: '✨ リズの奇跡でパーティ全員のHP/MPが全回復！（EXP +70・万能薬×2）' },
   },
 
   {
@@ -1211,7 +1227,7 @@ export const EVENTS: GameEvent[] = [
     branch: {
       prompt: '商人の取引に応じるか？',
       options: [
-        { label: '100G払って情報を買う', reward: { exp: 60, gold: -100, message: '廃鉱山ボスの弱点を知った！（EXP +60, -100G）' } },
+        { label: '100G払って情報を買う', cost: 100, reward: { exp: 60, message: '廃鉱山ボスの弱点を知った！（EXP +60, -100G）' } },
         { label: '無視して通り過ぎる', reward: { exp: 10, message: '正しい判断だったかもしれない……（EXP +10）' } },
       ],
     },
@@ -1307,5 +1323,54 @@ export const EVENTS: GameEvent[] = [
       { speaker: 'narrator', speakerName: '', text: '時間のプレッシャーを改めて感じた。急がなければ。' },
     ],
     reward: { exp: 30, message: '敵の動向を把握した！（EXP +30）' },
+  },
+
+  // ===== 残り日数ベース強制イベント（PP4スタイル）=====
+  {
+    id: 'alseria_day60_warning', title: '王都の危機',
+    condition: { atLoc: 'alseria', maxDaysLeft: 60, minDaysLeft: 55 },
+    dialogues: [
+      { speaker: 'narrator', speakerName: '', text: '残り60日。アルセリア王都に緊張が走っている。' },
+      { speaker: 'narrator', speakerName: '衛兵隊長', text: '「勇者！魔王軍の斥候が王都近くまで来ている。急いでくれ！」' },
+      { speaker: 'player', speakerName: 'レオン', text: '（あと60日か。封印石はいくつ揃えた……？）' },
+      { speaker: 'narrator', speakerName: '', text: '時間が迫っている。急がなければ。' },
+    ],
+    reward: { exp: 40, message: '⚠️ 残り60日の警告！急いで封印石を集めよ！（EXP +40）' },
+  },
+
+  {
+    id: 'alseria_day30_crisis', title: '最後の訴え',
+    condition: { atLoc: 'alseria', maxDaysLeft: 30, minDaysLeft: 25 },
+    dialogues: [
+      { speaker: 'narrator', speakerName: '', text: '残り30日。王都は半包囲状態。民衆が避難を始めている。' },
+      { speaker: 'narrator', speakerName: '王', text: '「勇者よ……残り30日だ。封印石を揃えて砂漠遺跡へ急いでくれ。頼むぞ。」' },
+      { speaker: 'player', speakerName: 'レオン', text: '絶対に間に合わせる！' },
+      { speaker: 'narrator', speakerName: '', text: '最後の戦いが近づいている。' },
+    ],
+    reward: { exp: 60, gold: 200, message: '⚠️ 残り30日！王から激励の資金を受け取った！（EXP +60, +200G）' },
+  },
+
+  // ===== 訪問回数ベースイベント（minVisitCount活用）=====
+  {
+    id: 'bern_repeat_merchant', title: 'ベルンの情報屋',
+    condition: { atLoc: 'bern', minVisitCount: 3 },
+    dialogues: [
+      { speaker: 'narrator', speakerName: '情報屋', text: '「何度もベルンへようこそ。君のことは目を付けていたよ。」' },
+      { speaker: 'narrator', speakerName: '情報屋', text: '「実は……封印石の隠し場所について噂がある。廃鉱山の奥深くに古い祭壇があるらしい。」' },
+      { speaker: 'player', speakerName: 'レオン', text: '……ありがとう。参考にする。' },
+      { speaker: 'narrator', speakerName: '情報屋', text: '「代わりに少し持っていってくれ。商売の足しにするといい。」' },
+    ],
+    reward: { gold: 100, exp: 25, message: '💰 情報屋から情報と資金をもらった！（+100G, EXP +25）' },
+  },
+
+  {
+    id: 'traveler_inn_repeat_chef', title: '宿の料理人',
+    condition: { atLoc: 'traveler_inn', minVisitCount: 3 },
+    dialogues: [
+      { speaker: 'narrator', speakerName: '宿の料理人', text: '「また来てくれたかい、勇者さん。常連には特別メニューがあるんだ。」' },
+      { speaker: 'narrator', speakerName: '宿の料理人', text: '「大陸を旅する勇者の体には、これが一番だ。たくさん食べてくれ！」' },
+      { speaker: 'player', speakerName: 'レオン', text: '（温かい食事は力が出る……！）' },
+    ],
+    reward: { exp: 30, itemId: 'hi_potion', itemQty: 1, message: '🍖 宿の特製料理でHPが回復！ハイポーションをもらった！（EXP +30）' },
   },
 ]

@@ -43,6 +43,7 @@ function loadGame(): GameState | null {
       }
     }
     if (!parsed.completedEvents) parsed.completedEvents = []
+    if (!parsed.locVisitCounts) parsed.locVisitCounts = {}
     return parsed
   } catch { return null }
 }
@@ -227,6 +228,15 @@ export default function GameRoot() {
     if (gs.levelUpPending) sfxLevelUp()
   }, [gs.levelUpPending])
 
+  // メッセージを3秒後に自動クリア
+  useEffect(() => {
+    if (!gs.message) return
+    const timer = setTimeout(() => {
+      setGs(prev => ({ ...prev, message: undefined }))
+    }, 3000)
+    return () => clearTimeout(timer)
+  }, [gs.message])
+
   // バトル中に仲間・敵のターンを自動処理（バトル開始時は全員MAXHPで表示してから実行）
   useEffect(() => {
     if (gs.phase !== 'battle' || !gs.battle) return
@@ -292,15 +302,21 @@ export default function GameRoot() {
       )}
 
       {/* Message toast */}
-      {gs.message && (
-        <div className="fixed top-20 left-1/2 -translate-x-1/2 z-40 bg-red-950 border-2 border-red-600 text-red-200 px-4 py-2 rounded-xl text-sm font-black shadow-xl">
-          {gs.message}
-          <button
-            onClick={() => setGs(prev => ({ ...prev, message: undefined }))}
-            className="ml-3 text-red-400 hover:text-white font-black"
-          >✕</button>
-        </div>
-      )}
+      {gs.message && (() => {
+        const msg = gs.message!
+        const isSuccess = /^(💰|🎁|✨|🎉|💪|⭐|💎|🏆)/.test(msg)
+        const isWarn = /^(⚠️|☠️|💀)/.test(msg)
+        const cls = isSuccess
+          ? 'bg-green-950 border-green-600 text-green-200'
+          : isWarn
+          ? 'bg-yellow-950 border-yellow-600 text-yellow-200'
+          : 'bg-indigo-950 border-indigo-600 text-indigo-200'
+        return (
+          <div className={`fixed top-20 left-1/2 -translate-x-1/2 z-40 ${cls} border-2 px-4 py-2 rounded-xl text-sm font-black shadow-xl max-w-xs text-center`}>
+            {msg}
+          </div>
+        )
+      })()}
 
       {/* Main content */}
       <div className="flex-1">

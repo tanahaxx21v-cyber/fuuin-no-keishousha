@@ -259,14 +259,20 @@ export default function BattleScene({ gs, onAttack, onSkill, onItem, onFlee, onC
           </div>
           {allies.filter(a => !a.isPlayer).map(a => {
             const charId = a.companionId ?? 'gares'
+            const statusIcons = a.statusEffects.map(e =>
+              e.id === 'poison' ? '☠️' : e.id === 'stun' ? '💫' : e.id === 'atk_up' ? '⬆️' : e.id === 'def_up' ? '🛡️' : ''
+            ).filter(Boolean)
             return (
               <div key={a.uid} className="flex items-center gap-1">
                 <CharPortrait charId={charId} size={52} isActive={a.uid === b.currentUid} isDead={a.hp <= 0} />
-                <div className="flex flex-col gap-0.5" style={{ width: 42 }}>
+                <div className="flex flex-col gap-0.5" style={{ width: 46 }}>
                   <HpBar hp={a.hp} maxHp={a.maxHp} />
-                  <span className="text-[8px] text-white font-bold leading-none" style={{ textShadow: '0 1px 3px #000' }}>
-                    {a.name}
-                  </span>
+                  <div className="flex items-center gap-0.5">
+                    <span className="text-[8px] text-white font-bold leading-none truncate" style={{ textShadow: '0 1px 3px #000' }}>
+                      {a.name}
+                    </span>
+                    {statusIcons.map((ic, i) => <span key={i} style={{ fontSize: 8 }}>{ic}</span>)}
+                  </div>
                 </div>
               </div>
             )

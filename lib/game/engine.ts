@@ -67,6 +67,7 @@ export function createInitialState(difficulty: Difficulty, playerName = 'レオ�
     companions,
     party: [],
     completedEvents: [],
+    locVisitCounts: { alseria: 1 },
   }
 }
 
@@ -131,6 +132,10 @@ export function checkLocationEvent(state: GameState): string | null {
     if (cond.minPlayerLevel !== undefined && state.playerLevel < cond.minPlayerLevel) continue
     if (cond.requiredEventCompleted && !cond.requiredEventCompleted.every(e => state.completedEvents.includes(e))) continue
     if (cond.blockIfEventCompleted && cond.blockIfEventCompleted.some(e => state.completedEvents.includes(e))) continue
+    if (cond.minVisitCount !== undefined) {
+      const visits = (state.locVisitCounts ?? {})[cond.atLoc] ?? 0
+      if (visits < cond.minVisitCount) continue
+    }
     return ev.id
   }
   return null
@@ -181,6 +186,8 @@ export function travel(state: GameState, destId: LocationId): GameState {
   s.daysLeft -= days
   s.currentLocId = destId
   if (!s.visitedLocs.includes(destId)) s.visitedLocs.push(destId)
+  s.locVisitCounts = s.locVisitCounts ?? {}
+  s.locVisitCounts[destId] = (s.locVisitCounts[destId] ?? 0) + 1
 
   if (s.daysLeft <= 0) {
     s.daysLeft = 0
@@ -286,7 +293,20 @@ export function chooseBranch(state: GameState, choiceIndex: number): GameState {
   return s
 }
 
-function applyEventReward(s: GameState, reward: { gold?: number; exp?: number; itemId?: string; itemQty?: number; message: string }) {
+function applyEventReward(s: GameState, reward: { gold?: number; exp?: number; itemId?: string; itemQty?: number; fullHeal?: boolean; message: string }) {
+  if (reward.fullHeal) {
+    s.playerHp = s.playerMaxHp
+    s.playerMp = s.playerMaxMp
+    s.playerStatus = []
+    for (const id of Object.keys(s.companions) as CompanionId[]) {
+      const c = s.companions[id]
+      if (c.joined && c.alive) {
+        c.hp = c.maxHp
+        c.mp = c.maxMp
+        c.statusEffects = []
+      }
+    }
+  }
   if (reward.gold) s.gold += reward.gold
   if (reward.exp) {
     s.playerExp += reward.exp
