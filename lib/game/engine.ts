@@ -667,14 +667,21 @@ function processCompanionTurn(state: GameState): GameState {
   const aliveAllies = b.units.filter(u => u.isAlly && u.hp > 0)
 
   // Use healing skill if any ally is below 30% HP
-  const lowHpAlly = aliveAllies
-    .filter(u => u.hp < u.maxHp * 0.3)
-    .sort((a, b) => a.hp - b.hp)[0]
-  const healSkill = actor.skills.find(sk => sk.target === 'ally_one' && sk.effect === 'heal' && actor.mp >= sk.mpCost)
-  if (lowHpAlly && healSkill) {
-    actor.mp -= healSkill.mpCost
-    b.logs.push({ text: `💚 ${actor.name}は「${healSkill.name}」を使った！`, type: 'heal' })
-    applySkillEffect(b, actor, lowHpAlly, healSkill)
+  const lowHpAllies = aliveAllies.filter(u => u.hp < u.maxHp * 0.3)
+  const lowHpAlly = [...lowHpAllies].sort((a, b) => a.hp - b.hp)[0]
+  const healAllSkill = actor.skills.find(sk => sk.target === 'ally_all' && sk.effect === 'heal' && actor.mp >= sk.mpCost)
+  const healOneSkill = actor.skills.find(sk => sk.target === 'ally_one' && sk.effect === 'heal' && actor.mp >= sk.mpCost)
+  // ally_all heal when multiple allies are low, ally_one heal when just one is low
+  if (lowHpAllies.length >= 2 && healAllSkill) {
+    actor.mp -= healAllSkill.mpCost
+    b.logs.push({ text: `💚 ${actor.name}は「${healAllSkill.name}」を使った！`, type: 'heal' })
+    for (const tgt of aliveAllies) applySkillEffect(b, actor, tgt, healAllSkill)
+    return advanceTurn(s)
+  }
+  if (lowHpAlly && healOneSkill) {
+    actor.mp -= healOneSkill.mpCost
+    b.logs.push({ text: `💚 ${actor.name}は「${healOneSkill.name}」を使った！`, type: 'heal' })
+    applySkillEffect(b, actor, lowHpAlly, healOneSkill)
     return advanceTurn(s)
   }
 
