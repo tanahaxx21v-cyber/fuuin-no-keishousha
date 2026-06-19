@@ -500,13 +500,14 @@ export function battleAttack(state: GameState, targetUid: string): GameState {
   const target = b.units.find(u => u.uid === targetUid)!
 
   const result = calcDamage(attacker, target)
-  applyDamage(b, target, result.dmg, result.crit)
+  const died = applyDamage(target, result.dmg)
   b.logs.push({
     text: result.crit
       ? `💥 ${attacker.name}の会心の一撃！${target.name}に${result.dmg}ダメージ！`
       : `⚔️ ${attacker.name}の攻撃！${target.name}に${result.dmg}ダメージ`,
     type: result.crit ? 'critical' : 'damage',
   })
+  if (died) b.logs.push({ text: `💀 ${target.name}は倒れた！`, type: 'death' })
 
   return advanceTurn(s)
 }
@@ -525,14 +526,12 @@ export function battleSkill(state: GameState, skill: Skill, targetUid?: string):
     return advanceTurn(s)
   }
   actor.mp -= skill.mpCost
+  b.logs.push({ text: `✨ ${actor.name}は「${skill.name}」を使った！`, type: 'status' })
 
   const targets = resolveTargets(b, skill, actor, targetUid)
-
   for (const tgt of targets) {
     applySkillEffect(b, actor, tgt, skill)
   }
-
-  b.logs.push({ text: `✨ ${actor.name}は「${skill.name}」を使った！`, type: 'status' })
 
   return advanceTurn(s)
 }
@@ -618,11 +617,11 @@ function processEnemyTurn(state: GameState): GameState {
     const skill = actor.skills[Math.floor(Math.random() * actor.skills.length)]
     if (actor.mp >= skill.mpCost) {
       actor.mp -= skill.mpCost
+      b.logs.push({ text: `🔥 ${actor.name}は「${skill.name}」を使った！`, type: 'status' })
       const targets = skill.target === 'enemy_all'
         ? aliveAllies
         : [aliveAllies[Math.floor(Math.random() * aliveAllies.length)]]
       for (const tgt of targets) applySkillEffect(b, actor, tgt, skill)
-      b.logs.push({ text: `🔥 ${actor.name}は「${skill.name}」を使った！`, type: 'status' })
       return advanceTurn(s)
     }
   }
@@ -630,13 +629,14 @@ function processEnemyTurn(state: GameState): GameState {
   // Normal attack on random ally
   const target = aliveAllies[Math.floor(Math.random() * aliveAllies.length)]
   const result = calcDamage(actor, target)
-  applyDamage(b, target, result.dmg, result.crit)
+  const diedFromAtk = applyDamage(target, result.dmg)
   b.logs.push({
     text: result.crit
       ? `💥 ${actor.name}の会心！${target.name}に${result.dmg}ダメージ！`
       : `⚔️ ${actor.name}の攻撃！${target.name}に${result.dmg}ダメージ`,
     type: result.crit ? 'critical' : 'damage',
   })
+  if (diedFromAtk) b.logs.push({ text: `💀 ${target.name}は倒れた！`, type: 'death' })
 
   return advanceTurn(s)
 }
@@ -671,8 +671,8 @@ function processCompanionTurn(state: GameState): GameState {
   const healSkill = actor.skills.find(sk => sk.target === 'ally_one' && sk.effect === 'heal' && actor.mp >= sk.mpCost)
   if (lowHpAlly && healSkill) {
     actor.mp -= healSkill.mpCost
-    applySkillEffect(b, actor, lowHpAlly, healSkill)
     b.logs.push({ text: `💚 ${actor.name}は「${healSkill.name}」を使った！`, type: 'heal' })
+    applySkillEffect(b, actor, lowHpAlly, healSkill)
     return advanceTurn(s)
   }
 
@@ -684,22 +684,23 @@ function processCompanionTurn(state: GameState): GameState {
   if (useSkill) {
     const skill = offSkills[Math.floor(Math.random() * offSkills.length)]
     actor.mp -= skill.mpCost
+    b.logs.push({ text: `✨ ${actor.name}は「${skill.name}」を使った！`, type: 'status' })
     const targets = skill.target === 'enemy_all' ? aliveEnemies : [aliveEnemies[Math.floor(Math.random() * aliveEnemies.length)]]
     for (const tgt of targets) applySkillEffect(b, actor, tgt, skill)
-    b.logs.push({ text: `✨ ${actor.name}は「${skill.name}」を使った！`, type: 'status' })
     return advanceTurn(s)
   }
 
   // Normal attack on weakest enemy
   const target = aliveEnemies.reduce((weakest, e) => e.hp < weakest.hp ? e : weakest)
   const result = calcDamage(actor, target)
-  applyDamage(b, target, result.dmg, result.crit)
+  const diedFromAtk = applyDamage(target, result.dmg)
   b.logs.push({
     text: result.crit
       ? `💥 ${actor.name}の会心！${target.name}に${result.dmg}ダメージ！`
       : `⚔️ ${actor.name}の攻撃！${target.name}に${result.dmg}ダメージ`,
     type: result.crit ? 'critical' : 'damage',
   })
+  if (diedFromAtk) b.logs.push({ text: `💀 ${target.name}は倒れた！`, type: 'death' })
 
   return advanceTurn(s)
 }
@@ -722,6 +723,7 @@ function advanceTurn(state: GameState): GameState {
       const dmg = 8
       unit.hp = Math.max(0, unit.hp - dmg)
       b.logs.push({ text: `☠️ ${unit.name}は毒で${dmg}ダメージ！`, type: 'damage' })
+      if (unit.hp <= 0) b.logs.push({ text: `💀 ${unit.name}は毒で倒れた！`, type: 'death' })
       poison.turnsLeft -= 1
       if (poison.turnsLeft <= 0) unit.statusEffects = unit.statusEffects.filter(e => e.id !== 'poison')
     }
@@ -945,7 +947,8 @@ export function wander(state: GameState): GameState {
     s.gold += gold
     s.message = `💰 うろついていたら ${gold}G を見つけた！`
   } else if (roll < 0.55) {
-    s.playerExp += 15
+    const expGain = 15
+    s.playerExp += expGain
     while (s.playerExp >= getExpToNext(s.playerLevel) && s.playerLevel < 30) {
       s.playerExp -= getExpToNext(s.playerLevel)
       s.playerLevel++
@@ -956,7 +959,22 @@ export function wander(state: GameState): GameState {
       const newSkill = PLAYER_SKILL_SCHEDULE.find(ps => ps.level === s.playerLevel)
       if (newSkill && !s.playerSkills.some(sk => sk.id === newSkill.skill.id)) s.playerSkills.push(newSkill.skill)
     }
-    s.message = '💪 うろついて体を動かした。（EXP +15）'
+    for (const cid of s.party) {
+      const c = s.companions[cid]
+      if (!c.joined || !c.alive) continue
+      const def = COMPANIONS[cid]
+      c.exp += expGain
+      while (c.exp >= getExpToNext(c.level) && c.level < 30) {
+        c.exp -= getExpToNext(c.level)
+        c.level++
+        c.maxHp += def.hpGrowth; c.hp = Math.min(c.hp + def.hpGrowth, c.maxHp)
+        c.maxMp += def.mpGrowth; c.mp = Math.min(c.mp + def.mpGrowth, c.maxMp)
+        c.atk += def.atkGrowth; c.def += def.defGrowth; c.spd += def.spdGrowth
+        const newCompSkill = def.learnableSkills?.find(ls => ls.level === c.level)
+        if (newCompSkill && !c.learnedSkills.some(sk => sk.id === newCompSkill.skill.id)) c.learnedSkills.push(newCompSkill.skill)
+      }
+    }
+    s.message = `💪 うろついて体を動かした。（EXP +${expGain}）`
   } else if (roll < 0.70) {
     const items: Array<{itemId: string; qty: number}> = [
       { itemId: 'potion', qty: 1 },
@@ -1049,11 +1067,9 @@ function calcDamage(attacker: BattleUnit, target: BattleUnit): { dmg: number; cr
   return { dmg, crit }
 }
 
-function applyDamage(battle: BattleState, target: BattleUnit, dmg: number, _crit: boolean) {
+function applyDamage(target: BattleUnit, dmg: number): boolean {
   target.hp = Math.max(0, target.hp - dmg)
-  if (target.hp <= 0) {
-    battle.logs.push({ text: `💀 ${target.name}は倒れた！`, type: 'death' })
-  }
+  return target.hp <= 0
 }
 
 function resolveTargets(battle: BattleState, skill: Skill, actor: BattleUnit, targetUid?: string): BattleUnit[] {
@@ -1082,8 +1098,9 @@ function applySkillEffect(battle: BattleState, actor: BattleUnit, target: Battle
       const sealBonus = skill.effect === 'boss_bonus' ? 1.5 : 1.0
       const base = Math.max(1, (actor.atk * atkMod * skill.power * sealBonus) - (target.def * defMod / 2))
       const dmg = Math.max(1, Math.floor(base * (0.9 + Math.random() * 0.2)))
-      applyDamage(battle, target, dmg, false)
+      const died = applyDamage(target, dmg)
       battle.logs.push({ text: `💥 ${target.name}に${dmg}ダメージ！`, type: 'damage' })
+      if (died) battle.logs.push({ text: `💀 ${target.name}は倒れた！`, type: 'death' })
       break
     }
     case 'heal': {
@@ -1097,9 +1114,11 @@ function applySkillEffect(battle: BattleState, actor: BattleUnit, target: Battle
         target.statusEffects.push({ id: 'poison', name: '毒', turnsLeft: 4 })
         battle.logs.push({ text: `☠️ ${target.name}は毒状態になった！`, type: 'status' })
       }
-      // Also deal some damage
       const result = calcDamage(actor, target)
-      applyDamage(battle, target, Math.floor(result.dmg * skill.power), false)
+      const pdmg = Math.floor(result.dmg * skill.power)
+      const pdied = applyDamage(target, pdmg)
+      if (pdmg > 0) battle.logs.push({ text: `💥 ${target.name}に${pdmg}ダメージ！`, type: 'damage' })
+      if (pdied) battle.logs.push({ text: `💀 ${target.name}は倒れた！`, type: 'death' })
       break
     }
     case 'stun': {
@@ -1108,7 +1127,10 @@ function applySkillEffect(battle: BattleState, actor: BattleUnit, target: Battle
         battle.logs.push({ text: `💫 ${target.name}はスタンした！`, type: 'status' })
       }
       const result = calcDamage(actor, target)
-      applyDamage(battle, target, Math.floor(result.dmg * skill.power), false)
+      const sdmg = Math.floor(result.dmg * skill.power)
+      const sdied = applyDamage(target, sdmg)
+      if (sdmg > 0) battle.logs.push({ text: `💥 ${target.name}に${sdmg}ダメージ！`, type: 'damage' })
+      if (sdied) battle.logs.push({ text: `💀 ${target.name}は倒れた！`, type: 'death' })
       break
     }
     case 'atk_up': {
