@@ -11,7 +11,9 @@ interface Props {
 }
 
 export default function PartyManage({ gs, onSetParty, onClose }: Props) {
-  const [draft, setDraft] = useState<CompanionId[]>([...gs.party])
+  const [draft, setDraft] = useState<CompanionId[]>(
+    gs.party.filter(id => gs.companions[id]?.alive)
+  )
 
   const joinedCompanions = Object.values(COMPANIONS).filter(
     c => gs.companions[c.id].joined && gs.companions[c.id].alive

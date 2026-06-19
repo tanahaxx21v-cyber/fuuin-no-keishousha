@@ -2,7 +2,6 @@
 
 import type { GameState } from '@/lib/game/types'
 import { EVENTS } from '@/lib/game/data'
-import { COMPANIONS } from '@/lib/game/data'
 
 interface Props {
   gs: GameState
