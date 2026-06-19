@@ -64,18 +64,18 @@ export type LocationId =
   | 'mirea'          // ミレア港町 ④
   | 'elna'           // エルナの里 ⑤
   | 'galdo'          // ガルド皆都市 ⑥
-  // 10 relay points
+  // 9 relay points
   | 'traveler_inn'   // 旅人の宿
   | 'checkpoint'     // 東関所
   | 'great_bridge'   // 大橋
   | 'riverside'      // 川辺の村
   | 'watchtower'     // 見張り塔
-  | 'lighthouse'     // 灯台岬
-  | 'spirit_spring'  // 精霊の泉 (NEW)
-  | 'trading_post'   // 交易所 (NEW)
-  | 'coastal_road'   // 海岸街道 (NEW)
-  | 'forest_entrance'// 森の入口 (NEW)
+  | 'spirit_spring'  // 精霊の泉
+  | 'trading_post'   // 交易所
+  | 'coastal_road'   // 海岸街道
+  | 'forest_entrance'// 森の入口
   // dungeons & special
+  | 'lighthouse'     // 灯台岬（潮王ネブラ）
   | 'demon_mine'     // 廃鉱山（炎の封印石）
   | 'dragon_pass'    // 竜の峠（嵐の封印石）
   | 'bandit_hideout' // 盗賊アジト
