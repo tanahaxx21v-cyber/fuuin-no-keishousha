@@ -751,7 +751,7 @@ export const LOCATIONS: Record<LocationId, LocationDef> = {
     travelDays: { galdo: 2 },
     companionId: 'iris',
     sealStone: 'fire',
-    enemyPool: ['goromin', 'tsuru_hammer', 'kabemimi', 'ganseki_bou'],
+    enemyPool: ['goromin', 'tsuru_hammer', 'kabemimi', 'ganseki_bou', 'fire_elemental', 'mine_golem'],
     bossId: 'mine_king',
   },
   dragon_pass: {
@@ -762,7 +762,7 @@ export const LOCATIONS: Record<LocationId, LocationDef> = {
     travelDays: { galdo: 3 },
     companionId: 'elk',
     sealStone: 'storm',
-    enemyPool: ['goromin', 'tsuru_hammer', 'kabemimi', 'ganseki_bou'],
+    enemyPool: ['goromin', 'tsuru_hammer', 'kabemimi', 'ganseki_bou', 'storm_bird'],
     bossId: 'storm_dragon',
   },
   bandit_hideout: {
@@ -792,7 +792,7 @@ export const LOCATIONS: Record<LocationId, LocationDef> = {
     desc: '砂漠の奥に眠る古代遺跡。世界の記録を刻む終末記録体アーカイブが待ち受ける禁断の地。3つの封印石を持つ者だけが真の決戦に挑める。',
     connections: ['sahal'],
     travelDays: { sahal: 3 },
-    enemyPool: ['sabotenu', 'sunabukuro', 'hibikamen', 'mizunomin', 'ruins_guardian', 'tsugihagi_hei', 'baketsu_hei', 'memo_hei', 'sansec_general', 'mirror_lady', 'ito_kiri'],
+    enemyPool: ['sabotenu', 'sunabukuro', 'hibikamen', 'mizunomin', 'ruins_guardian', 'tsugihagi_hei', 'baketsu_hei', 'memo_hei', 'sansec_general', 'mirror_lady', 'ito_kiri', 'desert_scorpion'],
     bossId: 'archive',
     requireAllStones: true,
   },
