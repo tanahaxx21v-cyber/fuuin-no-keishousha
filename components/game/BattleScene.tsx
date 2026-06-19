@@ -117,7 +117,7 @@ function EnemyDisplay({ enemies, isBoss, isTargetingEnemies, onSelectTarget }: {
       <div className="flex flex-col items-center justify-center h-full gap-2">
         {enemies.map(e => {
           const dead = e.hp <= 0
-          const emoji = getEnemyEmoji(e.uid, e.name)
+          const emoji = e.emoji || getEnemyEmoji(e.uid, e.name)
           const hpPct = Math.max(0, (e.hp / e.maxHp) * 100)
           const hpFill = hpPct > 50 ? '#4ade80' : hpPct > 25 ? '#facc15' : '#ef4444'
 
