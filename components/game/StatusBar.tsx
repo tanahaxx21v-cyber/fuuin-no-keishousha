@@ -102,20 +102,30 @@ export default function StatusBar({ gs, onSave, isMuted, onToggleMute }: Props) 
           ))}
         </div>
 
-        {/* Party display (non-clickable) */}
-        <div className="ml-auto flex items-center gap-1.5">
+        {/* Party display (non-clickable) with HP bars */}
+        <div className="ml-auto flex items-center gap-2">
           {gs.party.map(id => {
             const c = gs.companions[id]
             const def = COMPANIONS[id]
             if (!def) return null
-            return c.alive ? (
-              <span key={id} className="text-xl leading-none" title={def.name}>
-                {def.emoji}
-              </span>
-            ) : (
-              <span key={id} className="text-xl leading-none grayscale opacity-30" title={`${def.name}（永眠）`}>
-                {def.emoji}
-              </span>
+            const hpPct = c.alive ? Math.max(0, (c.hp / c.maxHp) * 100) : 0
+            return (
+              <div key={id} className="flex flex-col items-center gap-0.5" title={c.alive ? `${def.name} HP ${c.hp}/${c.maxHp}` : `${def.name}（永眠）`}>
+                <span className={`text-xl leading-none ${c.alive ? '' : 'grayscale opacity-30'}`}>
+                  {def.emoji}
+                </span>
+                <div className="w-7 h-1.5 bg-gray-900 rounded-sm border border-gray-700 overflow-hidden">
+                  <div
+                    className={`h-full transition-all duration-300 ${
+                      !c.alive ? 'bg-gray-700'
+                      : hpPct > 50 ? 'bg-green-500'
+                      : hpPct > 25 ? 'bg-yellow-500'
+                      : 'bg-red-600'
+                    }`}
+                    style={{ width: `${hpPct}%` }}
+                  />
+                </div>
+              </div>
             )
           })}
           {gs.party.length === 0 && (

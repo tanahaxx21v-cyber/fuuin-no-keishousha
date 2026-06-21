@@ -137,11 +137,55 @@ export default function PartyManage({ gs, onSetParty, onClose }: Props) {
         )}
       </div>
 
+      {/* チーム合計ステータス */}
+      {draft.length > 0 && (() => {
+        const totalAtk = draft.reduce((sum, id) => sum + (gs.companions[id]?.atk ?? 0), 0)
+        const totalDef = draft.reduce((sum, id) => sum + (gs.companions[id]?.def ?? 0), 0)
+        const totalSpd = draft.reduce((sum, id) => sum + (gs.companions[id]?.spd ?? 0), 0)
+        const avgHpPct = draft.reduce((sum, id) => {
+          const c = gs.companions[id]
+          return sum + (c ? c.hp / c.maxHp : 0)
+        }, 0) / draft.length
+        return (
+          <div className="bg-[#0c0c24] border-2 border-slate-700 rounded-xl p-3">
+            <div className="text-xs font-black text-slate-400 mb-2 tracking-widest">— パーティ合計ステータス —</div>
+            <div className="grid grid-cols-4 gap-2 text-center">
+              <div>
+                <div className="text-[10px] text-gray-500 font-bold">ATK合計</div>
+                <div className="text-red-400 font-black text-base">{totalAtk}</div>
+              </div>
+              <div>
+                <div className="text-[10px] text-gray-500 font-bold">DEF合計</div>
+                <div className="text-blue-400 font-black text-base">{totalDef}</div>
+              </div>
+              <div>
+                <div className="text-[10px] text-gray-500 font-bold">SPD合計</div>
+                <div className="text-yellow-400 font-black text-base">{totalSpd}</div>
+              </div>
+              <div>
+                <div className="text-[10px] text-gray-500 font-bold">平均HP</div>
+                <div className={`font-black text-base ${avgHpPct > 0.5 ? 'text-green-400' : avgHpPct > 0.25 ? 'text-yellow-400' : 'text-red-400'}`}>
+                  {Math.round(avgHpPct * 100)}%
+                </div>
+              </div>
+            </div>
+            {avgHpPct < 0.5 && (
+              <div className="text-xs text-yellow-400 font-bold mt-2 text-center">⚠️ HP不足。宿屋で回復してから出発推奨</div>
+            )}
+          </div>
+        )
+      })()}
+
       <button
         onClick={handleConfirm}
-        className="w-full py-4 bg-indigo-800 hover:bg-indigo-700 border-2 border-indigo-500 text-white font-black text-lg rounded-xl transition active:scale-95 shadow-xl"
+        disabled={draft.length === 0}
+        className={`w-full py-4 border-2 text-white font-black text-lg rounded-xl transition active:scale-95 shadow-xl ${
+          draft.length === 0
+            ? 'bg-slate-900 border-slate-700 text-gray-600 cursor-not-allowed opacity-50'
+            : 'bg-indigo-800 hover:bg-indigo-700 border-indigo-500'
+        }`}
       >
-        ✅ 確定（{draft.length}人選択中）
+        {draft.length === 0 ? '仲間を1人以上選択してください' : `✅ 確定（${draft.length}人選択中）`}
       </button>
     </div>
   )

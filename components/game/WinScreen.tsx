@@ -124,11 +124,20 @@ const NAME_TO_ID: Record<string, string> = {
   'イリス': 'iris', 'シグ': 'sig', 'エルク': 'elk', 'ミラ': 'mira', 'ゼノ（隠しキャラ）': 'zeno',
 }
 
+function getClearRank(daysLeft: number): { rank: string; color: string; label: string } {
+  if (daysLeft >= 90) return { rank: 'SS', color: 'text-yellow-300', label: '完璧な封印！' }
+  if (daysLeft >= 70) return { rank: 'S', color: 'text-yellow-400', label: '見事な勝利！' }
+  if (daysLeft >= 50) return { rank: 'A', color: 'text-green-400', label: '余裕のクリア' }
+  if (daysLeft >= 30) return { rank: 'B', color: 'text-blue-400', label: 'ギリギリ封印成功' }
+  return { rank: 'C', color: 'text-gray-400', label: '崖っぷちの勝利' }
+}
+
 export default function WinScreen({ gs, onRestart }: Props) {
   const [page, setPage] = useState(0)
   const joinedCompanions = Object.values(gs.companions).filter(c => c.joined && c.alive)
   const deadCompanions = Object.values(gs.companions).filter(c => c.joined && !c.alive)
   const hasZeno = gs.companions.zeno?.joined
+  const rank = getClearRank(gs.daysLeft)
 
   const isCompanionDead = (name: string) => {
     const id = NAME_TO_ID[name]
@@ -150,6 +159,29 @@ export default function WinScreen({ gs, onRestart }: Props) {
             <h1 className="text-3xl font-bold text-yellow-300 mb-1">クリア！</h1>
             <p className="text-gray-400 text-sm mb-5">残り{gs.daysLeft}日で封印の継承者となった</p>
 
+            {/* クリアランク */}
+            <div className="bg-gray-900 border border-gray-700 rounded-xl p-4 mb-3 flex items-center gap-4">
+              <div className="text-center shrink-0">
+                <div className={`text-5xl font-black ${rank.color}`} style={{ textShadow: '0 0 20px currentColor' }}>{rank.rank}</div>
+                <div className="text-xs text-gray-500 mt-0.5">{rank.label}</div>
+              </div>
+              <div className="flex-1 text-left">
+                <div className="text-xs text-gray-400 mb-1">クリア評価基準（残り日数）</div>
+                {[
+                  { r: 'SS', d: '90日以上', c: 'text-yellow-300' },
+                  { r: 'S', d: '70日以上', c: 'text-yellow-400' },
+                  { r: 'A', d: '50日以上', c: 'text-green-400' },
+                  { r: 'B', d: '30日以上', c: 'text-blue-400' },
+                  { r: 'C', d: '30日未満', c: 'text-gray-400' },
+                ].map(({ r, d, c }) => (
+                  <div key={r} className={`text-xs flex gap-2 ${r === rank.rank ? c + ' font-black' : 'text-gray-600'}`}>
+                    <span className="w-5">{r}</span><span>{d}</span>
+                    {r === rank.rank && <span>← 今回</span>}
+                  </div>
+                ))}
+              </div>
+            </div>
+
             <div className="bg-gray-900 border border-gray-700 rounded-xl p-4 mb-4 text-left">
               <div className="text-xs text-gray-400 mb-3 uppercase tracking-wider">クリア記録</div>
               <div className="grid grid-cols-2 gap-3 text-sm">
@@ -169,10 +201,19 @@ export default function WinScreen({ gs, onRestart }: Props) {
             {joinedCompanions.length > 0 && (
               <div className="bg-gray-900 border border-gray-700 rounded-xl p-3 mb-3 text-left">
                 <div className="text-xs text-green-400 mb-2">共に戦った仲間 ({joinedCompanions.length}人)</div>
-                <div className="flex flex-wrap gap-2">
-                  {joinedCompanions.map(c => (
-                    <span key={c.id} className="text-sm text-white">{COMPANIONS[c.id].emoji} {COMPANIONS[c.id].name}</span>
-                  ))}
+                <div className="flex flex-col gap-1.5">
+                  {joinedCompanions.map(c => {
+                    const def = COMPANIONS[c.id]
+                    return (
+                      <div key={c.id} className="flex items-center gap-2">
+                        <span className="text-lg">{def.emoji}</span>
+                        <span className="text-sm text-white font-bold flex-1">{def.name}</span>
+                        <span className="text-xs text-gray-400">{def.cls}</span>
+                        <span className="text-xs text-purple-400 font-black">Lv{c.level}</span>
+                        <div className="text-xs text-gray-500">ATK{c.atk} DEF{c.def}</div>
+                      </div>
+                    )
+                  })}
                 </div>
               </div>
             )}
