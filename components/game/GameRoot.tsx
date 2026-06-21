@@ -120,6 +120,11 @@ export default function GameRoot() {
     setGs(prev => ({ ...prev, phase: 'worldmap' }))
   }
 
+  const handleReturnToTitle = () => {
+    stopBgm()
+    setGs(prev => ({ ...prev, phase: 'title', battle: undefined, activeEventId: undefined, pendingBranch: undefined, message: undefined }))
+  }
+
   const handleTravel = (destId: LocationId) => {
     update(s => {
       const traveled = travel(s, destId)
@@ -311,6 +316,7 @@ export default function GameRoot() {
             const next = toggleMute()
             setMuted(next)
           }}
+          onReturnToTitle={handleReturnToTitle}
         />
       )}
 

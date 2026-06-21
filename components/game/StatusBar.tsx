@@ -1,5 +1,6 @@
 'use client'
 
+import { useState } from 'react'
 import type { GameState } from '@/lib/game/types'
 import { COMPANIONS, getExpToNext } from '@/lib/game/data'
 
@@ -8,9 +9,11 @@ interface Props {
   onSave?: () => void
   isMuted?: boolean
   onToggleMute?: () => void
+  onReturnToTitle?: () => void
 }
 
-export default function StatusBar({ gs, onSave, isMuted, onToggleMute }: Props) {
+export default function StatusBar({ gs, onSave, isMuted, onToggleMute, onReturnToTitle }: Props) {
+  const [confirmReturn, setConfirmReturn] = useState(false)
   const hpPct = Math.max(0, (gs.playerHp / gs.playerMaxHp) * 100)
   const mpPct = Math.max(0, (gs.playerMp / gs.playerMaxMp) * 100)
   const expToNext = getExpToNext(gs.playerLevel)
@@ -153,7 +156,56 @@ export default function StatusBar({ gs, onSave, isMuted, onToggleMute }: Props) 
             💾
           </button>
         )}
+
+        {/* Return to title */}
+        {onReturnToTitle && (
+          <button
+            onClick={() => setConfirmReturn(true)}
+            className="text-xs bg-slate-900 hover:bg-red-950 border-2 border-slate-700 hover:border-red-700 px-2 py-1 rounded font-bold text-slate-400 hover:text-red-300 transition"
+            title="タイトルに戻る"
+          >
+            🏠
+          </button>
+        )}
       </div>
+
+      {/* Confirm return to title overlay */}
+      {confirmReturn && (
+        <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/70">
+          <div className="bg-[#0c0c24] border-2 border-red-700 rounded-2xl p-6 text-center shadow-2xl max-w-xs w-full mx-4">
+            <div className="text-3xl mb-3">🏠</div>
+            <div className="text-base font-black text-white mb-1">タイトルに戻る</div>
+            <div className="text-xs text-gray-400 mb-4">セーブデータは保持されます。<br/>現在の進行状況を保存してから戻りますか？</div>
+            <div className="flex gap-3 justify-center">
+              <button
+                onClick={() => {
+                  onSave?.()
+                  setConfirmReturn(false)
+                  onReturnToTitle?.()
+                }}
+                className="px-4 py-2 bg-indigo-900 hover:bg-indigo-800 border-2 border-indigo-600 text-white font-black rounded-xl text-sm transition active:scale-95"
+              >
+                💾 保存して戻る
+              </button>
+              <button
+                onClick={() => {
+                  setConfirmReturn(false)
+                  onReturnToTitle?.()
+                }}
+                className="px-4 py-2 bg-red-950 hover:bg-red-900 border-2 border-red-700 text-red-300 font-black rounded-xl text-sm transition active:scale-95"
+              >
+                保存せず戻る
+              </button>
+            </div>
+            <button
+              onClick={() => setConfirmReturn(false)}
+              className="mt-3 text-xs text-gray-500 hover:text-gray-300 transition"
+            >
+              キャンセル
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
