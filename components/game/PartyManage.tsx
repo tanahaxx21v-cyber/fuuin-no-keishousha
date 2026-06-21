@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import type { GameState, CompanionId } from '@/lib/game/types'
 import { COMPANIONS } from '@/lib/game/data'
+import { CharPortrait } from './CharPortrait'
 
 interface Props {
   gs: GameState
@@ -58,12 +59,14 @@ export default function PartyManage({ gs, onSetParty, onClose }: Props) {
             const memberId = draft[i]
             const def = memberId ? COMPANIONS[memberId] : null
             return (
-              <div key={i} className={`flex-1 h-14 rounded-xl border-2 flex items-center justify-center transition ${def ? 'border-amber-600 bg-amber-950/40' : 'border-dashed border-slate-700 bg-slate-900/50'}`}>
+              <div key={i} className={`flex-1 rounded-xl border-2 flex flex-col items-center justify-center gap-1 py-1.5 transition ${def ? 'border-amber-600 bg-amber-950/40' : 'border-dashed border-slate-700 bg-slate-900/50'}`} style={{ minHeight: 68 }}>
                 {def ? (
-                  <div className="text-center">
-                    <div className="text-2xl">{def.emoji}</div>
-                    <div className="text-xs font-black text-white">{def.name}</div>
-                  </div>
+                  <>
+                    <div className="rounded-lg overflow-hidden border border-amber-700">
+                      <CharPortrait charId={memberId!} size={44} rounded={6} />
+                    </div>
+                    <div className="text-[10px] font-black text-white">{def.name}</div>
+                  </>
                 ) : (
                   <div className="text-xs text-slate-600 font-bold">空き</div>
                 )}
@@ -109,7 +112,9 @@ export default function PartyManage({ gs, onSetParty, onClose }: Props) {
                       : 'border-slate-700 bg-slate-900/50 hover:border-indigo-600 hover:bg-indigo-950/30'
                   }`}
                 >
-                  <span className="text-3xl">{def.emoji}</span>
+                  <div className="shrink-0 rounded-lg overflow-hidden border border-slate-600">
+                    <CharPortrait charId={def.id} size={48} rounded={6} />
+                  </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 flex-wrap">
                       <span className="font-black text-white">{def.name}</span>
