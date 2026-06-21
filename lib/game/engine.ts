@@ -988,11 +988,12 @@ export function wander(state: GameState): GameState {
 
   const roll = Math.random()
   if (roll < 0.35) {
-    const gold = Math.floor(Math.random() * 50) + 20
+    const goldBase = Math.floor(15 + s.playerLevel * 3)
+    const gold = Math.floor(Math.random() * goldBase) + goldBase
     s.gold += gold
     s.message = `💰 うろついていたら ${gold}G を見つけた！`
   } else if (roll < 0.55) {
-    const expGain = 15
+    const expGain = Math.floor(10 + s.playerLevel * 2.5)
     s.playerExp += expGain
     while (s.playerExp >= getExpToNext(s.playerLevel) && s.playerLevel < 30) {
       s.playerExp -= getExpToNext(s.playerLevel)
