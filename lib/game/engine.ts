@@ -1097,19 +1097,6 @@ export function fightBoss(state: GameState): GameState {
   return startBattle(s, [loc.bossId], true)
 }
 
-// ===== WIN CHECK =====
-
-export function checkWinCondition(state: GameState): GameState {
-  const s = deepClone(state)
-  const loc = LOCATIONS[s.currentLocId]
-
-  // Check if all 3 seal stones are collected and at demon castle
-  if (s.currentLocId === 'desert_ruins' && s.sealStones.length === 3) {
-    // Already handled by fightBoss → battle victory
-  }
-  return s
-}
-
 // ===== HELPER FUNCTIONS =====
 
 function calcDamage(attacker: BattleUnit, target: BattleUnit): { dmg: number; crit: boolean } {

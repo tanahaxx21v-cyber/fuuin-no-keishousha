@@ -72,7 +72,26 @@ export default function LocationView({
               <div className="text-xs text-purple-300 font-bold">{pendingJoin.cls}</div>
             </div>
           </div>
-          <p className="text-sm text-gray-300 italic mb-4 border-l-2 border-purple-700 pl-3">「{pendingJoin.joinText}」</p>
+          <p className="text-sm text-gray-300 italic mb-3 border-l-2 border-purple-700 pl-3">「{pendingJoin.joinText}」</p>
+          {/* 実スタット表示 */}
+          {(() => {
+            const cs = gs.companions[pendingJoin.id]
+            return (
+              <div className="grid grid-cols-4 gap-1 mb-3 bg-slate-900/70 rounded-lg px-3 py-2 border border-slate-700">
+                {[
+                  { label: 'HP', value: cs.maxHp, color: 'text-green-400' },
+                  { label: 'ATK', value: cs.atk, color: 'text-red-400' },
+                  { label: 'DEF', value: cs.def, color: 'text-blue-400' },
+                  { label: 'SPD', value: cs.spd, color: 'text-yellow-400' },
+                ].map(s => (
+                  <div key={s.label} className="text-center">
+                    <div className="text-[9px] text-gray-500 font-bold">{s.label}</div>
+                    <div className={`text-sm font-black ${s.color}`}>{s.value}</div>
+                  </div>
+                ))}
+              </div>
+            )
+          })()}
           {joinedCount >= 3 && (
             <div className="text-xs text-amber-400 font-bold mb-2 text-center">⚠️ 仲間は3人まで。断るか、現在の仲間と交代できません。</div>
           )}

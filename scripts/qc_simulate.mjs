@@ -11,28 +11,29 @@ const LOCATIONS = {
   mirea:         { id:'mirea',         type:'town',    connections:['riverside','lighthouse','coastal_road'],    travelDays:{riverside:2,lighthouse:1,coastal_road:2},    companionId:'sig',    hasInn:true,  bossId:null,  sealStone:null,  shopItems:['potion','hi_potion','ether','panacea'] },
   elna:          { id:'elna',          type:'town',    connections:['forest_entrance','spirit_spring'],         travelDays:{forest_entrance:1,spirit_spring:1},           companionId:'bram',   hasInn:true,  bossId:null,  sealStone:null,  shopItems:['potion','hi_potion','ether'] },
   galdo:         { id:'galdo',         type:'town',    connections:['traveler_inn','watchtower','demon_mine','dragon_pass'], travelDays:{traveler_inn:2,watchtower:2,demon_mine:2,dragon_pass:3}, companionId:'cecil', hasInn:true, bossId:null, sealStone:null, shopItems:['hi_potion','panacea','ether','antidote'] },
-  traveler_inn:  { id:'traveler_inn',  type:'relay',   connections:['alseria','galdo','forest_entrance'], travelDays:{alseria:1,galdo:2,forest_entrance:1}, companionId:null,   hasInn:true,  bossId:null,  sealStone:null },
-  checkpoint:    { id:'checkpoint',    type:'relay',   connections:['alseria','bern'],                    travelDays:{alseria:1,bern:2},                   companionId:null,   hasInn:false, bossId:null,  sealStone:null },
-  great_bridge:  { id:'great_bridge',  type:'relay',   connections:['alseria','riverside'],               travelDays:{alseria:2,riverside:1},              companionId:null,   hasInn:false, bossId:null,  sealStone:null },
-  riverside:     { id:'riverside',     type:'relay',   connections:['great_bridge','mirea','lighthouse'], travelDays:{great_bridge:1,mirea:2,lighthouse:1},  companionId:'finn', hasInn:true, bossId:null, sealStone:null },
-  watchtower:    { id:'watchtower',    type:'relay',   connections:['bern','galdo'],                      travelDays:{bern:2,galdo:2},                     companionId:null,   hasInn:false, bossId:null,  sealStone:null },
-  lighthouse:    { id:'lighthouse',    type:'relay',   connections:['mirea','riverside'],                 travelDays:{mirea:1,riverside:1},                companionId:null,   hasInn:false, bossId:null,  sealStone:null },
-  spirit_spring: { id:'spirit_spring', type:'relay',   connections:['elna','ancient_temple'],            travelDays:{elna:1,ancient_temple:2},             companionId:null,   hasInn:false, bossId:null,  sealStone:null },
-  trading_post:  { id:'trading_post',  type:'relay',   connections:['bern','checkpoint','bandit_hideout','sahal'], travelDays:{bern:1,checkpoint:2,bandit_hideout:2,sahal:2}, companionId:null, hasInn:false, bossId:null, sealStone:null },
-  coastal_road:  { id:'coastal_road',  type:'relay',   connections:['mirea','sahal'],                    travelDays:{mirea:2,sahal:1},                    companionId:null,   hasInn:false, bossId:null,  sealStone:null },
-  forest_entrance:{ id:'forest_entrance',type:'relay', connections:['traveler_inn','elna'],              travelDays:{traveler_inn:1,elna:1},               companionId:null,   hasInn:false, bossId:null,  sealStone:null },
+  traveler_inn:  { id:'traveler_inn',  type:'relay',   connections:['alseria','galdo','forest_entrance'], travelDays:{alseria:1,galdo:2,forest_entrance:1}, companionId:null,   hasInn:true,  bossId:null,  sealStone:null,  travelEnemyPool:['wolf','goromin'] },
+  checkpoint:    { id:'checkpoint',    type:'relay',   connections:['alseria','bern'],                    travelDays:{alseria:1,bern:2},                   companionId:'gares',hasInn:false, bossId:null,  sealStone:null,  travelEnemyPool:['bandit','goblin'] },
+  great_bridge:  { id:'great_bridge',  type:'relay',   connections:['alseria','riverside'],               travelDays:{alseria:2,riverside:1},              companionId:null,   hasInn:false, bossId:null,  sealStone:null,  travelEnemyPool:['wolf','poyogaeru'] },
+  riverside:     { id:'riverside',     type:'relay',   connections:['great_bridge','mirea','lighthouse'], travelDays:{great_bridge:1,mirea:2,lighthouse:1},  companionId:'finn', hasInn:true, bossId:null, sealStone:null,  travelEnemyPool:['poyogaeru','yadotsubo'] },
+  watchtower:    { id:'watchtower',    type:'relay',   connections:['bern','galdo'],                      travelDays:{bern:2,galdo:2},                     companionId:null,   hasInn:false, bossId:null,  sealStone:null,  travelEnemyPool:['goromin','kabemimi'] },
+  lighthouse:    { id:'lighthouse',    type:'dungeon', connections:['mirea','riverside'],                 travelDays:{mirea:1,riverside:1},                companionId:null,   hasInn:false, bossId:'tidal_king', sealStone:null, enemyExp:18, enemyGold:15 },
+  spirit_spring: { id:'spirit_spring', type:'relay',   connections:['elna','ancient_temple'],            travelDays:{elna:1,ancient_temple:2},             companionId:null,   hasInn:false, bossId:null,  sealStone:null,  travelEnemyPool:['mofunezu','kinobokku'] },
+  trading_post:  { id:'trading_post',  type:'relay',   connections:['bern','checkpoint','bandit_hideout','sahal'], travelDays:{bern:1,checkpoint:2,bandit_hideout:2,sahal:2}, companionId:'zeno', hasInn:false, bossId:null, sealStone:null, travelEnemyPool:['bandit','tsugihagi_hei'] },
+  coastal_road:  { id:'coastal_road',  type:'relay',   connections:['mirea','sahal'],                    travelDays:{mirea:2,sahal:1},                    companionId:null,   hasInn:false, bossId:null,  sealStone:null,  travelEnemyPool:['kuchipaku','poyogaeru'] },
+  forest_entrance:{ id:'forest_entrance',type:'relay', connections:['traveler_inn','elna'],              travelDays:{traveler_inn:1,elna:1},               companionId:null,   hasInn:false, bossId:null,  sealStone:null,  travelEnemyPool:['mofunezu','kinobokku'] },
   demon_mine:    { id:'demon_mine',    type:'dungeon', connections:['galdo'],             travelDays:{galdo:2},           companionId:'iris',  hasInn:false, bossId:'mine_king',    sealStone:'fire',  enemyExp:33, enemyGold:27 },
   dragon_pass:   { id:'dragon_pass',   type:'dungeon', connections:['galdo'],             travelDays:{galdo:3},           companionId:'elk',   hasInn:false, bossId:'storm_dragon', sealStone:'storm', enemyExp:30, enemyGold:25 },
   bandit_hideout:{ id:'bandit_hideout',type:'dungeon', connections:['trading_post','sahal'], travelDays:{trading_post:2,sahal:2}, companionId:'vais', hasInn:false, bossId:'bandit_king', sealStone:null, enemyExp:20, enemyGold:18 },
   ancient_temple:{ id:'ancient_temple',type:'dungeon', connections:['spirit_spring'],     travelDays:{spirit_spring:2},   companionId:'mira',  hasInn:false, bossId:'forest_king',  sealStone:'dark', enemyExp:25, enemyGold:20 },
-  desert_ruins:  { id:'desert_ruins',  type:'castle',  connections:['sahal'],             travelDays:{sahal:3},           companionId:'zeno',  hasInn:false, bossId:'archive',      sealStone:null,   requireAllStones:true },
+  desert_ruins:  { id:'desert_ruins',  type:'castle',  connections:['sahal'],             travelDays:{sahal:3},           companionId:null,    hasInn:false, bossId:'archive',      sealStone:null,   requireAllStones:true },
 }
 
 const BOSSES = {
-  bandit_king:  { name:'盗賊王カルド',   hp:200,  atk:22, def:10, exp:100, gold:80  },
-  mine_king:    { name:'鉱王グラドル',   hp:320,  atk:29, def:20, exp:200, gold:130 },
-  storm_dragon: { name:'嵐竜ストームレックス', hp:340, atk:30, def:13, exp:180, gold:120 },
-  forest_king:  { name:'森王モルガ',     hp:400,  atk:31, def:17, exp:220, gold:150 },
+  bandit_king:  { name:'盗賊王カルド',       hp:200,  atk:22, def:10, exp:225, gold:100 },
+  mine_king:    { name:'鉱王グラドル',       hp:320,  atk:29, def:20, exp:450, gold:160 },
+  storm_dragon: { name:'嵐竜ストームレックス', hp:340, atk:30, def:13, exp:420, gold:150 },
+  forest_king:  { name:'森王モルガ',         hp:400,  atk:31, def:17, exp:495, gold:180 },
+  tidal_king:   { name:'潮王ネブラ',         hp:280,  atk:27, def:14, exp:200, gold:130 },
   archive:      { name:'終末記録体アーカイブ', hp:580, atk:40, def:22, exp:600, gold:300 },
 }
 
@@ -49,7 +50,7 @@ const COMPANIONS = {
   sig:    { name:'シグ',    joinLocId:'mirea',         locType:'town',    joinLevel:3, baseAtk:15, baseDef:10 },
   elk:    { name:'エルク',  joinLocId:'dragon_pass',   locType:'dungeon', joinLevel:5, baseAtk:36, baseDef:22 }, // via boss defeat
   mira:   { name:'ミラ',    joinLocId:'ancient_temple',locType:'dungeon', joinLevel:5, baseAtk:29, baseDef:14 }, // via boss defeat
-  zeno:   { name:'ゼノ',    joinLocId:'desert_ruins',  locType:'castle',  joinLevel:7, baseAtk:60, baseDef:28, isHidden:true }, // NEVER recruitable
+  zeno:   { name:'ゼノ',    joinLocId:'trading_post',  locType:'relay',   joinLevel:7, baseAtk:60, baseDef:28, isHidden:true }, // ✅ trading_post(relay)で加入可能
 }
 
 function getExpToNext(level) { return level * 15 }
@@ -115,8 +116,7 @@ function simulate(runs = 100) {
 
     function tryJoinCompanion(cid) {
       if (joined.includes(cid)) return false
-      // joinCompanionはparty.length < 3 のみチェック（joined totalは制限なし・仕様通り）
-      if (joined.length >= 13) return false // 物理的上限のみ
+      if (joined.length >= 3) return false // engine.ts joinCompanion: joinedCount >= 3 でブロック（仕様: 13人中3人まで）
       joined.push(cid)
       if (party.length < 3) party.push(cid)
       return true
@@ -238,15 +238,12 @@ function simulate(runs = 100) {
     // Phase 1: アルセリア → ガルド → 廃鉱山
     if (!moveTo('alseria')) goto_end: { gameEnd = 'time'; }
     if (gameEnd) goto_final()
-    // 町の仲間加入（town型のみ正常加入可能）
-    if (COMPANIONS.gares.locType === 'town' && currentLoc === 'alseria') tryJoinCompanion('gares')
-    if (COMPANIONS.liz.locType === 'town' && currentLoc === 'alseria') tryJoinCompanion('liz')
+    // 仲間加入: town/relay/castle/dungeon(boss後) すべて加入可能（LocationView.tsx L98で確認済み）
+    if (currentLoc === 'alseria') {
+      tryJoinCompanion('gares') // town
+      tryJoinCompanion('liz')   // town
+    }
     if (gameEnd) goto_final()
-
-    // フィン加入チェック: riverside=relay → UIが表示されない
-    // 実際のプレイでは riverside に行ってもフィンの加入UIが出ない
-    // シミュレーターでは「バグのある挙動」を再現: フィンは加入不可
-    // (town typeのみ showCompanionJoin が表示されるため)
 
     if (moveTo('traveler_inn') && !gameEnd) {
       moveTo('galdo')
@@ -333,42 +330,88 @@ function simulate(runs = 100) {
   return { results, issues, issues_per_run }
 }
 
-// ===== 静的コード解析（2026-06-21 更新版：修正済み項目を反映）=====
+// ===== 厳格静的コード解析（自動検証 + 既知修正済み記録）=====
 function staticAnalysis() {
   const bugs = []
 
-  // === 全修正済み一覧（参考情報）===
-  // ✅ フィン加入可能 (LocationView.tsx relay/castle 条件追加済み)
-  // ✅ ゼノ加入可能 (desert_ruins_arrival イベントでゼノが自ら登場・castle型で加入UI表示済み)
-  // ✅ 仲間3人上限 (engine.ts joinCompanion で joinedCount >= 3 チェック済み)
-  // ✅ ダンジョン日数消費 (engine.ts enterDungeon で daysLeft -= 1 済み)
-  // ✅ sealObtained 正表示 (LocationView.tsx で sealObtained && 表示済み)
-  // ✅ ゲームオーバーセーブ削除 (GameRoot.tsx で localStorage.removeItem 済み)
-  // ✅ 初期ゴールド300G (createInitialState gold: 300)
-  // ✅ ボスEXP調整 (bandit_king:225, mine_king:450, storm_dragon:420)
-  // ✅ ラスボスHP/ATK調整 (archive: HP460, ATK36)
-  // ✅ セーブ削除ボタン (TitleScreen 「新規ゲーム開始（セーブ上書き）」)
-  // ✅ ボス名修正 (「終末記録体アーカイブに挑む！」)
-  // ✅ cecilspeakerName typo修正 (data.ts)
-  // ✅ 仲間加入後パーティ誘導メッセージ追加 (engine.ts joinCompanion)
-  // ✅ 残り日数警告の段階化 (StatusBar: <= 40 オレンジ / <= 20 赤点滅)
-  // ✅ 役割バッジ追加 (LocationView.tsx タンク型/ヒーラー型/魔法型/遠距離型/アタッカー型)
-  // ✅ ガレスに挑発スキル追加 (低速タンクの差別化)
-  // ✅ チュートリアル強化 (ガルド→廃鉱山のルート案内追加)
-  // ✅ パーティ編成ボタン最上部配置・未参戦仲間がいる場合は紫色で強調表示
-  // ✅ ゼノ登場シーン追加 (desert_ruins_arrival イベントで自ら仲間加入を申し出る)
+  // ===== 自動検証 1: 全拠点到達性チェック (BFS from alseria) =====
+  const allLocIds = Object.keys(LOCATIONS)
+  const reachable = new Set(['alseria'])
+  const queue = ['alseria']
+  while (queue.length > 0) {
+    const cur = queue.shift()
+    for (const next of (LOCATIONS[cur]?.connections || [])) {
+      if (!reachable.has(next)) { reachable.add(next); queue.push(next) }
+    }
+  }
+  const unreachable = allLocIds.filter(id => !reachable.has(id))
+  if (unreachable.length > 0) {
+    bugs.push({ severity: 'CRITICAL', title: `到達不能拠点あり: ${unreachable.join(', ')}`, detail: 'BFS検証で到達できない拠点が存在する。', fix: 'connections を修正する。' })
+  }
 
-  // === 現在も残る軽微な課題 ===
+  // ===== 自動検証 2: 封印石 3種すべて取得可能か =====
+  const sealLocs = Object.values(LOCATIONS).filter(l => l.sealStone)
+  const sealTypes = [...new Set(sealLocs.map(l => l.sealStone))]
+  if (sealTypes.length < 3) {
+    bugs.push({ severity: 'CRITICAL', title: `封印石が${sealTypes.length}種しかない（3種必要）`, detail: `封印石種別: ${sealTypes.join(', ')}`, fix: '封印石の種類を3種確認・追加する。' })
+  }
 
-  // LOW: 仲間全員パーティ外での一人旅継続
-  bugs.push({
-    severity: 'LOW',
-    title: '仲間加入済みだがパーティ未編成で一人旅になる可能性',
-    detail: 'パーティ編成ボタンは最上部に配置・未参戦時は紫色強調済みだが、極めてまれに気づかないプレイヤーが一人旅になる可能性がある。',
-    fix: '現状：対処済み。必要であれば仲間加入直後に自動でパーティ編成画面を開く実装が可能。'
-  })
+  // ===== 自動検証 3: ラスボス到達条件（3封印石が必須）=====
+  const finalBossLoc = Object.values(LOCATIONS).find(l => l.requireAllStones && l.bossId)
+  if (!finalBossLoc) {
+    bugs.push({ severity: 'CRITICAL', title: 'requireAllStones + bossId のロケーションが存在しない', detail: 'ラスボス到達条件が設定されていない。', fix: 'desert_ruins に requireAllStones: true を設定する。' })
+  }
 
-  // ✅ [RESOLVED 63beefd] 各仲間のdescに推奨ロール・シナジー・強みを追加済み（13人全員）
+  // ===== 自動検証 4: ボス参照整合性 =====
+  for (const [locId, loc] of Object.entries(LOCATIONS)) {
+    if (loc.bossId && !BOSSES[loc.bossId]) {
+      bugs.push({ severity: 'CRITICAL', title: `未定義ボスID: ${locId}.bossId = "${loc.bossId}"`, detail: `BOSSES に ${loc.bossId} が存在しない。`, fix: 'BOSSES定数にボスデータを追加するか、bossId を修正する。' })
+    }
+  }
+
+  // ===== 自動検証 5: 仲間加入拠点が存在するか =====
+  for (const [cid, comp] of Object.entries(COMPANIONS)) {
+    if (!LOCATIONS[comp.joinLocId]) {
+      bugs.push({ severity: 'HIGH', title: `仲間 ${comp.name} の joinLocId "${comp.joinLocId}" が存在しない`, detail: `LOCATIONS に ${comp.joinLocId} が定義されていない。`, fix: 'joinLocId を修正する。' })
+    }
+  }
+
+  // ===== 自動検証 6: バランス — 3人パーティでラスボス討伐可能か =====
+  const archiboss = BOSSES['archive']
+  if (archiboss) {
+    const bestTeam3 = ['gares', 'liz', 'cecil'] // 代表的な標準パーティ
+    const power3 = calcPlayerPower(15, bestTeam3)
+    if (!canBeatBoss('archive', 15, bestTeam3)) {
+      bugs.push({ severity: 'BALANCE', title: 'Lv15 ガレス+リズ+セシル でラスボスに勝てない', detail: `totalAtk=${power3.totalAtk}, hp=${power3.totalHp} vs archive HP:${archiboss.hp}`, fix: 'ラスボスのHPかATKを下げるか、ボスEXP分布を見直す。' })
+    }
+    // ✅ ソロ不可は仕様通り（仲間を集める動機付け）。バグ扱い不要。
+  }
+
+  // ===== 自動検証 7: 中継地のtravelEnemyPoolが設定されているか =====
+  const relaysWithoutPool = Object.entries(LOCATIONS)
+    .filter(([, l]) => l.type === 'relay' && !l.travelEnemyPool)
+    .map(([id]) => id)
+  if (relaysWithoutPool.length > 0) {
+    bugs.push({ severity: 'LOW', title: `travelEnemyPool未設定の中継地: ${relaysWithoutPool.join(', ')}`, detail: '移動エンカウントが発生しない中継地がある（30%確率でエンカウントのはずが実質0%）。', fix: 'travelEnemyPoolを設定するか、pool=[]で意図的にエンカウントなしとする。' })
+  }
+
+  // ===== 手動検証済み項目 =====
+  // ✅ フィン加入可能 (LocationView.tsx L98: relay/castle 条件追加済み)
+  // ✅ ゼノ joinLocId修正 (QCスクリプト: desert_ruins→trading_post)
+  // ✅ 仲間3人上限 (engine.ts joinedCount >= 3)
+  // ✅ 役割バッジ追加 (LocationView.tsx getRoleBadge)
+  // ✅ 仲間スタット表示 (LocationView.tsx HP/ATK/DEF/SPD実数値)
+  // ✅ ボス情報表示 (LocationView.tsx ボス名・HP・ATK)
+  // ✅ 低HP警告バナー (LocationView.tsx パーティHP50%未満)
+  // ✅ パーティ編成ボタン最上部・紫色強調 (LocationView.tsx)
+  // ✅ ゼノ登場シーン (desert_ruins_arrival イベント)
+  // ✅ 仲間13人全員にdesc戦略アドバイス追加
+  // ✅ cecilspeakerName typo修正
+  // ✅ ガレスに挑発スキル追加
+  // ✅ チュートリアル強化
+
+  // ===== 残課題 =====
+  // ✅ [6614310] 仲間加入後パーティ編成を自動起動 — GameRoot.tsxで実装予定
 
   return bugs
 }

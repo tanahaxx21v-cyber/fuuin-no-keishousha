@@ -166,7 +166,15 @@ export default function GameRoot() {
   }
 
   const handleJoinCompanion = (id: CompanionId) => {
-    update(s => joinCompanion(s, id))
+    update(s => {
+      const next = joinCompanion(s, id)
+      // 仲間加入後、パーティに入っていない仲間がいたら自動でパーティ編成を開く
+      const hasUnpartied = Object.values(next.companions).some(
+        c => c.joined && c.alive && !next.party.includes(c.id as CompanionId)
+      )
+      if (hasUnpartied) return { ...next, phase: 'party_manage' as const }
+      return next
+    })
   }
 
   const handleWander = () => {
