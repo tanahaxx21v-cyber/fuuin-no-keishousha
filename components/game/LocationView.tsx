@@ -140,6 +140,28 @@ export default function LocationView({
         <div className="text-xs font-black text-amber-500 mb-3 tracking-widest">— コマンド —</div>
         <div className="flex flex-col gap-2">
 
+          {onOpenPartyManage && Object.values(gs.companions).some(c => c.joined && c.alive) && (() => {
+            const notInParty = Object.values(gs.companions).some(c => c.joined && c.alive && !gs.party.includes(c.id as CompanionId))
+            return (
+              <button
+                onClick={onOpenPartyManage}
+                className={`w-full py-3 px-4 rounded-xl transition text-left flex items-center gap-3 active:scale-95 border-2 ${
+                  notInParty
+                    ? 'bg-purple-900 hover:bg-purple-800 border-purple-500 text-white animate-pulse'
+                    : 'bg-slate-800 hover:bg-slate-700 border-slate-600 text-white'
+                }`}
+              >
+                <span className="text-xl">👥</span>
+                <div>
+                  <div className="font-black text-sm">パーティ編成</div>
+                  <div className={`text-xs ${notInParty ? 'text-purple-300 font-bold' : 'text-gray-400'}`}>
+                    {notInParty ? '⚠️ 未参戦の仲間がいます！メンバーを組み替えよう' : '仲間の組み合わせを変更する'}
+                  </div>
+                </div>
+              </button>
+            )
+          })()}
+
           {loc.hasInn && (
             <button
               onClick={onInn}
@@ -224,18 +246,6 @@ export default function LocationView({
             </button>
           )}
 
-          {onOpenPartyManage && Object.values(gs.companions).some(c => c.joined && c.alive) && (
-            <button
-              onClick={onOpenPartyManage}
-              className="w-full py-3 px-4 bg-slate-900 hover:bg-slate-800 border-2 border-slate-700 text-white rounded-xl transition text-left flex items-center gap-3 active:scale-95"
-            >
-              <span className="text-xl">👥</span>
-              <div>
-                <div className="font-black text-sm">パーティ編成</div>
-                <div className="text-xs text-gray-400">仲間の組み合わせを変更する</div>
-              </div>
-            </button>
-          )}
 
           {loc.type === 'castle' && (
             gs.sealStones.length < 3 ? (
