@@ -1315,9 +1315,12 @@ export const EVENTS: GameEvent[] = [
       { speaker: 'narrator', speakerName: '', text: '砂漠遺跡の入口。三つの封印石が揃い、ここへ来ることができた。' },
       { speaker: 'narrator', speakerName: '', text: '遺跡の奥から、言いようのない力の気配が漂ってくる。これが……終末記録体アーカイブの気配か。' },
       { speaker: 'player', speakerName: 'レオン', text: '……これで全部揃った。あとは前に進むだけだ。' },
-      { speaker: 'narrator', speakerName: '', text: '封印石が三つ、静かに輝き始めた。まるで「準備ができた」と告げているかのように。' },
+      { speaker: 'zeno', speakerName: 'ゼノ', text: '……来たか。待っていた、レオン。この遺跡の番人として、貴様と共に戦う権利がある。' },
+      { speaker: 'player', speakerName: 'レオン', text: 'ゼノ……！お前も来るのか？' },
+      { speaker: 'zeno', speakerName: 'ゼノ', text: '魔族の力、使い道があるうちに使う。それだけだ。……どうする、仲間にするか？' },
+      { speaker: 'narrator', speakerName: '', text: 'ゼノが仲間に加われば、決戦の勝算が上がる。封印石が三つ、静かに輝き始めた。' },
     ],
-    reward: { exp: 80, message: '決戦の覚悟が固まった！（EXP +80）' },
+    reward: { exp: 80, message: '決戦の覚悟が固まった！ゼノが現れた！（EXP +80）' },
   },
 
   {
