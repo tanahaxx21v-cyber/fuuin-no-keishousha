@@ -1,7 +1,7 @@
 'use client'
 
 import type { GameState, CompanionId } from '@/lib/game/types'
-import { LOCATIONS, COMPANIONS, getInnPrice, getDifficultyMultiplier } from '@/lib/game/data'
+import { LOCATIONS, COMPANIONS, ENEMIES, getInnPrice, getDifficultyMultiplier } from '@/lib/game/data'
 
 interface Props {
   gs: GameState
@@ -108,8 +108,27 @@ export default function LocationView({
               </div>
             </div>
           </div>
-          <p className="text-sm text-gray-300 italic mb-4 border-l-2 border-indigo-700 pl-3">「{companion!.joinText}」</p>
+          <p className="text-sm text-gray-300 italic mb-3 border-l-2 border-indigo-700 pl-3">「{companion!.joinText}」</p>
           <p className="text-xs text-gray-400 mb-3 leading-relaxed">{companion!.desc}</p>
+          {/* 実スタット表示 */}
+          {(() => {
+            const cs = gs.companions[companion!.id]
+            return (
+              <div className="grid grid-cols-4 gap-1 mb-3 bg-slate-900/70 rounded-lg px-3 py-2 border border-slate-700">
+                {[
+                  { label: 'HP', value: cs.maxHp, color: 'text-green-400' },
+                  { label: 'ATK', value: cs.atk, color: 'text-red-400' },
+                  { label: 'DEF', value: cs.def, color: 'text-blue-400' },
+                  { label: 'SPD', value: cs.spd, color: 'text-yellow-400' },
+                ].map(s => (
+                  <div key={s.label} className="text-center">
+                    <div className="text-[9px] text-gray-500 font-bold">{s.label}</div>
+                    <div className={`text-sm font-black ${s.color}`}>{s.value}</div>
+                  </div>
+                ))}
+              </div>
+            )
+          })()}
           {joinedCount >= 3 ? (
             <div className="bg-red-950/60 border border-red-700 rounded-lg p-2 mb-2 text-xs text-red-300 font-bold text-center">
               ⚠️ 仲間は3人まで。現在 {joinedCount}/3 人加入済み。
@@ -190,6 +209,19 @@ export default function LocationView({
 
           {loc.type === 'dungeon' && !bossDefeated && (
             <>
+              {/* パーティ低HP警告 */}
+              {(() => {
+                const aliveParty = gs.party.filter(id => gs.companions[id].alive)
+                const allUnits = [{ hp: gs.playerHp, maxHp: gs.playerMaxHp }, ...aliveParty.map(id => gs.companions[id])]
+                const avgHpPct = allUnits.length > 0
+                  ? allUnits.reduce((sum, u) => sum + u.hp / u.maxHp, 0) / allUnits.length
+                  : 1
+                return avgHpPct < 0.5 ? (
+                  <div className="bg-yellow-950/80 border border-yellow-700 rounded-lg px-3 py-2 text-xs text-yellow-300 font-bold">
+                    ⚠️ HP平均 {Math.round(avgHpPct * 100)}%。宿屋で回復してから挑むと安全です。
+                  </div>
+                ) : null
+              })()}
               <button
                 onClick={onEnterDungeon}
                 className="w-full py-3 px-4 bg-orange-950 hover:bg-orange-900 border-2 border-orange-700 text-white rounded-xl transition text-left flex items-center gap-3 active:scale-95"
@@ -207,9 +239,17 @@ export default function LocationView({
                 <span className="text-xl">👑</span>
                 <div>
                   <div className="font-black text-sm">ボスに挑む！</div>
-                  {loc.sealStone && !sealObtained && (
-                    <div className="text-xs text-amber-400 font-bold">💎 封印石を守るボス</div>
-                  )}
+                  {loc.bossId && ENEMIES[loc.bossId] && (() => {
+                    const boss = ENEMIES[loc.bossId!]
+                    const { enemyHpMult } = getDifficultyMultiplier(gs.difficulty)
+                    const bossHp = Math.floor(boss.hp * enemyHpMult)
+                    return (
+                      <div className="text-xs text-red-300 font-bold mt-0.5">
+                        {boss.emoji} {boss.name} — HP {bossHp} / ATK {boss.atk}
+                        {loc.sealStone && !sealObtained && <span className="text-amber-400 ml-2">💎 封印石あり</span>}
+                      </div>
+                    )
+                  })()}
                 </div>
               </button>
             </>

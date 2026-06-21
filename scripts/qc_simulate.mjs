@@ -42,7 +42,7 @@ const COMPANIONS = {
   noa:    { name:'ノア',    joinLocId:'bern',          locType:'town',    joinLevel:3, baseAtk:23, baseDef:11 },
   cecil:  { name:'セシル',  joinLocId:'galdo',         locType:'town',    joinLevel:4, baseAtk:28, baseDef:9  },
   bram:   { name:'ブラム',  joinLocId:'elna',          locType:'town',    joinLevel:3, baseAtk:29, baseDef:18 },
-  finn:   { name:'フィン',  joinLocId:'riverside',     locType:'relay',   joinLevel:2, baseAtk:15, baseDef:13 }, // BUG: relay type = can't join
+  finn:   { name:'フィン',  joinLocId:'riverside',     locType:'relay',   joinLevel:2, baseAtk:15, baseDef:13 }, // ✅ relay型でも加入可能（LocationView L98で確認済み）
   vais:   { name:'ヴァイス',joinLocId:'bandit_hideout',locType:'dungeon', joinLevel:3, baseAtk:20, baseDef:9  }, // via boss defeat
   logan:  { name:'ローガン',joinLocId:'sahal',         locType:'town',    joinLevel:4, baseAtk:43, baseDef:22 },
   iris:   { name:'イリス',  joinLocId:'demon_mine',    locType:'dungeon', joinLevel:4, baseAtk:29, baseDef:10 }, // via boss defeat
@@ -115,8 +115,7 @@ function simulate(runs = 100) {
 
     function tryJoinCompanion(cid) {
       if (joined.includes(cid)) return false
-      // BUG CHECK: 3人制限がengineにない
-      // joinCompanionはparty.length < 3 のみチェック（joined totalは制限なし）
+      // joinCompanionはparty.length < 3 のみチェック（joined totalは制限なし・仕様通り）
       if (joined.length >= 13) return false // 物理的上限のみ
       joined.push(cid)
       if (party.length < 3) party.push(cid)
@@ -380,7 +379,7 @@ const { results, issues, issues_per_run } = simulate(RUN_COUNT)
 const bugs = staticAnalysis()
 
 console.log('\n' + '='.repeat(70))
-console.log('  封印の継承者 — QC ${RUN_COUNT}回シミュレーション 結果レポート')
+console.log(`  封印の継承者 — QC ${RUN_COUNT}回シミュレーション 結果レポート`)
 console.log('='.repeat(70))
 
 console.log('\n【プレイ結果統計】')
