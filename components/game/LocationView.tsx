@@ -2,6 +2,7 @@
 
 import type { GameState, CompanionId } from '@/lib/game/types'
 import { LOCATIONS, COMPANIONS, ENEMIES, getInnPrice, getDifficultyMultiplier } from '@/lib/game/data'
+import { CharPortrait } from './CharPortrait'
 
 interface Props {
   gs: GameState
@@ -65,8 +66,10 @@ export default function LocationView({
       {pendingJoin && (
         <div className="bg-[#0c0c24] border-2 border-purple-600 rounded-xl p-4 shadow-lg shadow-purple-900/30">
           <div className="text-xs font-black text-purple-400 mb-3 tracking-widest">— 仲間加入イベント —</div>
-          <div className="flex items-center gap-3 mb-3">
-            <span className="text-4xl">{pendingJoin.emoji}</span>
+          <div className="flex items-center gap-4 mb-3">
+            <div className="shrink-0 rounded-xl overflow-hidden border-2 border-purple-600" style={{ boxShadow: '0 0 16px rgba(147,51,234,0.4)' }}>
+              <CharPortrait charId={pendingJoin.id} size={80} rounded={8} />
+            </div>
             <div>
               <div className="font-black text-white text-base">{pendingJoin.name}</div>
               <div className="text-xs text-purple-300 font-bold">{pendingJoin.cls}</div>
@@ -117,8 +120,10 @@ export default function LocationView({
       {!pendingJoin && showCompanionJoin && (loc.type === 'town' || loc.type === 'relay' || loc.type === 'castle') && (
         <div className="bg-[#0c0c24] border-2 border-indigo-600 rounded-xl p-4">
           <div className="text-xs font-black text-indigo-400 mb-3 tracking-widest">— 仲間候補に出会った —</div>
-          <div className="flex items-center gap-3 mb-3">
-            <span className="text-4xl">{companion!.emoji}</span>
+          <div className="flex items-center gap-4 mb-3">
+            <div className="shrink-0 rounded-xl overflow-hidden border-2 border-indigo-600" style={{ boxShadow: '0 0 16px rgba(99,102,241,0.4)' }}>
+              <CharPortrait charId={companion!.id} size={80} rounded={8} />
+            </div>
             <div>
               <div className="font-black text-white text-base">{companion!.name}</div>
               <div className="flex items-center gap-2">
@@ -344,8 +349,8 @@ export default function LocationView({
               const hpPct = (c.hp / c.maxHp) * 100
               const isLowHp = c.alive && hpPct < 30
               return (
-                <div key={id} className={`flex items-center gap-2 rounded-lg px-3 py-2 border ${!c.alive ? 'bg-slate-900 border-red-900 opacity-40' : isLowHp ? 'bg-red-950 border-red-700 animate-pulse' : 'bg-slate-800 border-slate-700'}`}>
-                  <span className="text-xl">{def.emoji}</span>
+                <div key={id} className={`flex items-center gap-2 rounded-lg px-2 py-2 border ${!c.alive ? 'bg-slate-900 border-red-900 opacity-40' : isLowHp ? 'bg-red-950 border-red-700 animate-pulse' : 'bg-slate-800 border-slate-700'}`}>
+                  <CharPortrait charId={id} size={40} isDead={!c.alive} rounded={6} />
                   <div>
                     <div className="text-xs font-black text-white">{def.name}</div>
                     <div className="w-16 h-1.5 bg-gray-900 rounded-sm overflow-hidden mt-0.5">
