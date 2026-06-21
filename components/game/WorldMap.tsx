@@ -94,15 +94,37 @@ export default function WorldMap({ gs, onTravel, onEnterLocation, getAvailableCo
     : currentLoc.connections
   const finalBossLocked = gs.sealStones.length < 3
 
+  const daysUrgent = gs.daysLeft <= 20
+  const daysWarn = gs.daysLeft <= 40
+  const mapMessage = daysUrgent
+    ? '⚠️ 残り日数が少ない！急いで封印石を集めよ！'
+    : gs.sealStones.length === 3
+    ? '✨ 封印石が全て揃った！砂漠遺跡へ急げ！'
+    : gs.sealStones.length === 2 && daysWarn
+    ? '⚡ あと1つ……急がないと間に合わない！'
+    : null
+
   return (
     <div className="flex flex-col gap-2 p-2 max-w-2xl mx-auto">
       <div className="flex items-center gap-2">
         <span className="text-amber-400 font-black text-xs tracking-widest">🗺️ ルミナ大陸</span>
         <div className="ml-auto flex items-center gap-3 text-xs">
-          <span className="text-gray-400">残り <span className="text-amber-300 font-black">{gs.daysLeft}</span>日</span>
+          <span className={`font-black ${daysUrgent ? 'text-red-400 animate-pulse' : daysWarn ? 'text-orange-400' : 'text-amber-300'}`}>
+            残り {gs.daysLeft}日
+          </span>
           <span className="text-gray-400">封印石 <span className="text-amber-300 font-black">{gs.sealStones.length}</span>/3</span>
         </div>
       </div>
+
+      {mapMessage && (
+        <div className={`text-xs font-black text-center py-1.5 px-3 rounded-lg border ${
+          daysUrgent
+            ? 'bg-red-950/60 border-red-700 text-red-300 animate-pulse'
+            : 'bg-amber-950/60 border-amber-700 text-amber-300'
+        }`}>
+          {mapMessage}
+        </div>
+      )}
 
       {/* メインマップ */}
       <div className="relative border-2 border-amber-800/60 rounded-xl overflow-hidden shadow-2xl" style={{ paddingBottom: '96%' }}>
