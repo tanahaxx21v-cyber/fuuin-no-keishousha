@@ -321,7 +321,7 @@ export const ENEMIES: Record<string, EnemyDef> = {
   },
   forest_king: {
     id: 'forest_king', name: '森王モルガ', emoji: '🦌',
-    hp: 400, mp: 90, atk: 31, def: 17, spd: 11,
+    hp: 1200, mp: 100, atk: 38, def: 19, spd: 11,
     skills: [
       { id: 'king_scratch', name: 'ひっかく', desc: '巨大な爪で引っかく。', mpCost: 0, target: 'enemy_one', effect: 'damage', power: 1.5 },
       { id: 'stomp', name: 'ふみつけ', desc: '重い足で踏みつける。全体攻撃。', mpCost: 12, target: 'enemy_all', effect: 'damage', power: 1.2 },
@@ -502,16 +502,17 @@ export const ENEMIES: Record<string, EnemyDef> = {
   // ===== ボス =====
   bandit_king: {
     id: 'bandit_king', name: '盗賊王カルド', emoji: '👑',
-    hp: 200, mp: 30, atk: 22, def: 10, spd: 14,
+    hp: 420, mp: 40, atk: 27, def: 12, spd: 14,
     skills: [
       { id: 'triple_slash', name: '三連斬り', desc: '三段連続攻撃。', mpCost: 10, target: 'enemy_one', effect: 'damage', power: 2.0 },
       { id: 'smoke_bomb', name: '煙幕爆弾', desc: '敵全体の攻撃力を下げる。', mpCost: 8, target: 'enemy_all', effect: 'debuff_atk', power: 1 },
+      { id: 'bandit_rush', name: '強盗ラッシュ', desc: '全員に連続で攻撃する。', mpCost: 12, target: 'enemy_all', effect: 'damage', power: 1.1 },
     ],
     exp: 225, gold: 100, isBoss: true,
   },
   mine_king: {
     id: 'mine_king', name: '鉱王グラドル', emoji: '💎',
-    hp: 250, mp: 60, atk: 29, def: 20, spd: 8,
+    hp: 600, mp: 80, atk: 34, def: 22, spd: 8,
     skills: [
       { id: 'crystal_rush', name: 'クリスタルラッシュ', desc: '水晶の刃で全体を切り裂く。', mpCost: 14, target: 'enemy_all', effect: 'damage', power: 1.3 },
       { id: 'ore_shield', name: '鉱石の盾', desc: '鉱石の盾で防御力を大幅に上げる。', mpCost: 10, target: 'self', effect: 'def_up', power: 1 },
@@ -521,7 +522,7 @@ export const ENEMIES: Record<string, EnemyDef> = {
   },
   storm_dragon: {
     id: 'storm_dragon', name: '嵐竜ストームレックス', emoji: '🌩️',
-    hp: 340, mp: 80, atk: 30, def: 13, spd: 17,
+    hp: 900, mp: 90, atk: 36, def: 15, spd: 17,
     skills: [
       { id: 'storm_blast', name: '嵐の爆風', desc: '全体に嵐ダメージ。', mpCost: 14, target: 'enemy_all', effect: 'damage', power: 1.4 },
       { id: 'lightning_dive', name: '雷撃落とし', desc: '1体に超強力な雷。', mpCost: 12, target: 'enemy_one', effect: 'damage', power: 2.6 },
@@ -540,7 +541,7 @@ export const ENEMIES: Record<string, EnemyDef> = {
   },
   tidal_king: {
     id: 'tidal_king', name: '潮王ネブラ', emoji: '🐳',
-    hp: 380, mp: 80, atk: 28, def: 15, spd: 13,
+    hp: 560, mp: 90, atk: 33, def: 17, spd: 13,
     skills: [
       { id: 'taida_no_nami', name: 'たいだのなみ', desc: '怠惰な大波で全体を攻撃する。', mpCost: 13, target: 'enemy_all', effect: 'damage', power: 1.3 },
       { id: 'kaitei_shihai', name: 'かいていのしはい', desc: '海底から全体の攻撃力を下げる。', mpCost: 10, target: 'enemy_all', effect: 'debuff_atk', power: 1 },
@@ -550,7 +551,7 @@ export const ENEMIES: Record<string, EnemyDef> = {
   },
   archive: {
     id: 'archive', name: '終末記録体アーカイブ', emoji: '📚',
-    hp: 460, mp: 150, atk: 36, def: 20, spd: 14,
+    hp: 1100, mp: 180, atk: 45, def: 25, spd: 14,
     skills: [
       { id: 'kiroku_sabaki', name: 'きろくのさばき', desc: '世界の記録が全体に降り注ぐ。', mpCost: 18, target: 'enemy_all', effect: 'damage', power: 1.7 },
       { id: 'kako_no_kodama', name: 'かこのこだま', desc: '過去の記録が全体の攻撃力を下げる。', mpCost: 14, target: 'enemy_all', effect: 'debuff_atk', power: 1 },
@@ -613,8 +614,8 @@ export const LOCATIONS: Record<LocationId, LocationDef> = {
     id: 'sahal', name: 'サハル砂漠都市', emoji: '🏜️',
     type: 'town',
     desc: '東の砂漠に築かれた都市。砂漠の民が暮らす異国情緒あふれる場所。裏の取引も盛んに行われている。',
-    connections: ['bandit_hideout', 'coastal_road', 'desert_ruins'],
-    travelDays: { bandit_hideout: 2, coastal_road: 1, desert_ruins: 3 },
+    connections: ['bandit_hideout', 'coastal_road', 'desert_ruins', 'trading_post'],
+    travelDays: { bandit_hideout: 2, coastal_road: 1, desert_ruins: 3, trading_post: 2 },
     companionId: 'logan',
     shopItems: ['hi_potion', 'ether', 'panacea', 'antidote'],
     hasInn: true,
@@ -665,8 +666,8 @@ export const LOCATIONS: Record<LocationId, LocationDef> = {
     id: 'checkpoint', name: '東関所', emoji: '🚧',
     type: 'relay',
     desc: 'アルセリアとベルンを結ぶ東の交通の要衝。往来する商人と旅人を監視している。元騎士団長ガレスがここで旅人の護衛をしているという噂がある。',
-    connections: ['alseria', 'bern'],
-    travelDays: { alseria: 1, bern: 2 },
+    connections: ['alseria', 'bern', 'trading_post'],
+    travelDays: { alseria: 1, bern: 2, trading_post: 2 },
     companionId: 'gares',
     shopItems: ['potion'],
     travelEnemyPool: ['bandit', 'goblin'],
