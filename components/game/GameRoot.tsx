@@ -15,6 +15,7 @@ import {
   sfxAttack, sfxSkill, sfxHeal, sfxVictory, sfxDefeat, sfxLevelUp, sfxMenuSelect, sfxCoin,
 } from '@/lib/game/audio'
 import TitleScreen from './TitleScreen'
+import { CharPortrait } from './CharPortrait'
 import WorldMap from './WorldMap'
 import LocationView from './LocationView'
 import BattleScene from './BattleScene'
@@ -446,11 +447,13 @@ export default function GameRoot() {
                       className="w-full py-3 px-4 bg-indigo-900 hover:bg-indigo-800 border-2 border-indigo-500 text-white font-black rounded-xl transition active:scale-95 text-sm text-left disabled:opacity-40 disabled:cursor-not-allowed"
                     >
                       <div>▶ {opt.label}</div>
-                      {opt.winChance !== undefined && (
-                        <div className="text-xs text-yellow-400 mt-0.5">⚡ 成功確率: {Math.round(opt.winChance * 100)}%</div>
+                      {opt.cost !== undefined && (
+                        <div className={`text-xs mt-0.5 font-bold ${cantAfford ? 'text-red-400' : 'text-amber-400'}`}>
+                          {cantAfford ? '⚠️ 所持金不足 — ' : '💰 '}{opt.cost}G 必要
+                        </div>
                       )}
-                      {cantAfford && (
-                        <div className="text-xs text-red-400 mt-0.5">所持金不足 （必要: {opt.cost}G）</div>
+                      {opt.winChance !== undefined && (
+                        <div className="text-xs text-yellow-400 mt-0.5 font-bold">⚡ 成功確率: {Math.round(opt.winChance * 100)}%</div>
                       )}
                     </button>
                   )
@@ -472,7 +475,11 @@ function NamingScreen({ onConfirm }: { onConfirm: (name: string) => void }) {
     <div className="min-h-screen flex items-center justify-center bg-[#07071a] p-6">
       <div className="max-w-md w-full">
         <div className="bg-[#0c0c24] border-2 border-indigo-700 rounded-2xl p-8 shadow-2xl text-center">
-          <div className="text-5xl mb-4">⚔️</div>
+          <div className="flex justify-center mb-4">
+            <div className="rounded-2xl overflow-hidden border-2 border-amber-600" style={{ boxShadow: '0 0 24px rgba(245,158,11,0.4)' }}>
+              <CharPortrait charId="player" size={96} rounded={12} />
+            </div>
+          </div>
           <h2 className="text-2xl font-black text-white mb-2">勇者の名前</h2>
           <p className="text-gray-400 text-sm mb-6 font-bold">あなたの名前を入力してください（最大8文字）</p>
           <input
