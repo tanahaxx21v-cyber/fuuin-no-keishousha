@@ -334,155 +334,78 @@ function simulate(runs = 100) {
   return { results, issues, issues_per_run }
 }
 
-// ===== 静的コード解析 =====
+// ===== 静的コード解析（2026-06-21 更新版：修正済み項目を反映）=====
 function staticAnalysis() {
   const bugs = []
 
-  // BUG 1: フィンが加入不可
+  // === 修正済み一覧（参考情報）===
+  // ✅ フィン加入可能 (LocationView.tsx relay/castle 条件追加済み)
+  // ✅ ゼノ加入可能 (castle型で仲間加入UI表示済み、ボス前に加入可)
+  // ✅ 仲間3人上限 (engine.ts joinCompanion で joinedCount >= 3 チェック済み)
+  // ✅ ダンジョン日数消費 (engine.ts enterDungeon で daysLeft -= 1 済み)
+  // ✅ sealObtained 正表示 (LocationView.tsx で sealObtained && 表示済み)
+  // ✅ ゲームオーバーセーブ削除 (GameRoot.tsx で localStorage.removeItem 済み)
+  // ✅ 初期ゴールド300G (createInitialState gold: 300)
+  // ✅ ボスEXP調整 (bandit_king:225, mine_king:450, storm_dragon:420)
+  // ✅ ラスボスHP/ATK調整 (archive: HP460, ATK36)
+  // ✅ セーブ削除ボタン (TitleScreen 「新規ゲーム開始（セーブ上書き）」)
+  // ✅ ボス名修正 (「終末記録体アーカイブに挑む！」)
+  // ✅ cecilspeakerName typo修正 (data.ts)
+  // ✅ 仲間加入後パーティ誘導メッセージ追加 (engine.ts joinCompanion)
+  // ✅ 残り日数警告の段階化 (StatusBar: <= 40 オレンジ / <= 20 赤点滅)
+
+  // === 現在も残る課題 ===
+
+  // BALANCE 1: 仲間選択の判断材料不足
   bugs.push({
-    severity: 'CRITICAL',
-    title: 'フィン（川辺の村）が加入不可',
-    detail: 'LocationView.tsx:80 の `loc.type === "town"` 条件により、relay型ロケーション（riverside）では仲間加入UIが表示されない。フィンは永遠に仲間にできない。',
-    fix: '`loc.type === "town" || loc.type === "relay"` に変更するか、companionIdがある場所は全て表示する。'
+    severity: 'BALANCE',
+    title: '仲間3人制限：キャラクター役割の説明が不足',
+    detail: 'メインルートで8人の仲間候補と出会うが、タンク/ヒーラー/アタッカーなどの役割説明がゲーム内にない。3人制限と相まって最適編成の判断が難しい。',
+    fix: '加入ダイアログに役割ラベル（タンク型・ヒーラー型・アタッカー型）を追加。'
   })
 
-  // BUG 2: ゼノが絶対に加入不可
+  // BALANCE 2: 速度型キャラの戦略的優位
   bugs.push({
-    severity: 'CRITICAL',
-    title: 'ゼノ（砂漠遺跡）が絶対に加入不可',
-    detail: 'engine.ts:582 で isFinalBoss=true の場合は早期return。pendingCompanionJoinがセットされない。ラスボス後はgame.win画面に遷移するためゼノの加入ダイアログは永遠に表示されない。',
-    fix: 'ゼノを砂漠遺跡到着時（ボス戦前）に加入判定に変更するか、castle型でもcompanionId所持ロケーションで加入UIを表示する。'
+    severity: 'BALANCE',
+    title: '高速キャラ（ヴァイスSPD19・ミラSPD18）の先制優位が強すぎる',
+    detail: 'SPD順行動のため高SPDキャラが常に先制。低SPDのガレス(SPD6)・ローガン(SPD7)の存在意義が薄い。ヒーラーやデバッファーとしての差別化が必要。',
+    fix: 'ガレスに「挑発（敵攻撃を集める）」などの低速タンク専用スキルを追加。'
   })
 
-  // BUG 3: 3人制限の未実装
-  bugs.push({
-    severity: 'HIGH',
-    title: '仲間3人上限が未実装',
-    detail: 'engine.ts:129-138 の joinCompanion は party.length < 3（アクティブパーティ）しかチェックしない。「3人までしか仲間にできません」の設計に反し、全13人を加入済みにできる。',
-    fix: 'joinCompanion で `Object.values(s.companions).filter(c => c.joined).length >= 3` チェックを追加。'
-  })
-
-  // BUG 4: ダンジョン探索で日数消費なし
-  bugs.push({
-    severity: 'HIGH',
-    title: 'ダンジョン探索で日数が消費されない',
-    detail: 'engine.ts:656 enterDungeon は battle を開始するが daysLeft を減らさない。ダンジョンで何度でも無限グラインド可能で100日制限が無意味になる。',
-    fix: 'enterDungeon で daysLeft -= 1 を追加。宿屋休憩も daysLeft -= 1 はあるが、ダンジョン探索も消費すべき。'
-  })
-
-  // BUG 5: bossDefeated チェックのバグ
-  bugs.push({
-    severity: 'MEDIUM',
-    title: 'enterDungeon の bossAlreadyDefeated が未使用',
-    detail: 'engine.ts:661 で const bossAlreadyDefeated を計算しているが、その後一度も使われていない。ボス撃破後も「ダンジョン探索」ボタンが機能するのは LocationView で別途チェックしているが、engine 内のロジックに不整合がある。',
-    fix: '未使用変数を削除するか、意図した形で使用する。'
-  })
-
-  // BUG 6: LocationView でダンジョン完了後も「ボス討伐済み」「封印石入手済み」が逆表示
+  // MEDIUM 1: パーティ外仲間の活用方法が不明
   bugs.push({
     severity: 'MEDIUM',
-    title: 'LocationView: ボス討伐済み表示のロジック矛盾',
-    detail: 'LocationView.tsx:159-162: `bossDefeated` で「✅ ボス討伐済み」、`!sealObtained` で「💎 封印石入手済み」を表示している。`!sealObtained`（封印石を持っていない）なのに「封印石入手済み」と表示する誤り。',
-    fix: '`{sealObtained && <div>💎 封印石入手済み</div>}` に修正。'
+    title: '加入済み仲間をパーティに追加する方法が初見では分かりにくい',
+    detail: '仲間加入後のメッセージで「パーティ編成」を案内するが、ボタンの位置（コマンド一覧の下部）に気づかないプレイヤーが一人旅になる可能性がある。',
+    fix: '仲間加入後に自動的にパーティ管理画面を開くか、より目立つ位置にボタンを配置する。'
   })
 
-  // BUG 7: LocationView で魔王名が不一致
+  // UX 1: 移動先の判断ガイド
+  bugs.push({
+    severity: 'UX',
+    title: '初回プレイ時の目標ルートが不明確',
+    detail: 'チュートリアルで封印石の場所を告知するが、具体的な移動ルート（最初にガルド→廃鉱山へ）の明示がなく、初見プレイヤーが迷う可能性がある。',
+    fix: 'チュートリアルイベントで「まず北のガルド方向へ」などの具体的な方向性を追加。'
+  })
+
+  // LOW: ゼノの加入タイミング
   bugs.push({
     severity: 'LOW',
-    title: '砂漠遺跡のボス名が不一致',
-    detail: 'LocationView.tsx:191: 「魔王ヴァールドに挑む！」と表示されているが、bossId は archive（終末記録体アーカイブ）。魔王の名前がストーリーと一致していない。',
-    fix: '「終末記録体アーカイブに挑む！」または世界観に合った名称に統一する。'
-  })
-
-  // BUG 8: ゲームオーバー後のセーブデータ
-  bugs.push({
-    severity: 'MEDIUM',
-    title: 'ゲームオーバー後もセーブデータが残る',
-    detail: 'closeBattle でgameoverになった後、古いセーブデータが localStorage に残る。次回起動時にゲームオーバー状態からロードされ、タイトル画面に戻れない。',
-    fix: 'gameover/win 時に localStorage をクリア、またはセーブデータに phase=gameover の場合は無視する。'
-  })
-
-  // BUG 9: 仲間が全滅してもゲームオーバーにならない
-  bugs.push({
-    severity: 'MEDIUM',
-    title: '仲間全滅でもゲームオーバーにならない（主人公のみ生存）',
-    detail: '仲間が全員死亡しても主人公が生きていれば戦闘継続・ゲーム継続。3人制限（設計）との整合性上、全滅時の緊張感が失われる。',
-    fix: '設計上の選択肢：主人公+仲間全滅でのみgameover、または仲間死亡イベントを強調する演出追加。'
-  })
-
-  // BALANCE 1: 序盤ゴールド不足
-  bugs.push({
-    severity: 'BALANCE',
-    title: '序盤ゴールド不足',
-    detail: '初期所持金200G、宿屋1回50G（1日消費）、ポーション100G。ガルドまでの移動に3日消費（150G宿屋）+ アイテム購入で即赤字になりやすい。',
-    fix: '初期金額を300Gに増加、または序盤エリアの宿屋を30Gに設定。'
-  })
-
-  // BALANCE 2: EXP不足でLv20到達困難
-  bugs.push({
-    severity: 'BALANCE',
-    title: 'Lv20クリア目標に対してEXPが不足',
-    detail: 'Lv1→Lv20に必要なEXP: Σ(1×15 to 19×15) = 2,850。ラスボス以外の全ボス合計EXP: 100+200+180+220=700。敵単体EXP平均25、2,150EXP÷25=86回の雑魚戦が必要。100日でこれは厳しい（移動・イベント時間を考慮）。',
-    fix: 'ボスEXPを1.5倍に増加、または敵EXPを全体的に30-40%増加。'
-  })
-
-  // BALANCE 3: ラスボスが強すぎる
-  bugs.push({
-    severity: 'BALANCE',
-    title: 'ラスボス（終末記録体）がLv20相当パーティでも厳しい',
-    detail: 'archive: HP580, ATK40, DEF22。Lv20プレイヤー: ATK53, DEF52。ダメージ: 53-11=42/ターン。必要ターン数: 580÷42≒14ターン。ボスダメージ: 40-26=14/ターン。HP340で14ターン持つが仲間3人分を考慮しても非常にギリギリ。',
-    fix: 'アーカイブのHP580→460に減少、ATK40→36に減少。または 封印解放スキル（3.5倍）が機能する前提でバランス調整。'
-  })
-
-  // BALANCE 4: 仲間3人制限とルート設計の不整合
-  bugs.push({
-    severity: 'BALANCE',
-    title: '仲間3人制限と推奨ルートの不整合',
-    detail: 'メインルートで遭遇する仲間: ガレス、リズ（alseria）→セシル（galdo）→イリス（demon_mine）→エルク（dragon_pass）→ブラム（elna）→ミラ（ancient_temple）→ローガン（sahal）= 8人。3人制限だと誰を選ぶかの情報がゲーム内にない。',
-    fix: '各仲間の特徴・役割説明をゲーム内に追加。または仲間制限を5人に変更（設計再考）。'
-  })
-
-  // BALANCE 5: 速度型キャラの優位性
-  bugs.push({
-    severity: 'BALANCE',
-    title: '高速キャラ（ヴァイス SPD19, ミラ SPD18）が先制優位すぎる',
-    detail: 'SPDが高いほど先に行動できるため、ヴァイス・ノア・ミラのような高SPDキャラが戦略的に必須になりがち。低SPDキャラ（ガレス SPD6, ローガン SPD7）の存在意義が薄れる。',
-    fix: '「挑発」スキル（敵の攻撃対象を自分に固定）等でガレス/ローガンの低速を補う役割を追加。'
-  })
-
-  // UX 1: UI上でパーティ選択が不明確
-  bugs.push({
-    severity: 'UX',
-    title: '仲間加入後のパーティ編成画面への誘導がない',
-    detail: '仲間を加入させた後、そのままLocationViewに戻るだけで「パーティを編成してください」等の誘導がない。StatusBarの「👥 仲間」ボタンに気づかないユーザーは最適パーティを組めない。',
-    fix: '仲間加入後に「パーティを変更しますか？」ダイアログを表示する。'
-  })
-
-  // UX 2: 制限時間の視覚的警告が弱い
-  bugs.push({
-    severity: 'UX',
-    title: '残り日数の警告が20日以下しか表示されない',
-    detail: 'StatusBar.tsx:22: daysLeft <= 20 でのみアニメーション表示。封印石0枚のまま残り50日になっても警告なし。初心者がゲームオーバーに気づかないまま進行する。',
-    fix: '残り40日でオレンジ警告、20日で赤点滅に段階化。「このペースでは間に合いません」等のヒントを追加。'
-  })
-
-  // UX 3: セーブ削除の導線が不明
-  bugs.push({
-    severity: 'UX',
-    title: 'セーブデータ削除の方法がゲーム内に表示されない',
-    detail: 'handleDeleteSave 関数は存在するが、ゲーム内のどこからも呼び出せない。既存セーブがある場合、新しい難易度でのプレイ開始方法がわからない。',
-    fix: 'タイトル画面に「セーブ削除」または「最初からはじめる」ボタンを追加。'
+    title: 'ゼノ（砂漠遺跡）の加入に気づきにくい',
+    detail: '砂漠遺跡到着時にラスボス戦のUIが目立つため、ゼノとの加入ダイアログを見落とすプレイヤーがいる。（UI自体は正常動作・castle型で表示済み）',
+    fix: 'ゼノ加入ダイアログの表示位置を強調するか、専用の到着イベントをtriggerする。'
   })
 
   return bugs
 }
 
 // ===== メイン実行 =====
-const { results, issues, issues_per_run } = simulate(100)
+const RUN_COUNT = parseInt(process.argv[2] || '1000')
+const { results, issues, issues_per_run } = simulate(RUN_COUNT)
 const bugs = staticAnalysis()
 
 console.log('\n' + '='.repeat(70))
-console.log('  封印の継承者 — QC 100回シミュレーション 結果レポート')
+console.log('  封印の継承者 — QC ${RUN_COUNT}回シミュレーション 結果レポート')
 console.log('='.repeat(70))
 
 console.log('\n【プレイ結果統計】')

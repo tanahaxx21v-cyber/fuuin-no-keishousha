@@ -16,6 +16,14 @@ interface Props {
   onOpenPartyManage?: () => void
 }
 
+function getRoleBadge(cls: string): { label: string; color: string } {
+  if (cls === '騎士' || cls === '戦士') return { label: '🛡️ タンク型', color: 'text-blue-300' }
+  if (cls === '神官') return { label: '💚 ヒーラー型', color: 'text-green-300' }
+  if (cls === '魔法使い' || cls === '元魔王軍魔導士') return { label: '🔮 魔法型', color: 'text-purple-300' }
+  if (cls === '弓使い' || cls === 'エルフ・弓術士') return { label: '🏹 遠距離型', color: 'text-amber-300' }
+  return { label: '⚔️ アタッカー型', color: 'text-red-300' }
+}
+
 export default function LocationView({
   gs, onBackToMap, onInn, onOpenShop, onEnterDungeon, onFightBoss, onJoinCompanion, onSkipCompanion, onWander, onOpenPartyManage
 }: Props) {
@@ -94,7 +102,10 @@ export default function LocationView({
             <span className="text-4xl">{companion!.emoji}</span>
             <div>
               <div className="font-black text-white text-base">{companion!.name}</div>
-              <div className="text-xs text-indigo-300 font-bold">{companion!.cls}</div>
+              <div className="flex items-center gap-2">
+                <div className="text-xs text-indigo-300 font-bold">{companion!.cls}</div>
+                {(() => { const r = getRoleBadge(companion!.cls); return <div className={`text-xs font-black ${r.color}`}>{r.label}</div> })()}
+              </div>
             </div>
           </div>
           <p className="text-sm text-gray-300 italic mb-4 border-l-2 border-indigo-700 pl-3">「{companion!.joinText}」</p>

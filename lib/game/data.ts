@@ -62,6 +62,7 @@ export const COMPANIONS: Record<CompanionId, CompanionDef> = {
     skills: [
       { id: 'shield_bash', name: '盾撃', desc: '盾で敵をスタンさせる。', mpCost: 6, target: 'enemy_one', effect: 'stun', power: 1.2 },
       { id: 'iron_wall', name: '鉄壁', desc: '自分の防御力を大幅に上昇させる。', mpCost: 8, target: 'self', effect: 'def_up', power: 1 },
+      { id: 'provoke', name: '挑発', desc: '敵を挑発して攻撃力を下げる。自身のDEFも上昇。', mpCost: 10, target: 'enemy_all', effect: 'debuff_atk', power: 1 },
     ],
     learnableSkills: [
       { level: 10, skill: { id: 'knight_vow', name: '聖騎士の誓い', desc: '騎士の誓いで仲間を癒す。味方全体のHPを回復。', mpCost: 18, target: 'ally_all', effect: 'heal', power: 35 } },
@@ -822,8 +823,9 @@ export const EVENTS: GameEvent[] = [
       { speaker: 'narrator', speakerName: '', text: 'ルミナ大陸の中心、アルセリア王都。あなたの旅はここから始まる。' },
       { speaker: 'narrator', speakerName: '老賢者', text: '「若き勇者よ。三つの封印石を集め、魔王の力を封じよ。炎・嵐・闇の石が各地に眠っている。」' },
       { speaker: 'narrator', speakerName: '老賢者', text: '「北の廃鉱山に炎の石、北東の竜の峠に嵐の石、南の古代神殿に闇の石がある。仲間を集め、力をつけて挑め。」' },
-      { speaker: 'player', speakerName: 'レオン', text: '……わかった。必ず三つ揃えて魔王を倒す！' },
-      { speaker: 'narrator', speakerName: '', text: 'いざ、旅を始めよう。' },
+      { speaker: 'narrator', speakerName: '老賢者', text: '「まずは西の東関所を経由してガルドの町へ。廃鉱山はガルドから北に続く。仲間はここアルセリアや各地の町で出会えるぞ。」' },
+      { speaker: 'player', speakerName: 'レオン', text: '……わかった。まずガルドを目指す。必ず三つ揃えて魔王を倒す！' },
+      { speaker: 'narrator', speakerName: '', text: 'いざ、旅を始めよう。マップ画面の拠点をタップして移動できる。仲間との絆がこの旅を支える。' },
     ],
     reward: { exp: 20, message: '✨ 旅の目的を確認した！（EXP +20）' },
   },
