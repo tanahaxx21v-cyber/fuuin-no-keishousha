@@ -4257,7 +4257,7 @@ export const EVENTS: GameEvent[] = [
       { speaker: 'cecil', speakerName: 'セシル', text: 'ブラム！封印魔法の実験台になってくれない？攻撃魔法を一人に集中して……！' },
       { speaker: 'bram', speakerName: 'ブラム', text: '……（複雑な顔で）まあ、研究のためなら。でも手加減しろよ。』' },
       { speaker: 'narrator', speakerName: 'ナレーター', text: '実験は予想以上の結果を出した。セシルが大興奮し、ブラムはため息をついた。' },
-      { speaker: 'cecilspeakerName', speakerName: 'セシル', text: '素晴らしい！！ブラムの頑丈さは研究材料として最高！！次は……」' },
+      { speaker: 'cecil', speakerName: 'セシル', text: '素晴らしい！！ブラムの頑丈さは研究材料として最高！！次は……」' },
       { speaker: 'bram', speakerName: 'ブラム', text: '「次はない。（きっぱり）』' },
     ],
     reward: { exp: 50, gold: 160, message: '🔮🪓 セシルとブラムの珍実験が成功！（EXP +50, +160G）' },

@@ -257,6 +257,11 @@ export function joinCompanion(state: GameState, companionId: CompanionId): GameS
   if (s.party.length < 3) {
     s.companions[companionId].inParty = true
     s.party.push(companionId)
+    const def = COMPANIONS[companionId]
+    s.message = `✅ ${def.name}が仲間になった！「パーティ編成」でメンバーを組み替えよう。`
+  } else {
+    const def = COMPANIONS[companionId]
+    s.message = `✅ ${def.name}が仲間になった！「パーティ編成」で出撃メンバーを選ぼう。`
   }
   s.pendingCompanionJoin = undefined
   return s
