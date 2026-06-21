@@ -302,4 +302,7 @@ export interface GameState {
 
   // 訪問回数カウント（PP4スタイル）
   locVisitCounts: Partial<Record<LocationId, number>>
+
+  // 実績（今回プレイで達成したもの）
+  achievements?: string[]
 }

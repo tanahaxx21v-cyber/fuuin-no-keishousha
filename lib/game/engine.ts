@@ -952,10 +952,44 @@ export function closeBattle(state: GameState): GameState {
     s.phase = 'gameover'
   } else if (isFinal) {
     s.phase = 'win'
+    s.achievements = calcAchievements(s)
   } else {
     s.phase = 'location'
   }
   return s
+}
+
+function calcAchievements(s: GameState): string[] {
+  const achs: string[] = []
+  const joinedAll = Object.values(s.companions).filter(c => c.joined)
+  const deadComps = joinedAll.filter(c => !c.alive)
+  const zenoJoined = s.companions.zeno?.joined
+
+  achs.push('🏆 封印の継承者 — 魔王の封印を成し遂げた！')
+
+  if (s.difficulty === 'hard') achs.push('💀 鬼神の猛者 — ハード難易度でクリア！')
+  else if (s.difficulty === 'normal') achs.push('⚔️ 百年の誓い — ノーマルでクリア！')
+  else achs.push('🌱 旅の始まり — イージーでクリア！')
+
+  if (s.daysLeft >= 70) achs.push('⚡ 電光石火 — 残り70日以上でクリア！（SS評価達成）')
+  else if (s.daysLeft >= 50) achs.push('🌟 手際よし — 残り50日以上でクリア！')
+  else if (s.daysLeft <= 10) achs.push('🔥 土壇場の英雄 — 残り10日以内のギリギリ勝利！')
+
+  if (deadComps.length === 0 && joinedAll.length > 0) achs.push('💚 誰も失わなかった — 仲間を全員生還させた！')
+  if (deadComps.length > 0) achs.push(`💔 散った仲間たち — ${deadComps.length}人の仲間を失った`)
+
+  if (zenoJoined) achs.push('😈 謎の魔族の絆 — ゼノを仲間にした（隠しキャラ加入）')
+
+  if (s.playerLevel >= 20) achs.push('💪 勇者の覚醒 — Lv20以上でクリア！')
+
+  const defeatedAll = ['bandit_king','mine_king','storm_dragon','forest_king','tidal_king','archive'].every(
+    id => s.defeatedBosses.includes(id)
+  )
+  if (defeatedAll) achs.push('👑 全ボス討伐 — 全てのボスを倒した伝説の勇者！')
+
+  if (s.gold >= 1000) achs.push('💰 大富豪 — クリア時に1000G以上保持！')
+
+  return achs
 }
 
 // ===== PARTY MANAGEMENT =====

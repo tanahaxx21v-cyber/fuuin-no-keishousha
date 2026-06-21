@@ -228,6 +228,21 @@ export default function WinScreen({ gs, onRestart }: Props) {
               </div>
             )}
 
+            {/* 実績（アルバム）*/}
+            {(gs.achievements ?? []).length > 0 && (
+              <div className="bg-amber-950/60 border-2 border-amber-700 rounded-xl p-3 mb-3 text-left">
+                <div className="text-xs font-black text-amber-500 mb-2 tracking-widest">— 実績解除 —</div>
+                <div className="flex flex-col gap-1.5">
+                  {(gs.achievements ?? []).map((ach, i) => (
+                    <div key={i} className="flex items-start gap-2 text-sm text-amber-200 font-bold">
+                      <span className="shrink-0">✨</span>
+                      <span>{ach}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
             <div className="flex gap-3 mt-4">
               <button
                 onClick={() => setPage(p => p - 1)}

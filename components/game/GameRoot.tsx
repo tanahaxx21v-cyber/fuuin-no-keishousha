@@ -52,6 +52,7 @@ function loadGame(): GameState | null {
     if (!parsed.party) parsed.party = []
     if (!parsed.inventory) parsed.inventory = []
     if (!parsed.sealStones) parsed.sealStones = []
+    if (!parsed.achievements) parsed.achievements = []
     return parsed
   } catch { return null }
 }
