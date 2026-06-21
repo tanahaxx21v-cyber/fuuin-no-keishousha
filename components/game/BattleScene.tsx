@@ -78,13 +78,18 @@ function EnemyDisplay({ enemies, isBoss, isTargetingEnemies, onSelectTarget }: {
                   <span className="absolute -top-3 left-1/2 -translate-x-1/2 text-yellow-300 font-black text-base animate-bounce">▼</span>
                 )}
               </button>
-              {/* HP bar + name + status */}
-              <div style={{ width: isLarge ? 80 : 56 }}>
-                <div className="w-full h-1.5 bg-black/60 border border-white/20 rounded-sm overflow-hidden">
+              {/* HP bar + numbers + name + status */}
+              <div style={{ width: isLarge ? 88 : 64 }}>
+                <div className="w-full h-2 bg-black/60 border border-white/20 rounded-sm overflow-hidden">
                   <div className="h-full transition-all duration-300" style={{ width: `${hpPct}%`, backgroundColor: hpFill }} />
                 </div>
-                <div className="text-[8px] font-black text-center mt-0.5" style={{ color: '#fff', textShadow: '0 1px 3px #000,0 0 6px #000' }}>
-                  {e.name}
+                <div className="flex justify-between items-center mt-0.5">
+                  <span className="text-[8px] font-black" style={{ color: '#d1d5db', textShadow: '0 1px 3px #000' }}>
+                    {e.name}
+                  </span>
+                  <span className="text-[8px] font-black" style={{ color: dead ? '#6b7280' : hpFill, textShadow: '0 1px 3px #000' }}>
+                    {dead ? '---' : `${e.hp}/${e.maxHp}`}
+                  </span>
                 </div>
                 {e.statusEffects.length > 0 && (
                   <div className="flex justify-center gap-0.5 mt-0.5">
@@ -238,14 +243,17 @@ export default function BattleScene({ gs, onAttack, onSkill, onItem, onFlee, onC
             return (
               <div key={a.uid} className="flex items-center gap-1">
                 <CharPortrait charId={charId} size={52} isActive={a.uid === b.currentUid} isDead={a.hp <= 0} />
-                <div className="flex flex-col gap-0.5" style={{ width: 46 }}>
+                <div className="flex flex-col gap-0.5" style={{ width: 52 }}>
                   <HpBar hp={a.hp} maxHp={a.maxHp} />
-                  <div className="flex items-center gap-0.5">
+                  <div className="flex items-center justify-between gap-0.5">
                     <span className="text-[8px] text-white font-bold leading-none truncate" style={{ textShadow: '0 1px 3px #000' }}>
                       {a.name}
                     </span>
                     {statusIcons.map((ic, i) => <span key={i} style={{ fontSize: 8 }}>{ic}</span>)}
                   </div>
+                  <span className="text-[8px] font-bold leading-none" style={{ color: a.hp / a.maxHp > 0.5 ? '#4ade80' : a.hp / a.maxHp > 0.25 ? '#facc15' : '#ef4444', textShadow: '0 1px 3px #000' }}>
+                    {a.hp <= 0 ? '---' : `HP ${a.hp}/${a.maxHp}`}
+                  </span>
                 </div>
               </div>
             )

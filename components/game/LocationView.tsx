@@ -125,6 +125,39 @@ export default function LocationView({
     }
   }
 
+  // 仲間なし時のプレイヤー独白（PP4スタイル：主人公の内面）
+  const SOLO_LINES: Partial<Record<string, { town: string[]; relay: string[]; dungeon: string[]; castle: string[] }>> = {
+    _: {
+      town: [
+        '……まだ一人だ。誰か、信頼できる仲間を見つけなければ。',
+        'この町のどこかに、一緒に戦ってくれる人がいるかもしれない。',
+        '封印石を集めるには、仲間の力が必要だ。急がなくては……',
+        '人の声が聞こえる。温かい。でも、急ぎの旅だ。',
+      ],
+      relay: [
+        'ここで一息つくか。……でも、一人旅は心細い。',
+        '封印石のことを考えると、立ち止まってなどいられない。',
+        '誰かいればと思うが……今は先を急ごう。',
+      ],
+      dungeon: [
+        '一人でここに踏み込むのは……無謀かもしれない。でも、やるしかない。',
+        '力を蓄えなければ。仲間がいればもっと楽なのだが……',
+        '封印石はここにある。怖れている場合じゃない。',
+      ],
+      castle: [
+        '封印石を集めなければ、ここには入れない。まだ旅は続く。',
+        '……今は力を蓄える時だ。',
+      ],
+    },
+  }
+  let soloLine: string | null = null
+  if (aliveParty.length === 0) {
+    const lines = SOLO_LINES._?.[loc.type as 'town' | 'relay' | 'dungeon' | 'castle'] ?? SOLO_LINES._?.town ?? []
+    if (lines.length > 0) {
+      soloLine = lines[(locVisit - 1) % lines.length]
+    }
+  }
+
   return (
     <div className="p-3 max-w-2xl mx-auto flex flex-col gap-3">
 
@@ -144,6 +177,17 @@ export default function LocationView({
         </div>
         <p className="text-sm text-gray-300 leading-relaxed">{loc.desc}</p>
       </div>
+
+      {/* プレイヤー独白（仲間なし時）*/}
+      {soloLine && (
+        <div className="bg-[#0c0c24] border border-slate-700 rounded-xl px-4 py-2.5 flex items-start gap-3">
+          <span className="text-2xl shrink-0 mt-0.5">🧑</span>
+          <div className="flex-1 min-w-0">
+            <div className="text-xs text-gray-500 font-bold mb-0.5">{gs.playerName}（心の声）</div>
+            <div className="text-sm text-gray-300 italic leading-relaxed">「{soloLine}」</div>
+          </div>
+        </div>
+      )}
 
       {/* 仲間フレーバーセリフ（PP4スタイル：場所到着コメント）*/}
       {flavorLine && (() => {

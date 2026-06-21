@@ -146,7 +146,7 @@ export default function WorldMap({ gs, onTravel, onEnterLocation, getAvailableCo
           <span style={{ position:'absolute', left:'30%', top:'88%', fontSize:9, color:'rgba(60,130,200,0.3)',  fontWeight:'bold' }}>沿岸・海域</span>
         </div>
 
-        {/* 接続線 */}
+        {/* 接続線 — 現在地からのルートのみ強調、他は極薄 */}
         <svg className="absolute inset-0 w-full h-full" style={{ zIndex: 3 }}>
           {CONN_PAIRS.map(([a, b]) => {
             const from = MAP_POS[a]!
@@ -154,14 +154,17 @@ export default function WorldMap({ gs, onTravel, onEnterLocation, getAvailableCo
             const isActive =
               (a === gs.currentLocId && connectedIds.includes(b)) ||
               (b === gs.currentLocId && connectedIds.includes(a))
+            if (!isActive) return (
+              <line key={`${a}-${b}`}
+                x1={`${from.x}%`} y1={`${from.y}%`} x2={`${to.x}%`} y2={`${to.y}%`}
+                stroke="rgba(140,120,60,0.07)" strokeWidth={1} />
+            )
             return (
               <g key={`${a}-${b}`}>
                 <line x1={`${from.x}%`} y1={`${from.y}%`} x2={`${to.x}%`} y2={`${to.y}%`}
-                  stroke="rgba(0,0,0,0.6)" strokeWidth={isActive ? 5 : 3} />
+                  stroke="rgba(0,0,0,0.7)" strokeWidth={6} />
                 <line x1={`${from.x}%`} y1={`${from.y}%`} x2={`${to.x}%`} y2={`${to.y}%`}
-                  stroke={isActive ? 'rgba(255,210,80,0.95)' : 'rgba(180,160,100,0.25)'}
-                  strokeWidth={isActive ? 3 : 1.5}
-                  strokeDasharray={isActive ? 'none' : '6,5'} />
+                  stroke="rgba(255,210,80,0.95)" strokeWidth={3} />
               </g>
             )
           })}
@@ -261,6 +264,36 @@ export default function WorldMap({ gs, onTravel, onEnterLocation, getAvailableCo
           <span>移動日数</span>
         </div>
       </div>
+
+      {/* 今すべきこと — ガイドバナー */}
+      {(() => {
+        const joinedCount = Object.values(gs.companions).filter(c => c.joined).length
+        const remainStones = 3 - gs.sealStones.length
+        let guide: { icon: string; text: string; sub: string; color: string } | null = null
+
+        if (joinedCount === 0) {
+          guide = { icon: '👤', text: '仲間を探そう！', sub: '旅人の宿・アルセリア・ベルンなどに仲間が待っている', color: 'border-purple-700 bg-purple-950/60 text-purple-200' }
+        } else if (remainStones > 0) {
+          const targets = [
+            !gs.sealStones.includes('fire')  && '廃鉱山（炎の封印石🔥）',
+            !gs.sealStones.includes('storm') && '竜の峠（嵐の封印石⚡）',
+            !gs.sealStones.includes('dark')  && '古代神殿（闇の封印石🌑）',
+          ].filter(Boolean)
+          guide = { icon: '💎', text: `封印石を集めよう！ あと${remainStones}個`, sub: targets.join(' / '), color: 'border-amber-700 bg-amber-950/60 text-amber-200' }
+        } else {
+          guide = { icon: '⚡', text: '全ての封印石が揃った！', sub: '砂漠遺跡へ向かい、終末記録体アーカイブを倒せ！', color: 'border-red-700 bg-red-950/60 text-red-200 animate-pulse' }
+        }
+
+        return guide ? (
+          <div className={`border-2 rounded-xl px-3 py-2.5 ${guide.color}`}>
+            <div className="flex items-center gap-2 mb-0.5">
+              <span className="text-base">{guide.icon}</span>
+              <span className="font-black text-sm">{guide.text}</span>
+            </div>
+            <div className="text-[10px] opacity-80 ml-6">{guide.sub}</div>
+          </div>
+        ) : null
+      })()}
 
       {/* 現在地パネル */}
       <div className="bg-[#0c0c24] border-2 border-indigo-700 rounded-xl p-3 shadow-xl">
