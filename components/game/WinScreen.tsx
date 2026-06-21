@@ -124,6 +124,22 @@ const NAME_TO_ID: Record<string, string> = {
   'イリス': 'iris', 'シグ': 'sig', 'エルク': 'elk', 'ミラ': 'mira', 'ゼノ（隠しキャラ）': 'zeno',
 }
 
+const COMPANION_MEMORIAL: Record<string, string> = {
+  gares: '「守る」と誓った騎士の魂は、永遠に君と共にある。',
+  liz: '神に仕えた神官の祈りが、今も空のどこかに響いている。',
+  noa: '弓の弦に触れるたびに、あの笑顔を思い出すだろう。',
+  cecil: '理論の果てに夢見た理想は、誰かが引き継いでくれる。',
+  bram: '最後まで「もっと戦いたい」と思っていたに違いない。',
+  finn: '見習いのまま倒れたが、その志は本物だった。',
+  vais: '盗賊の生き様を最後まで貫いた。悔いはないはずだ。',
+  logan: '執行人の鎖から解き放たれた魂が、今は静かに眠っている。',
+  iris: '魔族と人間の間で揺れ続けた心が、ようやく安らいでいる。',
+  sig: '「借りは来世で返す」と笑っていた。次は必ず返してもらおう。',
+  elk: '獣の誇りを胸に散った槍使いの勇姿を、忘れないだろう。',
+  mira: '風の精霊がエルフの魂を、故郷の森へ連れ帰ってくれるはずだ。',
+  zeno: '謎多き魔族が最後に選んだのは、人間と共に戦うことだった。',
+}
+
 function getClearRank(daysLeft: number): { rank: string; color: string; label: string } {
   if (daysLeft >= 90) return { rank: 'SS', color: 'text-yellow-300', label: '完璧な封印！' }
   if (daysLeft >= 70) return { rank: 'S', color: 'text-yellow-400', label: '見事な勝利！' }
@@ -218,12 +234,23 @@ export default function WinScreen({ gs, onRestart }: Props) {
               </div>
             )}
             {deadCompanions.length > 0 && (
-              <div className="bg-gray-900/50 border border-gray-700 rounded-xl p-3 mb-3 text-left">
+              <div className="bg-gray-900/50 border border-red-900/60 rounded-xl p-3 mb-3 text-left">
                 <div className="text-xs text-red-400 mb-2">冒険で命を落とした仲間 ({deadCompanions.length}人)</div>
-                <div className="flex flex-wrap gap-2">
-                  {deadCompanions.map(c => (
-                    <span key={c.id} className="text-sm text-gray-500 line-through">{COMPANIONS[c.id].emoji} {COMPANIONS[c.id].name}</span>
-                  ))}
+                <div className="flex flex-col gap-2">
+                  {deadCompanions.map(c => {
+                    const def = COMPANIONS[c.id]
+                    const memorial = COMPANION_MEMORIAL[c.id]
+                    return (
+                      <div key={c.id} className="bg-red-950/20 border border-red-900/40 rounded-lg px-3 py-2">
+                        <div className="text-sm text-gray-500 line-through font-bold mb-0.5">
+                          {def.emoji} {def.name} <span className="text-gray-600">Lv{c.level}</span>
+                        </div>
+                        {memorial && (
+                          <div className="text-xs text-gray-600 italic">{memorial}</div>
+                        )}
+                      </div>
+                    )
+                  })}
                 </div>
               </div>
             )}

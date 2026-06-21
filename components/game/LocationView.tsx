@@ -25,6 +25,75 @@ function getRoleBadge(cls: string): { label: string; color: string } {
   return { label: '⚔️ アタッカー型', color: 'text-red-300' }
 }
 
+// 仲間の場所到着フレーバーセリフ（PP4スタイル：場所タイプ別）
+const COMPANION_LOC_LINES: Partial<Record<CompanionId, { town: string[]; relay: string[]; dungeon: string[] }>> = {
+  gares: {
+    town: ['ここは見張りを増やした方がいいな。', 'まず宿屋で装備を確認しよう。', '町の人たちを守ることが我々の使命だ。'],
+    relay: ['油断するな。いつでも剣を抜けるようにしておけ。', 'ここで一息つくか。でも警戒は怠るな。', '次の目的地への道を確認しておく。'],
+    dungeon: ['戦闘態勢を整えろ。ここからが本番だ。', '俺が先頭に立つ。後ろは任せた。', '敵の気配がする……慎重に行こう。'],
+  },
+  liz: {
+    town: ['神殿があれば祈っておきたいわ。', 'お腹すいた……料理屋はどこかな。', '人が多いと安心するね。'],
+    relay: ['自然の中は心が洗われる気がする。', 'ここでしばらく休もうよ。疲れたでしょ？', 'みんな怪我はない？'],
+    dungeon: ['怖い……でも、みんながいるから大丈夫。', '回復魔法は準備万端よ。頼ってね。', '光よ、私たちを守り給え……'],
+  },
+  noa: {
+    town: ['矢の補充はここでできるかな？', '人混みは動きにくい。弓が引きにくいよ。', '情報収集するなら町が一番ね。'],
+    relay: ['視界が広くて気持ちいい！矢が遠くまで飛びそう。', '風向きを確認しておかないとね。', 'こういう場所は好き。開放感があって。'],
+    dungeon: ['薄暗いと弓が使いにくい……でもやってみせる！', '敵の位置を見極めてから撃つよ。', 'ここの敵に弓は有効かな？'],
+  },
+  cecil: {
+    town: ['図書館か知識人がいれば魔法書の情報が欲しいわ。', '理論的に考えれば、ここに補給品があるはず。', '……賑やか。でも悪くない。'],
+    relay: ['魔力が自然に回復する気がする。不思議ね。', 'データを収集しておくわ。地形が重要よ。', '……静かね。集中できる。'],
+    dungeon: ['魔法の実験に最適なフィールドね。', '魔力感知を強化しておいたわ。準備完了。', 'ここの敵には火か雷が効くと思う。理論上。'],
+  },
+  bram: {
+    town: ['腹が減った！何か食えるものはあるか？', '強い奴がいたら手合わせを頼もうか。', 'うるさい場所は苦手だが……まあいい。'],
+    relay: ['いい空気だ。体が動く気がする！', 'ここで一戦やってみるか？……敵がいないか。', '旅の途中は嫌いじゃない。'],
+    dungeon: ['よし来た！ここからが楽しくなる！', 'どんな敵が来ても返り討ちにしてやる！', 'ボスはどこだ？早く戦いたい！'],
+  },
+  finn: {
+    town: ['すごい……こんな大きな町、初めて来ました。', '修行になること、何かないかな。', 'た、立派な街ですね！'],
+    relay: ['ここで野宿したことがあります。懐かしい。', '休憩の間に素振りをしておきます！', '道が合ってるか不安です……'],
+    dungeon: ['初めてのダンジョン……緊張します。', '先輩の背中を見て学びます！', 'て、手が震えてる……大丈夫、大丈夫。'],
+  },
+  vais: {
+    town: ['昔、この手の場所で仕事をしてたな。', '町の雰囲気で何が起きてるか読める。俺は慣れてる。', '…ちょっと懐かしい。いい思い出ばかりじゃないが。'],
+    relay: ['こういう場所で野宿するのは慣れてる。', '見張りはやっとく。眠れよ。', '昔の仲間と来たことある……今は別々だけどな。'],
+    dungeon: ['暗くて狭い場所は好きじゃないが……慣れてはいる。', 'トラップに気をつけろよ。元盗賊の勘だ。', 'こういう場所は逃げ道を先に確認する習慣がある。'],
+  },
+  logan: {
+    town: ['人が多い。…苦手だ。', '……にぎやかだな。', 'ここにいるのが正しいのか、今でも疑問だが。'],
+    relay: ['……いい場所だ。静かで。', '誰とも話さなくていいのがいい。', '自然の中なら少し落ち着ける。'],
+    dungeon: ['ここは生か死かだ。覚悟はいいか。', '……暗い。でも心地よい。', '俺の仕事は……前に出て盾になることだ。'],
+  },
+  iris: {
+    town: ['人間の街……不思議な感じ。でも悪くない。', '怪しまれてないかな、私……。', 'こんなに温かい場所があるんだね、人間の世界にも。'],
+    relay: ['魔族の世界とは空気が違う。新鮮だわ。', 'もし敵が来ても、私が守ります。', '……旅って、こういうものなのね。'],
+    dungeon: ['魔族の力を使ってもいいですか？……いざとなったら。', 'ここの魔力が乱れている。何かいる。', 'みんながいるから、怖くない。'],
+  },
+  sig: {
+    town: ['お、金の匂いがする！何か儲かるものない？', '情報は金と同じ価値がある。聞き込みしてくるよ。', 'こういう場所が一番落ち着く〜。'],
+    relay: ['こんな辺鄙な場所で何か掘り出し物はないかな。', '稼ぎのない旅は性に合わないな〜。', 'ここで何かいい話はないかなあ。'],
+    dungeon: ['ここの宝箱、全部漁っていい？', 'リスクとリターンの計算は……うん、許容範囲。', '宝が眠ってたりするかも！楽しみ！'],
+  },
+  elk: {
+    town: ['獣人が来るといやな顔をするやつがいる。慣れてるがな。', '町の食い物は美味いが量が少ない。', '早く出発したいな。閉じた場所は苦手だ。'],
+    relay: ['風が気持ちいい。槍の練習に最適だ！', 'このくらい開けた場所なら思い切り動ける。', '獣の勘が告げる……何かいるぞ。'],
+    dungeon: ['閉所は好きじゃないが、戦いには変わりない。', '俺の槍は狭い場所でも使える。問題ない。', '敵の匂いがする。準備しろ。'],
+  },
+  mira: {
+    town: ['人間の街は騒がしい……エルフの里とは大違いね。', '良い薬草があれば買っておきたい。', 'ここの人たちは何を思って生きているのかしら。'],
+    relay: ['森があると落ち着く。木の声が聞こえる気がして。', 'エルフにとって旅の中継地は故郷みたいなものよ。', '風が変わった。天気が崩れるかも。'],
+    dungeon: ['ここは自然の摂理に反する場所ね……慎重に行きましょう。', 'エルフの矢は暗闇でも標的を外さないわ。', '生命の気配が薄い……何かが棲んでいる。'],
+  },
+  zeno: {
+    town: ['……人間の街か。落ち着かない。', '私のことを怖れている目がある……当然か。', '人間の世界を理解しようとしているが……難しい。'],
+    relay: ['ここは……まだ許容範囲だ。', '魔族の感覚で言えば、この場所は中立だ。', '……面白い場所だ。記憶に留めておこう。'],
+    dungeon: ['魔族の目には、ここが本来の戦場に見える。', '力が解放される感覚がある……制御はできている。', '人間と魔族が共に戦う場所……奇妙だが、嫌いではない。'],
+  },
+}
+
 export default function LocationView({
   gs, onBackToMap, onInn, onOpenShop, onEnterDungeon, onFightBoss, onJoinCompanion, onSkipCompanion, onWander, onOpenPartyManage
 }: Props) {
@@ -41,6 +110,20 @@ export default function LocationView({
   const totalDays = getDifficultyMultiplier(gs.difficulty).days
   const typeLabel = loc.type === 'town' ? '🏘️ 町' : loc.type === 'dungeon' ? '⚔️ ダンジョン' : loc.type === 'relay' ? '🛖 中継地' : '🏯 城'
   const typeBorder = loc.type === 'town' ? 'border-indigo-700' : loc.type === 'dungeon' ? 'border-orange-800' : loc.type === 'relay' ? 'border-slate-600' : 'border-red-800'
+
+  // 仲間フレーバーセリフ（決定論的：訪問回数×仲間インデックスで選択）
+  const aliveParty = gs.party.filter(id => gs.companions[id]?.alive)
+  const locVisit = gs.locVisitCounts?.[gs.currentLocId] ?? 1
+  let flavorLine: { speakerId: CompanionId; line: string } | null = null
+  if (aliveParty.length > 0) {
+    const speakerIdx = (locVisit - 1) % aliveParty.length
+    const speakerId = aliveParty[speakerIdx] as CompanionId
+    const linesForType = COMPANION_LOC_LINES[speakerId]?.[loc.type as 'town' | 'relay' | 'dungeon']
+    if (linesForType && linesForType.length > 0) {
+      const lineIdx = Math.floor((locVisit - 1) / aliveParty.length) % linesForType.length
+      flavorLine = { speakerId, line: linesForType[lineIdx] }
+    }
+  }
 
   return (
     <div className="p-3 max-w-2xl mx-auto flex flex-col gap-3">
@@ -61,6 +144,22 @@ export default function LocationView({
         </div>
         <p className="text-sm text-gray-300 leading-relaxed">{loc.desc}</p>
       </div>
+
+      {/* 仲間フレーバーセリフ（PP4スタイル：場所到着コメント）*/}
+      {flavorLine && (() => {
+        const def = COMPANIONS[flavorLine.speakerId]
+        return (
+          <div className="bg-[#0c0c24] border border-slate-700 rounded-xl px-4 py-2.5 flex items-start gap-3">
+            <div className="shrink-0 rounded-lg overflow-hidden border border-slate-600 mt-0.5">
+              <CharPortrait charId={flavorLine.speakerId} size={36} rounded={4} />
+            </div>
+            <div className="flex-1 min-w-0">
+              <div className="text-xs text-gray-500 font-bold mb-0.5">{def.emoji} {def.name}</div>
+              <div className="text-sm text-gray-200 italic leading-relaxed">「{flavorLine.line}」</div>
+            </div>
+          </div>
+        )
+      })()}
 
       {/* Pending companion join (after boss defeat) */}
       {pendingJoin && (

@@ -9,12 +9,12 @@ interface Props {
 }
 
 const BOSS_NAMES: Record<string, string> = {
-  bandit_king: '🗡️ 盗賊王ドラグ',
-  mine_king: '⛏️ 鉱王グルバ',
-  storm_dragon: '🐉 嵐竜ヴォルテクス',
-  forest_king: '🌿 森王オーキン',
-  tidal_king: '🌊 潮王ネブラ',
-  archive: '💀 終末記録体アーカイブ',
+  bandit_king: '🗡️ 盗賊王カルド',
+  mine_king: '💎 鉱王グラドル',
+  storm_dragon: '🌩️ 嵐竜ストームレックス',
+  forest_king: '🦌 森王モルガ',
+  tidal_king: '🐳 潮王ネブラ',
+  archive: '📚 終末記録体アーカイブ',
 }
 
 const SEAL_NAMES: Record<string, string> = {
@@ -23,8 +23,50 @@ const SEAL_NAMES: Record<string, string> = {
   dark: '🌑 闇の封印石',
 }
 
+// 死亡した仲間への追悼コメント（PP4スタイル）
+const COMPANION_MEMORIAL: Record<string, string> = {
+  gares: '「守る」と誓った騎士の魂は、永遠に君と共にある。',
+  liz: '神に仕えた神官の祈りが、今も空のどこかに響いている。',
+  noa: '弓の弦に触れるたびに、あの笑顔を思い出すだろう。',
+  cecil: '理論の果てに夢見た理想は、誰かが引き継いでくれる。',
+  bram: '最後まで「もっと戦いたい」と思っていたに違いない。',
+  finn: '見習いのまま倒れたが、その志は本物だった。',
+  vais: '盗賊の生き様を最後まで貫いた。悔いはないはずだ。',
+  logan: '執行人の鎖から解き放たれた魂が、今は静かに眠っている。',
+  iris: '魔族と人間の間で揺れ続けた心が、ようやく安らいでいる。',
+  sig: '「借りは来世で返す」と笑っていた。次は必ず返してもらおう。',
+  elk: '獣の誇りを胸に散った槍使いの勇姿を、忘れないだろう。',
+  mira: '風の精霊がエルフの魂を、故郷の森へ連れ帰ってくれるはずだ。',
+  zeno: '謎多き魔族が最後に選んだのは、人間と共に戦うことだった。',
+}
+
+function getGameOverMessage(gs: GameState): { heading: string; body: string } {
+  const bossCount = (gs.defeatedBosses ?? []).length
+  const isTimeout = gs.daysLeft <= 0
+
+  if (isTimeout && bossCount === 0) {
+    return { heading: '……何も成し遂げられなかった', body: '旅立ったばかりの勇者に、時間が容赦しなかった。' }
+  }
+  if (isTimeout && gs.sealStones.length >= 2) {
+    return { heading: 'あと一歩……だったのに', body: '封印石は揃いかけていた。しかし運命は残酷だった。' }
+  }
+  if (isTimeout && bossCount >= 1) {
+    return { heading: '時が……尽きた', body: '確かな歩みがあった。しかし、それでも届かなかった。' }
+  }
+  if (isTimeout) {
+    return { heading: '時間が……足りなかった', body: '残り日数ゼロ。魔王の封印を完成させることができなかった。' }
+  }
+  if (bossCount >= 3) {
+    return { heading: '最後の壁を越えられなかった', body: '封印石は全て揃っていた。だが、最後の一戦で力尽きた。' }
+  }
+  if (gs.daysLeft <= 10) {
+    return { heading: '崖っぷちで……倒れた', body: '残り僅かな日数の中で、精一杯戦った。それは確かだ。' }
+  }
+  return { heading: '力……尽きた', body: '旅はここで終わった。しかし、立ち上がった勇気は消えない。' }
+}
+
 export default function GameOverScreen({ gs, onRestart }: Props) {
-  const reason = gs.daysLeft <= 0 ? '日数が尽きた' : 'パーティが全滅した'
+  const { heading, body } = getGameOverMessage(gs)
   const joinedCompanions = Object.values(gs.companions).filter(c => c.joined && c.alive)
   const deadCompanions = Object.values(gs.companions).filter(c => c.joined && !c.alive)
   const defeatedBosses = (gs.defeatedBosses ?? []).filter(id => BOSS_NAMES[id])
@@ -33,12 +75,13 @@ export default function GameOverScreen({ gs, onRestart }: Props) {
     <div className="min-h-screen bg-[#07071a] flex items-center justify-center p-4">
       <div className="max-w-md w-full text-center">
 
-        <div className="text-7xl mb-4 drop-shadow-2xl">💀</div>
+        <div className="text-7xl mb-3 drop-shadow-2xl">💀</div>
         <h1 className="text-5xl font-black text-red-500 mb-2 tracking-wider"
             style={{ textShadow: '0 0 30px rgba(239,68,68,0.5)' }}>
           GAME OVER
         </h1>
-        <p className="text-gray-400 mb-5 font-bold">{reason}……魔王の封印は解けてしまった。</p>
+        <div className="text-base font-black text-red-300 mb-1">{heading}</div>
+        <p className="text-gray-500 mb-4 text-sm font-bold">{body}</p>
 
         {/* 基本記録 */}
         <div className="bg-[#0c0c24] border-2 border-red-900 rounded-xl p-4 mb-3 text-left">
@@ -109,13 +152,22 @@ export default function GameOverScreen({ gs, onRestart }: Props) {
             )}
             {deadCompanions.length > 0 && (
               <div>
-                <div className="text-xs text-red-400 font-bold mb-1">命を落とした仲間</div>
-                <div className="flex flex-wrap gap-2">
-                  {deadCompanions.map(c => (
-                    <span key={c.id} className="text-sm text-gray-500 line-through font-bold">
-                      {COMPANIONS[c.id]?.emoji} {COMPANIONS[c.id]?.name}
-                    </span>
-                  ))}
+                <div className="text-xs text-red-400 font-bold mb-2">命を落とした仲間</div>
+                <div className="flex flex-col gap-2">
+                  {deadCompanions.map(c => {
+                    const def = COMPANIONS[c.id]
+                    const memorial = COMPANION_MEMORIAL[c.id]
+                    return (
+                      <div key={c.id} className="bg-red-950/30 border border-red-900/60 rounded-lg px-3 py-2">
+                        <div className="text-sm text-gray-500 line-through font-bold mb-0.5">
+                          {def?.emoji} {def?.name} <span className="text-gray-600">Lv{c.level}</span>
+                        </div>
+                        {memorial && (
+                          <div className="text-xs text-gray-600 italic">{memorial}</div>
+                        )}
+                      </div>
+                    )
+                  })}
                 </div>
               </div>
             )}

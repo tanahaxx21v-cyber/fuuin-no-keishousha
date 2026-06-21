@@ -455,12 +455,32 @@ export function startBattle(state: GameState, enemyIds: string[], isBoss: boolea
   const allUnits = [...allies, ...enemies]
   const turnQueue = buildTurnQueue(allUnits)
 
+  // ボス開幕台詞（PP4スタイル）
+  const BOSS_OPENING_LINES: Record<string, string> = {
+    bandit_king: '「フフ……よくここまで来た。だが、お前たちの旅はここで終わりだ！」',
+    mine_king: '「愚かな侵入者め！この鉱山は俺の王国だ！貴様らの骨で床を飾ってやろう！」',
+    storm_dragon: '「……小さき命よ、嵐に飲まれよ！」',
+    forest_king: '「この森の全ての命が、貴様らを拒絶する！」',
+    tidal_king: '「潮の力に逆らうとは……愚か者め！波に飲まれて消えろ！」',
+    archive: '「記録せよ……この世界の終わりを。全ては記録に刻まれ、消える運命だ！」',
+  }
+
+  const bossId = isBoss ? enemyIds[0] : null
+  const openingLog: BattleState['logs'][0][] = []
+  if (isBoss && bossId && BOSS_OPENING_LINES[bossId]) {
+    const bossName = ENEMIES[bossId]?.name ?? ''
+    openingLog.push({ text: `${ENEMIES[bossId]?.emoji ?? '👹'} ${bossName}が立ちはだかった！`, type: 'system' })
+    openingLog.push({ text: `${BOSS_OPENING_LINES[bossId]}`, type: 'system' })
+  } else {
+    openingLog.push({ text: '⚔️ 敵が現れた！', type: 'system' })
+  }
+
   const battle: BattleState = {
     units: allUnits,
     phase: 'select_action',
     turnQueue,
     currentUid: turnQueue[0],
-    logs: [{ text: isBoss ? '⚔️ ボスが現れた！' : '⚔️ 敵が現れた！', type: 'system' }],
+    logs: openingLog,
     rewardExp: enemyIds.reduce((sum, id) => sum + (ENEMIES[id]?.exp ?? 0), 0),
     rewardGold: enemyIds.reduce((sum, id) => sum + (ENEMIES[id]?.gold ?? 0), 0),
     sealStoneFound: isBoss ? ENEMIES[enemyIds[0]]?.sealStone : undefined,
@@ -511,7 +531,7 @@ export function battleAttack(state: GameState, targetUid: string): GameState {
       : `⚔️ ${attacker.name}の攻撃！${target.name}に${result.dmg}ダメージ`,
     type: result.crit ? 'critical' : 'damage',
   })
-  if (died) b.logs.push({ text: `💀 ${target.name}は倒れた！`, type: 'death' })
+  if (died) addDeathLog(b, target)
 
   return advanceTurn(s)
 }
@@ -644,7 +664,7 @@ function processEnemyTurn(state: GameState): GameState {
       : `⚔️ ${actor.name}の攻撃！${target.name}に${result.dmg}ダメージ`,
     type: result.crit ? 'critical' : 'damage',
   })
-  if (diedFromAtk) b.logs.push({ text: `💀 ${target.name}は倒れた！`, type: 'death' })
+  if (diedFromAtk) addDeathLog(b, target)
 
   return advanceTurn(s)
 }
@@ -725,7 +745,7 @@ function processCompanionTurn(state: GameState): GameState {
       : `⚔️ ${actor.name}の攻撃！${target.name}に${result.dmg}ダメージ`,
     type: result.crit ? 'critical' : 'damage',
   })
-  if (diedFromAtk) b.logs.push({ text: `💀 ${target.name}は倒れた！`, type: 'death' })
+  if (diedFromAtk) addDeathLog(b, target)
 
   return advanceTurn(s)
 }
@@ -748,7 +768,7 @@ function advanceTurn(state: GameState): GameState {
       const dmg = 8
       unit.hp = Math.max(0, unit.hp - dmg)
       b.logs.push({ text: `☠️ ${unit.name}は毒で${dmg}ダメージ！`, type: 'damage' })
-      if (unit.hp <= 0) b.logs.push({ text: `💀 ${unit.name}は毒で倒れた！`, type: 'death' })
+      if (unit.hp <= 0) addDeathLog(b, unit, '毒で倒れた')
       poison.turnsLeft -= 1
       if (poison.turnsLeft <= 0) unit.statusEffects = unit.statusEffects.filter(e => e.id !== 'poison')
     }
@@ -907,6 +927,21 @@ function applyBattleRewards(state: GameState): GameState {
     }
   }
 
+  // 勝利後の仲間コメント（BattleSceneのVICTORYパネルに表示）
+  if (!b.isFinalBoss) {
+    const alivePartyUnits = b.units.filter(u => u.isAlly && !u.isPlayer && u.hp > 0 && u.companionId)
+    if (alivePartyUnits.length > 0) {
+      const speaker = alivePartyUnits[Math.floor(Math.random() * alivePartyUnits.length)]
+      if (speaker.companionId) {
+        const lines = COMPANION_BATTLE_COMMENTS[speaker.companionId] ?? []
+        if (lines.length > 0) {
+          const line = lines[Math.floor(Math.random() * lines.length)]
+          b.logs.push({ text: `${speaker.emoji}${speaker.name}「${line}」`, type: 'system' })
+        }
+      }
+    }
+  }
+
   return s
 }
 
@@ -929,6 +964,40 @@ function syncBattleToState(state: GameState) {
       }
     }
   }
+}
+
+// 仲間の死亡時最後のセリフ（PP4スタイル最大の感動ポイント）
+const COMPANION_DEATH_WORDS: Partial<Record<CompanionId, string[]>> = {
+  gares: ['……守れなかった……申し訳ない……', '行け……お前たちが……希望だ……', '騎士として……悔いはない……', '次は……頼んだぞ……'],
+  liz: ['……神様……なぜ……', 'みんな……生きてね……', '光に……包まれる……', 'お願い……諦めないで……'],
+  noa: ['まだ……矢が……残って……', 'ごめん……役に……立てなかった……', '次の一射が……見たかった……', 'みんな……頑張って……'],
+  cecil: ['魔力が……尽きた……', '計算が……狂った……ここで……', 'バカな……私が……ここで……', '悔しい……まだやれた……'],
+  bram: ['まだ……戦える……', 'この……この程度で……くそっ……', '強い奴が……いたな……', 'お前たちに……任せる……'],
+  finn: ['怖かった……でも……戦えた……', '先輩……ごめんなさい……', '夢中で……剣を振ったら……', 'もっと……強くなりたかった……'],
+  vais: ['まさか……俺が……こんな場所で……', '賭けに……負けた……な……', '散り際は……悪くない……', 'みんなに……借りが……できたな……'],
+  logan: ['……ようやく……楽に……なれる……', '死刑執行人が……処刑される……か……', 'よかった……また……誰かを……', '……罪を……償えた……か……'],
+  iris: ['魔族の血も……ここまで……か……', 'あなた達と……戦えて……', '闇は……もう……恐くない……', '……最後まで……人として……'],
+  sig: ['うわ……本当に……死ぬとは……', 'こりゃ……賭けに……負けた……', '借りは……来世で……', 'ははっ……最悪な……結末だ……'],
+  elk: ['槍が……まだ……折れてないのに……', '群れに……負けるとは……', 'お前たちを……信じる……', '獣の死に際……見せてやる……'],
+  mira: ['エルフの命も……有限か……', '風よ……最後に……吹いてくれ……', '森に……帰れる……かしら……', '弓を……引き継いで……'],
+  zeno: ['……魔族は……こうして……消えていく……', '面白い旅だった……な……', '人間と……一緒に……死ぬとは……', '……また……会おう……'],
+}
+
+// 仲間の戦闘後一言コメント（PP4スタイル）
+const COMPANION_BATTLE_COMMENTS: Partial<Record<CompanionId, string[]>> = {
+  gares: ['よし、全員無事か確認しろ！', '怯むな、まだ戦いは続く！', '傷は後で手当てする、先を急ごう。', '騎士として当然の結果だ。'],
+  liz: ['よかった……皆、怪我はない？', '光よ、感謝します。', '神官として恥じない戦いだったわ。', '次は回復に集中するね！'],
+  noa: ['全弾命中……だね。', '見てよ、一本も無駄にしなかったよ！', '弓は嘘をつかない。', '次はもっと上手く狙えるよ！'],
+  cecil: ['魔法の消費が激しい……でも勝てたわ。', '理論通り！完璧ね。', '次はもっと効率的に行くわ。', 'フッ、この程度かしら。'],
+  bram: ['まだまだ！もっと強い奴はいないのか！', 'この拳に感謝しろよ。', 'いい汗かいたな。', '余裕の勝利だな！'],
+  finn: ['やったー！勝ったよ！', '少し慌てたけど……ちゃんと戦えた！', '先輩、見てましたか？', '次はもっとカッコよく戦います！'],
+  vais: ['はっ、こんなもんか。', '抵抗する前に終わらせてやったのに。', '盗賊時代の方がよほどキツかったぜ。', '楽な仕事だったな。'],
+  logan: ['……問題ない。', '死体に挨拶はいらん。', '弱い。次だ。', '倒れるのが仕事だったな、奴らは。'],
+  iris: ['この力、まだ制御できています。', '魔族の力を使わずに倒せたわ。', '……ありがとう、一緒に戦ってくれて。', '私の魔法、役に立った？'],
+  sig: ['はっはー！余裕余裕！', '勝ち確だと思ってたぜ。', 'いいね、報酬が楽しみだ。', 'また一つ、借りができたね〜。'],
+  elk: ['ふんッ！こんなやつら、俺の槍には届かん。', '獣の勘は正しかった。', '次はもっと速く片付けるぞ。', '群れで来ようと関係ない！'],
+  mira: ['エルフの弓は裏切らないわ。', '静かに、でも確実に。', '風が味方してくれたの。', '悪いけど、手を抜いていたわ。'],
+  zeno: ['……興味深い戦法だった。', '魔族の血が騒いだ。', '……次は私が先に動こう。', '人間と戦うのは……悪くない。'],
 }
 
 export function closeBattle(state: GameState): GameState {
@@ -955,6 +1024,16 @@ export function closeBattle(state: GameState): GameState {
   s.party = s.party.filter(id => s.companions[id]?.alive)
   if (newlyDead.length > 0) {
     s.message = `💀 ${newlyDead.join('・')}が永眠した……二度と戦えない`
+  } else if (!defeated && !isFinal) {
+    // 勝利後の仲間一言コメント
+    const aliveParty = s.party.filter(id => s.companions[id]?.alive)
+    if (aliveParty.length > 0) {
+      const speakerId = aliveParty[Math.floor(Math.random() * aliveParty.length)]
+      const def = COMPANIONS[speakerId]
+      const lines = COMPANION_BATTLE_COMMENTS[speakerId] ?? ['よし、先を急ごう。']
+      const line = lines[Math.floor(Math.random() * lines.length)]
+      s.message = `${def.emoji}${def.name}「${line}」`
+    }
   }
 
   if (defeated) {
@@ -1020,6 +1099,54 @@ export function setParty(state: GameState, newParty: CompanionId[]): GameState {
 
 // ===== うろつく（町・中継地での探索） =====
 
+// wanderフレーバーテキスト（場所タイプ別・PP4スタイル）
+const WANDER_GOLD_TEXTS: Record<string, string[]> = {
+  town: [
+    '市場の片隅に落ちているのを見つけた',
+    '宿屋のテーブルの下に転がっていた',
+    '路地裏でこぼれたコインを拾った',
+    '露天商の後ろに忘れられていた',
+    '喧嘩の後の現場に転がっていた',
+  ],
+  relay: [
+    '草むらの中に隠されていた',
+    '古い石碑の陰に埋めてあった',
+    '木の根元の穴にしまわれていた',
+    '道端に落ちているのを見つけた',
+    '旅人が置き忘れたものを拾った',
+  ],
+  dungeon: [
+    '岩の隙間に落ちていた',
+    '以前の冒険者が残した戦利品だ',
+    '崩れた壁の中から出てきた',
+    '怪しい宝箱から漏れていた',
+  ],
+}
+
+const WANDER_TRAIN_TEXTS: string[][] = [
+  ['剣の素振りを続けた。体が熱くなる。'],
+  ['壁に向かって技の練習をした。'],
+  ['呼吸法を意識しながら走り込んだ。'],
+  ['仲間に手合わせを頼んで体を動かした。'],
+  ['夜明けまで基礎練習を繰り返した。'],
+  ['過去の戦いを思い出しながら訓練した。'],
+]
+
+const WANDER_ITEM_PLACES: Record<string, string> = {
+  town: '市場の外れに',
+  relay: '茂みの中に',
+  dungeon: '岩陰に',
+  castle: '庭園の隅に',
+}
+
+const WANDER_REST_TEXTS: string[] = [
+  '木陰で横になり、しばらく目を閉じた。',
+  '泉のほとりで体を休めた。',
+  '旅の疲れを癒すように、ぼんやりと座っていた。',
+  '何もしない時間が、逆に力をくれた。',
+  '仲間と他愛もない話をしながら一休みした。',
+]
+
 export function wander(state: GameState): GameState {
   const s = deepClone(state)
   s.daysLeft -= 1
@@ -1029,12 +1156,17 @@ export function wander(state: GameState): GameState {
     return s
   }
 
+  const loc = LOCATIONS[s.currentLocId]
+  const locType = loc?.type ?? 'relay'
+
   const roll = Math.random()
   if (roll < 0.35) {
     const goldBase = Math.floor(15 + s.playerLevel * 3)
     const gold = Math.floor(Math.random() * goldBase) + goldBase
     s.gold += gold
-    s.message = `💰 うろついていたら ${gold}G を見つけた！`
+    const texts = WANDER_GOLD_TEXTS[locType] ?? WANDER_GOLD_TEXTS.relay
+    const place = texts[Math.floor(Math.random() * texts.length)]
+    s.message = `💰 ${place} ${gold}G を見つけた！`
   } else if (roll < 0.55) {
     const expGain = Math.floor(10 + s.playerLevel * 2.5)
     s.playerExp += expGain
@@ -1069,9 +1201,10 @@ export function wander(state: GameState): GameState {
         leveledUpNames.push(def.name)
       }
     }
+    const trainText = WANDER_TRAIN_TEXTS[Math.floor(Math.random() * WANDER_TRAIN_TEXTS.length)][0]
     const lvMsg = leveledUpNames.length > 0 ? ` ⭐${leveledUpNames.join('・')}もレベルアップ！` : ''
     const skMsg = learnedSkillMsgs.length > 0 ? ` ✨${learnedSkillMsgs.join(' ')}` : ''
-    s.message = `💪 うろついて体を動かした。（EXP +${expGain}）${lvMsg}${skMsg}`
+    s.message = `💪 ${trainText}（EXP +${expGain}）${lvMsg}${skMsg}`
   } else if (roll < 0.70) {
     const items: Array<{itemId: string; qty: number}> = [
       { itemId: 'potion', qty: 1 },
@@ -1083,21 +1216,28 @@ export function wander(state: GameState): GameState {
     if (ex) ex.qty += 1
     else s.inventory.push({ itemId: found.itemId, qty: 1 })
     const itemNames: Record<string, string> = { potion: 'ポーション', ether: 'エーテル', antidote: '毒消し' }
-    s.message = `🎁 うろついていたら${itemNames[found.itemId]}を見つけた！`
+    const place = WANDER_ITEM_PLACES[locType] ?? 'どこかに'
+    s.message = `🎁 ${place}${itemNames[found.itemId]}を見つけた！`
   } else if (roll < 0.80) {
     const heal = Math.floor(s.playerMaxHp * 0.15)
     s.playerHp = Math.min(s.playerMaxHp, s.playerHp + heal)
-    s.message = `✨ 静かに休んでいたら回復した。（HP +${heal}）`
+    const restText = WANDER_REST_TEXTS[Math.floor(Math.random() * WANDER_REST_TEXTS.length)]
+    s.message = `✨ ${restText}（HP +${heal}）`
   } else {
     // 稀に小さな敵エンカウント（中継地のenemy pool使用）
-    const loc = LOCATIONS[s.currentLocId]
     const pool = loc.travelEnemyPool ?? loc.enemyPool ?? []
     if (pool.length > 0) {
       const enemyId = pool[Math.floor(Math.random() * pool.length)]
       s.message = '⚠️ 怪しい影に気づいた！'
       return startBattle(s, [enemyId], false)
     }
-    s.message = '……何も見つからなかった。1日が過ぎた。'
+    const nothingTexts = [
+      '……何も見つからなかった。1日が過ぎた。',
+      '……静かな一日だった。',
+      '……何かを求めてさまよったが、空振りだった。',
+      '風だけが吹き過ぎた。何も起きなかった。',
+    ]
+    s.message = nothingTexts[Math.floor(Math.random() * nothingTexts.length)]
   }
 
   return s
@@ -1159,6 +1299,17 @@ function applyDamage(target: BattleUnit, dmg: number): boolean {
   return target.hp <= 0
 }
 
+function addDeathLog(b: BattleState, target: BattleUnit, cause = '倒れた') {
+  if (target.companionId) {
+    const words = COMPANION_DEATH_WORDS[target.companionId] ?? []
+    if (words.length > 0) {
+      const word = words[Math.floor(Math.random() * words.length)]
+      b.logs.push({ text: `${target.emoji}${target.name}「${word}」`, type: 'system' })
+    }
+  }
+  b.logs.push({ text: `💀 ${target.name}は${cause}！`, type: 'death' })
+}
+
 function resolveTargets(battle: BattleState, skill: Skill, actor: BattleUnit, targetUid?: string): BattleUnit[] {
   switch (skill.target) {
     case 'enemy_all':
@@ -1187,7 +1338,7 @@ function applySkillEffect(battle: BattleState, actor: BattleUnit, target: Battle
       const dmg = Math.max(1, Math.floor(base * (0.9 + Math.random() * 0.2)))
       const died = applyDamage(target, dmg)
       battle.logs.push({ text: `💥 ${target.name}に${dmg}ダメージ！`, type: 'damage' })
-      if (died) battle.logs.push({ text: `💀 ${target.name}は倒れた！`, type: 'death' })
+      if (died) addDeathLog(battle, target)
       break
     }
     case 'heal': {
@@ -1205,7 +1356,7 @@ function applySkillEffect(battle: BattleState, actor: BattleUnit, target: Battle
       const pdmg = Math.floor(result.dmg * skill.power)
       const pdied = applyDamage(target, pdmg)
       if (pdmg > 0) battle.logs.push({ text: `💥 ${target.name}に${pdmg}ダメージ！`, type: 'damage' })
-      if (pdied) battle.logs.push({ text: `💀 ${target.name}は倒れた！`, type: 'death' })
+      if (pdied) addDeathLog(battle, target)
       break
     }
     case 'stun': {
@@ -1217,7 +1368,7 @@ function applySkillEffect(battle: BattleState, actor: BattleUnit, target: Battle
       const sdmg = Math.floor(result.dmg * skill.power)
       const sdied = applyDamage(target, sdmg)
       if (sdmg > 0) battle.logs.push({ text: `💥 ${target.name}に${sdmg}ダメージ！`, type: 'damage' })
-      if (sdied) battle.logs.push({ text: `💀 ${target.name}は倒れた！`, type: 'death' })
+      if (sdied) addDeathLog(battle, target)
       break
     }
     case 'atk_up': {
