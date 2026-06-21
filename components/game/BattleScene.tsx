@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import type { GameState, BattleUnit, Skill } from '@/lib/game/types'
 import { ITEMS } from '@/lib/game/data'
+import { CharPortrait } from './CharPortrait'
 
 interface Props {
   gs: GameState
@@ -15,73 +16,6 @@ interface Props {
 
 type ActionMode = 'select' | 'skill' | 'item' | 'target_attack' | 'target_skill' | 'target_item'
 
-// ===== キャラクタースプライト設定 =====
-// characters.jpg: 1988×1194px, 7列×2行
-// タイトルバー: 上部70px, 行0: y=70〜632 (562px), 行1: y=632〜1194 (562px)
-const CHAR_ORIG_W = 1988
-const CHAR_ORIG_H = 1194
-const CHAR_COLS = 7
-const CHAR_TITLE_PX = 70
-const CHAR_ROW_PX = 562
-
-const CHAR_GRID: Record<string, { col: number; row: number }> = {
-  player: { col: 0, row: 0 },
-  gares:  { col: 1, row: 0 },
-  liz:    { col: 2, row: 0 },
-  noa:    { col: 3, row: 0 },
-  cecil:  { col: 4, row: 0 },
-  bram:   { col: 5, row: 0 },
-  finn:   { col: 6, row: 0 },
-  vais:   { col: 0, row: 1 },
-  logan:  { col: 1, row: 1 },
-  iris:   { col: 2, row: 1 },
-  sig:    { col: 3, row: 1 },
-  elk:    { col: 4, row: 1 },
-  mira:   { col: 5, row: 1 },
-  zeno:   { col: 6, row: 1 },
-}
-
-// background-size: '700% auto' でアスペクト比を保ちながら正確な位置を計算
-function calcPortraitBgPos(col: number, row: number, size: number) {
-  const scale = (CHAR_COLS * size) / CHAR_ORIG_W
-  const bgH = CHAR_ORIG_H * scale
-  const scrollW = CHAR_COLS * size - size
-  const scrollH = bgH - size
-  const bgPosX = scrollW > 0 ? `${(col * size / scrollW) * 100}%` : '0%'
-  const targetY = (CHAR_TITLE_PX + row * CHAR_ROW_PX) * scale
-  const bgPosY = scrollH > 0 ? `${Math.min(100, (targetY / scrollH) * 100)}%` : '0%'
-  return { bgPosX, bgPosY }
-}
-
-function CharPortrait({ charId, size, isActive = false, isDead = false }: {
-  charId: string; size: number; isActive?: boolean; isDead?: boolean
-}) {
-  const pos = CHAR_GRID[charId] ?? { col: 0, row: 0 }
-  const { bgPosX, bgPosY } = calcPortraitBgPos(pos.col, pos.row, size)
-
-  return (
-    <div
-      style={{
-        width: size,
-        height: size,
-        flexShrink: 0,
-        borderRadius: 4,
-        border: isActive
-          ? '2px solid #ffd700'
-          : isDead
-          ? '2px solid rgba(255,80,80,0.4)'
-          : '2px solid rgba(255,255,255,0.15)',
-        opacity: isDead ? 0.35 : 1,
-        filter: isDead ? 'grayscale(80%)' : 'none',
-        boxShadow: isActive ? '0 0 8px 2px rgba(255,215,0,0.5)' : 'none',
-        backgroundImage: `url('/fuuin-no-keishousha/images/characters.jpg')`,
-        backgroundSize: `${CHAR_COLS * 100}% auto`,
-        backgroundPosition: `${bgPosX} ${bgPosY}`,
-        backgroundRepeat: 'no-repeat',
-      }}
-    />
-  )
-}
 
 // ===== 敵絵文字マッピング =====
 const ENEMY_EMOJI_MAP: [string, string][] = [
@@ -511,6 +445,9 @@ export default function BattleScene({ gs, onAttack, onSkill, onItem, onFlee, onC
             <div className="text-sm text-gray-300 mb-3 font-bold">
               EXP +{b.rewardExp} / Gold +{b.rewardGold}G
               {b.sealStoneFound && <div className="text-amber-300 font-black mt-1">💎 封印石を入手！</div>}
+              {b.logs.filter(l => l.type === 'system' && l.text.includes('レベルアップ')).map((l, i) => (
+                <div key={i} className="text-yellow-300 font-black mt-1">⭐ {l.text.replace('⭐ ', '')}</div>
+              ))}
             </div>
           )}
           <button

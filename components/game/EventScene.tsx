@@ -2,6 +2,7 @@
 
 import type { GameState } from '@/lib/game/types'
 import { EVENTS } from '@/lib/game/data'
+import { CharPortrait, hasCharPortrait } from './CharPortrait'
 
 interface Props {
   gs: GameState
@@ -72,17 +73,26 @@ export default function EventScene({ gs, onAdvance }: Props) {
         {/* キャラ表示（ナレーターは非表示）*/}
         {!isNarrator && (
           <div className="mb-4 flex flex-col items-center gap-1">
-            <div
-              className={`flex items-center justify-center rounded-full border-2 ${cfg.border}`}
-              style={{
-                width: 72, height: 72,
-                fontSize: 36,
-                background: 'rgba(10,10,30,0.9)',
-                boxShadow: `0 0 24px rgba(99,102,241,0.4)`,
-              }}
-            >
-              {cfg.emoji}
-            </div>
+            {hasCharPortrait(line.speaker) ? (
+              <div
+                className={`rounded-xl border-2 overflow-hidden ${cfg.border}`}
+                style={{ boxShadow: `0 0 24px rgba(99,102,241,0.4)` }}
+              >
+                <CharPortrait charId={line.speaker} size={88} rounded={10} />
+              </div>
+            ) : (
+              <div
+                className={`flex items-center justify-center rounded-full border-2 ${cfg.border}`}
+                style={{
+                  width: 72, height: 72,
+                  fontSize: 36,
+                  background: 'rgba(10,10,30,0.9)',
+                  boxShadow: `0 0 24px rgba(99,102,241,0.4)`,
+                }}
+              >
+                {cfg.emoji}
+              </div>
+            )}
             <div className={`text-xs font-black px-3 py-0.5 rounded-full border ${cfg.bg} ${cfg.border} ${cfg.color}`}>
               {displayName}
             </div>
