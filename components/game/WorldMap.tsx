@@ -146,25 +146,51 @@ export default function WorldMap({ gs, onTravel, onEnterLocation, getAvailableCo
           <span style={{ position:'absolute', left:'30%', top:'88%', fontSize:9, color:'rgba(60,130,200,0.3)',  fontWeight:'bold' }}>沿岸・海域</span>
         </div>
 
-        {/* 接続線 — 現在地からのルートのみ強調、他は極薄 */}
+        {/* 接続線 — 全ルートを明示・アクティブルート強調 */}
         <svg className="absolute inset-0 w-full h-full" style={{ zIndex: 3 }}>
+          <defs>
+            <filter id="road-glow">
+              <feGaussianBlur stdDeviation="1.5" result="blur" />
+              <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
+            </filter>
+          </defs>
           {CONN_PAIRS.map(([a, b]) => {
             const from = MAP_POS[a]!
             const to   = MAP_POS[b]!
             const isActive =
               (a === gs.currentLocId && connectedIds.includes(b)) ||
               (b === gs.currentLocId && connectedIds.includes(a))
-            if (!isActive) return (
-              <line key={`${a}-${b}`}
-                x1={`${from.x}%`} y1={`${from.y}%`} x2={`${to.x}%`} y2={`${to.y}%`}
-                stroke="rgba(140,120,60,0.07)" strokeWidth={1} />
+            const bothVisited = gs.visitedLocs.includes(a) && gs.visitedLocs.includes(b)
+
+            if (isActive) return (
+              <g key={`${a}-${b}`}>
+                {/* 影 */}
+                <line x1={`${from.x}%`} y1={`${from.y}%`} x2={`${to.x}%`} y2={`${to.y}%`}
+                  stroke="rgba(0,0,0,0.8)" strokeWidth={8} />
+                {/* 道の外縁 */}
+                <line x1={`${from.x}%`} y1={`${from.y}%`} x2={`${to.x}%`} y2={`${to.y}%`}
+                  stroke="rgba(200,150,30,0.9)" strokeWidth={5} />
+                {/* 中心の明るいライン */}
+                <line x1={`${from.x}%`} y1={`${from.y}%`} x2={`${to.x}%`} y2={`${to.y}%`}
+                  stroke="rgba(255,225,100,1)" strokeWidth={2.5}
+                  filter="url(#road-glow)" />
+              </g>
             )
+            if (bothVisited) return (
+              <g key={`${a}-${b}`}>
+                <line x1={`${from.x}%`} y1={`${from.y}%`} x2={`${to.x}%`} y2={`${to.y}%`}
+                  stroke="rgba(0,0,0,0.5)" strokeWidth={4} />
+                <line x1={`${from.x}%`} y1={`${from.y}%`} x2={`${to.x}%`} y2={`${to.y}%`}
+                  stroke="rgba(120,100,50,0.7)" strokeWidth={2.5} />
+              </g>
+            )
+            // 未訪問ルート（片方以上が未訪問）
             return (
               <g key={`${a}-${b}`}>
                 <line x1={`${from.x}%`} y1={`${from.y}%`} x2={`${to.x}%`} y2={`${to.y}%`}
-                  stroke="rgba(0,0,0,0.7)" strokeWidth={6} />
+                  stroke="rgba(0,0,0,0.35)" strokeWidth={3} />
                 <line x1={`${from.x}%`} y1={`${from.y}%`} x2={`${to.x}%`} y2={`${to.y}%`}
-                  stroke="rgba(255,210,80,0.95)" strokeWidth={3} />
+                  stroke="rgba(90,75,35,0.45)" strokeWidth={1.8} />
               </g>
             )
           })}

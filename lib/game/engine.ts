@@ -117,6 +117,8 @@ function isLocationUnlocked(s: GameState, locId: LocationId): boolean {
 }
 
 // ===== イベント判定・実行 =====
+const COMPANION_IDS = new Set(['gares','liz','noa','cecil','bram','finn','vais','logan','iris','sig','elk','mira','zeno'])
+
 export function checkLocationEvent(state: GameState): string | null {
   const joinedIds: string[] = Object.values(state.companions).filter(c => c.joined).map(c => c.id as string)
   for (const ev of EVENTS) {
@@ -135,6 +137,13 @@ export function checkLocationEvent(state: GameState): string | null {
     if (cond.minVisitCount !== undefined) {
       const visits = (state.locVisitCounts ?? {})[cond.atLoc] ?? 0
       if (visits < cond.minVisitCount) continue
+    }
+    // 未加入仲間がセリフを話すイベントは初対面イベント(isMeetingEvent)のみ許可
+    if (!ev.isMeetingEvent) {
+      const hasUnmetSpeaker = ev.dialogues.some(
+        d => COMPANION_IDS.has(d.speaker) && !joinedIds.includes(d.speaker)
+      )
+      if (hasUnmetSpeaker) continue
     }
     return ev.id
   }
@@ -298,7 +307,7 @@ export function chooseBranch(state: GameState, choiceIndex: number): GameState {
   return s
 }
 
-function applyEventReward(s: GameState, reward: { gold?: number; exp?: number; itemId?: string; itemQty?: number; fullHeal?: boolean; message: string }) {
+function applyEventReward(s: GameState, reward: { gold?: number; exp?: number; itemId?: string; itemQty?: number; fullHeal?: boolean; pendingJoin?: CompanionId; message: string }) {
   if (reward.fullHeal) {
     s.playerHp = s.playerMaxHp
     s.playerMp = s.playerMaxMp
@@ -330,6 +339,9 @@ function applyEventReward(s: GameState, reward: { gold?: number; exp?: number; i
     const ex = s.inventory.find(i => i.itemId === reward.itemId)
     if (ex) ex.qty += reward.itemQty ?? 1
     else s.inventory.push({ itemId: reward.itemId, qty: reward.itemQty ?? 1 })
+  }
+  if (reward.pendingJoin && !s.companions[reward.pendingJoin].joined) {
+    s.pendingCompanionJoin = reward.pendingJoin
   }
   if (reward.message) s.message = reward.message
 }

@@ -28,7 +28,8 @@ export interface EventReward {
   exp?: number
   itemId?: string
   itemQty?: number
-  fullHeal?: boolean   // パーティ全員HP/MPを全回復
+  fullHeal?: boolean      // パーティ全員HP/MPを全回復
+  pendingJoin?: CompanionId  // このイベント後に仲間加入確認を出す
   message: string
 }
 
@@ -48,6 +49,7 @@ export interface EventBranch {
 export interface GameEvent {
   id: string
   title: string
+  isMeetingEvent?: boolean   // 初対面イベント: 未加入キャラのセリフを許可
   condition: EventCondition
   dialogues: DialogueLine[]
   reward?: EventReward
