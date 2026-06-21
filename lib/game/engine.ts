@@ -334,13 +334,48 @@ function applyEventReward(s: GameState, reward: { gold?: number; exp?: number; i
   if (reward.message) s.message = reward.message
 }
 
+// 仲間加入を断った時のセリフ（PP4スタイルの重みのある選択）
+const COMPANION_REJECTED_LINES: Partial<Record<CompanionId, string[]>> = {
+  gares: ['……そうか。お前の選択を尊重しよう。', '……わかった。己の道を行け。'],
+  liz: ['……そう……。でも、いつでも声をかけてね。', '……もし気が変わったら、また来て。'],
+  noa: ['え、ほんとに？……残念。でも仕方ないか。', '……そっか。気をつけてね。'],
+  cecil: ['……判断が早いのは好きよ。でも間違いじゃないかは確認した？', '……ふん、私は必要とされなかったのね。'],
+  bram: ['チッ、腰抜けめ！……なんてね、気が変わったら来い。', 'まあ……その判断もひとつの強さか。'],
+  finn: ['あっ……そうですか……。またいつでも！', '……えと……わかりました！またいつか！'],
+  vais: ['フッ、賢明じゃないか。俺みたいなのと組んでも碌なことがない。', 'そうか。俺も強制はしない主義だ。'],
+  logan: ['……そうか。俺も構わん。', '……己の選択だ。後悔しないならそれでいい。'],
+  iris: ['……そう……。仕方ないわね。魔族だものね。', '……いいの。慣れてるから。'],
+  sig: ['あれあれ、断られちゃったよ〜。まあいいや、また別の機会に！', '冷たいね〜。でも覚えといて。'],
+  elk: ['……お前が決めたならそうしろ。俺の槍は準備できてるがな。', '獣は強制しない。お前が選んだことだ。'],
+  mira: ['……そう。自然の流れに任せましょう。', '……いつか縁があれば、また。'],
+  zeno: ['……人間らしい選択だ。', '……興味深い判断だ。記憶しておこう。'],
+}
+
 export function skipCompanion(state: GameState): GameState {
   const s = deepClone(state)
+  const skipped = s.pendingCompanionJoin
   s.pendingCompanionJoin = undefined
+  if (skipped) {
+    const def = COMPANIONS[skipped]
+    const lines = COMPANION_REJECTED_LINES[skipped] ?? ['……そうか。']
+    const line = lines[Math.floor(Math.random() * lines.length)]
+    s.message = `${def.emoji}${def.name}「${line}」`
+  }
   return s
 }
 
 // ===== INN =====
+
+const INN_FLAVOR_TEXTS: string[] = [
+  '🌙 一夜の休息が体の疲れを癒した。明日への英気を養った。',
+  '🌙 宿の主人が「気をつけて」と声をかけてくれた。旅は続く。',
+  '🌙 久しぶりに布団で眠った。旅の疲れが溶けていった。',
+  '🌙 夜中に遠くで狼の遠吠えが聞こえた。でも今夜は安全だ。',
+  '🌙 食事と休息。それだけで明日への力が戻ってくる。',
+  '🌙 仲間と少し話した。笑える話もあった。それだけで十分だ。',
+  '🌙 月明かりの下、次の目的地を地図で確認した。',
+  '🌙 静かな夜だった。旅の途中で、こんな夜が貴重に思えてくる。',
+]
 
 export function restAtInn(state: GameState): GameState {
   const s = deepClone(state)
@@ -360,6 +395,7 @@ export function restAtInn(state: GameState): GameState {
       c.statusEffects = []
     }
   }
+  s.message = INN_FLAVOR_TEXTS[Math.floor(Math.random() * INN_FLAVOR_TEXTS.length)]
   if (s.daysLeft <= 0) {
     s.daysLeft = 0
     s.phase = 'gameover'
