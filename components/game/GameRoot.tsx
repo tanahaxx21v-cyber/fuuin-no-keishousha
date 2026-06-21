@@ -505,18 +505,30 @@ function NamingScreen({ onConfirm }: { onConfirm: (name: string) => void }) {
 
 function PrologueScreen({ onDone, playerName, daysLeft }: { onDone: () => void; playerName: string; daysLeft: number }) {
   const [page, setPage] = useState(0)
-  const pages = [
+  const pages: { title: string; text: string; icon: string; accent: string }[] = [
     {
       title: '100年前の誓い',
-      text: '100年前、伝説の勇者は3つの封印石の力を結集し、世界を滅ぼそうとした魔王ダークルーラーを封じ込めた。その代償として勇者は命を落とし、封印石は世界各地へと散逸した。',
+      icon: '⚔️',
+      accent: 'border-indigo-700',
+      text: '100年前、世界が滅びかけた夜があった。\n\n闇を支配する魔王が3つの封印石の力を貪り、ルミナ大陸を呑み込もうとしたとき——たった一人の勇者が立ち向かった。\n\n伝説の勇者は命と引き換えに魔王を封じ、3つの封印石は世界の各地へと散らばった。',
     },
     {
-      title: '崩壊する封印',
-      text: `そして今、${daysLeft}日後に封印は完全に崩壊する。\n\n魔王が復活すれば、この世界は闇に覆われる。\n\nそれを防げるのは——伝説の勇者の血を引く者だけ。`,
+      title: '封印の崩壊',
+      icon: '⌛',
+      accent: 'border-red-800',
+      text: `そして100年が経った今、封印は限界を迎えようとしている。\n\nあと${daysLeft}日。\n\nその日を境に、魔王は完全に復活する。\n\nかつて命を救った誓いが、再び試されようとしていた。`,
     },
     {
-      title: '旅の始まり',
-      text: `王都アルセリアの城で、王が告げた。\n\n「${playerName}よ。3つの封印石を集め、魔王を再び封じよ。\n仲間を集め、ダンジョンを攻略し、${daysLeft}日以内に砂漠遺跡へ向かえ。」\n\n${playerName}は剣を握り、旅立つ決意をした。`,
+      title: '王の命',
+      icon: '👑',
+      accent: 'border-amber-800',
+      text: `王都アルセリアの玉座の間で、老いた王が告げた。\n\n「${playerName}よ、お前こそ100年前の勇者の血を引く者。」\n\n「3つの封印石を集め、砂漠の遺跡へ向かえ。${daysLeft}日以内に魔王を再び封じなければ、この世界は終わる。」\n\n王の言葉は重かった。だが——`,
+    },
+    {
+      title: '旅立ちの朝',
+      icon: '🌅',
+      accent: 'border-purple-800',
+      text: `${playerName}は城の門を出た。\n\n旅の途中で出会う人々の中に、きっと仲間がいる。一人では届かない場所も、共に戦えば道が開ける。\n\nだが忘れるな——仲間は一度倒れれば、二度と立ち上がらない。その命の重さを胸に刻んで進め。\n\n封印の継承者として。`,
     },
   ]
 
@@ -524,11 +536,21 @@ function PrologueScreen({ onDone, playerName, daysLeft }: { onDone: () => void; 
   return (
     <div className="min-h-screen flex items-center justify-center bg-[#07071a] p-6">
       <div className="max-w-2xl w-full">
-        <div className="bg-[#0c0c24] border-2 border-indigo-700 rounded-2xl p-8 shadow-2xl">
-          <div className="text-xs font-black text-indigo-400 mb-2 tracking-widest">PROLOGUE {page + 1}/{pages.length}</div>
-          <h2 className="text-2xl font-black text-white mb-4">{current.title}</h2>
-          <p className="text-gray-300 leading-relaxed whitespace-pre-line text-base font-medium">{current.text}</p>
-          <div className="mt-8 flex justify-end">
+        <div className={`bg-[#0c0c24] border-2 ${current.accent} rounded-2xl p-8 shadow-2xl transition-all duration-500`}>
+          <div className="flex items-center gap-3 mb-4">
+            <span className="text-3xl">{current.icon}</span>
+            <div>
+              <div className="text-xs font-black text-indigo-400 tracking-widest">PROLOGUE {page + 1}/{pages.length}</div>
+              <h2 className="text-xl font-black text-white">{current.title}</h2>
+            </div>
+          </div>
+          <p className="text-gray-300 leading-relaxed whitespace-pre-line text-sm font-medium">{current.text}</p>
+          <div className="mt-8 flex items-center justify-between">
+            <div className="flex gap-1">
+              {pages.map((_, i) => (
+                <div key={i} className={`w-2 h-2 rounded-full transition-all ${i === page ? 'bg-indigo-400 w-4' : i < page ? 'bg-indigo-700' : 'bg-gray-700'}`} />
+              ))}
+            </div>
             {page < pages.length - 1 ? (
               <button
                 onClick={() => setPage(p => p + 1)}
@@ -539,7 +561,7 @@ function PrologueScreen({ onDone, playerName, daysLeft }: { onDone: () => void; 
             ) : (
               <button
                 onClick={onDone}
-                className="px-8 py-2.5 bg-amber-700 hover:bg-amber-600 border-2 border-amber-500 text-white font-black rounded-xl transition active:scale-95"
+                className="px-8 py-2.5 bg-amber-700 hover:bg-amber-600 border-2 border-amber-500 text-white font-black rounded-xl transition active:scale-95 shadow-lg shadow-amber-900/50"
               >
                 旅に出る ⚔️
               </button>
