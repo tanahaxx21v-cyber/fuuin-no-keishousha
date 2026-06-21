@@ -2,33 +2,47 @@
 
 import type { GameState } from '@/lib/game/types'
 import { EVENTS } from '@/lib/game/data'
-import { CharPortrait, hasCharPortrait } from './CharPortrait'
+import { CharPortraitLarge, hasCharPortrait } from './CharPortrait'
 
 interface Props {
   gs: GameState
   onAdvance: () => void
 }
 
-// スピーカーごとのアイコン・カラー設定
-function getSpeakerConfig(speaker: string) {
-  const compConfigs: Record<string, { emoji: string; color: string; bg: string; border: string }> = {
-    player:   { emoji: '⚔️', color: 'text-amber-300',  bg: 'bg-amber-950/90', border: 'border-amber-600' },
-    narrator: { emoji: '',   color: 'text-gray-300',   bg: 'bg-gray-900/80',  border: 'border-gray-600'  },
-    gares:    { emoji: '🛡️', color: 'text-blue-300',   bg: 'bg-blue-950/90',  border: 'border-blue-600'  },
-    liz:      { emoji: '✨', color: 'text-pink-300',   bg: 'bg-pink-950/90',  border: 'border-pink-600'  },
-    noa:      { emoji: '🏹', color: 'text-green-300',  bg: 'bg-green-950/90', border: 'border-green-600' },
-    cecil:    { emoji: '🔮', color: 'text-purple-300', bg: 'bg-purple-950/90',border: 'border-purple-600'},
-    bram:     { emoji: '🪓', color: 'text-orange-300', bg: 'bg-orange-950/90',border: 'border-orange-600'},
-    finn:     { emoji: '⚔️', color: 'text-cyan-300',   bg: 'bg-cyan-950/90',  border: 'border-cyan-600'  },
-    vais:     { emoji: '🗡️', color: 'text-red-300',    bg: 'bg-red-950/90',   border: 'border-red-700'   },
-    logan:    { emoji: '⚒️', color: 'text-stone-300',  bg: 'bg-stone-900/90', border: 'border-stone-600' },
-    iris:     { emoji: '💜', color: 'text-violet-300', bg: 'bg-violet-950/90',border: 'border-violet-600'},
-    sig:      { emoji: '🎩', color: 'text-yellow-300', bg: 'bg-yellow-950/90',border: 'border-yellow-600'},
-    elk:      { emoji: '🐺', color: 'text-teal-300',   bg: 'bg-teal-950/90',  border: 'border-teal-600'  },
-    mira:     { emoji: '🌿', color: 'text-emerald-300',bg: 'bg-emerald-950/90',border: 'border-emerald-600'},
-    zeno:     { emoji: '😈', color: 'text-fuchsia-300',bg: 'bg-fuchsia-950/90',border: 'border-fuchsia-600'},
+type SpeakerCfg = {
+  emoji: string
+  color: string
+  border: string
+  glow: string
+  nameBg: string
+}
+
+const SPEAKER_DISPLAY: Record<string, string> = {
+  player: 'レオン', gares: 'ガレス', liz: 'リズ', noa: 'ノア',
+  cecil: 'セシル', bram: 'ブラム', finn: 'フィン', vais: 'ヴァイス',
+  logan: 'ローガン', iris: 'イリス', sig: 'シグ', elk: 'エルク',
+  mira: 'ミラ', zeno: 'ゼノ',
+}
+
+function getSpeakerConfig(speaker: string): SpeakerCfg {
+  const configs: Record<string, SpeakerCfg> = {
+    player:   { emoji: '⚔️', color: '#fcd34d', border: '#d97706', glow: '#f59e0b', nameBg: '#451a03' },
+    narrator: { emoji: '📜', color: '#9ca3af', border: '#374151', glow: '#4b5563', nameBg: '#111827' },
+    gares:    { emoji: '🛡️', color: '#93c5fd', border: '#1d4ed8', glow: '#3b82f6', nameBg: '#1e3a8a' },
+    liz:      { emoji: '✨', color: '#f9a8d4', border: '#be185d', glow: '#ec4899', nameBg: '#831843' },
+    noa:      { emoji: '🏹', color: '#86efac', border: '#15803d', glow: '#22c55e', nameBg: '#14532d' },
+    cecil:    { emoji: '🔮', color: '#d8b4fe', border: '#7e22ce', glow: '#a855f7', nameBg: '#3b0764' },
+    bram:     { emoji: '🪓', color: '#fdba74', border: '#c2410c', glow: '#f97316', nameBg: '#431407' },
+    finn:     { emoji: '⚔️', color: '#67e8f9', border: '#0e7490', glow: '#06b6d4', nameBg: '#083344' },
+    vais:     { emoji: '🗡️', color: '#fca5a5', border: '#b91c1c', glow: '#ef4444', nameBg: '#450a0a' },
+    logan:    { emoji: '⚒️', color: '#d6d3d1', border: '#57534e', glow: '#a8a29e', nameBg: '#1c1917' },
+    iris:     { emoji: '💜', color: '#c4b5fd', border: '#6d28d9', glow: '#8b5cf6', nameBg: '#2e1065' },
+    sig:      { emoji: '🎩', color: '#fde68a', border: '#a16207', glow: '#eab308', nameBg: '#422006' },
+    elk:      { emoji: '🐺', color: '#5eead4', border: '#0f766e', glow: '#14b8a6', nameBg: '#042f2e' },
+    mira:     { emoji: '🌿', color: '#6ee7b7', border: '#047857', glow: '#10b981', nameBg: '#022c22' },
+    zeno:     { emoji: '😈', color: '#f0abfc', border: '#a21caf', glow: '#d946ef', nameBg: '#4a044e' },
   }
-  return compConfigs[speaker] ?? { emoji: '👤', color: 'text-gray-300', bg: 'bg-gray-900/80', border: 'border-gray-600' }
+  return configs[speaker] ?? { emoji: '👤', color: '#9ca3af', border: '#374151', glow: '#4b5563', nameBg: '#111827' }
 }
 
 export default function EventScene({ gs, onAdvance }: Props) {
@@ -42,126 +56,208 @@ export default function EventScene({ gs, onAdvance }: Props) {
   const isNarrator = line.speaker === 'narrator'
   const isLast = lineIdx >= ev.dialogues.length - 1
   const cfg = getSpeakerConfig(line.speaker)
-  const displayName = line.speaker === 'player' ? gs.playerName : line.speakerName
+  const displayName = line.speaker === 'player'
+    ? gs.playerName
+    : (line.speakerName ?? SPEAKER_DISPLAY[line.speaker] ?? line.speaker)
+  const hasPortrait = !isNarrator && hasCharPortrait(line.speaker)
 
-  // 進行インジケーター
   const progress = lineIdx + 1
   const total = ev.dialogues.length
+  const dotCount = Math.min(total, 16)
 
   return (
     <div
-      className="fixed inset-0 z-50 flex flex-col"
-      style={{ background: 'rgba(0,0,0,0.88)' }}
+      className="fixed inset-0 z-50 flex flex-col select-none"
+      style={{ background: '#030608' }}
       onClick={onAdvance}
     >
-      {/* イベントタイトル */}
-      <div className="flex items-center justify-between px-4 py-2 bg-black/60 border-b border-indigo-800/50">
+      {/* ===== タイトルバー ===== */}
+      <div
+        className="flex items-center justify-between px-4 py-2 border-b shrink-0"
+        style={{ background: 'rgba(3,6,8,0.98)', borderColor: '#1a1f2e' }}
+      >
         <div className="text-xs font-black text-indigo-400 tracking-widest">📖 {ev.title}</div>
-        <div className="text-xs text-gray-600 font-bold">{progress} / {total}</div>
+        <div className="text-xs font-bold" style={{ color: '#374151' }}>{progress} / {total}</div>
       </div>
 
-      {/* 進行バー */}
-      <div className="h-0.5 bg-indigo-950">
+      {/* ===== 進行バー ===== */}
+      <div className="h-0.5 shrink-0" style={{ background: '#0d0f1a' }}>
         <div
-          className="h-full bg-indigo-500 transition-all duration-300"
-          style={{ width: `${(progress / total) * 100}%` }}
+          className="h-full transition-all duration-500"
+          style={{
+            width: `${(progress / total) * 100}%`,
+            background: isNarrator ? '#3730a3' : cfg.glow,
+          }}
         />
       </div>
 
-      {/* 背景イラストエリア（スペース確保）*/}
-      <div className="flex-1 flex items-end justify-center px-4 pb-2">
-        {/* キャラ表示（ナレーターは非表示）*/}
+      {/* ===== キャラクターエリア ===== */}
+      <div className="flex-1 relative overflow-hidden flex items-end justify-center">
+
+        {/* 背景グラデーション（スピーカーカラー）*/}
         {!isNarrator && (
-          <div className="mb-4 flex flex-col items-center gap-1">
-            {hasCharPortrait(line.speaker) ? (
-              <div
-                className={`rounded-xl border-2 overflow-hidden ${cfg.border}`}
-                style={{ boxShadow: `0 0 24px rgba(99,102,241,0.4)` }}
-              >
-                <CharPortrait charId={line.speaker} size={88} rounded={10} />
-              </div>
+          <>
+            <div
+              className="absolute inset-0 pointer-events-none"
+              style={{
+                background: `radial-gradient(ellipse 80% 60% at 50% 100%, ${cfg.glow}18 0%, transparent 65%)`,
+              }}
+            />
+            {/* 床の光沢ライン */}
+            <div
+              className="absolute bottom-0 left-0 right-0"
+              style={{
+                height: 1,
+                background: `linear-gradient(to right, transparent, ${cfg.glow}40, transparent)`,
+              }}
+            />
+            {/* 床の反射 */}
+            <div
+              className="absolute bottom-0 left-0 right-0"
+              style={{
+                height: 24,
+                background: `linear-gradient(to top, ${cfg.glow}08, transparent)`,
+              }}
+            />
+          </>
+        )}
+
+        {/* ナレーター表示 */}
+        {isNarrator && (
+          <div className="flex flex-col items-center justify-center pb-16 gap-3">
+            <div style={{ fontSize: 72, opacity: 0.12, filter: 'grayscale(100%)' }}>📜</div>
+          </div>
+        )}
+
+        {/* キャラクターポートレート */}
+        {!isNarrator && (
+          <div
+            className="relative z-10"
+            style={{
+              marginBottom: -8,
+              filter: `drop-shadow(0 0 28px ${cfg.glow}55) drop-shadow(0 8px 16px rgba(0,0,0,0.8))`,
+              transition: 'filter 0.3s',
+            }}
+          >
+            {hasPortrait ? (
+              <CharPortraitLarge charId={line.speaker} w={164} h={324} />
             ) : (
+              /* ポートレートなしのキャラはビッグ絵文字で代用 */
               <div
-                className={`flex items-center justify-center rounded-full border-2 ${cfg.border}`}
-                style={{
-                  width: 72, height: 72,
-                  fontSize: 36,
-                  background: 'rgba(10,10,30,0.9)',
-                  boxShadow: `0 0 24px rgba(99,102,241,0.4)`,
-                }}
+                className="flex items-end justify-center"
+                style={{ width: 164, height: 200 }}
               >
-                {cfg.emoji}
+                <span style={{ fontSize: 110, lineHeight: 1 }}>{cfg.emoji}</span>
               </div>
             )}
-            <div className={`text-xs font-black px-3 py-0.5 rounded-full border ${cfg.bg} ${cfg.border} ${cfg.color}`}>
-              {displayName}
-            </div>
           </div>
         )}
       </div>
 
-      {/* 会話ボックス（パワポケ4スタイル: 濃紺背景） */}
-      <div className="px-3 pb-4">
+      {/* ===== 会話ダイアログエリア ===== */}
+      <div className="relative z-20 px-3 pb-4 shrink-0">
+
+        {/* スピーカー名タブ（会話ボックス上部に浮かぶ）*/}
+        {!isNarrator && (
+          <div className="ml-3 mb-0 flex">
+            <div
+              className="px-4 py-1.5 text-sm font-black rounded-t-xl border-t-2 border-x-2"
+              style={{
+                color: cfg.color,
+                borderColor: cfg.border,
+                background: cfg.nameBg,
+                boxShadow: `0 -6px 16px ${cfg.glow}18`,
+              }}
+            >
+              {cfg.emoji} {displayName}
+            </div>
+          </div>
+        )}
+
+        {/* メイン会話ボックス */}
         <div
-          className={`rounded-xl border-2 shadow-2xl overflow-hidden ${
-            isNarrator
-              ? 'border-gray-600 bg-gray-950/95'
-              : `${cfg.border} ${cfg.bg}`
-          }`}
+          className="overflow-hidden border-2"
           style={{
-            boxShadow: isNarrator ? '0 0 20px rgba(0,0,0,0.5)' : `0 0 25px rgba(99,102,241,0.2)`,
+            borderRadius: isNarrator ? 12 : '4px 12px 12px 12px',
+            background: 'rgba(2,4,14,0.97)',
+            borderColor: isNarrator ? '#1f2937' : cfg.border,
+            boxShadow: `0 0 40px ${cfg.glow}20, inset 0 1px 0 ${cfg.glow}12`,
           }}
         >
-          {/* スピーカー名バー */}
-          {!isNarrator && (
-            <div className={`px-4 py-1.5 border-b ${cfg.border} bg-black/30`}>
-              <span className={`text-sm font-black ${cfg.color}`}>
-                {cfg.emoji} {displayName}
-              </span>
-            </div>
-          )}
-
-          {/* テキスト本体 */}
-          <div className="px-4 py-4">
+          {/* セリフ本文 */}
+          <div className="px-5 py-4" style={{ minHeight: 82 }}>
             <p
-              className={`leading-relaxed font-bold text-base ${
-                isNarrator ? 'text-gray-300 italic text-sm' : 'text-white'
-              }`}
-              style={{ textShadow: '0 1px 3px rgba(0,0,0,0.8)' }}
+              className="leading-relaxed font-bold"
+              style={{
+                fontSize: 15,
+                color: isNarrator ? '#9ca3af' : '#f1f5f9',
+                fontStyle: isNarrator ? 'italic' : 'normal',
+                textShadow: '0 1px 4px rgba(0,0,0,0.95)',
+              }}
             >
-              {isNarrator ? <span className="text-gray-400">《</span> : null}
+              {isNarrator && (
+                <span style={{ color: '#4b5563', marginRight: 4 }}>《</span>
+              )}
               {line.text}
-              {isNarrator ? <span className="text-gray-400">》</span> : null}
+              {isNarrator && (
+                <span style={{ color: '#4b5563', marginLeft: 4 }}>》</span>
+              )}
             </p>
           </div>
 
-          {/* 続きインジケーター */}
-          <div className="px-4 pb-3 flex items-center justify-between">
-            <div className="flex gap-1">
-              {ev.dialogues.map((_, i) => (
+          {/* 下部: 進行ドット + タップ案内 */}
+          <div className="px-5 pb-3 flex items-center justify-between">
+            <div className="flex gap-1 items-center">
+              {Array.from({ length: dotCount }).map((_, i) => (
                 <div
                   key={i}
-                  className={`w-1.5 h-1.5 rounded-full transition-all ${
-                    i === lineIdx ? 'bg-amber-400 scale-125' : i < lineIdx ? 'bg-indigo-600' : 'bg-gray-700'
-                  }`}
+                  className="rounded-full transition-all duration-300"
+                  style={{
+                    width: i === lineIdx ? 14 : 6,
+                    height: 5,
+                    background: i === lineIdx
+                      ? cfg.glow
+                      : i < lineIdx
+                      ? '#312e81'
+                      : '#1f2937',
+                  }}
                 />
               ))}
+              {total > 16 && (
+                <span style={{ fontSize: 10, color: '#374151', marginLeft: 2 }}>…</span>
+              )}
             </div>
-            <div className={`text-xs font-black ${isLast ? 'text-amber-400 animate-pulse' : 'text-gray-500'}`}>
+            <div
+              className="text-xs font-black"
+              style={{
+                color: isLast ? cfg.glow : '#374151',
+                animation: isLast ? 'pulse 1.5s ease-in-out infinite' : 'none',
+              }}
+            >
               {isLast
-                ? ev.branch ? '▶ 選択肢へ'
-                : ev.reward ? '▶ 完了して報酬を受け取る'
-                : '▶ 閉じる'
-                : '画面タップで続ける ▶'
-              }
+                ? ev.branch
+                  ? '▶ 選択肢へ'
+                  : ev.reward
+                  ? '▶ 受け取る'
+                  : '▶ 閉じる'
+                : 'タップして続ける ▶'}
             </div>
           </div>
         </div>
 
-        {/* 報酬プレビュー（最後のコマのみ）*/}
+        {/* 報酬プレビュー（最終コマのみ）*/}
         {isLast && ev.reward && (
-          <div className="mt-2 px-4 py-2.5 bg-amber-950/80 border-2 border-amber-600 rounded-xl text-center">
-            <div className="text-xs font-black text-amber-400">🎁 {ev.reward.message}</div>
+          <div
+            className="mt-2 px-4 py-2.5 rounded-xl border-2 text-center"
+            style={{
+              background: '#1c0a00',
+              borderColor: '#92400e',
+              boxShadow: '0 0 20px rgba(245,158,11,0.15)',
+            }}
+          >
+            <div className="text-xs font-black" style={{ color: '#fbbf24' }}>
+              🎁 {ev.reward.message}
+            </div>
           </div>
         )}
       </div>

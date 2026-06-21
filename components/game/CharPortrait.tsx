@@ -33,6 +33,18 @@ function calcPortraitBgPos(col: number, row: number, size: number) {
   return { bgPosX, bgPosY }
 }
 
+// 縦長ポートレート用（w×h 矩形、キャラクター全身表示用）
+function calcPortraitBgPosRect(col: number, row: number, w: number, h: number) {
+  const bgW = CHAR_COLS * w
+  const bgH = (CHAR_ORIG_H / CHAR_ORIG_W) * bgW
+  const scrollW = bgW - w
+  const scrollH = bgH - h
+  const bgPosX = scrollW > 0 ? `${(col * w / scrollW) * 100}%` : '0%'
+  const targetY = (CHAR_TITLE_PX + row * CHAR_ROW_PX) * (bgW / CHAR_ORIG_W)
+  const bgPosY = scrollH > 0 ? `${Math.min(100, (targetY / scrollH) * 100)}%` : '0%'
+  return { bgPosX, bgPosY }
+}
+
 export function CharPortrait({ charId, size, isActive = false, isDead = false, rounded = 4 }: {
   charId: string
   size: number
@@ -58,6 +70,29 @@ export function CharPortrait({ charId, size, isActive = false, isDead = false, r
         opacity: isDead ? 0.35 : 1,
         filter: isDead ? 'grayscale(80%)' : 'none',
         boxShadow: isActive ? '0 0 8px 2px rgba(255,215,0,0.5)' : 'none',
+        backgroundImage: `url('/fuuin-no-keishousha/images/characters.jpg')`,
+        backgroundSize: `${CHAR_COLS * 100}% auto`,
+        backgroundPosition: `${bgPosX} ${bgPosY}`,
+        backgroundRepeat: 'no-repeat',
+      }}
+    />
+  )
+}
+
+// PP4スタイル会話シーン用縦長ポートレート（160×320でキャラ全身表示）
+export function CharPortraitLarge({ charId, w = 160, h = 320 }: {
+  charId: string
+  w?: number
+  h?: number
+}) {
+  const pos = CHAR_GRID[charId] ?? { col: 0, row: 0 }
+  const { bgPosX, bgPosY } = calcPortraitBgPosRect(pos.col, pos.row, w, h)
+  return (
+    <div
+      style={{
+        width: w,
+        height: h,
+        flexShrink: 0,
         backgroundImage: `url('/fuuin-no-keishousha/images/characters.jpg')`,
         backgroundSize: `${CHAR_COLS * 100}% auto`,
         backgroundPosition: `${bgPosX} ${bgPosY}`,

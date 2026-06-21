@@ -44,7 +44,7 @@ function EnemyDisplay({ enemies, isBoss, isTargetingEnemies, onSelectTarget }: {
   onSelectTarget: (e: BattleUnit) => void
 }) {
   const isLarge = isBoss || enemies.length === 1
-  const fontSize = isLarge ? '5rem' : enemies.length <= 2 ? '3.5rem' : '2.5rem'
+  const fontSize = isBoss ? '6rem' : isLarge ? '4.5rem' : enemies.length <= 2 ? '3.5rem' : '2.5rem'
 
   return (
     <div className="absolute right-1 top-1" style={{ width: 'calc(58% - 4px)', bottom: 4, zIndex: 5 }}>
@@ -56,7 +56,7 @@ function EnemyDisplay({ enemies, isBoss, isTargetingEnemies, onSelectTarget }: {
           const hpFill = hpPct > 50 ? '#4ade80' : hpPct > 25 ? '#facc15' : '#ef4444'
 
           return (
-            <div key={e.uid} className={`flex flex-col items-center gap-0.5 transition-opacity ${dead ? 'opacity-20' : ''}`}>
+            <div key={e.uid} className={`flex flex-col items-center gap-0.5 transition-opacity ${dead ? 'opacity-15' : ''}`}>
               <button
                 onClick={() => isTargetingEnemies && !dead && onSelectTarget(e)}
                 disabled={!isTargetingEnemies || dead}
@@ -67,34 +67,37 @@ function EnemyDisplay({ enemies, isBoss, isTargetingEnemies, onSelectTarget }: {
                 }`}
                 style={{
                   filter: isBoss && !dead
-                    ? 'drop-shadow(0 0 12px rgba(255,50,50,0.8))'
+                    ? 'drop-shadow(0 0 18px rgba(255,30,30,0.9)) drop-shadow(0 0 6px rgba(255,100,0,0.7))'
                     : isTargetingEnemies && !dead
-                    ? 'drop-shadow(0 0 8px rgba(255,200,0,0.7))'
-                    : 'drop-shadow(0 0 4px rgba(255,255,255,0.3))',
+                    ? 'drop-shadow(0 0 10px rgba(255,220,0,0.8))'
+                    : 'drop-shadow(0 0 5px rgba(255,255,255,0.25))',
                 }}
               >
                 <span style={{ fontSize, lineHeight: 1 }}>{emoji}</span>
                 {isTargetingEnemies && !dead && (
-                  <span className="absolute -top-3 left-1/2 -translate-x-1/2 text-yellow-300 font-black text-base animate-bounce">▼</span>
+                  <span className="absolute -top-4 left-1/2 -translate-x-1/2 text-yellow-300 font-black text-lg animate-bounce">▼</span>
+                )}
+                {isBoss && !dead && (
+                  <span className="absolute -top-2 -right-2 text-xs font-black text-red-400 animate-pulse">💀</span>
                 )}
               </button>
               {/* HP bar + numbers + name + status */}
-              <div style={{ width: isLarge ? 88 : 64 }}>
-                <div className="w-full h-2 bg-black/60 border border-white/20 rounded-sm overflow-hidden">
+              <div style={{ width: isLarge ? 96 : 68 }}>
+                <div className="w-full bg-black/70 border border-white/20 rounded-sm overflow-hidden" style={{ height: isBoss ? 5 : 3 }}>
                   <div className="h-full transition-all duration-300" style={{ width: `${hpPct}%`, backgroundColor: hpFill }} />
                 </div>
                 <div className="flex justify-between items-center mt-0.5">
-                  <span className="text-[8px] font-black" style={{ color: '#d1d5db', textShadow: '0 1px 3px #000' }}>
+                  <span className="font-black" style={{ fontSize: 9, color: isBoss ? '#fca5a5' : '#d1d5db', textShadow: '0 1px 3px #000' }}>
                     {e.name}
                   </span>
-                  <span className="text-[8px] font-black" style={{ color: dead ? '#6b7280' : hpFill, textShadow: '0 1px 3px #000' }}>
+                  <span className="font-black" style={{ fontSize: 9, color: dead ? '#6b7280' : hpFill, textShadow: '0 1px 3px #000' }}>
                     {dead ? '---' : `${e.hp}/${e.maxHp}`}
                   </span>
                 </div>
                 {e.statusEffects.length > 0 && (
                   <div className="flex justify-center gap-0.5 mt-0.5">
                     {e.statusEffects.map(ef => (
-                      <span key={ef.id} style={{ fontSize: 9 }}>{statusIcon(ef.id)}</span>
+                      <span key={ef.id} style={{ fontSize: 10 }}>{statusIcon(ef.id)}</span>
                     ))}
                   </div>
                 )}
@@ -219,21 +222,37 @@ export default function BattleScene({ gs, onAttack, onSkill, onItem, onFlee, onC
       </div>
 
       {/* ===== バトルフィールド ===== */}
-      <div className="relative shrink-0" style={{ height: '220px' }}>
+      <div className="relative shrink-0" style={{ height: '256px' }}>
 
         {/* 空 + 草地の背景（パワポケ4スタイル）*/}
         <div className="absolute inset-0" style={{
-          background: 'linear-gradient(to bottom, #5ab4e8 0%, #90d0f0 52%, #70c840 52%, #3a9a20 72%, #287010 100%)',
+          background: b.isBoss
+            ? 'linear-gradient(to bottom, #1a0a2e 0%, #2d1060 48%, #3a0a20 48%, #1a0508 80%, #0d0305 100%)'
+            : 'linear-gradient(to bottom, #4a9ed8 0%, #7ac8ee 50%, #62b830 50%, #2e8a18 74%, #1a5a08 100%)',
         }} />
-        <div className="absolute" style={{ top: 6, left: 24, width: 72, height: 18, background: 'rgba(255,255,255,0.75)', borderRadius: '50%', filter: 'blur(4px)' }} />
-        <div className="absolute" style={{ top: 2, right: 56, width: 96, height: 18, background: 'rgba(255,255,255,0.6)', borderRadius: '50%', filter: 'blur(4px)' }} />
-        <div className="absolute" style={{ top: 12, right: 20, width: 48, height: 12, background: 'rgba(255,255,255,0.5)', borderRadius: '50%', filter: 'blur(3px)' }} />
+        {/* 雲 (通常戦闘) */}
+        {!b.isBoss && (
+          <>
+            <div className="absolute" style={{ top: 8, left: 20, width: 80, height: 20, background: 'rgba(255,255,255,0.7)', borderRadius: '50%', filter: 'blur(5px)' }} />
+            <div className="absolute" style={{ top: 4, right: 48, width: 104, height: 20, background: 'rgba(255,255,255,0.55)', borderRadius: '50%', filter: 'blur(5px)' }} />
+            <div className="absolute" style={{ top: 16, right: 16, width: 56, height: 14, background: 'rgba(255,255,255,0.45)', borderRadius: '50%', filter: 'blur(3px)' }} />
+            <div className="absolute" style={{ top: 28, left: 120, width: 48, height: 12, background: 'rgba(255,255,255,0.35)', borderRadius: '50%', filter: 'blur(4px)' }} />
+          </>
+        )}
+        {/* ボス戦: 赤黒い禍々しい雰囲気 */}
+        {b.isBoss && (
+          <>
+            <div className="absolute inset-0" style={{ background: 'radial-gradient(ellipse 80% 50% at 70% 40%, rgba(180,20,20,0.25) 0%, transparent 70%)' }} />
+            <div className="absolute" style={{ top: 8, right: 24, width: 120, height: 32, background: 'rgba(180,0,0,0.18)', borderRadius: '50%', filter: 'blur(12px)' }} />
+            <div className="absolute" style={{ top: 0, left: 0, right: 0, bottom: 0, backgroundImage: 'repeating-linear-gradient(90deg, transparent, transparent 40px, rgba(255,0,0,0.015) 40px, rgba(255,0,0,0.015) 41px)', pointerEvents: 'none' }} />
+          </>
+        )}
 
         {/* 左エリア: プレイヤー + 仲間スプライト */}
-        <div className="absolute left-2 bottom-3 flex flex-col-reverse gap-1 items-start" style={{ zIndex: 10, maxWidth: '38%' }}>
+        <div className="absolute left-2 bottom-3 flex flex-col-reverse gap-1 items-start" style={{ zIndex: 10, maxWidth: '40%' }}>
           <div className="flex flex-col items-center gap-0.5">
-            <CharPortrait charId="player" size={80} isActive={currentActor?.isPlayer} isDead={playerUnit.hp <= 0} />
-            <div style={{ width: 80 }}><HpBar hp={playerUnit.hp} maxHp={playerUnit.maxHp} /></div>
+            <CharPortrait charId="player" size={92} isActive={currentActor?.isPlayer} isDead={playerUnit.hp <= 0} rounded={6} />
+            <div style={{ width: 92 }}><HpBar hp={playerUnit.hp} maxHp={playerUnit.maxHp} /></div>
           </div>
           {allies.filter(a => !a.isPlayer).map(a => {
             const charId = a.companionId ?? 'gares'
@@ -241,17 +260,17 @@ export default function BattleScene({ gs, onAttack, onSkill, onItem, onFlee, onC
               e.id === 'poison' ? '☠️' : e.id === 'stun' ? '💫' : e.id === 'atk_up' ? '⬆️' : e.id === 'def_up' ? '🛡️' : e.id === 'atk_down' ? '⬇️' : ''
             ).filter(Boolean)
             return (
-              <div key={a.uid} className="flex items-center gap-1">
-                <CharPortrait charId={charId} size={52} isActive={a.uid === b.currentUid} isDead={a.hp <= 0} />
-                <div className="flex flex-col gap-0.5" style={{ width: 52 }}>
+              <div key={a.uid} className="flex items-center gap-1.5">
+                <CharPortrait charId={charId} size={62} isActive={a.uid === b.currentUid} isDead={a.hp <= 0} rounded={4} />
+                <div className="flex flex-col gap-0.5" style={{ width: 60 }}>
                   <HpBar hp={a.hp} maxHp={a.maxHp} />
                   <div className="flex items-center justify-between gap-0.5">
-                    <span className="text-[8px] text-white font-bold leading-none truncate" style={{ textShadow: '0 1px 3px #000' }}>
+                    <span className="text-[9px] text-white font-bold leading-none truncate" style={{ textShadow: '0 1px 3px #000' }}>
                       {a.name}
                     </span>
-                    {statusIcons.map((ic, i) => <span key={i} style={{ fontSize: 8 }}>{ic}</span>)}
+                    {statusIcons.map((ic, i) => <span key={i} style={{ fontSize: 9 }}>{ic}</span>)}
                   </div>
-                  <span className="text-[8px] font-bold leading-none" style={{ color: a.hp / a.maxHp > 0.5 ? '#4ade80' : a.hp / a.maxHp > 0.25 ? '#facc15' : '#ef4444', textShadow: '0 1px 3px #000' }}>
+                  <span className="text-[9px] font-bold leading-none" style={{ color: a.hp / a.maxHp > 0.5 ? '#4ade80' : a.hp / a.maxHp > 0.25 ? '#facc15' : '#ef4444', textShadow: '0 1px 3px #000' }}>
                     {a.hp <= 0 ? '---' : `HP ${a.hp}/${a.maxHp}`}
                   </span>
                 </div>
