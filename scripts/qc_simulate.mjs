@@ -28,9 +28,9 @@ const LOCATIONS = {
   spirit_spring: { id:'spirit_spring', type:'relay',   connections:['elna','ancient_temple'],            travelDays:{elna:1,ancient_temple:2},             companionId:null,   hasInn:false, bossId:null,  sealStone:null },
   trading_post:  { id:'trading_post',  type:'relay',   connections:['bern','checkpoint','bandit_hideout','sahal'], travelDays:{bern:1,checkpoint:2,bandit_hideout:2,sahal:2}, companionId:'zeno', hasInn:false, bossId:null, sealStone:null },
   coastal_road:  { id:'coastal_road',  type:'relay',   connections:['mirea','sahal'],                    travelDays:{mirea:2,sahal:1},                    companionId:null,   hasInn:false, bossId:null,  sealStone:null },
-  forest_entrance:{ id:'forest_entrance',type:'relay', connections:['traveler_inn','elna'],              travelDays:{traveler_inn:1,elna:1},               companionId:null,   hasInn:false, bossId:null,  sealStone:null },
-  demon_mine:    { id:'demon_mine',    type:'dungeon', connections:['galdo'],             travelDays:{galdo:2},           companionId:'iris',  hasInn:false, bossId:'mine_king',    sealStone:'fire',  enemyExp:33, enemyGold:27 },
-  dragon_pass:   { id:'dragon_pass',   type:'dungeon', connections:['galdo'],             travelDays:{galdo:3},           companionId:'elk',   hasInn:false, bossId:'storm_dragon', sealStone:'storm', enemyExp:30, enemyGold:25 },
+  forest_entrance:{ id:'forest_entrance',type:'relay', connections:['traveler_inn','elna','dragon_pass'], travelDays:{traveler_inn:1,elna:1,dragon_pass:3}, companionId:null,   hasInn:false, bossId:null,  sealStone:null },
+  demon_mine:    { id:'demon_mine',    type:'dungeon', connections:['galdo','dragon_pass'], travelDays:{galdo:2,dragon_pass:3}, companionId:'iris', hasInn:false, bossId:'mine_king',    sealStone:'fire',  enemyExp:33, enemyGold:27 },
+  dragon_pass:   { id:'dragon_pass',   type:'dungeon', connections:['galdo','demon_mine','forest_entrance'], travelDays:{galdo:3,demon_mine:3,forest_entrance:3}, companionId:'elk', hasInn:false, bossId:'storm_dragon', sealStone:'storm', enemyExp:30, enemyGold:25 },
   bandit_hideout:{ id:'bandit_hideout',type:'dungeon', connections:['trading_post','sahal'], travelDays:{trading_post:2,sahal:2}, companionId:'vais', hasInn:false, bossId:'bandit_king', sealStone:null, enemyExp:20, enemyGold:18 },
   ancient_temple:{ id:'ancient_temple',type:'dungeon', connections:['spirit_spring'],     travelDays:{spirit_spring:2},   companionId:'mira',  hasInn:false, bossId:'forest_king',  sealStone:'dark', enemyExp:25, enemyGold:20 },
   desert_ruins:  { id:'desert_ruins',  type:'castle',  connections:['sahal'],             travelDays:{sahal:3},           companionId:null,    hasInn:false, bossId:'archive',      sealStone:null,   requireAllStones:true },
@@ -575,12 +575,11 @@ function calcScore(optimal, average, naive, bossMeasurements, staticIssues) {
   const breakdown = {}
 
   // 1. クリア可能性 (25点)
-  // optimal 100%が前提。averageが80%以上で20点、naiveが50%以上で5点追加
   const optimalRate = optimal.wins / 333
   const avgRate = average.wins / 333
   const naiveRate = naive.wins / 333
   breakdown.clearability = Math.min(25,
-    (optimalRate >= 0.95 ? 10 : 0) +
+    (optimalRate >= 0.95 ? 10 : optimalRate >= 0.85 ? 7 : optimalRate >= 0.7 ? 4 : optimalRate >= 0.5 ? 2 : 0) +
     (avgRate >= 0.7 ? 8 : avgRate >= 0.5 ? 5 : avgRate >= 0.3 ? 2 : 0) +
     (naiveRate >= 0.3 ? 7 : naiveRate >= 0.15 ? 4 : naiveRate >= 0.05 ? 1 : 0)
   )
