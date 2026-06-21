@@ -983,6 +983,23 @@ const COMPANION_DEATH_WORDS: Partial<Record<CompanionId, string[]>> = {
   zeno: ['……魔族は……こうして……消えていく……', '面白い旅だった……な……', '人間と……一緒に……死ぬとは……', '……また……会おう……'],
 }
 
+// 仲間が死亡した後の生き残った仲間の追悼コメント（PP4最大の感動シーン）
+const COMPANION_MOURNING_RESPONSES: Partial<Record<CompanionId, string[]>> = {
+  gares: ['……次は絶対に守る。', '……仇は俺が取る。', '……立つ。まだ戦いは終わっていない。'],
+  liz: ['……どうして……どうしてなの……', '光よ……この魂を……安らかに……', '……泣いてる場合じゃない。前へ進まないと……'],
+  noa: ['……嘘でしょ……', '……矢を向けてやる。仇のために。', '……ごめん……守れなかった……'],
+  cecil: ['……計算が……狂った……', '……この痛み、魔力に変える。奴らへの怒りで。', '……泣かない。今は泣かない。'],
+  bram: ['……くそっ！死なせてなるか！……死なせてしまった……', '……強くなる。もっと。', '……待ってろ、すぐに仇を取ってやる。'],
+  finn: ['……え……え……？', '……先輩……！……絶対に強くなります……', '……泣かないって決めたのに……'],
+  vais: ['……こんな顔で泣く俺を見られたくなかったが……', '……借りは返してもらう。あいつに。', '……いなくなるとは思ってなかった。本当に。'],
+  logan: ['……俺よりお前が先に逝くとは思わなかった……', '……仇を取る。それが俺にできることだ。', '……強くなる。死者の分まで。'],
+  iris: ['……嫌……そんな……', '……この力、あなたの分まで使う。', '……人間も魔族も、死は同じなのね……'],
+  sig: ['……笑えない……珍しく笑えない……', '……借りがまたひとつできた。絶対に返す。', '……遊んでる場合じゃなかった……'],
+  elk: ['……獣は仲間の死を忘れない。ずっと憶えている。', '……槍に誓う。仇を打つ。', '……お前は強かった……だから悔しい……'],
+  mira: ['……森の精霊に祈る。安らかに眠れと。', '……この矢、あなたの魂と共に放つ。', '……風が……泣いているようね……'],
+  zeno: ['……人間の死を見るのは……つらいな。', '……面白い奴だった。もったいない。', '……魔族の世界でも、仲間の死は同じだ。痛い。'],
+}
+
 // 仲間の戦闘後一言コメント（PP4スタイル）
 const COMPANION_BATTLE_COMMENTS: Partial<Record<CompanionId, string[]>> = {
   gares: ['よし、全員無事か確認しろ！', '怯むな、まだ戦いは続く！', '傷は後で手当てする、先を急ごう。', '騎士として当然の結果だ。'],
@@ -1021,9 +1038,19 @@ export function closeBattle(state: GameState): GameState {
     }
   }
   // 死亡した仲間をパーティから除外（PP4スタイル: 永続死亡で即使用不可）
-  s.party = s.party.filter(id => s.companions[id]?.alive)
+  const aliveAfterBattle = s.party.filter(id => s.companions[id]?.alive)
+  s.party = aliveAfterBattle
   if (newlyDead.length > 0) {
-    s.message = `💀 ${newlyDead.join('・')}が永眠した……二度と戦えない`
+    // 生き残った仲間の追悼コメントをメッセージに付加（PP4最大の感動シーン）
+    let mournerMsg = ''
+    if (aliveAfterBattle.length > 0) {
+      const mourner = aliveAfterBattle[Math.floor(Math.random() * aliveAfterBattle.length)] as CompanionId
+      const def = COMPANIONS[mourner]
+      const lines = COMPANION_MOURNING_RESPONSES[mourner] ?? ['……']
+      const line = lines[Math.floor(Math.random() * lines.length)]
+      mournerMsg = `\n${def.emoji}${def.name}「${line}」`
+    }
+    s.message = `💀 ${newlyDead.join('・')}が永眠した……二度と戦えない${mournerMsg}`
   } else if (!defeated && !isFinal) {
     // 勝利後の仲間一言コメント
     const aliveParty = s.party.filter(id => s.companions[id]?.alive)
