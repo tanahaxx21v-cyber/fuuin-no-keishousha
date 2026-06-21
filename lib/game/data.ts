@@ -54,7 +54,7 @@ export const PLAYER_SKILL_SCHEDULE: LevelSkill[] = [
 export const COMPANIONS: Record<CompanionId, CompanionDef> = {
   gares: {
     id: 'gares', name: 'ガレス', cls: '騎士', emoji: '🛡️',
-    desc: '元王都の騎士団長。誇り高く真面目で面倒見が良い。東関所で旅人の安全を守りながら機会を窺っている。',
+    desc: '元王都の騎士団長。誇り高く真面目で面倒見が良い。高DEF・挑発スキルで敵の攻撃を引き受けるタンク役。序盤から終盤まで安定して活躍できる。',
     joinLocId: 'checkpoint',
     joinText: '「旅人か。……封印石を探しているとは感じていた。俺はガレス。元騎士団長だ。共に行こう。」',
     baseHp: 130, baseMp: 25, baseAtk: 14, baseDef: 20, baseSpd: 6, joinLevel: 2,
@@ -70,7 +70,7 @@ export const COMPANIONS: Record<CompanionId, CompanionDef> = {
   },
   liz: {
     id: 'liz', name: 'リズ', cls: '神官', emoji: '✨',
-    desc: '優しく穏やかな性格。信仰心が厚く、仲間の支えとなる存在。',
+    desc: '優しく穏やかな性格。信仰心が厚く、仲間の支えとなる存在。全体回復スキルが優秀なヒーラー。MP管理が勝利の鍵。パーティに1人は欲しい必須枠。',
     joinLocId: 'alseria',
     joinText: '「神様の導きがあなたをここへ連れてきた。私の癒しの力、お役に立てれば。」',
     baseHp: 65, baseMp: 95, baseAtk: 9, baseDef: 9, baseSpd: 9, joinLevel: 2,
@@ -85,7 +85,7 @@ export const COMPANIONS: Record<CompanionId, CompanionDef> = {
   },
   noa: {
     id: 'noa', name: 'ノア', cls: '弓使い', emoji: '🏹',
-    desc: '明るく快活な性格。遠距離攻撃が得意で、行動も俊敏。',
+    desc: '明るく快活な性格。遠距離攻撃が得意で、行動も俊敏。高速アタッカー。連射・散弾で序盤から活躍。タンク+ヒーラーと組むと最大火力を発揮できる。',
     joinLocId: 'bern',
     joinText: '「俺、この旅に参加したい！遠くの敵はぜんぶ俺に任せといて！」',
     baseHp: 75, baseMp: 35, baseAtk: 17, baseDef: 8, baseSpd: 15, joinLevel: 3,
@@ -97,7 +97,7 @@ export const COMPANIONS: Record<CompanionId, CompanionDef> = {
   },
   cecil: {
     id: 'cecil', name: 'セシル', cls: '魔法使い', emoji: '🔮',
-    desc: '知的でクール。魔法の扱いに長け、我が道を行くタイプ。',
+    desc: '知的でクール。魔法の扱いに長け、我が道を行くタイプ。高ATK魔法アタッカー。全体/単体の両スキルを持ち、ボス戦・雑魚戦どちらにも対応。ただし低HPなので要保護。',
     joinLocId: 'galdo',
     joinText: '「……封印石か。理論的には可能。私が同行すれば成功率が上がる。それだけよ。」',
     baseHp: 60, baseMp: 85, baseAtk: 22, baseDef: 6, baseSpd: 12, joinLevel: 4,
@@ -109,7 +109,7 @@ export const COMPANIONS: Record<CompanionId, CompanionDef> = {
   },
   bram: {
     id: 'bram', name: 'ブラム', cls: '戦士', emoji: '🪓',
-    desc: '豪快で頼れる兄貴分。戦いの経験が豊富で、力仕事はお手の物。',
+    desc: '豪快で頼れる兄貴分。戦いの経験が豊富で、力仕事はお手の物。高HP・高ATKの重戦士型。全体攻撃と超重撃を両立。ガレスのタンクと合わせると前衛が無敵になる。',
     joinLocId: 'elna',
     joinText: '「ガッハッハ！面白え旅じゃねえか！俺も連れてけ。この斧、貸してやるぜ！」',
     baseHp: 115, baseMp: 25, baseAtk: 23, baseDef: 14, baseSpd: 8, joinLevel: 3,
@@ -121,7 +121,7 @@ export const COMPANIONS: Record<CompanionId, CompanionDef> = {
   },
   finn: {
     id: 'finn', name: 'フィン', cls: '見習い剣士', emoji: '⚔️',
-    desc: '元気いっぱいの熱血少年。いつか立派な冒険者になるのが夢。',
+    desc: '元気いっぱいの熱血少年。いつか立派な冒険者になるのが夢。序盤は控えめだがLv8で「勇躍の一閃」を覚えると化ける成長型。育て甲斐のあるキャラクター。',
     joinLocId: 'riverside',
     joinText: '「お、お兄さん！冒険者ですよね？俺も連れてってください！絶対役に立ちます！」',
     baseHp: 70, baseMp: 30, baseAtk: 13, baseDef: 11, baseSpd: 12, joinLevel: 2,
@@ -136,7 +136,7 @@ export const COMPANIONS: Record<CompanionId, CompanionDef> = {
   },
   vais: {
     id: 'vais', name: 'ヴァイス', cls: '元盗賊団長', emoji: '🗡️',
-    desc: '過去に裏切られた経験を持つ。口は悪いが根は仲間思い。',
+    desc: '過去に裏切られた経験を持つ。口は悪いが根は仲間思い。最速クラスのスピードアタッカー。毒で継続ダメージ、高速奇襲で先手を取る。ガラスキャノンなので前に出しすぎ注意。',
     joinLocId: 'bandit_hideout',
     joinText: '「チッ……負けたか。いいだろう。どうせ居場所もない。しばらく付き合ってやる。」',
     baseHp: 75, baseMp: 40, baseAtk: 18, baseDef: 8, baseSpd: 16, joinLevel: 3,
@@ -148,7 +148,7 @@ export const COMPANIONS: Record<CompanionId, CompanionDef> = {
   },
   logan: {
     id: 'logan', name: 'ローガン', cls: '元処刑人', emoji: '⚒️',
-    desc: '罪人を裁いてきた過去を持つ。無口で寡黙だが、信念は固い。HP・ATKが最高クラス。',
+    desc: '罪人を裁いてきた過去を持つ。無口で寡黙だが、信念は固い。HP・ATK最高クラスの純アタッカー。脅威スキルで敵全体を弱体化しつつ一撃必殺。低速なのでヒーラーと組ませると安定する。',
     joinLocId: 'sahal',
     joinText: '「……魔王を倒すか。それが罪滅ぼしになるなら、力を貸そう。」',
     baseHp: 120, baseMp: 20, baseAtk: 27, baseDef: 16, baseSpd: 7, joinLevel: 4,
@@ -160,7 +160,7 @@ export const COMPANIONS: Record<CompanionId, CompanionDef> = {
   },
   iris: {
     id: 'iris', name: 'イリス', cls: '元魔王軍魔導士', emoji: '💜',
-    desc: 'かつて魔王軍に仕えていた。自由を求めて逃げ出したが、過去に苦しむことも。',
+    desc: 'かつて魔王軍に仕えていた。自由を求めて逃げ出したが、過去に苦しむことも。高MP魔法型で全体攻撃が強力。Lv12の「魔王軍覚醒」が最終盤の切り札。セシルと双魔法編成も強力。',
     joinLocId: 'demon_mine',
     joinText: '「魔王軍から逃げて、ここに隠れていた。……あなたが魔王を倒すというなら、協力する。」',
     baseHp: 65, baseMp: 90, baseAtk: 20, baseDef: 7, baseSpd: 11, joinLevel: 4,
@@ -175,7 +175,7 @@ export const COMPANIONS: Record<CompanionId, CompanionDef> = {
   },
   sig: {
     id: 'sig', name: 'シグ', cls: '詐欺師', emoji: '🎩',
-    desc: 'お金儲けが大好きなちゃっかり者。口が上手く、情報収集が得意。',
+    desc: 'お金儲けが大好きなちゃっかり者。口が上手く、情報収集が得意。デバッファー＆スタン役。煙幕で敵全体を弱体化し、急所突きでスタン。サポート特化型で後衛向き。',
     joinLocId: 'mirea',
     joinText: '「へへ、封印石探しか。俺、情報網があるんだよね。一緒に行けば得するよ、絶対。」',
     baseHp: 68, baseMp: 45, baseAtk: 14, baseDef: 9, baseSpd: 14, joinLevel: 3,
@@ -187,7 +187,7 @@ export const COMPANIONS: Record<CompanionId, CompanionDef> = {
   },
   elk: {
     id: 'elk', name: 'エルク', cls: '獣人・槍使い', emoji: '🐺',
-    desc: '寡黙でクール。戦闘能力が高く、仲間を守ることに忠実。後半合流のため高スペック。',
+    desc: '寡黙でクール。戦闘能力が高く、仲間を守ることに忠実。後半合流の高スペック万能型。高HP・ATK・SPDを誇り、群狼の咆哮で敵全体を大幅弱体化。中盤以降のパーティを一気に強化する。',
     joinLocId: 'dragon_pass',
     joinText: '「……お前たちは強い。この峠を越えるなら俺が案内しよう。ついでに旅に加わる。」',
     baseHp: 105, baseMp: 28, baseAtk: 24, baseDef: 14, baseSpd: 14, joinLevel: 5,
@@ -199,7 +199,7 @@ export const COMPANIONS: Record<CompanionId, CompanionDef> = {
   },
   mira: {
     id: 'mira', name: 'ミラ', cls: 'エルフ・弓術士', emoji: '🌿',
-    desc: '森の民の出身。自然を愛し、穏やかで思慮深い性格。MP・速度が最高クラスのレアキャラ。',
+    desc: '森の民の出身。自然を愛し、穏やかで思慮深い性格。MP・速度最高クラスの全能支援型。精霊の矢で高火力、森の加護で全体防御バフ。最終盤まで価値が落ちないレアキャラ。',
     joinLocId: 'ancient_temple',
     joinText: '「古代神殿を守ってきた。……あなたならば封印石を任せられる。共に行きましょう。」',
     baseHp: 75, baseMp: 70, baseAtk: 20, baseDef: 11, baseSpd: 16, joinLevel: 5,
@@ -211,7 +211,7 @@ export const COMPANIONS: Record<CompanionId, CompanionDef> = {
   },
   zeno: {
     id: 'zeno', name: 'ゼノ', cls: '魔族', emoji: '😈',
-    desc: '最も強力な隠しキャラ。交易所に潜伏中の謎の魔族。全ステータスが最高クラスで、強力な魔族スキルを持つ。',
+    desc: '最も強力な隠しキャラ。交易所に潜伏中の謎の魔族。全ステータスが最高クラス。魔族の力（単体3.5倍）・魔界門（全体2.0倍）・Lv8で攻撃バフと3種の切り札を持つ究極のアタッカー。',
     joinLocId: 'trading_post',
     joinText: '「魔王の使いじゃない。奴を倒したい理由が、俺にもある。……一時的な同盟だ。」',
     baseHp: 110, baseMp: 110, baseAtk: 32, baseDef: 16, baseSpd: 15, joinLevel: 7,
