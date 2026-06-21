@@ -942,10 +942,19 @@ export function closeBattle(state: GameState): GameState {
 
   // バトル終了時（勝利・敗北問わず）ステータス異常をクリア（JRPGスタンダード）
   s.playerStatus = []
+  const newlyDead: string[] = []
   for (const id of Object.keys(s.companions) as CompanionId[]) {
-    if (s.companions[id].joined && s.companions[id].alive) {
-      s.companions[id].statusEffects = []
+    const c = s.companions[id]
+    if (c.joined && c.alive) {
+      c.statusEffects = []
+    } else if (c.joined && !c.alive) {
+      newlyDead.push(COMPANIONS[id]?.name ?? id)
     }
+  }
+  // 死亡した仲間をパーティから除外（PP4スタイル: 永続死亡で即使用不可）
+  s.party = s.party.filter(id => s.companions[id]?.alive)
+  if (newlyDead.length > 0) {
+    s.message = `💀 ${newlyDead.join('・')}が永眠した……二度と戦えない`
   }
 
   if (defeated) {
