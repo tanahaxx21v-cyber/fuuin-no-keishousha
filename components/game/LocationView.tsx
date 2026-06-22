@@ -114,6 +114,7 @@ export default function LocationView({
   const [itemPanelOpen, setItemPanelOpen] = useState(false)
   const [selectedItemId, setSelectedItemId] = useState<string | null>(null)
   const [showArrival, setShowArrival] = useState(false)
+  const [showBossConfirm, setShowBossConfirm] = useState(false)
   const loc = LOCATIONS[gs.currentLocId]
 
   useEffect(() => {
@@ -230,6 +231,72 @@ export default function LocationView({
           </div>
         </div>
       )}
+
+      {/* ボス挑戦確認ダイアログ */}
+      {showBossConfirm && loc.bossId && ENEMIES[loc.bossId] && (() => {
+        const boss = ENEMIES[loc.bossId!]
+        const { enemyHpMult } = getDifficultyMultiplier(gs.difficulty)
+        const bossHp = Math.floor(boss.hp * enemyHpMult)
+        const playerHpPct = gs.playerHp / gs.playerMaxHp
+        const aliveParty = gs.party.filter(id => gs.companions[id]?.alive)
+        const allUnits = [{ name: gs.playerName, hp: gs.playerHp, maxHp: gs.playerMaxHp }, ...aliveParty.map(id => ({ name: COMPANIONS[id]?.name ?? id, hp: gs.companions[id].hp, maxHp: gs.companions[id].maxHp }))]
+        const avgHpPct = allUnits.reduce((s, u) => s + u.hp / u.maxHp, 0) / allUnits.length
+        const isLowHp = avgHpPct < 0.5
+        return (
+          <div className="fixed inset-0 z-[80] flex items-center justify-center" style={{ background: 'rgba(4,4,10,0.92)' }}>
+            <div className="relative max-w-sm w-full mx-4 rounded-2xl border-2 border-red-600 bg-gradient-to-b from-red-950 to-[#1a0808] p-6 text-center shadow-2xl" style={{ animation: 'fadeIn 0.3s ease' }}>
+              <div className="text-xs font-black text-red-500 tracking-widest mb-3">⚠️ BOSS BATTLE 確認</div>
+              <div className="text-5xl mb-2" style={{ filter: 'drop-shadow(0 0 20px rgba(255,50,50,0.6))' }}>{boss.emoji}</div>
+              <div className="text-xl font-black text-red-200 mb-1">{boss.name}</div>
+              <div className="flex justify-center gap-4 text-sm font-black mb-4">
+                <span className="text-red-400">HP {bossHp}</span>
+                <span className="text-orange-400">ATK {boss.atk}</span>
+                <span className="text-blue-400">DEF {boss.def}</span>
+              </div>
+              <div className="bg-black/40 border border-slate-700 rounded-xl p-3 mb-3 text-left">
+                <div className="text-[10px] font-black text-slate-400 mb-2 tracking-widest">現在のパーティ状態</div>
+                {allUnits.map((u, i) => {
+                  const pct = u.hp / u.maxHp * 100
+                  const fill = pct > 50 ? '#4ade80' : pct > 25 ? '#facc15' : '#ef4444'
+                  return (
+                    <div key={i} className="flex items-center gap-2 mb-1.5">
+                      <span className="text-xs text-gray-300 font-bold w-14 truncate">{u.name}</span>
+                      <div className="flex-1 h-2 bg-gray-900 rounded-sm border border-gray-700 overflow-hidden">
+                        <div className="h-full transition-all" style={{ width: `${pct}%`, backgroundColor: fill }} />
+                      </div>
+                      <span className="text-[10px] font-black" style={{ color: fill }}>{u.hp}/{u.maxHp}</span>
+                    </div>
+                  )
+                })}
+              </div>
+              {isLowHp && (
+                <div className="bg-yellow-950/80 border border-yellow-700 rounded-lg px-3 py-2 text-xs text-yellow-300 font-bold mb-3">
+                  ⚠️ HP平均 {Math.round(avgHpPct * 100)}%。宿屋での回復を推奨します。
+                </div>
+              )}
+              {loc.sealStone && !gs.sealStones.includes(loc.sealStone) && (
+                <div className="bg-amber-950/60 border border-amber-700 rounded-lg px-3 py-1.5 text-xs text-amber-300 font-bold mb-3">
+                  💎 勝利で封印石を入手できます！
+                </div>
+              )}
+              <div className="flex gap-2">
+                <button
+                  onClick={() => { setShowBossConfirm(false); onFightBoss() }}
+                  className="flex-1 py-2.5 bg-red-800 hover:bg-red-700 border-2 border-red-500 text-white font-black rounded-xl transition active:scale-95 text-sm"
+                >
+                  ⚔️ 挑む！
+                </button>
+                <button
+                  onClick={() => setShowBossConfirm(false)}
+                  className="flex-1 py-2.5 bg-slate-800 hover:bg-slate-700 border-2 border-slate-600 text-gray-300 font-black rounded-xl transition active:scale-95 text-sm"
+                >
+                  引き返す
+                </button>
+              </div>
+            </div>
+          </div>
+        )
+      })()}
 
       {/* Header */}
       <div className={`bg-[#0c0c24] border-2 ${typeBorder} rounded-xl p-4`}>
@@ -503,7 +570,7 @@ export default function LocationView({
                 </div>
               </button>
               <button
-                onClick={onFightBoss}
+                onClick={() => setShowBossConfirm(true)}
                 className="w-full py-3 px-4 bg-red-950 hover:bg-red-900 border-2 border-red-600 text-white rounded-xl transition text-left flex items-center gap-3 active:scale-95"
               >
                 <span className="text-xl">👑</span>
