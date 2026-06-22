@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react'
 import type { GameState, BattleUnit, Skill, CompanionId } from '@/lib/game/types'
-import { ITEMS, COMPANIONS } from '@/lib/game/data'
+import { ITEMS, COMPANIONS, getExpToNext } from '@/lib/game/data'
 import { CharPortrait } from './CharPortrait'
 
 interface Props {
@@ -662,6 +662,26 @@ export default function BattleScene({ gs, onAttack, onSkill, onItem, onFlee, onC
                   <span className="text-amber-300">+{b.rewardGold}G</span>
                   <span className="text-gray-500 text-xs self-center">{b.turn}ターン</span>
                 </div>
+                {/* EXPバー + レベルアップまで */}
+                {gs.playerLevel < 30 && (() => {
+                  const expToNext = getExpToNext(gs.playerLevel)
+                  const expPct = Math.min(100, (gs.playerExp / expToNext) * 100)
+                  const remaining = expToNext - gs.playerExp
+                  const isClose = remaining <= b.rewardExp * 2
+                  return (
+                    <div className="flex flex-col items-center gap-0.5">
+                      <div className="flex items-center gap-2 w-full justify-center">
+                        <div className="w-32 h-2 bg-gray-900 rounded-sm border border-gray-700 overflow-hidden">
+                          <div className="h-full bg-gradient-to-r from-purple-700 to-purple-400 transition-all duration-500" style={{ width: `${expPct}%` }} />
+                        </div>
+                        <span className="text-[10px] text-purple-400 font-bold">Lv{gs.playerLevel}</span>
+                      </div>
+                      {isClose && (
+                        <span className="text-[10px] text-yellow-400 font-black animate-pulse">あと{remaining}EXP でレベルアップ！</span>
+                      )}
+                    </div>
+                  )
+                })()}
                 {/* 生存HP率 */}
                 {(() => {
                   const hpPct = Math.round(playerUnit.hp / playerUnit.maxHp * 100)
