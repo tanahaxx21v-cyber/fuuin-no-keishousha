@@ -612,9 +612,14 @@ export default function BattleScene({ gs, onAttack, onSkill, onItem, onFlee, onC
           )}
 
           {(mode === 'target_attack' || mode === 'target_skill') && pendingSkill?.target !== 'ally_one' && (
-            <button onClick={cancelTarget} className="mt-1 text-xs text-gray-400 hover:text-white border border-gray-700 px-4 py-2 rounded-xl w-full">
-              ← もどる
-            </button>
+            <div className="flex flex-col items-center gap-1.5 mt-1">
+              <div className="text-xs font-black text-yellow-400 animate-pulse tracking-wide">
+                {mode === 'target_attack' ? '⚔️ 攻撃する敵をタップ' : `✨ ${pendingSkill?.name} — 対象をタップ`}
+              </div>
+              <button onClick={cancelTarget} className="text-xs text-gray-400 hover:text-white border border-gray-700 px-4 py-1.5 rounded-xl w-full">
+                ← もどる
+              </button>
+            </div>
           )}
 
           {!isPlayerTurn && !isOver && mode === 'select' && (

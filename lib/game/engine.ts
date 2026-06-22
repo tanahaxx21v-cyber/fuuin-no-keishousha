@@ -150,6 +150,36 @@ export function checkLocationEvent(state: GameState): string | null {
   return null
 }
 
+export function hasAvailableEventAt(state: GameState, locId: string): boolean {
+  const joinedIds = Object.values(state.companions).filter(c => c.joined).map(c => c.id as string)
+  for (const ev of EVENTS) {
+    if (state.completedEvents.includes(ev.id)) continue
+    const cond = ev.condition
+    if (cond.atLoc !== locId) continue
+    if (cond.requiredCompanions && !cond.requiredCompanions.every(c => joinedIds.includes(c))) continue
+    if (cond.anyCompanion && !cond.anyCompanion.some(c => joinedIds.includes(c))) continue
+    if (cond.maxDaysLeft !== undefined && state.daysLeft > cond.maxDaysLeft) continue
+    if (cond.minDaysLeft !== undefined && state.daysLeft < cond.minDaysLeft) continue
+    if (cond.requiredSeals && !cond.requiredSeals.every(seal => state.sealStones.includes(seal))) continue
+    if (cond.requiredDefeated && !cond.requiredDefeated.every(b => state.defeatedBosses.includes(b))) continue
+    if (cond.minPlayerLevel !== undefined && state.playerLevel < cond.minPlayerLevel) continue
+    if (cond.requiredEventCompleted && !cond.requiredEventCompleted.every(e => state.completedEvents.includes(e))) continue
+    if (cond.blockIfEventCompleted && cond.blockIfEventCompleted.some(e => state.completedEvents.includes(e))) continue
+    if (cond.minVisitCount !== undefined) {
+      const visits = (state.locVisitCounts ?? {})[locId] ?? 0
+      if (visits < cond.minVisitCount) continue
+    }
+    if (!ev.isMeetingEvent) {
+      const hasUnmetSpeaker = ev.dialogues.some(
+        d => COMPANION_IDS.has(d.speaker) && !joinedIds.includes(d.speaker)
+      )
+      if (hasUnmetSpeaker) continue
+    }
+    return true
+  }
+  return false
+}
+
 export function startEvent(state: GameState, eventId: string): GameState {
   const s = deepClone(state)
   s.activeEventId = eventId

@@ -2,6 +2,7 @@
 
 import type { GameState, LocationId } from '@/lib/game/types'
 import { LOCATIONS, getDifficultyMultiplier } from '@/lib/game/data'
+import { hasAvailableEventAt } from '@/lib/game/engine'
 
 interface Props {
   gs: GameState
@@ -93,6 +94,9 @@ export default function WorldMap({ gs, onTravel, onEnterLocation, getAvailableCo
     ? getAvailableConnections(gs.currentLocId)
     : currentLoc.connections
   const finalBossLocked = gs.sealStones.length < 3
+  const eventAvailableLocs = new Set(
+    (Object.keys(MAP_POS) as LocationId[]).filter(locId => hasAvailableEventAt(gs, locId))
+  )
 
   const daysUrgent = gs.daysLeft <= 20
   const daysWarn = gs.daysLeft <= 40
@@ -296,6 +300,9 @@ export default function WorldMap({ gs, onTravel, onEnterLocation, getAvailableCo
                 {loc.sealStone && gs.sealStones.includes(loc.sealStone) && (
                   <span style={{ position:'absolute', top:-5, left:-5, fontSize:10 }}>✅</span>
                 )}
+                {eventAvailableLocs.has(locId) && !isCurrent && isVisited && (
+                  <span style={{ position:'absolute', bottom:-3, right:-3, fontSize:8, background:'#7c2d0a', border:'1px solid #f97316', borderRadius:'50%', width:11, height:11, display:'flex', alignItems:'center', justifyContent:'center', color:'#fed7aa', fontWeight:'bold', animation:'pulse 1.5s ease-in-out infinite' }}>!</span>
+                )}
               </button>
               {/* ラベル */}
               <div style={{
@@ -331,6 +338,7 @@ export default function WorldMap({ gs, onTravel, onEnterLocation, getAvailableCo
           <div key={i} className="flex items-center gap-1"><div style={item.s} /><span>{item.l}</span></div>
         ))}
         <div className="flex items-center gap-1"><span>💎</span><span>封印石</span></div>
+        <div className="flex items-center gap-1"><span style={{fontSize:8,background:'#7c2d0a',border:'1px solid #f97316',borderRadius:'50%',width:11,height:11,display:'inline-flex',alignItems:'center',justifyContent:'center',color:'#fed7aa',fontWeight:'bold'}}>!</span><span>イベントあり</span></div>
         <div className="flex items-center gap-1">
           <span style={{fontSize:8,background:'#0a2040',border:'1px solid #4080c0',borderRadius:3,padding:'0 2px',color:'#80c8ff'}}>N日</span>
           <span>移動日数</span>
