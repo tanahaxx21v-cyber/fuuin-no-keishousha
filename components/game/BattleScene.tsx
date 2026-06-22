@@ -152,6 +152,7 @@ export default function BattleScene({ gs, onAttack, onSkill, onItem, onFlee, onC
   const [critFlash, setCritFlash] = useState(false)
   const [critText, setCritText] = useState(false)
   const [deathFlash, setDeathFlash] = useState(false)
+  const [spellCast, setSpellCast] = useState<{ label: string; color: string } | null>(null)
   const [deadCompanion, setDeadCompanion] = useState<{ id: CompanionId; lastWord: string } | null>(null)
   const [showBossIntro, setShowBossIntro] = useState(b.isBoss && b.turn <= 1)
   const prevLogLen = useRef(0)
@@ -165,6 +166,29 @@ export default function BattleScene({ gs, onAttack, onSkill, onItem, onFlee, onC
         setCritText(true)
         setTimeout(() => setCritFlash(false), 350)
         setTimeout(() => setCritText(false), 700)
+      }
+      // スキル発動演出
+      const skillLog = newLogs.find(l => l.type === 'status' && l.text.includes('を使った'))
+      if (skillLog) {
+        const SPELL_COLORS: [string, { label: string; color: string }][] = [
+          ['炎', { label: '🔥 FIRE！', color: '#ff6030' }],
+          ['火', { label: '🔥 BLAZE！', color: '#ff5020' }],
+          ['雷', { label: '⚡ THUNDER！', color: '#ffe050' }],
+          ['光', { label: '✨ HOLY！', color: '#ffffb0' }],
+          ['聖', { label: '✨ HOLY！', color: '#ffe0ff' }],
+          ['癒し', { label: '💚 HEAL！', color: '#60ff90' }],
+          ['回復', { label: '💚 CURE！', color: '#50ff80' }],
+          ['毒', { label: '☠️ POISON！', color: '#a040ff' }],
+          ['氷', { label: '❄️ ICE！', color: '#80e8ff' }],
+          ['嵐', { label: '🌪️ STORM！', color: '#80b0ff' }],
+          ['斬', { label: '⚔️ SLASH！', color: '#ffe0a0' }],
+          ['波', { label: '💫 WAVE！', color: '#60d0ff' }],
+        ]
+        const matched = SPELL_COLORS.find(([key]) => skillLog.text.includes(key))
+        if (matched) {
+          setSpellCast(matched[1])
+          setTimeout(() => setSpellCast(null), 600)
+        }
       }
       if (newLogs.some(l => l.type === 'death')) {
         setDeathFlash(true)
@@ -343,6 +367,14 @@ export default function BattleScene({ gs, onAttack, onSkill, onItem, onFlee, onC
             <div className="text-2xl font-black text-yellow-300 px-3 py-1 rounded-lg"
               style={{ textShadow: '0 0 12px rgba(255,220,0,0.9), 0 2px 0 rgba(0,0,0,0.8)', animation: 'fadeIn 0.1s ease, fadeOut 0.4s ease 0.3s forwards' }}>
               ✦ CRITICAL! ✦
+            </div>
+          </div>
+        )}
+        {spellCast && (
+          <div className="absolute inset-x-0 top-2/5 z-50 pointer-events-none flex justify-center" style={{ top: '40%' }}>
+            <div className="text-xl font-black px-3 py-1 rounded-lg"
+              style={{ color: spellCast.color, textShadow: `0 0 16px ${spellCast.color}, 0 2px 0 rgba(0,0,0,0.9)`, animation: 'fadeIn 0.1s ease, fadeOut 0.35s ease 0.25s forwards' }}>
+              {spellCast.label}
             </div>
           </div>
         )}
