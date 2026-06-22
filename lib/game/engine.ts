@@ -204,27 +204,36 @@ export function travel(state: GameState, destId: LocationId): GameState {
     return s
   }
 
-  // 中間地点（relay）のみランダムエンカウント/イベント発生
-  // 町・ダンジョンでは発生しない
-  if (destLoc.type === 'relay') {
+  // 移動中ランダムイベント（全ロケーション型で発生）
+  {
     const roll = Math.random()
+    const TRAVEL_FLAVOR: Partial<Record<LocationId, string[]>> = {
+      dragon_pass:    ['龍の峠を越える間、強風が吹き荒れた。', '遠くで竜のうなり声が聞こえた。身が引き締まる。'],
+      demon_mine:     ['廃鉱山の入口に近づくにつれ、硫黄の臭いが漂ってきた。', '坑道の入口付近に古い血痕が残っていた。'],
+      ancient_temple: ['古代神殿への道は暗い森の中を抜けていく。', 'どこからか古代語の詠唱声が聞こえた気がした。'],
+      desert_ruins:   ['砂漠の熱風が容赦なく吹きつける。', '地平線の彼方に遺跡のシルエットが見え始めた。'],
+      coastal_road:   ['潮風が心地よく吹いてきた。', '波音が旅の疲れを和らげる。'],
+      spirit_spring:  ['精霊の泉に近づくと、空気が澄んでいくのを感じた。', '淡い光の粒が漂っている。'],
+      lighthouse:     ['灯台の光が遠くで明滅している。', '波の音が激しくなってきた。'],
+    }
+    const flavorMsgs = TRAVEL_FLAVOR[destId] ?? []
 
-    if (roll < 0.30) {
-      // 30%: 敵エンカウント
+    if (roll < 0.28) {
+      // 28%: 敵エンカウント
       const pool = destLoc.travelEnemyPool ?? []
       if (pool.length > 0) {
         const enemyId = pool[Math.floor(Math.random() * pool.length)]
         s.message = '⚠️ 移動中に敵に遭遇した！'
         return startBattle(s, [enemyId], false)
       }
-    } else if (roll < 0.45) {
-      // 15%: ランダムイベント
+    } else if (roll < 0.40) {
+      // 12%: 金/アイテム/回復
       const ev = Math.random()
-      if (ev < 0.40) {
-        const gold = Math.floor(Math.random() * 40) + 20
+      if (ev < 0.35) {
+        const gold = Math.floor(Math.random() * 40) + 15
         s.gold += gold
         s.message = `💰 道中で ${gold}G を見つけた！`
-      } else if (ev < 0.75) {
+      } else if (ev < 0.65) {
         const ex = s.inventory.find(i => i.itemId === 'potion')
         if (ex) ex.qty += 1
         else s.inventory.push({ itemId: 'potion', qty: 1 })
@@ -234,8 +243,11 @@ export function travel(state: GameState, destId: LocationId): GameState {
         s.playerHp = Math.min(s.playerMaxHp, s.playerHp + heal)
         s.message = `✨ 清らかな泉を発見。HP が ${heal} 回復した！`
       }
+    } else if (flavorMsgs.length > 0 && roll < 0.55) {
+      // 15% (if flavor exists): 地形フレーバーメッセージ
+      s.message = flavorMsgs[Math.floor(Math.random() * flavorMsgs.length)]
     }
-    // 55%: 何も起こらない
+    // それ以外: 何も起こらない（サイレント移動）
   }
 
   // castle型ロケーション到着時: 隠しキャラ出現判定
