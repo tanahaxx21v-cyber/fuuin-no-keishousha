@@ -112,17 +112,30 @@ export default function ShopView({ gs, onBuy, onClose }: Props) {
                     {isPriceUp && <span className="text-xs text-red-500 ml-1">↑</span>}
                   </div>
                   {isPriceUp && <div className="text-xs text-gray-600 line-through">{item.price}G</div>}
-                  <button
-                    onClick={() => onBuy(itemId)}
-                    disabled={!canBuy}
-                    className={`mt-1.5 px-4 py-1.5 rounded-lg text-sm font-black border-2 transition active:scale-95 ${
-                      canBuy
-                        ? 'bg-green-900 hover:bg-green-800 border-green-600 text-white'
-                        : 'bg-gray-900 border-gray-800 text-gray-600 cursor-not-allowed'
-                    }`}
-                  >
-                    購入
-                  </button>
+                  <div className="flex gap-1 mt-1.5">
+                    <button
+                      onClick={() => onBuy(itemId)}
+                      disabled={!canBuy}
+                      className={`flex-1 px-3 py-1.5 rounded-lg text-sm font-black border-2 transition active:scale-95 ${
+                        canBuy
+                          ? 'bg-green-900 hover:bg-green-800 border-green-600 text-white'
+                          : 'bg-gray-900 border-gray-800 text-gray-600 cursor-not-allowed'
+                      }`}
+                    >
+                      ×1
+                    </button>
+                    <button
+                      onClick={() => { onBuy(itemId); onBuy(itemId); onBuy(itemId) }}
+                      disabled={gs.gold < currentPrice * 3}
+                      className={`px-2 py-1.5 rounded-lg text-xs font-black border-2 transition active:scale-95 ${
+                        gs.gold >= currentPrice * 3
+                          ? 'bg-blue-900 hover:bg-blue-800 border-blue-600 text-white'
+                          : 'bg-gray-900 border-gray-800 text-gray-600 cursor-not-allowed'
+                      }`}
+                    >
+                      ×3
+                    </button>
+                  </div>
                 </div>
               </div>
             )
