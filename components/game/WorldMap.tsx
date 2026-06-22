@@ -1,7 +1,7 @@
 'use client'
 
 import type { GameState, LocationId } from '@/lib/game/types'
-import { LOCATIONS } from '@/lib/game/data'
+import { LOCATIONS, getDifficultyMultiplier } from '@/lib/game/data'
 
 interface Props {
   gs: GameState
@@ -96,6 +96,8 @@ export default function WorldMap({ gs, onTravel, onEnterLocation, getAvailableCo
 
   const daysUrgent = gs.daysLeft <= 20
   const daysWarn = gs.daysLeft <= 40
+  const totalDays = getDifficultyMultiplier(gs.difficulty).days
+  const elapsedPct = Math.round(((totalDays - gs.daysLeft) / totalDays) * 100)
   const mapMessage = daysUrgent
     ? '⚠️ 残り日数が少ない！急いで封印石を集めよ！'
     : gs.sealStones.length === 3
@@ -122,6 +124,28 @@ export default function WorldMap({ gs, onTravel, onEnterLocation, getAvailableCo
           </span>
           <span className="text-gray-400">封印石 <span className="text-amber-300 font-black">{gs.sealStones.length}</span>/3</span>
         </div>
+      </div>
+      {/* 日数進捗バー */}
+      <div className="flex items-center gap-2">
+        <span className="text-[9px] text-gray-600 font-bold w-8">0日</span>
+        <div className="flex-1 h-2 bg-gray-900 border border-gray-800 rounded-full overflow-hidden relative">
+          <div
+            className="h-full rounded-full transition-all duration-500"
+            style={{
+              width: `${elapsedPct}%`,
+              background: daysUrgent
+                ? 'linear-gradient(to right, #7f1d1d, #ef4444)'
+                : daysWarn
+                ? 'linear-gradient(to right, #7c2d12, #f97316)'
+                : 'linear-gradient(to right, #1e3a8a, #6366f1)',
+            }}
+          />
+          {[25, 50, 75].map(pct => (
+            <div key={pct} className="absolute top-0 bottom-0 w-px bg-gray-700" style={{ left: `${pct}%` }} />
+          ))}
+        </div>
+        <span className="text-[9px] text-gray-600 font-bold w-8 text-right">{totalDays}日</span>
+        <span className={`text-[9px] font-black w-8 text-right ${daysUrgent ? 'text-red-400' : 'text-gray-500'}`}>{elapsedPct}%</span>
       </div>
 
       {mapMessage && (

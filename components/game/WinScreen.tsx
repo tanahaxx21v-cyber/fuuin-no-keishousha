@@ -205,6 +205,10 @@ export default function WinScreen({ gs, onRestart }: Props) {
                 <div><span className="text-gray-400">残り日数: </span><span className="text-yellow-300 font-bold">{gs.daysLeft}日</span></div>
                 <div><span className="text-gray-400">所持金: </span><span className="text-yellow-400 font-bold">{gs.gold}G</span></div>
                 <div><span className="text-gray-400">難易度: </span><span className="text-white font-bold">{{ easy: 'イージー', normal: 'ノーマル', hard: 'ハード' }[gs.difficulty] ?? gs.difficulty}</span></div>
+                <div><span className="text-gray-400">訪問拠点: </span><span className="text-cyan-400 font-bold">{gs.visitedLocs.length}/21</span></div>
+                <div><span className="text-gray-400">体験イベント: </span><span className="text-purple-400 font-bold">{gs.completedEvents.length}件</span></div>
+                <div><span className="text-gray-400">倒したボス: </span><span className="text-red-400 font-bold">{gs.defeatedBosses.length}/6体</span></div>
+                <div><span className="text-gray-400">最終HP: </span><span className="text-green-400 font-bold">{gs.playerHp}/{gs.playerMaxHp}</span></div>
               </div>
             </div>
 
