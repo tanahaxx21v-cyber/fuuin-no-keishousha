@@ -67,6 +67,7 @@ export default function GameRoot() {
   const [muted, setMuted] = useState(false)
   const [sealFlash, setSealFlash] = useState<'fire' | 'storm' | 'dark' | null>(null)
   const [battleSpeed, setBattleSpeed] = useState<'normal' | 'fast'>('normal')
+  const [autoBattle, setAutoBattle] = useState(false)
   const prevSealStonesRef = useRef<string[]>([])
 
   useEffect(() => {
@@ -340,6 +341,24 @@ export default function GameRoot() {
     return () => clearTimeout(timer)
   }, [gs.battle?.currentUid, gs.battle?.phase, gs.phase])
 
+  // オートバトル：プレイヤーターンを自動で最強敵を攻撃
+  useEffect(() => {
+    if (!autoBattle || gs.phase !== 'battle' || !gs.battle) return
+    const b = gs.battle
+    if (b.phase === 'victory' || b.phase === 'defeat') return
+    const currentActor = b.units.find(u => u.uid === b.currentUid)
+    if (!currentActor?.isPlayer || b.phase !== 'select_action') return
+    const aliveEnemies = b.units.filter(u => !u.isAlly && u.hp > 0)
+    if (aliveEnemies.length === 0) return
+    const target = [...aliveEnemies].sort((a, b) => b.hp - a.hp)[0]
+    const delay = battleSpeed === 'fast' ? 400 : 800
+    const timer = setTimeout(() => {
+      sfxAttack()
+      update(s => battleAttack(s, target.uid))
+    }, delay)
+    return () => clearTimeout(timer)
+  }, [gs.battle?.currentUid, gs.battle?.phase, autoBattle])
+
   return (
     <div className="min-h-screen bg-gray-950 text-gray-100 flex flex-col">
       {/* Status bar — shown during gameplay */}
@@ -355,6 +374,8 @@ export default function GameRoot() {
           onReturnToTitle={handleReturnToTitle}
           battleSpeed={battleSpeed}
           onToggleBattleSpeed={() => setBattleSpeed(s => s === 'normal' ? 'fast' : 'normal')}
+          autoBattle={autoBattle}
+          onToggleAutoBattle={() => setAutoBattle(a => !a)}
         />
       )}
 

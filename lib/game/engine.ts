@@ -725,6 +725,47 @@ function processEnemyTurn(state: GameState): GameState {
   const isRaging = actor.isBoss && b.bossRaged
   const bossAtkMult = isBossDying ? 1.3 : 1.0
 
+  // ボスの台詞（30%確率で攻撃前にセリフ）
+  const BOSS_TAUNTS: Record<string, { normal: string[]; raging: string[]; dying: string[] }> = {
+    bandit_king:  {
+      normal: ['「盗賊王を舐めるなよ！」', '「この財宝は渡さんぞ！」'],
+      raging: ['「ここまでやるとは……本気を見せてやろう！」', '「うるさい、黙れ！」'],
+      dying:  ['「ぐ……こんなはずでは……」', '「俺が……負けるだと……！」'],
+    },
+    mine_king:    {
+      normal: ['「この鉱山は俺のものだ！」', '「帰れ、侵入者め！」'],
+      raging: ['「岩をも砕く力を見せてやる！」', '「この拳の重さを知れ！」'],
+      dying:  ['「鉱山が……俺の鉱山が……」', '「力が……抜けて……いく……」'],
+    },
+    storm_dragon: {
+      normal: ['「翼ある者に勝てると思うな！」', '「嵐を呼ぶ者に挑む愚か者め！」'],
+      raging: ['「これが真の嵐だ！」', '「雷よ、奴らを焼き払え！」'],
+      dying:  ['「ドラゴンが……敗れるとは……」', '「空の王者が……このような……」'],
+    },
+    forest_king:  {
+      normal: ['「森を穢す者に容赦はせぬ！」', '「自然の怒りを受けよ！」'],
+      raging: ['「大地よ、奴らを飲み込め！」', '「森の守護者の力を見せてやろう！」'],
+      dying:  ['「森が……私を……呼んでいる……」', '「木々よ……許してくれ……」'],
+    },
+    tidal_king:   {
+      normal: ['「海の支配者に逆らうとは！」', '「波に飲まれよ！」'],
+      raging: ['「大海の怒りで押しつぶしてくれる！」', '「深淵の力を見よ！」'],
+      dying:  ['「波が……引いて……いく……」', '「海が……」'],
+    },
+    archive:      {
+      normal: ['「記録されよ、消えゆく存在よ。」', '「お前達の抵抗も全て記録する。」'],
+      raging: ['「全データを消去する。」', '「非効率な存在は終末を迎えよ。」'],
+      dying:  ['「……記録、消去。」', '「エラー……エラー……終末フェーズ……」'],
+    },
+  }
+  if (actor.isBoss && Math.random() < 0.3) {
+    const bossId = b.units.find(u => u.uid === actor.uid)?.uid.replace('enemy_0_', '') ?? ''
+    const taunts = BOSS_TAUNTS[bossId] ?? BOSS_TAUNTS.archive
+    const phase = isBossDying ? taunts.dying : isRaging ? taunts.raging : taunts.normal
+    const taunt = phase[Math.floor(Math.random() * phase.length)]
+    b.logs.push({ text: `👹 ${taunt}`, type: 'status' })
+  }
+
   // Occasionally use skill (only pick from affordable skills)
   const affordableSkills = actor.skills.filter(sk => actor.mp >= sk.mpCost)
   const skillChance = isBossDying ? 0.75 : isRaging ? 0.55 : 0.3

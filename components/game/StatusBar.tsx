@@ -12,9 +12,11 @@ interface Props {
   onReturnToTitle?: () => void
   battleSpeed?: 'normal' | 'fast'
   onToggleBattleSpeed?: () => void
+  autoBattle?: boolean
+  onToggleAutoBattle?: () => void
 }
 
-export default function StatusBar({ gs, onSave, isMuted, onToggleMute, onReturnToTitle, battleSpeed, onToggleBattleSpeed }: Props) {
+export default function StatusBar({ gs, onSave, isMuted, onToggleMute, onReturnToTitle, battleSpeed, onToggleBattleSpeed, autoBattle, onToggleAutoBattle }: Props) {
   const [confirmReturn, setConfirmReturn] = useState(false)
   const hpPct = Math.max(0, (gs.playerHp / gs.playerMaxHp) * 100)
   const mpPct = Math.max(0, (gs.playerMp / gs.playerMaxMp) * 100)
@@ -158,6 +160,20 @@ export default function StatusBar({ gs, onSave, isMuted, onToggleMute, onReturnT
             }`}
           >
             {battleSpeed === 'fast' ? '⚡速' : '▶速'}
+          </button>
+        )}
+        {/* Auto battle */}
+        {onToggleAutoBattle && gs.phase === 'battle' && (
+          <button
+            onClick={onToggleAutoBattle}
+            title={autoBattle ? 'オートバトルOFF' : 'オートバトルON（プレイヤーが自動で攻撃）'}
+            className={`text-xs border-2 px-2 py-1 rounded font-bold transition ${
+              autoBattle
+                ? 'bg-green-950 border-green-600 text-green-300 animate-pulse'
+                : 'bg-slate-900 hover:bg-slate-800 border-slate-700 text-slate-300'
+            }`}
+          >
+            {autoBattle ? '🤖AUTO' : '🤖'}
           </button>
         )}
 
