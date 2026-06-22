@@ -378,8 +378,14 @@ export default function GameRoot() {
                 <div className="bg-purple-950/80 border-2 border-purple-500 rounded-xl px-4 py-2.5 mb-3"
                      style={{ boxShadow: '0 0 20px rgba(168,85,247,0.3)' }}>
                   <div className="text-xs text-purple-400 font-black mb-0.5">✨ 新スキル習得！</div>
-                  <div className="font-black text-purple-200">「{lastSkill.name}」</div>
-                  <div className="text-xs text-gray-400 mt-0.5">{lastSkill.desc}</div>
+                  <div className="font-black text-purple-200 text-base">「{lastSkill.name}」</div>
+                  <div className="flex items-center justify-center gap-3 mt-1 mb-1">
+                    <span className="text-[10px] text-blue-400 font-bold bg-blue-950 border border-blue-700 px-2 py-0.5 rounded">MP {lastSkill.mpCost}</span>
+                    <span className="text-[10px] text-gray-400 font-bold">
+                      {lastSkill.target === 'enemy_one' ? '敵1体' : lastSkill.target === 'enemy_all' ? '敵全体' : lastSkill.target === 'ally_all' ? '味方全体' : lastSkill.target === 'ally_one' ? '味方1体' : '自分'}
+                    </span>
+                  </div>
+                  <div className="text-xs text-gray-400">{lastSkill.desc}</div>
                 </div>
               )}
               <button

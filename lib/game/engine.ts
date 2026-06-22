@@ -1308,16 +1308,38 @@ export function campRest(state: GameState): GameState {
   const playerHeal = Math.floor(s.playerMaxHp * healPct)
   s.playerHp = Math.min(s.playerMaxHp, s.playerHp + playerHeal)
 
-  const compMsgs: string[] = []
+  const CAMP_QUOTES: Partial<Record<string, string[]>> = {
+    gares: ['「体を休めておけ。明日の戦いに備えろ。」', '「野営か……懐かしい感じがするな。」'],
+    liz: ['「ゆっくり休もう。回復魔法より睡眠が一番よ。」', '「焚き火がきれいね。こんな夜は好き。」'],
+    noa: ['「星が綺麗！ルミナって広いんだね〜。」', '「やっぱり自然の中での休憩が一番好き。」'],
+    cecil: ['「……休息も戦略のひとつよ。批判はしないわ。」', '「次の行動を計画する時間でもある。」'],
+    bram: ['「飯はないのか……まあ、休めるだけマシか。」', '「ぐっすり眠れそうだ。」'],
+    finn: ['「野外で眠るの、実は苦手で……でも慣れました！」', '「先輩、明日もよろしくお願いします！」'],
+    vais: ['「盗賊時代は毎晩こんな感じだったな。」', '「……やっぱり仲間と過ごす夜は悪くない。」'],
+    iris: ['「焚き火、魔族でも暖かく感じるんですね……」', '「久しぶりに穏やかな気持ちになれた気がします。」'],
+    sig: ['「星を見ながら一杯やりたいところだが……まあいいか。」', '「良い夜だ。次の儲け話を考えよう。」'],
+    elk: ['「風が心地いい。獣の感覚が研ぎ澄まされる。」', '「……ゆっくり休もう。体が資本だ。」'],
+    mira: ['「精霊の声が聞こえる気がします。この地は清らかですね。」', '「エルフは夜露が好きなんです。」'],
+    zeno: ['「……休息か。人間は案外、こういう時間を大切にするんだな。」'],
+  }
+  let campQuote = ''
+  const alivePartyIds = s.party.filter(id => s.companions[id]?.alive)
+  if (alivePartyIds.length > 0) {
+    const randomId = alivePartyIds[Math.floor(Math.random() * alivePartyIds.length)]
+    const quotes = CAMP_QUOTES[randomId] ?? []
+    if (quotes.length > 0) {
+      const companionName = COMPANIONS[randomId as keyof typeof COMPANIONS]?.name ?? randomId
+      campQuote = ` ${companionName}${quotes[Math.floor(Math.random() * quotes.length)]}`
+    }
+  }
   for (const cid of s.party) {
     const c = s.companions[cid]
     if (c.joined && c.alive) {
       const cheal = Math.floor(c.maxHp * healPct)
       c.hp = Math.min(c.maxHp, c.hp + cheal)
-      compMsgs.push(`${state.companions[cid].hp < c.hp ? '' : ''}`)
     }
   }
-  s.message = `🏕️ 野営して体を休めた。HP +${playerHeal}（仲間も同様に回復）`
+  s.message = `🏕️ 野営して体を休めた。HP +${playerHeal}（仲間も同様に回復）${campQuote}`
   return s
 }
 
