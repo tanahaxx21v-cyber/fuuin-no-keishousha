@@ -1357,8 +1357,11 @@ export function useItemOutOfBattle(state: GameState, itemId: string, targetId: '
 export function campRest(state: GameState): GameState {
   const s = deepClone(state)
   const healPct = 0.3
+  const mpPct = 0.10
   const playerHeal = Math.floor(s.playerMaxHp * healPct)
+  const playerMpHeal = Math.floor(s.playerMaxMp * mpPct)
   s.playerHp = Math.min(s.playerMaxHp, s.playerHp + playerHeal)
+  s.playerMp = Math.min(s.playerMaxMp, s.playerMp + playerMpHeal)
 
   const CAMP_QUOTES: Partial<Record<string, string[]>> = {
     gares: ['「体を休めておけ。明日の戦いに備えろ。」', '「野営か……懐かしい感じがするな。」'],
@@ -1388,10 +1391,12 @@ export function campRest(state: GameState): GameState {
     const c = s.companions[cid]
     if (c.joined && c.alive) {
       const cheal = Math.floor(c.maxHp * healPct)
+      const cmpHeal = Math.floor(c.maxMp * mpPct)
       c.hp = Math.min(c.maxHp, c.hp + cheal)
+      c.mp = Math.min(c.maxMp, c.mp + cmpHeal)
     }
   }
-  s.message = `🏕️ 野営して体を休めた。HP +${playerHeal}（仲間も同様に回復）${campQuote}`
+  s.message = `🏕️ 野営して体を休めた。HP +${playerHeal}・MP +${playerMpHeal}（仲間も同様に回復）${campQuote}`
   return s
 }
 

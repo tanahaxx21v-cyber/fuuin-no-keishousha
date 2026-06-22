@@ -557,7 +557,7 @@ export default function LocationView({
           )}
 
           {loc.type === 'relay' && onCampRest && (() => {
-            const healable = gs.playerHp < gs.playerMaxHp || gs.party.some(id => gs.companions[id]?.alive && gs.companions[id].hp < gs.companions[id].maxHp)
+            const healable = gs.playerHp < gs.playerMaxHp || gs.playerMp < gs.playerMaxMp || gs.party.some(id => gs.companions[id]?.alive && (gs.companions[id].hp < gs.companions[id].maxHp || gs.companions[id].mp < gs.companions[id].maxMp))
             return (
               <button
                 onClick={onCampRest}
@@ -572,7 +572,7 @@ export default function LocationView({
                 <div>
                   <div className="font-black text-sm">野営して休む</div>
                   <div className={`text-xs ${healable ? 'text-teal-400' : 'text-gray-600'}`}>
-                    {healable ? '無料・日数消費なし・HP 30%回復（MP回復なし）' : '既にHP満タン'}
+                    {healable ? '無料・日数消費なし・HP 30%・MP 10%回復' : '既にHP・MP満タン'}
                   </div>
                 </div>
               </button>
