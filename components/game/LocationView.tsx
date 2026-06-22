@@ -672,7 +672,7 @@ export default function LocationView({
                   <div className="text-red-300 font-black">⚠️ 全ての封印石が揃った！</div>
                 </div>
                 <button
-                  onClick={onFightBoss}
+                  onClick={() => setShowBossConfirm(true)}
                   className="w-full py-4 bg-red-900 hover:bg-red-800 border-2 border-red-500 text-white rounded-xl font-black text-lg text-center animate-pulse transition active:scale-95"
                 >
                   👑 終末記録体アーカイブに挑む！
