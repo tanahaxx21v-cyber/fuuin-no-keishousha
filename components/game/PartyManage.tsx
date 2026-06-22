@@ -15,6 +15,7 @@ export default function PartyManage({ gs, onSetParty, onClose }: Props) {
   const [draft, setDraft] = useState<CompanionId[]>(
     gs.party.filter(id => gs.companions[id]?.alive)
   )
+  const [detailId, setDetailId] = useState<CompanionId | null>(null)
 
   const joinedCompanions = Object.values(COMPANIONS).filter(
     c => gs.companions[c.id].joined && gs.companions[c.id].alive
@@ -101,41 +102,69 @@ export default function PartyManage({ gs, onSetParty, onClose }: Props) {
               const slotNum = draft.indexOf(def.id) + 1
 
               return (
-                <button
-                  key={def.id}
-                  onClick={() => toggle(def.id)}
-                  className={`flex items-center gap-3 rounded-xl border-2 p-3 text-left transition-all active:scale-95 ${
-                    inDraft
-                      ? 'border-amber-500 bg-amber-950/30'
-                      : draft.length >= 3
-                      ? 'border-slate-700 bg-slate-900/50 opacity-50 cursor-not-allowed'
-                      : 'border-slate-700 bg-slate-900/50 hover:border-indigo-600 hover:bg-indigo-950/30'
-                  }`}
-                >
-                  <div className="shrink-0 rounded-lg overflow-hidden border border-slate-600">
-                    <CharPortrait charId={def.id} size={48} rounded={6} />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 flex-wrap">
-                      <span className="font-black text-white">{def.name}</span>
-                      <span className="text-xs text-gray-400 font-bold">{def.cls}</span>
-                      <span className="text-xs text-purple-400 font-black">Lv{c.level}</span>
+                <div key={def.id} className="relative">
+                  <button
+                    onClick={() => toggle(def.id)}
+                    className={`w-full flex items-center gap-3 rounded-xl border-2 p-3 text-left transition-all active:scale-95 ${
+                      inDraft
+                        ? 'border-amber-500 bg-amber-950/30'
+                        : draft.length >= 3
+                        ? 'border-slate-700 bg-slate-900/50 opacity-50 cursor-not-allowed'
+                        : 'border-slate-700 bg-slate-900/50 hover:border-indigo-600 hover:bg-indigo-950/30'
+                    }`}
+                  >
+                    <div className="shrink-0 rounded-lg overflow-hidden border border-slate-600">
+                      <CharPortrait charId={def.id} size={48} rounded={6} />
                     </div>
-                    <div className="flex items-center gap-2 mt-1">
-                      <div className="w-20 h-2.5 bg-gray-900 rounded-sm border border-gray-700 overflow-hidden">
-                        <div className={`h-full ${hpPct > 50 ? 'bg-green-600' : hpPct > 25 ? 'bg-yellow-600' : 'bg-red-700'}`} style={{ width: `${hpPct}%` }} />
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <span className="font-black text-white">{def.name}</span>
+                        <span className="text-xs text-gray-400 font-bold">{def.cls}</span>
+                        <span className="text-xs text-purple-400 font-black">Lv{c.level}</span>
                       </div>
-                      <span className="text-xs text-gray-400 font-bold">HP {c.hp}/{c.maxHp}</span>
-                      <span className="text-xs text-blue-400 font-bold">MP {c.mp}/{c.maxMp}</span>
+                      <div className="flex items-center gap-2 mt-1">
+                        <div className="w-20 h-2.5 bg-gray-900 rounded-sm border border-gray-700 overflow-hidden">
+                          <div className={`h-full ${hpPct > 50 ? 'bg-green-600' : hpPct > 25 ? 'bg-yellow-600' : 'bg-red-700'}`} style={{ width: `${hpPct}%` }} />
+                        </div>
+                        <span className="text-xs text-gray-400 font-bold">HP {c.hp}/{c.maxHp}</span>
+                        <span className="text-xs text-blue-400 font-bold">MP {c.mp}/{c.maxMp}</span>
+                      </div>
+                      <div className="text-xs text-gray-600 mt-0.5 font-bold">ATK {c.atk} · DEF {c.def} · SPD {c.spd}</div>
                     </div>
-                    <div className="text-xs text-gray-600 mt-0.5 font-bold">ATK {c.atk} · DEF {c.def} · SPD {c.spd}</div>
-                  </div>
-                  <div className={`w-7 h-7 rounded-full border-2 flex items-center justify-center shrink-0 font-black transition ${
-                    inDraft ? 'border-amber-400 bg-amber-500 text-black text-sm' : 'border-slate-600 bg-slate-900'
-                  }`}>
-                    {inDraft ? slotNum : ''}
-                  </div>
-                </button>
+                    <div className={`w-7 h-7 rounded-full border-2 flex items-center justify-center shrink-0 font-black transition ${
+                      inDraft ? 'border-amber-400 bg-amber-500 text-black text-sm' : 'border-slate-600 bg-slate-900'
+                    }`}>
+                      {inDraft ? slotNum : ''}
+                    </div>
+                  </button>
+                  {/* スキル詳細ボタン */}
+                  <button
+                    onClick={e => { e.stopPropagation(); setDetailId(detailId === def.id ? null : def.id) }}
+                    className="absolute top-2 right-10 text-[10px] text-indigo-400 hover:text-indigo-200 border border-indigo-800 bg-indigo-950/80 px-1.5 py-0.5 rounded font-bold"
+                  >
+                    スキル
+                  </button>
+                  {/* スキル詳細パネル */}
+                  {detailId === def.id && (
+                    <div className="mt-1 bg-slate-900/90 border border-indigo-700/60 rounded-lg px-3 py-2">
+                      <div className="text-[10px] text-indigo-400 font-black mb-1.5">✨ {def.name}のスキル</div>
+                      {[...def.skills, ...c.learnedSkills].map(sk => (
+                        <div key={sk.id} className="flex justify-between items-start text-xs py-0.5 border-b border-slate-800 last:border-0">
+                          <div>
+                            <span className="font-black text-white">{sk.name}</span>
+                            <span className="text-gray-500 ml-2">{sk.desc}</span>
+                          </div>
+                          <span className="text-blue-400 font-bold shrink-0 ml-2">MP {sk.mpCost}</span>
+                        </div>
+                      ))}
+                      {def.learnableSkills && def.learnableSkills.filter(ls => ls.level > c.level).length > 0 && (
+                        <div className="text-[10px] text-gray-600 mt-1.5">
+                          次のスキル: Lv{def.learnableSkills.filter(ls => ls.level > c.level)[0].level}「{def.learnableSkills.filter(ls => ls.level > c.level)[0].skill.name}」
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
               )
             })}
           </div>

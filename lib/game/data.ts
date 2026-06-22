@@ -4715,4 +4715,131 @@ export const EVENTS: GameEvent[] = [
     ],
     reward: { exp: 75, message: '🌩️ 嵐竜の力が封印石に宿った！（EXP +75）' },
   },
+
+  // ===== 新規選択肢イベント（PP4スタイル道徳・リスク分岐）=====
+  {
+    id: 'traveler_inn_lost_child', title: '宿屋の迷子',
+    condition: { atLoc: 'traveler_inn', blockIfEventCompleted: ['traveler_inn_lost_child'], minVisitCount: 2 },
+    dialogues: [
+      { speaker: 'narrator', speakerName: '', text: '旅人の宿の前で、泣いている幼い子供が一人。道に迷ったらしく、親を探している。' },
+      { speaker: 'player', speakerName: 'レオン', text: '（……急いでいる。でも、見捨てるわけにもいかない。）' },
+    ],
+    branch: {
+      prompt: 'どうする？',
+      options: [
+        {
+          label: '親を探してあげる（1日消費）',
+          reward: { exp: 25, gold: 50, message: '✨ 子供を親のもとに届けた。礼として50Gをもらった。（EXP +25）' },
+        },
+        {
+          label: '宿屋の主人に任せて先を急ぐ',
+          reward: { exp: 5, message: '……宿屋の主人に子供を預けた。先を急ぐ。（EXP +5）' },
+        },
+      ],
+    },
+  },
+
+  {
+    id: 'great_bridge_toll_dispute', title: '橋の通行料騒動',
+    condition: { atLoc: 'great_bridge', blockIfEventCompleted: ['great_bridge_toll_dispute'], minVisitCount: 2 },
+    dialogues: [
+      { speaker: 'narrator', speakerName: '', text: '大橋の前で、老人と橋番が言い争っていた。橋番が不当に高い通行料を要求しているらしい。' },
+      { speaker: 'player', speakerName: 'レオン', text: '（……橋番は明らかにやりすぎだ。でも余計な揉め事は……）' },
+    ],
+    branch: {
+      prompt: 'どうする？',
+      options: [
+        {
+          label: '老人の代わりに橋番に掛け合う',
+          reward: { exp: 20, message: '✨ 橋番を説得した。老人に感謝され、旅の情報をもらった。（EXP +20）' },
+        },
+        {
+          label: '老人の通行料を代わりに払う',
+          reward: { exp: 15, message: '✨ 老人の通行料20Gを払った。感謝された。（EXP +15）', gold: -20 },
+        },
+        {
+          label: '関わらずに通り過ぎる',
+          reward: { exp: 0, message: '……橋番と老人の言い争いを横目に通り過ぎた。' },
+        },
+      ],
+    },
+  },
+
+  {
+    id: 'watchtower_suspicious_package', title: '怪しい荷物',
+    condition: { atLoc: 'watchtower', blockIfEventCompleted: ['watchtower_suspicious_package'], minVisitCount: 2 },
+    dialogues: [
+      { speaker: 'narrator', speakerName: '', text: '見張り塔の近くに、誰かが置き去りにした大きな荷物がある。中身は不明。' },
+      { speaker: 'player', speakerName: 'レオン', text: '（……開けてみるか？でも、罠かもしれない。）' },
+    ],
+    branch: {
+      prompt: 'どうする？',
+      options: [
+        {
+          label: 'ためしに開けてみる（失敗リスクあり）',
+          reward: { exp: 10, message: '荷物の中に食料と地図が。どこかの旅人が忘れたらしい。（EXP +10）' },
+          winChance: 0.6,
+          loseReward: { exp: 5, message: '⚠️ 荷物を開けた途端、毒ガスが！HP少々ダメージを受けた。（EXP +5）' },
+        },
+        {
+          label: '近くの施設に届ける',
+          reward: { exp: 20, gold: 30, message: '✨ 忘れ物として届けた。礼に30G受け取った。（EXP +20）' },
+        },
+        {
+          label: '触らずに通り過ぎる',
+          reward: { exp: 0, message: '……関わらないことにした。知らぬが仏。' },
+        },
+      ],
+    },
+  },
+
+  {
+    id: 'spirit_spring_wish', title: '精霊の泉の願い',
+    condition: { atLoc: 'spirit_spring', blockIfEventCompleted: ['spirit_spring_wish'], minVisitCount: 3 },
+    dialogues: [
+      { speaker: 'narrator', speakerName: '', text: '精霊の泉に、かすかな声が響いた。「願いを一つ叶えてやろう……」' },
+      { speaker: 'player', speakerName: 'レオン', text: '（精霊が何かを授けようとしている……何を望む？）' },
+    ],
+    branch: {
+      prompt: '精霊に何を願う？',
+      options: [
+        {
+          label: '強さを（ATK・EXP増強）',
+          reward: { exp: 60, message: '✨ 精霊が力を授けた！戦闘力が上がった感覚がする。（EXP +60）' },
+        },
+        {
+          label: '癒しを（HP・MP全回復）',
+          reward: { fullHeal: true, exp: 20, message: '✨ 精霊の光に包まれ、傷がいえた。HP・MP全回復！（EXP +20）' },
+        },
+        {
+          label: '富を（Gold増加）',
+          reward: { gold: 150, exp: 10, message: '✨ 泉から金色の光とともに宝が現れた！150G獲得！（EXP +10）' },
+        },
+      ],
+    },
+  },
+
+  {
+    id: 'coastal_road_shipwreck', title: '海岸の難破船',
+    condition: { atLoc: 'coastal_road', blockIfEventCompleted: ['coastal_road_shipwreck'], minVisitCount: 2 },
+    dialogues: [
+      { speaker: 'narrator', speakerName: '', text: '沿岸街道を歩いていると、岩場に難破した小舟が打ち上げられているのを見つけた。生存者がいるかもしれない。' },
+      { speaker: 'player', speakerName: 'レオン', text: '（……急いで確認するか、距離があるし危険かもしれない。）' },
+    ],
+    branch: {
+      prompt: 'どうする？',
+      options: [
+        {
+          label: '岩場に降りて確認する（失敗リスクあり）',
+          reward: { exp: 35, gold: 80, message: '✨ 生存者を救出！礼として80Gと希少アイテムをもらった。（EXP +35）' },
+          winChance: 0.65,
+          loseReward: { exp: 15, message: '⚠️ 岩場で足を滑らせた……生存者はいなかった。少々HP消耗。（EXP +15）' },
+        },
+        {
+          label: '遠くから様子を見るだけにする',
+          reward: { exp: 5, message: '……遠くから見たが、すでに廃船のようだった。' },
+        },
+      ],
+    },
+  },
 ]

@@ -64,6 +64,8 @@ export default function GameRoot() {
   const [pendingDiff, setPendingDiff] = useState<Difficulty | null>(null)
   const [saveMsg, setSaveMsg] = useState<string | null>(null)
   const [muted, setMuted] = useState(false)
+  const [sealFlash, setSealFlash] = useState<'fire' | 'storm' | 'dark' | null>(null)
+  const prevSealStonesRef = useRef<string[]>([])
 
   useEffect(() => {
     const saved = loadGame()
@@ -290,6 +292,18 @@ export default function GameRoot() {
     return () => clearTimeout(timer)
   }, [gs.message])
 
+  // 封印石取得演出
+  useEffect(() => {
+    const prev = prevSealStonesRef.current
+    const curr = gs.sealStones
+    const newStone = curr.find(s => !prev.includes(s)) as 'fire' | 'storm' | 'dark' | undefined
+    if (newStone) {
+      setSealFlash(newStone)
+      setTimeout(() => setSealFlash(null), 4000)
+    }
+    prevSealStonesRef.current = [...curr]
+  }, [gs.sealStones])
+
   // バトル中に仲間・敵のターンを自動処理（バトル開始時は全員MAXHPで表示してから実行）
   useEffect(() => {
     if (gs.phase !== 'battle' || !gs.battle) return
@@ -347,6 +361,33 @@ export default function GameRoot() {
           </div>
         </div>
       )}
+
+      {/* 封印石取得演出 */}
+      {sealFlash && (() => {
+        const cfg = {
+          fire:  { icon: '🔥', name: '炎の封印石', color: '#ef4444', bg: '#450a0a', border: '#b91c1c', glow: 'rgba(239,68,68,0.4)' },
+          storm: { icon: '⚡', name: '嵐の封印石', color: '#60a5fa', bg: '#0c1a45', border: '#1d4ed8', glow: 'rgba(96,165,250,0.4)' },
+          dark:  { icon: '🌑', name: '闇の封印石', color: '#c4b5fd', bg: '#2e1065', border: '#6d28d9', glow: 'rgba(196,181,253,0.4)' },
+        }[sealFlash]
+        return (
+          <div
+            className="fixed inset-0 z-[55] flex items-center justify-center pointer-events-none"
+            style={{ background: `radial-gradient(ellipse at center, ${cfg.glow} 0%, rgba(0,0,0,0.7) 60%)` }}
+          >
+            <div
+              className="text-center border-2 rounded-2xl px-10 py-8"
+              style={{ background: cfg.bg, borderColor: cfg.border, boxShadow: `0 0 60px ${cfg.glow}` }}
+            >
+              <div style={{ fontSize: 72, lineHeight: 1, filter: `drop-shadow(0 0 20px ${cfg.color})` }}>{cfg.icon}</div>
+              <div className="text-2xl font-black mt-3" style={{ color: cfg.color, textShadow: `0 0 20px ${cfg.color}` }}>
+                封印石を入手！
+              </div>
+              <div className="text-base font-bold text-white mt-1">{cfg.name}</div>
+              <div className="text-xs text-gray-400 mt-2">封印石 {gs.sealStones.length}/3</div>
+            </div>
+          </div>
+        )
+      })()}
 
       {/* Save notification */}
       {saveMsg && (
