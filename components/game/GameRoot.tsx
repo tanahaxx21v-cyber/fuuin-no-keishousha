@@ -68,6 +68,7 @@ export default function GameRoot() {
   const [sealFlash, setSealFlash] = useState<'fire' | 'storm' | 'dark' | null>(null)
   const [battleSpeed, setBattleSpeed] = useState<'normal' | 'fast'>('normal')
   const [autoBattle, setAutoBattle] = useState(false)
+  const [diceRolling, setDiceRolling] = useState(false)
   const prevSealStonesRef = useRef<string[]>([])
 
   useEffect(() => {
@@ -158,7 +159,16 @@ export default function GameRoot() {
   }
 
   const handleChooseBranch = (idx: number) => {
-    update(s => chooseBranch(s, idx))
+    const opt = gs.pendingBranch?.options[idx]
+    if (opt?.winChance !== undefined) {
+      setDiceRolling(true)
+      setTimeout(() => {
+        setDiceRolling(false)
+        update(s => chooseBranch(s, idx))
+      }, 1500)
+    } else {
+      update(s => chooseBranch(s, idx))
+    }
   }
 
   const handleBackToMap = () => {
@@ -554,7 +564,17 @@ export default function GameRoot() {
             <EventScene gs={gs} onAdvance={handleEventAdvance} onSkipAll={handleSkipAllEvent} />
           </div>
         )}
-        {gs.pendingBranch && gs.phase === 'location' && (
+        {/* サイコロ演出 */}
+        {diceRolling && (
+          <div className="fixed inset-0 z-[70] flex items-center justify-center" style={{ background: 'rgba(0,0,0,0.75)' }}>
+            <div className="text-center">
+              <div className="text-8xl mb-3" style={{ animation: 'diceSpin 0.35s linear infinite' }}>🎲</div>
+              <div className="text-xl font-black text-yellow-300 animate-pulse">運命を決める…</div>
+            </div>
+          </div>
+        )}
+
+        {gs.pendingBranch && gs.phase === 'location' && !diceRolling && (
           <div className="fixed inset-0 z-50 flex flex-col items-center justify-end pb-8 px-4" style={{ background: 'rgba(0,0,0,0.85)' }}>
             <div className="w-full max-w-md bg-[#0c0c24] border-2 border-amber-600 rounded-2xl p-5 shadow-2xl">
               <div className="flex items-center justify-between mb-1">
