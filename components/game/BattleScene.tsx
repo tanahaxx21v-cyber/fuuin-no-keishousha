@@ -1,8 +1,8 @@
 'use client'
 
 import { useState, useEffect, useRef } from 'react'
-import type { GameState, BattleUnit, Skill } from '@/lib/game/types'
-import { ITEMS } from '@/lib/game/data'
+import type { GameState, BattleUnit, Skill, CompanionId } from '@/lib/game/types'
+import { ITEMS, COMPANIONS } from '@/lib/game/data'
 import { CharPortrait } from './CharPortrait'
 
 interface Props {
@@ -151,7 +151,9 @@ export default function BattleScene({ gs, onAttack, onSkill, onItem, onFlee, onC
   const [pendingItemId, setPendingItemId] = useState<string | null>(null)
   const [critFlash, setCritFlash] = useState(false)
   const [deathFlash, setDeathFlash] = useState(false)
+  const [deadCompanion, setDeadCompanion] = useState<{ id: CompanionId; lastWord: string } | null>(null)
   const prevLogLen = useRef(0)
+  const prevAllyHp = useRef<Record<string, number>>({})
 
   useEffect(() => {
     if (b.logs.length > prevLogLen.current) {
@@ -163,7 +165,21 @@ export default function BattleScene({ gs, onAttack, onSkill, onItem, onFlee, onC
       if (newLogs.some(l => l.type === 'death')) {
         setDeathFlash(true)
         setTimeout(() => setDeathFlash(false), 400)
+        // Detect companion death for overlay
+        for (const unit of b.units.filter(u => u.isAlly && u.companionId && !u.isPlayer)) {
+          const prev = prevAllyHp.current[unit.uid] ?? unit.maxHp
+          if (prev > 0 && unit.hp <= 0) {
+            const lastWordLog = newLogs.find(l => l.type === 'system' && l.text.includes(unit.name))
+            const lastWord = lastWordLog?.text.match(/「(.+)」/)?.[1] ?? '……'
+            setDeadCompanion({ id: unit.companionId as CompanionId, lastWord })
+            setTimeout(() => setDeadCompanion(null), 4000)
+          }
+        }
       }
+    }
+    // Track ally HP
+    for (const unit of b.units.filter(u => u.isAlly && u.companionId)) {
+      prevAllyHp.current[unit.uid] = unit.hp
     }
     prevLogLen.current = b.logs.length
   }, [b.logs.length])
@@ -198,6 +214,30 @@ export default function BattleScene({ gs, onAttack, onSkill, onItem, onFlee, onC
 
   return (
     <div className="bg-[#07071a] flex flex-col min-h-screen" style={playerDanger ? { boxShadow: 'inset 0 0 0 3px rgba(220,38,38,0.7)', animation: 'pulse 1s ease-in-out infinite' } : {}}>
+
+      {/* 仲間死亡追悼オーバーレイ */}
+      {deadCompanion && (() => {
+        const def = COMPANIONS[deadCompanion.id]
+        if (!def) return null
+        return (
+          <div className="fixed inset-0 z-[90] flex items-center justify-center pointer-events-none">
+            <div className="bg-black/80 backdrop-blur-sm absolute inset-0" />
+            <div className="relative z-10 text-center px-8 py-10 rounded-2xl border-2 border-gray-700 bg-[#0a0a20]/95 shadow-2xl max-w-xs mx-4"
+              style={{ animation: 'fadeIn 0.4s ease' }}
+            >
+              <div className="text-xs font-black text-gray-500 tracking-widest mb-3">— FALLEN HERO —</div>
+              <div className="text-8xl mb-3" style={{ filter: 'grayscale(0.6) drop-shadow(0 0 24px rgba(100,100,200,0.4))' }}>{def.emoji}</div>
+              <div className="text-xl font-black text-white mb-0.5">{def.name}</div>
+              <div className="text-xs text-gray-500 mb-4">{def.cls}</div>
+              <div className="text-sm text-gray-300 italic leading-relaxed mb-5 border-l-2 border-gray-600 pl-3 text-left">
+                「{deadCompanion.lastWord}」
+              </div>
+              <div className="text-2xl">💀</div>
+              <div className="text-xs text-red-400 font-black mt-1">永眠</div>
+            </div>
+          </div>
+        )
+      })()}
 
       {/* ===== ステータスバー（上部）===== */}
       <div className="flex items-stretch bg-[#12123a] border-b-2 border-[#2848c0] px-2 py-1 shrink-0 gap-2">
