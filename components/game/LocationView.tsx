@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import type { GameState, CompanionId } from '@/lib/game/types'
 import { LOCATIONS, COMPANIONS, ENEMIES, ITEMS, getInnPrice, getDifficultyMultiplier } from '@/lib/game/data'
 import { CharPortrait, CharPortraitLarge, hasCharPortrait } from './CharPortrait'
@@ -113,7 +113,14 @@ export default function LocationView({
 }: Props) {
   const [itemPanelOpen, setItemPanelOpen] = useState(false)
   const [selectedItemId, setSelectedItemId] = useState<string | null>(null)
+  const [showArrival, setShowArrival] = useState(false)
   const loc = LOCATIONS[gs.currentLocId]
+
+  useEffect(() => {
+    const isFirstVisit = (gs.locVisitCounts?.[gs.currentLocId] ?? 1) === 1
+    if (isFirstVisit) setShowArrival(true)
+  }, [gs.currentLocId])
+
   const companion = loc.companionId ? COMPANIONS[loc.companionId] : undefined
   const companionState = companion ? gs.companions[companion.id] : undefined
   const showCompanionJoin = companion && companionState && !companionState.joined
@@ -174,8 +181,55 @@ export default function LocationView({
     }
   }
 
+  // 初訪問オーバーレイ表示パラメータ
+  const arrivalBg =
+    loc.type === 'dungeon' ? 'from-red-950/95 via-[#07071a]/95 to-[#07071a]/95'
+    : loc.type === 'town'  ? 'from-indigo-950/95 via-[#07071a]/95 to-[#07071a]/95'
+    : 'from-slate-900/95 via-[#07071a]/95 to-[#07071a]/95'
+  const arrivalBorder =
+    loc.type === 'dungeon' ? 'border-orange-600'
+    : loc.type === 'town'  ? 'border-indigo-500'
+    : 'border-slate-500'
+  const dangerInfo = loc.bossId ? DUNGEON_DANGER[loc.bossId] : null
+
   return (
     <div className="p-3 max-w-2xl mx-auto flex flex-col gap-3">
+
+      {/* 初訪問オーバーレイ */}
+      {showArrival && (
+        <div
+          className="fixed inset-0 z-[80] flex items-center justify-center cursor-pointer"
+          style={{ background: 'rgba(4,4,20,0.88)' }}
+          onClick={() => setShowArrival(false)}
+        >
+          <div className={`relative max-w-sm w-full mx-6 rounded-2xl border-2 ${arrivalBorder} bg-gradient-to-b ${arrivalBg} p-8 text-center shadow-2xl`}
+            style={{ animation: 'fadeIn 0.5s ease' }}
+          >
+            {/* タイプラベル */}
+            <div className="text-xs font-black text-gray-400 tracking-widest uppercase mb-3">{typeLabel}</div>
+            {/* 絵文字 */}
+            <div className="text-7xl mb-4" style={{ filter: 'drop-shadow(0 0 18px rgba(255,255,200,0.4))' }}>{loc.emoji}</div>
+            {/* 地名 */}
+            <div className="text-3xl font-black text-white mb-1" style={{ textShadow: '0 0 20px rgba(150,150,255,0.5)' }}>{loc.name}</div>
+            {/* 説明文 */}
+            <div className="text-sm text-gray-400 leading-relaxed mb-4 px-2">{loc.desc}</div>
+            {/* ダンジョン危険度 */}
+            {dangerInfo && (
+              <div className="inline-flex items-center gap-2 bg-red-950/80 border border-red-700 rounded-lg px-4 py-1.5 mb-4">
+                <span className="text-xs font-black text-red-400">危険度</span>
+                <span className="text-sm text-orange-300">{dangerInfo.rank}</span>
+                <span className="text-xs font-black px-1.5 py-0.5 rounded text-white"
+                  style={{ background: dangerInfo.color }}
+                >{dangerInfo.label}</span>
+              </div>
+            )}
+            {/* 初訪問バッジ */}
+            <div className="text-xs text-indigo-400 font-bold mb-4">✦ 初めての訪問 ✦</div>
+            {/* 閉じるヒント */}
+            <div className="text-xs text-gray-600 animate-pulse">タップして続ける</div>
+          </div>
+        </div>
+      )}
 
       {/* Header */}
       <div className={`bg-[#0c0c24] border-2 ${typeBorder} rounded-xl p-4`}>
