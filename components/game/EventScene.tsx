@@ -8,6 +8,7 @@ import { CharPortraitLarge, hasCharPortrait } from './CharPortrait'
 interface Props {
   gs: GameState
   onAdvance: () => void
+  onSkipAll?: () => void
 }
 
 type SpeakerCfg = {
@@ -48,7 +49,7 @@ function getSpeakerConfig(speaker: string): SpeakerCfg {
 
 const CHAR_DELAY = 32 // ms per character
 
-export default function EventScene({ gs, onAdvance }: Props) {
+export default function EventScene({ gs, onAdvance, onSkipAll }: Props) {
   const ev = EVENTS.find(e => e.id === gs.activeEventId)
 
   const lineIdx = gs.activeEventLine ?? 0
@@ -130,7 +131,17 @@ export default function EventScene({ gs, onAdvance }: Props) {
         style={{ background: 'rgba(3,6,8,0.98)', borderColor: '#1a1f2e' }}
       >
         <div className="text-xs font-black text-indigo-400 tracking-widest">📖 {ev.title}</div>
-        <div className="text-xs font-bold" style={{ color: '#374151' }}>{progress} / {total}</div>
+        <div className="flex items-center gap-2">
+          <span className="text-xs font-bold" style={{ color: '#374151' }}>{progress} / {total}</span>
+          {onSkipAll && !isLast && (
+            <button
+              onClick={e => { e.stopPropagation(); onSkipAll() }}
+              className="text-[10px] font-bold px-2 py-0.5 rounded border border-gray-700 bg-gray-900/80 text-gray-500 hover:text-gray-300 hover:border-gray-500 transition"
+            >
+              全スキップ ▶▶
+            </button>
+          )}
+        </div>
       </div>
 
       {/* ===== 進行バー ===== */}

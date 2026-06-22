@@ -185,6 +185,14 @@ export function advanceEvent(state: GameState): GameState {
   return s
 }
 
+export function skipToEventEnd(state: GameState): GameState {
+  const s = deepClone(state)
+  const ev = EVENTS.find(e => e.id === s.activeEventId)
+  if (!ev) return s
+  s.activeEventLine = ev.dialogues.length - 1
+  return s
+}
+
 // ===== TRAVEL =====
 
 export function travel(state: GameState, destId: LocationId): GameState {

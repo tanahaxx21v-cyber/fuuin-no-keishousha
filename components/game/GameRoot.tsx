@@ -6,7 +6,7 @@ import {
   createInitialState, travel, joinCompanion, skipCompanion,
   restAtInn, buyItem, enterDungeon, fightBoss, battleAttack,
   battleSkill, battleUseItem, battleFlee, closeBattle,
-  processNonPlayerTurn, checkLocationEvent, startEvent, advanceEvent,
+  processNonPlayerTurn, checkLocationEvent, startEvent, advanceEvent, skipToEventEnd,
   chooseBranch, wander, campRest, useItemOutOfBattle, setParty, getAvailableConnections,
 } from '@/lib/game/engine'
 import { LOCATIONS } from '@/lib/game/data'
@@ -149,6 +149,10 @@ export default function GameRoot() {
 
   const handleEventAdvance = () => {
     update(s => advanceEvent(s))
+  }
+
+  const handleSkipAllEvent = () => {
+    update(s => skipToEventEnd(s))
   }
 
   const handleChooseBranch = (idx: number) => {
@@ -507,7 +511,7 @@ export default function GameRoot() {
               onEnterDungeon={() => {}} onFightBoss={() => {}}
               onJoinCompanion={() => {}} onSkipCompanion={() => {}}
             />
-            <EventScene gs={gs} onAdvance={handleEventAdvance} />
+            <EventScene gs={gs} onAdvance={handleEventAdvance} onSkipAll={handleSkipAllEvent} />
           </div>
         )}
         {gs.pendingBranch && gs.phase === 'location' && (

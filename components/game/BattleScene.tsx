@@ -160,6 +160,7 @@ export default function BattleScene({ gs, onAttack, onSkill, onItem, onFlee, onC
   const latestLog = b.logs[b.logs.length - 1]
   const prevLogs = b.logs.slice(-3, -1)
   const isOver = b.phase === 'victory' || b.phase === 'defeat'
+  const playerDanger = playerUnit.hp > 0 && playerUnit.hp / playerUnit.maxHp <= 0.15
 
   const isTargetingEnemies = mode === 'target_attack' || (mode === 'target_skill' && pendingSkill?.target === 'enemy_one')
 
@@ -178,7 +179,7 @@ export default function BattleScene({ gs, onAttack, onSkill, onItem, onFlee, onC
   const cancelTarget = () => { setMode('select'); setPendingSkill(null); setPendingItemId(null) }
 
   return (
-    <div className="bg-[#07071a] flex flex-col min-h-screen">
+    <div className="bg-[#07071a] flex flex-col min-h-screen" style={playerDanger ? { boxShadow: 'inset 0 0 0 3px rgba(220,38,38,0.7)', animation: 'pulse 1s ease-in-out infinite' } : {}}>
 
       {/* ===== ステータスバー（上部）===== */}
       <div className="flex items-stretch bg-[#12123a] border-b-2 border-[#2848c0] px-2 py-1 shrink-0 gap-2">
@@ -193,6 +194,11 @@ export default function BattleScene({ gs, onAttack, onSkill, onItem, onFlee, onC
           {b.bossRaged && (
             <span className="text-xs font-black px-2 py-0.5 rounded border border-red-600 bg-red-950 text-red-400 animate-pulse">
               💢激怒
+            </span>
+          )}
+          {playerDanger && (
+            <span className="text-xs font-black px-2 py-0.5 rounded border border-red-500 bg-red-950 text-red-300 animate-pulse">
+              ⚠️危機
             </span>
           )}
           <span className={`text-xs font-bold px-2 py-0.5 rounded border ${
