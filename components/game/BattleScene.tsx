@@ -635,14 +635,16 @@ export default function BattleScene({ gs, onAttack, onSkill, onItem, onFlee, onC
                 {b.logs.filter(l => l.type === 'system' && l.text.includes('レベルアップ')).map((l, i) => (
                   <div key={i} className="text-yellow-300 font-black text-sm">⭐ {l.text.replace('⭐ ', '')}</div>
                 ))}
-                {/* 仲間の勝利セリフ */}
-                {allies.filter(a => !a.isPlayer && a.hp > 0).length > 0 && (() => {
-                  const alive = allies.filter(a => !a.isPlayer && a.hp > 0)
-                  const speaker = alive[b.turn % alive.length]
-                  const quotes = ['やったな！', '悪くない戦いだ。', '次も任せろ！', '一緒に戦えて光栄だ。', '勝ったぞ！']
-                  return (
-                    <div className="text-xs text-gray-400 italic">「{quotes[b.turn % quotes.length]}」—— {speaker.name}</div>
+                {/* 仲間の勝利セリフ（バトルログから取得） */}
+                {(() => {
+                  const companionLog = b.logs.slice().reverse().find(l => l.type === 'system' && /「.+」/.test(l.text) && !l.text.startsWith('👹'))
+                  if (companionLog) return (
+                    <div className="text-xs text-gray-300 italic bg-slate-900/60 border border-slate-700 rounded-lg px-3 py-1.5">{companionLog.text}</div>
                   )
+                  const alive = allies.filter(a => !a.isPlayer && a.hp > 0)
+                  if (alive.length === 0) return null
+                  const speaker = alive[b.turn % alive.length]
+                  return <div className="text-xs text-gray-400 italic">「次も頼んだぞ。」—— {speaker.name}</div>
                 })()}
                 {/* 死亡した仲間 */}
                 {allies.filter(a => !a.isPlayer && a.hp <= 0).map(a => (
