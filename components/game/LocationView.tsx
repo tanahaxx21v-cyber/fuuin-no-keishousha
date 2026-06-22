@@ -714,9 +714,14 @@ export default function LocationView({
                           : 'border-slate-600 bg-slate-900 text-gray-300 hover:border-teal-700'
                       }`}
                     >
-                      <span>{item.emoji}</span>
-                      <span>{item.name}</span>
-                      <span className="text-gray-500">×{slot.qty}</span>
+                      <span className="text-xl">{item.emoji}</span>
+                      <div className="text-left">
+                        <div className="flex items-center gap-1">
+                          <span>{item.name}</span>
+                          <span className="text-gray-500">×{slot.qty}</span>
+                        </div>
+                        <div className="text-[10px] text-gray-500 font-normal">{item.desc}</div>
+                      </div>
                     </button>
                   )
                 })}
