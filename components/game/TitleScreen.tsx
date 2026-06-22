@@ -16,16 +16,41 @@ const DIFFICULTIES: { id: Difficulty; name: string; desc: string; days: number; 
   { id: 'hard',   name: 'ハード',   desc: '日数80日 / 敵HP140% / 極限難易度',     days: 80,  color: 'border-red-700 bg-red-950 hover:bg-red-900',         textColor: 'text-red-400' },
 ]
 
+// タイトル画面の星パーティクル（静的な位置で点滅）
+const STARS = Array.from({ length: 40 }, (_, i) => ({
+  id: i,
+  x: (i * 7 + 3) % 100,
+  y: (i * 13 + 7) % 100,
+  size: (i % 3) + 1,
+  delay: (i * 0.17) % 3,
+  dur: 2 + (i % 3),
+}))
+
 export default function TitleScreen({ onStart, onContinue, onDeleteSave, hasSave }: Props) {
   const [selected, setSelected] = useState<Difficulty>('normal')
   const [showNewGame, setShowNewGame] = useState(!hasSave)
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-[#07071a] relative overflow-hidden p-4">
-      {/* Background glow */}
-      <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-96 h-96 bg-indigo-900/20 rounded-full blur-3xl" />
+      {/* 星空背景 */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden">
+        {STARS.map(s => (
+          <div
+            key={s.id}
+            className="absolute rounded-full bg-white"
+            style={{
+              left: `${s.x}%`,
+              top: `${s.y}%`,
+              width: s.size,
+              height: s.size,
+              opacity: 0.4,
+              animation: `pulse ${s.dur}s ease-in-out ${s.delay}s infinite`,
+            }}
+          />
+        ))}
+        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-96 h-96 bg-indigo-900/25 rounded-full blur-3xl" />
         <div className="absolute bottom-1/4 left-1/4 w-64 h-64 bg-purple-900/20 rounded-full blur-3xl" />
+        <div className="absolute top-1/3 right-1/4 w-48 h-48 bg-blue-900/15 rounded-full blur-3xl" />
       </div>
 
       <div className="relative z-10 w-full max-w-md">
@@ -33,21 +58,33 @@ export default function TitleScreen({ onStart, onContinue, onDeleteSave, hasSave
         <div className="text-center mb-8">
           <div className="text-indigo-400 text-xs font-black tracking-[0.4em] uppercase mb-2">Fantasy RPG</div>
           <h1 className="text-5xl font-black text-white mb-1 tracking-wide drop-shadow-lg"
-              style={{ textShadow: '0 0 30px rgba(99,102,241,0.5)' }}>
+              style={{
+                textShadow: '0 0 30px rgba(99,102,241,0.6), 0 0 60px rgba(139,92,246,0.3)',
+                animation: 'pulse 3s ease-in-out infinite',
+              }}>
             封印の継承者
           </h1>
+          <div className="text-indigo-300/70 text-xs font-bold tracking-[0.2em] mt-1">
+            ─ FUUIN NO KEISHOUSHA ─
+          </div>
           <div className="text-gray-400 text-sm mt-2">{DIFFICULTIES.find(d => d.id === selected)!.days}日で3つの封印石を集め、魔王を倒せ</div>
 
           {/* Seal stones preview */}
           <div className="flex justify-center gap-6 mt-5">
             {[
-              { icon: '🔥', label: '炎', color: 'border-red-700 bg-red-950' },
-              { icon: '⚡', label: '嵐', color: 'border-blue-700 bg-blue-950' },
-              { icon: '🌑', label: '闇', color: 'border-purple-700 bg-purple-950' },
+              { icon: '🔥', label: '炎の封印石', color: 'border-red-700 bg-red-950', glow: 'rgba(239,68,68,0.4)', delay: '0s' },
+              { icon: '⚡', label: '嵐の封印石', color: 'border-blue-700 bg-blue-950', glow: 'rgba(59,130,246,0.4)', delay: '1s' },
+              { icon: '🌑', label: '闇の封印石', color: 'border-purple-700 bg-purple-950', glow: 'rgba(168,85,247,0.4)', delay: '2s' },
             ].map(s => (
               <div key={s.label} className="flex flex-col items-center gap-1">
-                <div className={`w-12 h-12 rounded-full border-2 ${s.color} flex items-center justify-center text-2xl`}>{s.icon}</div>
-                <div className="text-xs text-gray-500">{s.label}</div>
+                <div
+                  className={`w-12 h-12 rounded-full border-2 ${s.color} flex items-center justify-center text-2xl`}
+                  style={{
+                    boxShadow: `0 0 12px ${s.glow}`,
+                    animation: `pulse 2s ease-in-out ${s.delay} infinite`,
+                  }}
+                >{s.icon}</div>
+                <div className="text-[10px] text-gray-500 font-bold">{s.label}</div>
               </div>
             ))}
           </div>

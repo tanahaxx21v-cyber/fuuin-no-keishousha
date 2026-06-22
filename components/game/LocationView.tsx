@@ -4,6 +4,16 @@ import type { GameState, CompanionId } from '@/lib/game/types'
 import { LOCATIONS, COMPANIONS, ENEMIES, getInnPrice, getDifficultyMultiplier } from '@/lib/game/data'
 import { CharPortrait, CharPortraitLarge, hasCharPortrait } from './CharPortrait'
 
+// ダンジョン危険度マッピング（ボスの強さから判定）
+const DUNGEON_DANGER: Record<string, { rank: string; color: string; label: string }> = {
+  bandit_king:  { rank: '★★☆☆☆', color: '#fb923c', label: '中級' },
+  tidal_king:   { rank: '★★★☆☆', color: '#f97316', label: '上級' },
+  mine_king:    { rank: '★★★☆☆', color: '#f97316', label: '上級' },
+  storm_dragon: { rank: '★★★★☆', color: '#ef4444', label: '危険' },
+  forest_king:  { rank: '★★★★☆', color: '#ef4444', label: '危険' },
+  archive:      { rank: '★★★★★', color: '#dc2626', label: '最終決戦' },
+}
+
 interface Props {
   gs: GameState
   onBackToMap: () => void
@@ -313,6 +323,46 @@ export default function LocationView({
       })()}
 
       {/* 仲間加入UIはイベント(pendingJoin)経由のみ — 自動表示廃止 */}
+
+      {/* ダンジョン危険情報パネル（ボス未討伐時のみ）*/}
+      {loc.type === 'dungeon' && !bossDefeated && loc.bossId && ENEMIES[loc.bossId] && (() => {
+        const boss = ENEMIES[loc.bossId!]
+        const { enemyHpMult } = getDifficultyMultiplier(gs.difficulty)
+        const bossHp = Math.floor(boss.hp * enemyHpMult)
+        const danger = DUNGEON_DANGER[loc.bossId!]
+        return (
+          <div className="bg-[#100808] border-2 border-red-900 rounded-xl overflow-hidden">
+            <div className="flex items-center gap-2 px-4 py-2 border-b border-red-900/50" style={{ background: 'rgba(180,0,0,0.12)' }}>
+              <span className="text-red-400 text-sm font-black animate-pulse">⚠</span>
+              <span className="text-xs font-black text-red-400 tracking-widest">— 危険区域 —</span>
+              {danger && (
+                <span className="ml-auto text-xs font-black px-2 py-0.5 rounded border border-red-800"
+                  style={{ color: danger.color, borderColor: danger.color, background: `${danger.color}18` }}>
+                  {danger.label}
+                </span>
+              )}
+            </div>
+            <div className="px-4 py-3 flex items-center gap-4">
+              <div className="text-4xl" style={{ filter: 'drop-shadow(0 0 8px rgba(255,50,50,0.6))' }}>
+                {boss.emoji}
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="font-black text-white text-sm">{boss.name}</div>
+                {danger && (
+                  <div className="text-xs mt-0.5" style={{ color: danger.color }}>{danger.rank}</div>
+                )}
+                <div className="flex gap-3 mt-1.5">
+                  <span className="text-[11px] text-red-300 font-bold">HP {bossHp}</span>
+                  <span className="text-[11px] text-orange-300 font-bold">ATK {boss.atk}</span>
+                  {loc.sealStone && !sealObtained && (
+                    <span className="text-[11px] text-amber-400 font-bold">💎 封印石あり</span>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+        )
+      })()}
 
       {/* Action menu */}
       <div className="bg-[#0c0c24] border-2 border-amber-800 rounded-xl p-3">

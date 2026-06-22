@@ -190,6 +190,11 @@ export default function BattleScene({ gs, onAttack, onSkill, onItem, onFlee, onC
           }`}>
             {b.isBoss ? '👑BOSS' : `T${b.turn}`}
           </span>
+          {b.bossRaged && (
+            <span className="text-xs font-black px-2 py-0.5 rounded border border-red-600 bg-red-950 text-red-400 animate-pulse">
+              💢激怒
+            </span>
+          )}
           <span className={`text-xs font-bold px-2 py-0.5 rounded border ${
             isPlayerTurn
               ? 'border-green-600 bg-green-950 text-green-300'
@@ -311,15 +316,17 @@ export default function BattleScene({ gs, onAttack, onSkill, onItem, onFlee, onC
         <div className="border-2 rounded-xl px-3 py-2"
           style={{
             backgroundColor: '#080f38',
-            borderColor: '#2848c0',
-            boxShadow: 'inset 0 0 18px rgba(50,70,190,0.2), 0 0 10px rgba(40,72,192,0.15)',
+            borderColor: b.bossRaged ? '#dc2626' : '#2848c0',
+            boxShadow: b.bossRaged
+              ? 'inset 0 0 18px rgba(220,38,38,0.15), 0 0 10px rgba(220,38,38,0.2)'
+              : 'inset 0 0 18px rgba(50,70,190,0.2), 0 0 10px rgba(40,72,192,0.15)',
             minHeight: '62px',
           }}>
           {latestLog ? (
             <>
               <div className="text-sm font-black leading-snug" style={{ color: logColor(latestLog.type) }}>▶ {latestLog.text}</div>
-              {[...prevLogs].reverse().map((log, i) => (
-                <div key={i} className="text-xs leading-snug mt-0.5 ml-3" style={{ color: logColor(log.type), opacity: 0.55 }}>{log.text}</div>
+              {b.logs.slice(-5, -1).reverse().map((log, i) => (
+                <div key={i} className="text-xs leading-snug mt-0.5 ml-3" style={{ color: logColor(log.type), opacity: Math.max(0.35, 0.65 - i * 0.1) }}>{log.text}</div>
               ))}
             </>
           ) : (
