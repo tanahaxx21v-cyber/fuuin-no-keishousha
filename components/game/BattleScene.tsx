@@ -592,6 +592,21 @@ export default function BattleScene({ gs, onAttack, onSkill, onItem, onFlee, onC
                 {(playerUnit?.skills ?? []).map(skill => {
                   const ok = (playerUnit?.mp ?? 0) >= skill.mpCost
                   const targetLabel = skill.target === 'enemy_all' ? '全敵' : skill.target === 'ally_all' ? '全味方' : skill.target === 'self' ? '自分' : '1体'
+                  // 予想ダメージ/回復量を計算
+                  const estimate = (() => {
+                    if (skill.effect === 'damage' || skill.effect === 'boss_bonus') {
+                      const avgEnemyDef = aliveEnemies.length > 0
+                        ? aliveEnemies.reduce((s, e) => s + e.def, 0) / aliveEnemies.length
+                        : 0
+                      const est = Math.max(1, Math.floor(playerUnit.atk * skill.power - avgEnemyDef / 2))
+                      return { label: `~${est}`, color: '#fca5a5' }
+                    }
+                    if (skill.effect === 'heal') {
+                      const est = Math.min(skill.power, playerUnit.maxHp - playerUnit.hp)
+                      return { label: `+${est}HP`, color: '#86efac' }
+                    }
+                    return null
+                  })()
                   return (
                     <button key={skill.id} disabled={!ok} onClick={() => handleSkillSelect(skill)}
                       className={`text-left px-3 py-2 rounded-lg border-2 transition ${
@@ -602,6 +617,9 @@ export default function BattleScene({ gs, onAttack, onSkill, onItem, onFlee, onC
                       <div className="flex justify-between items-center">
                         <span className="font-black text-sm">{skill.name}</span>
                         <div className="flex items-center gap-1.5">
+                          {estimate && (
+                            <span className="text-[9px] font-black" style={{ color: estimate.color }}>{estimate.label}</span>
+                          )}
                           <span className="text-gray-500 text-[9px]">{targetLabel}</span>
                           <span className={`text-xs font-bold ${ok ? 'text-blue-400' : 'text-red-500'}`}>
                             MP {skill.mpCost}
