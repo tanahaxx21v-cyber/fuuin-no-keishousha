@@ -9,7 +9,7 @@ import {
   processNonPlayerTurn, checkLocationEvent, startEvent, advanceEvent, skipToEventEnd,
   chooseBranch, wander, campRest, useItemOutOfBattle, setParty, getAvailableConnections,
 } from '@/lib/game/engine'
-import { LOCATIONS } from '@/lib/game/data'
+import { LOCATIONS, ITEMS } from '@/lib/game/data'
 import {
   playBgm, stopBgm, toggleMute, isMuted,
   sfxAttack, sfxSkill, sfxHeal, sfxVictory, sfxDefeat, sfxLevelUp, sfxMenuSelect, sfxCoin,
@@ -351,7 +351,7 @@ export default function GameRoot() {
     return () => clearTimeout(timer)
   }, [gs.battle?.currentUid, gs.battle?.phase, gs.phase])
 
-  // オートバトル：プレイヤーターンを自動で最強敵を攻撃
+  // オートバトル：スキル優先・HP危機時は回復、複数敵はスキル、それ以外は最弱敵攻撃
   useEffect(() => {
     if (!autoBattle || gs.phase !== 'battle' || !gs.battle) return
     const b = gs.battle
@@ -360,11 +360,31 @@ export default function GameRoot() {
     if (!currentActor?.isPlayer || b.phase !== 'select_action') return
     const aliveEnemies = b.units.filter(u => !u.isAlly && u.hp > 0)
     if (aliveEnemies.length === 0) return
-    const target = [...aliveEnemies].sort((a, b) => b.hp - a.hp)[0]
-    const delay = battleSpeed === 'fast' ? 400 : 800
+    const player = b.units.find(u => u.isPlayer)!
+    const delay = battleSpeed === 'fast' ? 400 : 900
     const timer = setTimeout(() => {
+      // Priority 1: heal item if HP < 25%
+      if (player.hp / player.maxHp < 0.25) {
+        const found = gs.inventory.find(i => {
+          const item = ITEMS[i.itemId]
+          return i.qty > 0 && item && ['heal_hp', 'heal_both'].includes(item.effect)
+        })
+        if (found) { sfxHeal(); update(s => battleUseItem(s, found.itemId, player.uid)); return }
+      }
+      // Priority 2: attack skill if multiple enemies or HP high
+      const totalHpPct = aliveEnemies.reduce((sum, e) => sum + e.hp, 0) / aliveEnemies.reduce((sum, e) => sum + e.maxHp, 0)
+      const atkSkill = (player.skills ?? []).find(sk =>
+        (sk.target === 'enemy_one' || sk.target === 'enemy_all') && player.mp >= sk.mpCost * 2
+      )
+      if (atkSkill && (aliveEnemies.length >= 2 || totalHpPct > 0.65)) {
+        if (atkSkill.target === 'enemy_all') { sfxSkill(); update(s => battleSkill(s, atkSkill)); return }
+        const weakest = aliveEnemies.reduce((a, b) => b.hp < a.hp ? b : a)
+        sfxSkill(); update(s => battleSkill(s, atkSkill, weakest.uid)); return
+      }
+      // Priority 3: attack weakest enemy
+      const weakest = aliveEnemies.reduce((a, b) => b.hp < a.hp ? b : a)
       sfxAttack()
-      update(s => battleAttack(s, target.uid))
+      update(s => battleAttack(s, weakest.uid))
     }, delay)
     return () => clearTimeout(timer)
   }, [gs.battle?.currentUid, gs.battle?.phase, autoBattle])
