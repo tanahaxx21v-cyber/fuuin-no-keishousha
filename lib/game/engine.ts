@@ -231,8 +231,13 @@ export function travel(state: GameState, destId: LocationId): GameState {
       const pool = destLoc.travelEnemyPool ?? []
       if (pool.length > 0) {
         const enemyId = pool[Math.floor(Math.random() * pool.length)]
-        s.message = '⚠️ 移動中に敵に遭遇した！'
-        return startBattle(s, [enemyId], false)
+        const groupRoll = Math.random()
+        const enemyGroup: string[] = [enemyId]
+        if (s.playerLevel >= 8 && groupRoll < 0.20) {
+          enemyGroup.push(pool[Math.floor(Math.random() * pool.length)])
+        }
+        s.message = enemyGroup.length > 1 ? `⚠️ 移動中に敵の群れに遭遇！（${enemyGroup.length}体）` : '⚠️ 移動中に敵に遭遇した！'
+        return startBattle(s, enemyGroup, false)
       }
     } else if (roll < 0.40) {
       // 12%: 金/アイテム/回復
@@ -1521,8 +1526,17 @@ export function wander(state: GameState): GameState {
     const pool = loc.travelEnemyPool ?? loc.enemyPool ?? []
     if (pool.length > 0) {
       const enemyId = pool[Math.floor(Math.random() * pool.length)]
-      s.message = '⚠️ 怪しい影に気づいた！'
-      return startBattle(s, [enemyId], false)
+      // Lv8以上でたまに複数敵（25%で2体、Lv15以上は10%で3体）
+      const groupRoll = Math.random()
+      const enemyGroup: string[] = [enemyId]
+      if (s.playerLevel >= 8 && groupRoll < 0.25 && pool.length >= 1) {
+        enemyGroup.push(pool[Math.floor(Math.random() * pool.length)])
+      }
+      if (s.playerLevel >= 15 && groupRoll < 0.10 && pool.length >= 1) {
+        enemyGroup.push(pool[Math.floor(Math.random() * pool.length)])
+      }
+      s.message = enemyGroup.length > 1 ? `⚠️ 敵の群れに囲まれた！（${enemyGroup.length}体）` : '⚠️ 怪しい影に気づいた！'
+      return startBattle(s, enemyGroup, false)
     }
     const nothingTexts = [
       '……何も見つからなかった。1日が過ぎた。',
