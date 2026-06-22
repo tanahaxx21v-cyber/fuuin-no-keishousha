@@ -104,6 +104,14 @@ export default function WorldMap({ gs, onTravel, onEnterLocation, getAvailableCo
     ? '⚡ あと1つ……急がないと間に合わない！'
     : null
 
+  // 未取得封印石のガイド情報
+  const SEAL_GUIDE = [
+    { stone: 'fire' as const,  icon: '🔥', name: '炎の封印石',  loc: '廃鉱山（⛏️ 北西）' },
+    { stone: 'storm' as const, icon: '⚡', name: '嵐の封印石',  loc: '竜の峠（🐉 北中央）' },
+    { stone: 'dark' as const,  icon: '🌑', name: '闇の封印石',  loc: '古代神殿（🏚️ 南西）' },
+  ]
+  const missingStones = SEAL_GUIDE.filter(g => !gs.sealStones.includes(g.stone))
+
   return (
     <div className="flex flex-col gap-2 p-2 max-w-2xl mx-auto">
       <div className="flex items-center gap-2">
@@ -123,6 +131,20 @@ export default function WorldMap({ gs, onTravel, onEnterLocation, getAvailableCo
             : 'bg-amber-950/60 border-amber-700 text-amber-300'
         }`}>
           {mapMessage}
+        </div>
+      )}
+
+      {/* 封印石ガイドパネル */}
+      {missingStones.length > 0 && (
+        <div className="bg-[#0c0c1a] border border-indigo-800/60 rounded-lg px-3 py-2 flex flex-wrap gap-x-4 gap-y-1">
+          <span className="text-[10px] text-indigo-400 font-black tracking-widest w-full">— 未取得の封印石 —</span>
+          {missingStones.map(g => (
+            <div key={g.stone} className="flex items-center gap-1.5 text-[10px]">
+              <span>{g.icon}</span>
+              <span className="text-gray-300 font-bold">{g.name}</span>
+              <span className="text-gray-500">→ {g.loc}</span>
+            </div>
+          ))}
         </div>
       )}
 

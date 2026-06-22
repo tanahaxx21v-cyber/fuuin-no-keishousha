@@ -52,18 +52,18 @@ export default function StatusBar({ gs, onSave, isMuted, onToggleMute, onReturnT
 
         {/* HP */}
         <div className="flex items-center gap-1.5">
-          <span className="text-xs font-black text-red-400 w-5">HP</span>
+          <span className={`text-xs font-black w-5 ${hpPct <= 25 ? 'text-red-400 animate-pulse' : 'text-red-400'}`}>HP</span>
           <div className="w-20 h-3.5 bg-gray-900 rounded-sm border border-gray-700 overflow-hidden">
             <div
               className={`h-full transition-all duration-300 ${
                 hpPct > 50 ? 'bg-gradient-to-r from-green-700 to-green-500'
                 : hpPct > 25 ? 'bg-gradient-to-r from-yellow-700 to-yellow-500'
-                : 'bg-gradient-to-r from-red-800 to-red-600'
+                : 'bg-gradient-to-r from-red-800 to-red-600 animate-pulse'
               }`}
               style={{ width: `${hpPct}%` }}
             />
           </div>
-          <span className="text-xs font-bold text-white">
+          <span className={`text-xs font-bold ${hpPct <= 25 ? 'text-red-400 font-black' : 'text-white'}`}>
             {gs.playerHp}<span className="text-gray-600 font-normal">/{gs.playerMaxHp}</span>
           </span>
         </div>
@@ -123,7 +123,7 @@ export default function StatusBar({ gs, onSave, isMuted, onToggleMute, onReturnT
                       !c.alive ? 'bg-gray-700'
                       : hpPct > 50 ? 'bg-green-500'
                       : hpPct > 25 ? 'bg-yellow-500'
-                      : 'bg-red-600'
+                      : 'bg-red-600 animate-pulse'
                     }`}
                     style={{ width: `${hpPct}%` }}
                   />

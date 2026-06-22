@@ -2,7 +2,7 @@
 
 import type { GameState, CompanionId } from '@/lib/game/types'
 import { LOCATIONS, COMPANIONS, ENEMIES, getInnPrice, getDifficultyMultiplier } from '@/lib/game/data'
-import { CharPortrait } from './CharPortrait'
+import { CharPortrait, CharPortraitLarge, hasCharPortrait } from './CharPortrait'
 
 interface Props {
   gs: GameState
@@ -205,59 +205,112 @@ export default function LocationView({
         )
       })()}
 
-      {/* Pending companion join (after boss defeat) */}
-      {pendingJoin && (
-        <div className="bg-[#0c0c24] border-2 border-purple-600 rounded-xl p-4 shadow-lg shadow-purple-900/30">
-          <div className="text-xs font-black text-purple-400 mb-3 tracking-widest">— 仲間加入イベント —</div>
-          <div className="flex items-center gap-4 mb-3">
-            <div className="shrink-0 rounded-xl overflow-hidden border-2 border-purple-600" style={{ boxShadow: '0 0 16px rgba(147,51,234,0.4)' }}>
-              <CharPortrait charId={pendingJoin.id} size={80} rounded={8} />
-            </div>
-            <div>
-              <div className="font-black text-white text-base">{pendingJoin.name}</div>
-              <div className="text-xs text-purple-300 font-bold">{pendingJoin.cls}</div>
-            </div>
-          </div>
-          <p className="text-sm text-gray-300 italic mb-3 border-l-2 border-purple-700 pl-3">「{pendingJoin.joinText}」</p>
-          {/* 実スタット表示 */}
-          {(() => {
-            const cs = gs.companions[pendingJoin.id]
-            return (
-              <div className="grid grid-cols-4 gap-1 mb-3 bg-slate-900/70 rounded-lg px-3 py-2 border border-slate-700">
-                {[
-                  { label: 'HP', value: cs.maxHp, color: 'text-green-400' },
-                  { label: 'ATK', value: cs.atk, color: 'text-red-400' },
-                  { label: 'DEF', value: cs.def, color: 'text-blue-400' },
-                  { label: 'SPD', value: cs.spd, color: 'text-yellow-400' },
-                ].map(s => (
-                  <div key={s.label} className="text-center">
-                    <div className="text-[9px] text-gray-500 font-bold">{s.label}</div>
-                    <div className={`text-sm font-black ${s.color}`}>{s.value}</div>
-                  </div>
-                ))}
+      {/* 仲間加入UIはイベント(pendingJoin)経由のみ — フルスクリーン演出 */}
+      {pendingJoin && (() => {
+        const cs = gs.companions[pendingJoin.id]
+        const COMPANION_GLOW: Record<string, string> = {
+          gares:'#3b82f6', liz:'#ec4899', noa:'#22c55e', cecil:'#a855f7',
+          bram:'#f97316', finn:'#06b6d4', vais:'#ef4444', logan:'#a8a29e',
+          iris:'#8b5cf6', sig:'#eab308', elk:'#14b8a6', mira:'#10b981', zeno:'#d946ef',
+        }
+        const glow = COMPANION_GLOW[pendingJoin.id] ?? '#a855f7'
+        return (
+          <div
+            className="fixed inset-0 z-40 flex flex-col"
+            style={{ background: '#030608' }}
+          >
+            {/* キャラクターエリア */}
+            <div className="flex-1 relative overflow-hidden flex items-end justify-center">
+              <div className="absolute inset-0 pointer-events-none" style={{
+                background: `radial-gradient(ellipse 80% 60% at 50% 100%, ${glow}22 0%, transparent 65%)`,
+              }} />
+              <div className="absolute bottom-0 left-0 right-0" style={{
+                height: 1,
+                background: `linear-gradient(to right, transparent, ${glow}60, transparent)`,
+              }} />
+              <div
+                className="relative z-10"
+                style={{
+                  marginBottom: -8,
+                  filter: `drop-shadow(0 0 32px ${glow}60) drop-shadow(0 10px 20px rgba(0,0,0,0.9))`,
+                }}
+              >
+                {hasCharPortrait(pendingJoin.id)
+                  ? <CharPortraitLarge charId={pendingJoin.id} w={164} h={324} />
+                  : (
+                    <div className="flex items-end justify-center" style={{ width: 164, height: 200 }}>
+                      <span style={{ fontSize: 110, lineHeight: 1 }}>{pendingJoin.emoji}</span>
+                    </div>
+                  )
+                }
               </div>
-            )
-          })()}
-          {joinedCount >= 3 && (
-            <div className="text-xs text-amber-400 font-bold mb-2 text-center">⚠️ 仲間は3人まで。断るか、現在の仲間と交代できません。</div>
-          )}
-          <div className="flex gap-2">
-            <button
-              onClick={() => onJoinCompanion(gs.pendingCompanionJoin!)}
-              disabled={joinedCount >= 3}
-              className="flex-1 py-2.5 bg-purple-800 hover:bg-purple-700 border-2 border-purple-600 text-white font-black rounded-xl transition active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed"
-            >
-              ✅ 仲間にする
-            </button>
-            <button
-              onClick={onSkipCompanion}
-              className="px-4 py-2.5 bg-slate-800 hover:bg-slate-700 border-2 border-slate-600 text-gray-300 font-bold rounded-xl transition active:scale-95"
-            >
-              断る
-            </button>
+            </div>
+
+            {/* 情報エリア */}
+            <div className="relative z-20 px-3 pb-4 shrink-0">
+              {/* 名前タブ */}
+              <div className="ml-3 mb-0 flex">
+                <div className="px-4 py-1.5 text-sm font-black rounded-t-xl border-t-2 border-x-2"
+                  style={{ color: glow, borderColor: glow, background: '#0a0a1a', boxShadow: `0 -6px 16px ${glow}20` }}>
+                  {pendingJoin.emoji} {pendingJoin.name} — {pendingJoin.cls}
+                </div>
+              </div>
+
+              {/* メインボックス */}
+              <div className="overflow-hidden border-2 rounded-b-xl rounded-tr-xl"
+                style={{ background: 'rgba(2,4,14,0.97)', borderColor: glow, boxShadow: `0 0 40px ${glow}20` }}>
+
+                {/* 加入セリフ */}
+                <div className="px-5 py-4">
+                  <p className="text-sm text-gray-100 font-bold leading-relaxed" style={{ textShadow: '0 1px 4px rgba(0,0,0,0.95)' }}>
+                    「{pendingJoin.joinText}」
+                  </p>
+                </div>
+
+                {/* ステータス */}
+                <div className="px-4 pb-3">
+                  <div className="grid grid-cols-4 gap-1.5 bg-slate-900/80 rounded-lg px-3 py-2.5 border border-slate-700 mb-3">
+                    {[
+                      { label: 'HP', value: cs.maxHp, color: '#4ade80' },
+                      { label: 'ATK', value: cs.atk, color: '#f87171' },
+                      { label: 'DEF', value: cs.def, color: '#60a5fa' },
+                      { label: 'SPD', value: cs.spd, color: '#fbbf24' },
+                    ].map(stat => (
+                      <div key={stat.label} className="text-center">
+                        <div className="text-[9px] text-gray-500 font-bold mb-0.5">{stat.label}</div>
+                        <div className="text-base font-black" style={{ color: stat.color }}>{stat.value}</div>
+                      </div>
+                    ))}
+                  </div>
+
+                  {joinedCount >= 3 && (
+                    <div className="text-xs text-amber-400 font-bold mb-2.5 text-center bg-amber-950/50 rounded-lg py-1.5 border border-amber-800">
+                      ⚠️ 仲間はすでに3人。これ以上は加入できません。
+                    </div>
+                  )}
+
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => onJoinCompanion(gs.pendingCompanionJoin!)}
+                      disabled={joinedCount >= 3}
+                      className="flex-1 py-3 font-black text-white rounded-xl transition active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed border-2"
+                      style={{ background: `${glow}33`, borderColor: glow, boxShadow: `0 0 16px ${glow}30` }}
+                    >
+                      ✅ 仲間にする
+                    </button>
+                    <button
+                      onClick={onSkipCompanion}
+                      className="px-5 py-3 bg-slate-800 hover:bg-slate-700 border-2 border-slate-600 text-gray-300 font-bold rounded-xl transition active:scale-95"
+                    >
+                      断る
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
-        </div>
-      )}
+        )
+      })()}
 
       {/* 仲間加入UIはイベント(pendingJoin)経由のみ — 自動表示廃止 */}
 

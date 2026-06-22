@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useCallback, useEffect } from 'react'
+import { useState, useCallback, useEffect, useRef } from 'react'
 import type { GameState, Difficulty, LocationId, CompanionId, Skill } from '@/lib/game/types'
 import {
   createInitialState, travel, joinCompanion, skipCompanion,
@@ -358,8 +358,15 @@ export default function GameRoot() {
       {/* Message toast */}
       {gs.message && (() => {
         const msg = gs.message!
+        const isJoin = /^✅/.test(msg)
         const isSuccess = /^(💰|🎁|✨|🎉|💪|⭐|💎|🏆)/.test(msg)
         const isWarn = /^(⚠️|☠️|💀)/.test(msg)
+        if (isJoin) return (
+          <div className="fixed top-20 left-1/2 -translate-x-1/2 z-40 bg-purple-950 border-2 border-purple-400 px-5 py-3 rounded-2xl text-sm font-black shadow-2xl max-w-sm text-center"
+            style={{ boxShadow: '0 0 30px rgba(168,85,247,0.4)' }}>
+            <div className="text-purple-200">{msg}</div>
+          </div>
+        )
         const cls = isSuccess
           ? 'bg-green-950 border-green-600 text-green-200'
           : isWarn
@@ -511,6 +518,10 @@ function NamingScreen({ onConfirm }: { onConfirm: (name: string) => void }) {
 
 function PrologueScreen({ onDone, playerName, daysLeft }: { onDone: () => void; playerName: string; daysLeft: number }) {
   const [page, setPage] = useState(0)
+  const [displayedText, setDisplayedText] = useState('')
+  const [isTypingDone, setIsTypingDone] = useState(false)
+  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null)
+
   const pages: { title: string; text: string; icon: string; accent: string }[] = [
     {
       title: '100年前の誓い',
@@ -538,9 +549,37 @@ function PrologueScreen({ onDone, playerName, daysLeft }: { onDone: () => void; 
     },
   ]
 
+  useEffect(() => {
+    const fullText = pages[page].text
+    setDisplayedText('')
+    setIsTypingDone(false)
+    if (timerRef.current) clearInterval(timerRef.current)
+    let idx = 0
+    timerRef.current = setInterval(() => {
+      idx++
+      if (idx >= fullText.length) {
+        setDisplayedText(fullText)
+        setIsTypingDone(true)
+        clearInterval(timerRef.current!)
+      } else {
+        setDisplayedText(fullText.slice(0, idx))
+      }
+    }, 20)
+    return () => { if (timerRef.current) clearInterval(timerRef.current) }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [page])
+
+  const handleClick = () => {
+    if (!isTypingDone) {
+      if (timerRef.current) clearInterval(timerRef.current)
+      setDisplayedText(pages[page].text)
+      setIsTypingDone(true)
+    }
+  }
+
   const current = pages[page]
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#07071a] p-6">
+    <div className="min-h-screen flex items-center justify-center bg-[#07071a] p-6" onClick={handleClick}>
       <div className="max-w-2xl w-full">
         <div className={`bg-[#0c0c24] border-2 ${current.accent} rounded-2xl p-8 shadow-2xl transition-all duration-500`}>
           <div className="flex items-center gap-3 mb-4">
@@ -550,27 +589,37 @@ function PrologueScreen({ onDone, playerName, daysLeft }: { onDone: () => void; 
               <h2 className="text-xl font-black text-white">{current.title}</h2>
             </div>
           </div>
-          <p className="text-gray-300 leading-relaxed whitespace-pre-line text-sm font-medium">{current.text}</p>
+          <div style={{ minHeight: 120 }}>
+            <p className="text-gray-300 leading-relaxed whitespace-pre-line text-sm font-medium">
+              {displayedText}
+              {!isTypingDone && (
+                <span className="inline-block w-0.5 h-4 bg-indigo-400 ml-0.5 align-text-bottom animate-pulse" style={{ borderRadius: 1 }} />
+              )}
+            </p>
+          </div>
           <div className="mt-8 flex items-center justify-between">
             <div className="flex gap-1">
               {pages.map((_, i) => (
                 <div key={i} className={`w-2 h-2 rounded-full transition-all ${i === page ? 'bg-indigo-400 w-4' : i < page ? 'bg-indigo-700' : 'bg-gray-700'}`} />
               ))}
             </div>
-            {page < pages.length - 1 ? (
+            {isTypingDone && (page < pages.length - 1 ? (
               <button
-                onClick={() => setPage(p => p + 1)}
+                onClick={e => { e.stopPropagation(); setPage(p => p + 1) }}
                 className="px-8 py-2.5 bg-indigo-800 hover:bg-indigo-700 border-2 border-indigo-600 text-white font-black rounded-xl transition active:scale-95"
               >
                 次へ ▶
               </button>
             ) : (
               <button
-                onClick={onDone}
+                onClick={e => { e.stopPropagation(); onDone() }}
                 className="px-8 py-2.5 bg-amber-700 hover:bg-amber-600 border-2 border-amber-500 text-white font-black rounded-xl transition active:scale-95 shadow-lg shadow-amber-900/50"
               >
                 旅に出る ⚔️
               </button>
+            ))}
+            {!isTypingDone && (
+              <div className="text-xs text-gray-600 font-bold animate-pulse">タップでスキップ</div>
             )}
           </div>
         </div>

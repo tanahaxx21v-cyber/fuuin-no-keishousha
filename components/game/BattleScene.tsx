@@ -460,33 +460,70 @@ export default function BattleScene({ gs, onAttack, onSkill, onItem, onFlee, onC
 
       {/* ===== 勝利 / 敗北 ===== */}
       {isOver && (
-        <div className={`mx-2 mt-2 mb-3 rounded-xl p-5 text-center border-2 ${
+        <div className={`mx-2 mt-2 mb-3 rounded-2xl border-2 overflow-hidden ${
           b.phase === 'victory'
-            ? 'bg-amber-950 border-amber-500'
+            ? b.isBoss ? 'bg-amber-950 border-amber-400' : 'bg-amber-950 border-amber-600'
             : 'bg-red-950 border-red-700'
-        }`}>
-          <div className="text-3xl font-black mb-2">
-            {b.phase === 'victory' ? '🎉 VICTORY！' : '💀 DEFEAT...'}
-          </div>
-          {b.phase === 'victory' && (
-            <div className="text-sm text-gray-300 mb-3 font-bold">
-              EXP +{b.rewardExp} / Gold +{b.rewardGold}G
-              {b.sealStoneFound && <div className="text-amber-300 font-black mt-1">💎 封印石を入手！</div>}
-              {b.logs.filter(l => l.type === 'system' && l.text.includes('レベルアップ')).map((l, i) => (
-                <div key={i} className="text-yellow-300 font-black mt-1">⭐ {l.text.replace('⭐ ', '')}</div>
-              ))}
+        }`}
+          style={b.phase === 'victory' && b.isBoss
+            ? { boxShadow: '0 0 40px rgba(251,191,36,0.3)' }
+            : {}}
+        >
+          {/* ボス勝利ヘッダー */}
+          {b.phase === 'victory' && b.isBoss && (
+            <div className="bg-gradient-to-r from-amber-900 to-yellow-900 px-4 py-2 text-center">
+              <div className="text-xs font-black text-amber-300 tracking-widest animate-pulse">👑 BOSS DEFEATED 👑</div>
             </div>
           )}
-          <button
-            onClick={onClose}
-            className={`px-8 py-2.5 rounded-xl font-black border-2 transition active:scale-95 ${
-              b.phase === 'victory'
-                ? 'bg-amber-700 hover:bg-amber-600 border-amber-500 text-white'
-                : 'bg-red-900 hover:bg-red-800 border-red-600 text-white'
-            }`}
-          >
-            {b.phase === 'victory' ? '続ける ▶' : 'ゲームオーバーへ'}
-          </button>
+
+          <div className="p-5 text-center">
+            <div className={`font-black mb-2 ${b.phase === 'victory' ? 'text-4xl' : 'text-3xl text-red-400'}`}
+              style={b.phase === 'victory' ? { textShadow: '0 0 20px rgba(251,191,36,0.5)' } : {}}>
+              {b.phase === 'victory' ? '🎉 VICTORY！' : '💀 DEFEAT...'}
+            </div>
+
+            {b.phase === 'victory' && (
+              <div className="space-y-1.5 mb-4">
+                {/* EXP・Gold */}
+                <div className="flex justify-center gap-4 text-sm font-black">
+                  <span className="text-purple-300">EXP +{b.rewardExp}</span>
+                  <span className="text-amber-300">Gold +{b.rewardGold}G</span>
+                </div>
+                {/* 封印石 */}
+                {b.sealStoneFound && (
+                  <div className="bg-amber-900/50 border-2 border-amber-400 rounded-xl px-4 py-2 text-amber-200 font-black animate-pulse"
+                    style={{ boxShadow: '0 0 20px rgba(251,191,36,0.3)' }}>
+                    💎 封印石を入手！
+                  </div>
+                )}
+                {/* レベルアップ */}
+                {b.logs.filter(l => l.type === 'system' && l.text.includes('レベルアップ')).map((l, i) => (
+                  <div key={i} className="text-yellow-300 font-black text-sm">⭐ {l.text.replace('⭐ ', '')}</div>
+                ))}
+                {/* 死亡した仲間 */}
+                {allies.filter(a => !a.isPlayer && a.hp <= 0).map(a => (
+                  <div key={a.uid} className="text-red-400 font-bold text-xs">💔 {a.name} は力尽きた……</div>
+                ))}
+              </div>
+            )}
+
+            {b.phase === 'defeat' && (
+              <p className="text-red-300 text-sm mb-3 font-bold">力尽きてしまった……</p>
+            )}
+
+            <button
+              onClick={onClose}
+              className={`px-10 py-3 rounded-xl font-black border-2 transition active:scale-95 text-lg ${
+                b.phase === 'victory'
+                  ? b.isBoss
+                    ? 'bg-amber-600 hover:bg-amber-500 border-amber-300 text-white'
+                    : 'bg-amber-700 hover:bg-amber-600 border-amber-500 text-white'
+                  : 'bg-red-900 hover:bg-red-800 border-red-600 text-white'
+              }`}
+            >
+              {b.phase === 'victory' ? '続ける ▶' : 'ゲームオーバーへ'}
+            </button>
+          </div>
         </div>
       )}
     </div>

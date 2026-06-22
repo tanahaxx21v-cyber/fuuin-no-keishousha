@@ -686,13 +686,25 @@ function processEnemyTurn(state: GameState): GameState {
   const aliveAllies = b.units.filter(u => u.isAlly && u.hp > 0)
   if (aliveAllies.length === 0) return s
 
+  // ボス激怒フェーズ判定（HP50%以下で初回突入）
+  if (actor.isBoss && !b.bossRaged && actor.hp <= actor.maxHp * 0.5) {
+    b.bossRaged = true
+    b.logs.push({ text: `💢 ${actor.name}が激怒した！攻撃が激化する！`, type: 'system' })
+  }
+  const isRaging = actor.isBoss && b.bossRaged
+
   // Occasionally use skill (only pick from affordable skills)
   const affordableSkills = actor.skills.filter(sk => actor.mp >= sk.mpCost)
-  const useSkill = affordableSkills.length > 0 && Math.random() < 0.3
+  const skillChance = isRaging ? 0.55 : 0.3  // 激怒時はスキル使用率55%
+  const useSkill = affordableSkills.length > 0 && Math.random() < skillChance
   if (useSkill) {
-    const skill = affordableSkills[Math.floor(Math.random() * affordableSkills.length)]
+    // 激怒中は最大ダメージスキルを優先
+    const skill = isRaging
+      ? affordableSkills.reduce((best, sk) => sk.power > best.power ? sk : best, affordableSkills[0])
+      : affordableSkills[Math.floor(Math.random() * affordableSkills.length)]
     actor.mp -= skill.mpCost
-    b.logs.push({ text: `🔥 ${actor.name}は「${skill.name}」を使った！`, type: 'status' })
+    const logPrefix = isRaging ? '💥' : '🔥'
+    b.logs.push({ text: `${logPrefix} ${actor.name}は「${skill.name}」を使った！`, type: 'status' })
     const targets = skill.target === 'enemy_all'
       ? aliveAllies
       : skill.target === 'self'
@@ -702,8 +714,10 @@ function processEnemyTurn(state: GameState): GameState {
     return advanceTurn(s)
   }
 
-  // Normal attack on random ally
-  const target = aliveAllies[Math.floor(Math.random() * aliveAllies.length)]
+  // 激怒中はHPが最も低いアライを狙う（弱者集中攻撃）
+  const target = isRaging
+    ? [...aliveAllies].sort((a, b) => a.hp - b.hp)[0]
+    : aliveAllies[Math.floor(Math.random() * aliveAllies.length)]
   const result = calcDamage(actor, target)
   const diedFromAtk = applyDamage(target, result.dmg)
   b.logs.push({
@@ -1126,31 +1140,62 @@ function calcAchievements(s: GameState): string[] {
   const achs: string[] = []
   const joinedAll = Object.values(s.companions).filter(c => c.joined)
   const deadComps = joinedAll.filter(c => !c.alive)
+  const aliveComps = joinedAll.filter(c => c.alive)
   const zenoJoined = s.companions.zeno?.joined
+  const totalLocs = 21 // ルミナ大陸の全ロケーション数
 
   achs.push('🏆 封印の継承者 — 魔王の封印を成し遂げた！')
 
+  // 難易度
   if (s.difficulty === 'hard') achs.push('💀 鬼神の猛者 — ハード難易度でクリア！')
   else if (s.difficulty === 'normal') achs.push('⚔️ 百年の誓い — ノーマルでクリア！')
   else achs.push('🌱 旅の始まり — イージーでクリア！')
 
-  if (s.daysLeft >= 70) achs.push('⚡ 電光石火 — 残り70日以上でクリア！（SS評価達成）')
+  // 残り日数
+  if (s.daysLeft >= 90) achs.push('🌩️ 瞬殺 — 残り90日以上！伝説の速さ！')
+  else if (s.daysLeft >= 70) achs.push('⚡ 電光石火 — 残り70日以上でクリア！（SS評価達成）')
   else if (s.daysLeft >= 50) achs.push('🌟 手際よし — 残り50日以上でクリア！')
+  else if (s.daysLeft <= 5) achs.push('🕯️ 最後の灯 — 残り5日以内の奇跡的勝利！')
   else if (s.daysLeft <= 10) achs.push('🔥 土壇場の英雄 — 残り10日以内のギリギリ勝利！')
 
-  if (deadComps.length === 0 && joinedAll.length > 0) achs.push('💚 誰も失わなかった — 仲間を全員生還させた！')
-  if (deadComps.length > 0) achs.push(`💔 散った仲間たち — ${deadComps.length}人の仲間を失った`)
+  // ハードSS
+  if (s.difficulty === 'hard' && s.daysLeft >= 40) achs.push('🔱 修羅道の覇者 — ハードで残り40日以上！')
 
+  // 仲間
+  if (deadComps.length === 0 && joinedAll.length >= 3) achs.push('💚 誰も失わなかった — 3人の仲間を全員生還させた！')
+  else if (deadComps.length === 0 && joinedAll.length > 0) achs.push('💚 誰も失わなかった — 仲間を全員生還させた！')
+  if (deadComps.length > 0) achs.push(`💔 散った仲間たち — ${deadComps.length}人の仲間を失った`)
+  if (joinedAll.length === 0) achs.push('🗡️ 孤独な戦士 — 仲間なしで魔王を封印した！')
+  if (aliveComps.length >= 3) achs.push('👥 最強パーティ — 3人の仲間と共に勝利！')
+
+  // 隠しキャラ
   if (zenoJoined) achs.push('😈 謎の魔族の絆 — ゼノを仲間にした（隠しキャラ加入）')
 
-  if (s.playerLevel >= 20) achs.push('💪 勇者の覚醒 — Lv20以上でクリア！')
+  // プレイヤーレベル
+  if (s.playerLevel >= 25) achs.push('⚔️ 覚醒の勇者 — Lv25以上でクリア！最強到達！')
+  else if (s.playerLevel >= 20) achs.push('💪 勇者の覚醒 — Lv20以上でクリア！')
 
-  const defeatedAll = ['bandit_king','mine_king','storm_dragon','forest_king','tidal_king','archive'].every(
-    id => s.defeatedBosses.includes(id)
-  )
+  // ボス討伐
+  const allBossIds = ['bandit_king','mine_king','storm_dragon','forest_king','tidal_king','archive']
+  const defeatedAll = allBossIds.every(id => s.defeatedBosses.includes(id))
   if (defeatedAll) achs.push('👑 全ボス討伐 — 全てのボスを倒した伝説の勇者！')
+  else if (s.defeatedBosses.length >= 4) achs.push('🏹 熟練の討伐者 — 4体以上のボスを倒した！')
 
-  if (s.gold >= 1000) achs.push('💰 大富豪 — クリア時に1000G以上保持！')
+  // 所持金
+  if (s.gold >= 3000) achs.push('💎 黄金王 — クリア時に3000G以上保持！')
+  else if (s.gold >= 1000) achs.push('💰 大富豪 — クリア時に1000G以上保持！')
+
+  // 探索
+  if (s.visitedLocs.length >= totalLocs) achs.push('🗺️ 大陸踏破 — ルミナ大陸の全ロケーションを訪問！')
+  else if (s.visitedLocs.length >= 15) achs.push('🧭 冒険家 — 15か所以上のロケーションを訪問！')
+
+  // アイテム
+  const totalItems = s.inventory.reduce((sum, i) => sum + i.qty, 0)
+  if (totalItems >= 10) achs.push('🎒 準備万端 — 10個以上のアイテムを持ってクリア！')
+
+  // クリアイベント数
+  if (s.completedEvents.length >= 30) achs.push('📖 物語の語り部 — 30以上のイベントを体験した！')
+  else if (s.completedEvents.length >= 15) achs.push('📜 旅の記録者 — 15以上のイベントを体験した！')
 
   return achs
 }

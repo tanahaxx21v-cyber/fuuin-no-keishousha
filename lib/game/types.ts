@@ -259,6 +259,7 @@ export interface BattleState {
   isBoss: boolean
   isFinalBoss: boolean
   turn: number
+  bossRaged?: boolean  // ボスHP50%以下で激怒フェーズ突入済みフラグ
 }
 
 export interface GameState {
