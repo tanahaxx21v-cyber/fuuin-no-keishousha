@@ -104,6 +104,22 @@ export default function ShopView({ gs, onBuy, onClose }: Props) {
                     )}
                   </div>
                   <div className="text-xs text-gray-400 mt-0.5">{item.desc}</div>
+                  {/* Recovery preview */}
+                  {item.effect === 'heal_hp' && gs.playerHp < gs.playerMaxHp && (
+                    <div className="text-[10px] text-green-400 font-bold mt-0.5">
+                      HP {gs.playerHp} → {Math.min(gs.playerMaxHp, gs.playerHp + item.power)}（+{Math.min(item.power, gs.playerMaxHp - gs.playerHp)}）
+                    </div>
+                  )}
+                  {item.effect === 'heal_mp' && gs.playerMp < gs.playerMaxMp && (
+                    <div className="text-[10px] text-blue-400 font-bold mt-0.5">
+                      MP {gs.playerMp} → {Math.min(gs.playerMaxMp, gs.playerMp + item.power)}（+{Math.min(item.power, gs.playerMaxMp - gs.playerMp)}）
+                    </div>
+                  )}
+                  {item.effect === 'heal_both' && (
+                    <div className="text-[10px] text-purple-400 font-bold mt-0.5">
+                      HP +{Math.min(item.power, gs.playerMaxHp - gs.playerHp)} / MP +{Math.min(40, gs.playerMaxMp - gs.playerMp)}
+                    </div>
+                  )}
                   {owned > 0 && <div className="text-xs text-blue-400 font-bold mt-0.5">所持: {owned}個</div>}
                 </div>
                 <div className="text-right shrink-0">
