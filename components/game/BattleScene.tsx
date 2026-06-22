@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import type { GameState, BattleUnit, Skill } from '@/lib/game/types'
 import { ITEMS } from '@/lib/game/data'
 import { CharPortrait } from './CharPortrait'
@@ -149,6 +149,24 @@ export default function BattleScene({ gs, onAttack, onSkill, onItem, onFlee, onC
   const [mode, setMode] = useState<ActionMode>('select')
   const [pendingSkill, setPendingSkill] = useState<Skill | null>(null)
   const [pendingItemId, setPendingItemId] = useState<string | null>(null)
+  const [critFlash, setCritFlash] = useState(false)
+  const [deathFlash, setDeathFlash] = useState(false)
+  const prevLogLen = useRef(0)
+
+  useEffect(() => {
+    if (b.logs.length > prevLogLen.current) {
+      const newLogs = b.logs.slice(prevLogLen.current)
+      if (newLogs.some(l => l.type === 'critical')) {
+        setCritFlash(true)
+        setTimeout(() => setCritFlash(false), 350)
+      }
+      if (newLogs.some(l => l.type === 'death')) {
+        setDeathFlash(true)
+        setTimeout(() => setDeathFlash(false), 400)
+      }
+    }
+    prevLogLen.current = b.logs.length
+  }, [b.logs.length])
 
   const allies = b.units.filter(u => u.isAlly)
   const enemies = b.units.filter(u => !u.isAlly)
@@ -234,6 +252,13 @@ export default function BattleScene({ gs, onAttack, onSkill, onItem, onFlee, onC
 
       {/* ===== バトルフィールド ===== */}
       <div className="relative shrink-0" style={{ height: '256px' }}>
+        {/* クリティカル・死亡フラッシュ */}
+        {critFlash && (
+          <div className="absolute inset-0 z-50 pointer-events-none rounded" style={{ background: 'rgba(255,230,0,0.18)', transition: 'opacity 0.35s' }} />
+        )}
+        {deathFlash && (
+          <div className="absolute inset-0 z-50 pointer-events-none rounded" style={{ background: 'rgba(180,0,0,0.2)', transition: 'opacity 0.4s' }} />
+        )}
 
         {/* 空 + 草地の背景（パワポケ4スタイル）*/}
         <div className="absolute inset-0" style={{
