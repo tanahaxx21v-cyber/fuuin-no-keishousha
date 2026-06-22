@@ -240,6 +240,41 @@ export default function BattleScene({ gs, onAttack, onSkill, onItem, onFlee, onC
 
   const cancelTarget = () => { setMode('select'); setPendingSkill(null); setPendingItemId(null) }
 
+  function handleAutoAction() {
+    if (!isPlayerTurn) return
+    // Priority 1: heal self if HP < 30%
+    if (playerUnit.hp / playerUnit.maxHp < 0.30) {
+      const healItem = availableItems.find(({ itemId }) => {
+        const item = ITEMS[itemId]
+        return item && ['heal_hp', 'heal_both'].includes(item.effect)
+      })
+      if (healItem) { onItem(healItem.itemId, playerUnit.uid); return }
+      const selfHeal = (playerUnit.skills ?? []).find(sk =>
+        sk.target === 'self' && playerUnit.mp >= sk.mpCost && sk.effect === 'heal'
+      )
+      if (selfHeal) { onSkill(selfHeal, playerUnit.uid); return }
+    }
+    // Priority 2: attack skill if MP comfortable and enemies remain
+    const totalEnemyHpPct = aliveEnemies.length > 0
+      ? aliveEnemies.reduce((s, e) => s + e.hp, 0) / aliveEnemies.reduce((s, e) => s + e.maxHp, 0)
+      : 0
+    const atkSkill = (playerUnit.skills ?? []).find(sk =>
+      (sk.target === 'enemy_one' || sk.target === 'enemy_all') &&
+      playerUnit.mp >= sk.mpCost * 2 // keep at least 1 more use in reserve
+    )
+    if (atkSkill && (aliveEnemies.length >= 2 || totalEnemyHpPct > 0.60)) {
+      if (atkSkill.target === 'enemy_all') { onSkill(atkSkill); return }
+      const weakest = aliveEnemies.reduce((a, b) => b.hp < a.hp ? b : a)
+      onSkill(atkSkill, weakest.uid)
+      return
+    }
+    // Priority 3: basic attack on weakest enemy
+    if (aliveEnemies.length > 0) {
+      const weakest = aliveEnemies.reduce((a, b) => b.hp < a.hp ? b : a)
+      onAttack(weakest.uid)
+    }
+  }
+
   return (
     <div className="bg-[#07071a] flex flex-col min-h-screen" style={playerDanger ? { boxShadow: 'inset 0 0 0 3px rgba(220,38,38,0.7)', animation: 'pulse 1s ease-in-out infinite' } : {}}>
 
@@ -609,6 +644,15 @@ export default function BattleScene({ gs, onAttack, onSkill, onItem, onFlee, onC
                 })}
               </div>
             </div>
+          )}
+
+          {isPlayerTurn && mode === 'select' && (
+            <button
+              onClick={handleAutoAction}
+              className="w-full mt-1.5 py-1.5 border border-slate-600 rounded-xl text-xs font-black text-slate-300 bg-slate-900/70 hover:bg-slate-800 active:scale-95 transition tracking-wider"
+            >
+              ⚡ オート（AI最適行動）
+            </button>
           )}
 
           {(mode === 'target_attack' || mode === 'target_skill') && pendingSkill?.target !== 'ally_one' && (

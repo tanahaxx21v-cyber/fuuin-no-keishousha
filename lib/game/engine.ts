@@ -1471,6 +1471,13 @@ const WANDER_GOLD_TEXTS: Record<string, string[]> = {
     '崩れた壁の中から出てきた',
     '怪しい宝箱から漏れていた',
   ],
+  castle: [
+    '廃墟の玉座の下に埋められていた',
+    '古い鎧の隙間に挟まっていた',
+    '崩れた石柱の台座の窪みにあった',
+    '枯れた噴水の底に沈んでいた',
+    '壁の石板の裏に隠されていた',
+  ],
 }
 
 const WANDER_TRAIN_TEXTS: string[][] = [
@@ -1618,6 +1625,7 @@ export function wander(state: GameState): GameState {
     const warnerNames: Record<string, string> = {
       gares: 'ガレス', liz: 'リズ', noa: 'ノア', vais: 'ヴァイス',
       finn: 'フィン', bram: 'ブラム', elk: 'エルク', mira: 'ミラ',
+      cecil: 'セシル', logan: 'ローガン', iris: 'アイリス', sig: 'シグ', zeno: 'ゼノ',
     }
     const warned = alivePartyIds.find(id => warnerNames[id])
     const warner = warned ? warnerNames[warned] : null

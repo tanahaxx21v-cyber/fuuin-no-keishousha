@@ -564,9 +564,21 @@ export default function LocationView({
                 className="w-full py-3 px-4 bg-orange-950 hover:bg-orange-900 border-2 border-orange-700 text-white rounded-xl transition text-left flex items-center gap-3 active:scale-95"
               >
                 <span className="text-xl">⚔️</span>
-                <div>
+                <div className="flex-1 min-w-0">
                   <div className="font-black text-sm">ダンジョン探索</div>
-                  <div className="text-xs text-gray-400">雑魚敵と戦う（EXP・Gold獲得）</div>
+                  {loc.enemyPool && loc.enemyPool.length > 0 ? (() => {
+                    const pool = loc.enemyPool!
+                    const uniqueIds = pool.filter((id, i) => pool.indexOf(id) === i)
+                    const enemyEmojis = uniqueIds.slice(0, 3).map(id => ENEMIES[id]?.emoji ?? '👾').join(' ')
+                    return (
+                      <div className="text-xs text-orange-300 mt-0.5">
+                        {enemyEmojis} 出現：{uniqueIds.slice(0, 3).map(id => ENEMIES[id]?.name ?? id).join('・')}
+                        {uniqueIds.length > 3 && ' ほか'}
+                      </div>
+                    )
+                  })() : (
+                    <div className="text-xs text-gray-400">雑魚敵と戦う（EXP・Gold獲得）</div>
+                  )}
                 </div>
               </button>
               <button
