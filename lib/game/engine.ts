@@ -1358,12 +1358,12 @@ export function wander(state: GameState): GameState {
     const itemNames: Record<string, string> = { potion: 'ポーション', ether: 'エーテル', antidote: '毒消し' }
     const place = WANDER_ITEM_PLACES[locType] ?? 'どこかに'
     s.message = `🎁 ${place}${itemNames[found.itemId]}を見つけた！`
-  } else if (roll < 0.80) {
+  } else if (roll < 0.78) {
     const heal = Math.floor(s.playerMaxHp * 0.15)
     s.playerHp = Math.min(s.playerMaxHp, s.playerHp + heal)
     const restText = WANDER_REST_TEXTS[Math.floor(Math.random() * WANDER_REST_TEXTS.length)]
     s.message = `✨ ${restText}（HP +${heal}）`
-  } else {
+  } else if (roll < 0.87) {
     // 稀に小さな敵エンカウント（中継地のenemy pool使用）
     const pool = loc.travelEnemyPool ?? loc.enemyPool ?? []
     if (pool.length > 0) {
@@ -1374,10 +1374,41 @@ export function wander(state: GameState): GameState {
     const nothingTexts = [
       '……何も見つからなかった。1日が過ぎた。',
       '……静かな一日だった。',
-      '……何かを求めてさまよったが、空振りだった。',
-      '風だけが吹き過ぎた。何も起きなかった。',
     ]
     s.message = nothingTexts[Math.floor(Math.random() * nothingTexts.length)]
+  } else if (roll < 0.93) {
+    // 謎の行商人（高額アイテムを格安で売る）
+    const discountItems = [
+      { itemId: 'mega_potion', name: 'メガポーション', normalPrice: 200, deal: 60 },
+      { itemId: 'elixir', name: 'エリクサー', normalPrice: 500, deal: 120 },
+      { itemId: 'revive', name: '復活の草', normalPrice: 400, deal: 80 },
+    ]
+    const pick = discountItems[Math.floor(Math.random() * discountItems.length)]
+    if (s.gold >= pick.deal) {
+      s.gold -= pick.deal
+      const ex = s.inventory.find(i => i.itemId === pick.itemId)
+      if (ex) ex.qty += 1
+      else s.inventory.push({ itemId: pick.itemId, qty: 1 })
+      s.message = `🧙 謎の行商人に出会った。「通りすがりの者よ……${pick.name}を${pick.deal}Gで特別に売ろう」。買った！（通常価格${pick.normalPrice}G）`
+    } else {
+      s.message = `🧙 謎の行商人に出会ったが、手持ちが${pick.deal}G足りなかった。次の機会に……`
+    }
+  } else {
+    // 危険を察知して回避（仲間からの警告）
+    const alivePartyIds = s.party.filter(id => s.companions[id]?.alive)
+    const warnerNames: Record<string, string> = {
+      gares: 'ガレス', liz: 'リズ', noa: 'ノア', vais: 'ヴァイス',
+      finn: 'フィン', bram: 'ブラム', elk: 'エルク', mira: 'ミラ',
+    }
+    const warned = alivePartyIds.find(id => warnerNames[id])
+    const warner = warned ? warnerNames[warned] : null
+    const avoidTexts = [
+      '周囲に強敵の気配を感じて引き返した。慎重な判断だ。',
+      '罠の痕跡を見つけて迂回した。何事もなくてよかった。',
+      '嵐の予兆を察して早めに宿を探した。天候に助けられた。',
+    ]
+    const txt = avoidTexts[Math.floor(Math.random() * avoidTexts.length)]
+    s.message = warner ? `👀 ${warner}「危ない！引き返そう」——${txt}` : `👀 直感が働いた——${txt}`
   }
 
   return s
@@ -1448,6 +1479,22 @@ function addDeathLog(b: BattleState, target: BattleUnit, cause = '倒れた') {
     }
   }
   b.logs.push({ text: `💀 ${target.name}は${cause}！`, type: 'death' })
+
+  // 仲間が倒れると生き残り全員が怒り（ATK+15%・2ターン）
+  if (target.isAlly && !target.isPlayer) {
+    const survivors = b.units.filter(u => u.isAlly && u.hp > 0 && u.uid !== target.uid)
+    if (survivors.length > 0) {
+      for (const ally of survivors) {
+        const existing = ally.statusEffects.find(e => e.id === 'atk_up')
+        if (existing) {
+          existing.turnsLeft = Math.max(existing.turnsLeft, 2)
+        } else {
+          ally.statusEffects.push({ id: 'atk_up', name: '怒り', turnsLeft: 2 })
+        }
+      }
+      b.logs.push({ text: `🔥 仲間の死に激怒！生存者の攻撃力が上昇！`, type: 'system' })
+    }
+  }
 }
 
 function resolveTargets(battle: BattleState, skill: Skill, actor: BattleUnit, targetUid?: string): BattleUnit[] {
