@@ -346,32 +346,48 @@ export default function GameRoot() {
       )}
 
       {/* Level up overlay */}
-      {gs.levelUpPending && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80">
-          <div className="bg-[#0c0c24] border-2 border-amber-500 rounded-2xl p-8 text-center shadow-2xl max-w-sm w-full mx-4"
-               style={{ boxShadow: '0 0 40px rgba(245,158,11,0.3)' }}>
-            <div className="text-5xl mb-3">⭐</div>
-            <div className="text-3xl font-black text-amber-300">LEVEL UP!</div>
-            <div className="text-xl text-white font-bold mt-1">{gs.playerName} → <span className="text-amber-400">Lv {gs.playerLevel}</span></div>
-            <div className="text-sm text-gray-300 mt-3 space-y-1 font-bold">
-              <div>HP / MP / ATK / DEF / SPD が上昇！</div>
-              {gs.playerSkills.length > 0 && (() => {
-                const lastSkill = gs.playerSkills[gs.playerSkills.length - 1]
-                const newLvSkill = [5,10,15,20,25].includes(gs.playerLevel)
-                return newLvSkill ? (
-                  <div className="text-purple-300 font-black mt-2">✨ 新スキル「{lastSkill.name}」を習得！</div>
-                ) : null
-              })()}
+      {gs.levelUpPending && (() => {
+        const newLvSkill = [5,10,15,20,25].includes(gs.playerLevel)
+        const lastSkill = newLvSkill && gs.playerSkills.length > 0 ? gs.playerSkills[gs.playerSkills.length - 1] : null
+        return (
+          <div className="fixed inset-0 z-50 flex items-center justify-center" style={{ background: 'radial-gradient(ellipse at center, rgba(245,158,11,0.15) 0%, rgba(0,0,0,0.85) 70%)' }}>
+            <div className="bg-[#0c0c24] border-2 border-amber-500 rounded-2xl px-8 py-7 text-center shadow-2xl max-w-sm w-full mx-4"
+                 style={{ boxShadow: '0 0 60px rgba(245,158,11,0.4), 0 0 20px rgba(245,158,11,0.2)' }}>
+              <div className="text-6xl mb-2" style={{ filter: 'drop-shadow(0 0 16px rgba(245,158,11,0.8))' }}>⭐</div>
+              <div className="text-3xl font-black text-amber-300 tracking-wider" style={{ textShadow: '0 0 20px rgba(245,158,11,0.6)' }}>LEVEL UP!</div>
+              <div className="text-lg text-white font-bold mt-1">{gs.playerName} <span className="text-amber-400 text-2xl font-black">Lv {gs.playerLevel}</span></div>
+              <div className="grid grid-cols-5 gap-1.5 mt-4 mb-3">
+                {[
+                  { label: 'HP', val: '+12', color: '#4ade80' },
+                  { label: 'MP', val: '+5', color: '#60a5fa' },
+                  { label: 'ATK', val: '+2', color: '#f87171' },
+                  { label: 'DEF', val: '+2', color: '#93c5fd' },
+                  { label: 'SPD', val: '+1', color: '#fbbf24' },
+                ].map(s => (
+                  <div key={s.label} className="bg-slate-900 border border-slate-700 rounded-lg py-2 text-center">
+                    <div className="text-[10px] text-gray-500 font-bold">{s.label}</div>
+                    <div className="text-sm font-black" style={{ color: s.color }}>{s.val}</div>
+                  </div>
+                ))}
+              </div>
+              {lastSkill && (
+                <div className="bg-purple-950/80 border-2 border-purple-500 rounded-xl px-4 py-2.5 mb-3"
+                     style={{ boxShadow: '0 0 20px rgba(168,85,247,0.3)' }}>
+                  <div className="text-xs text-purple-400 font-black mb-0.5">✨ 新スキル習得！</div>
+                  <div className="font-black text-purple-200">「{lastSkill.name}」</div>
+                  <div className="text-xs text-gray-400 mt-0.5">{lastSkill.desc}</div>
+                </div>
+              )}
+              <button
+                onClick={handleDismissLevelUp}
+                className="px-8 py-2.5 bg-amber-700 hover:bg-amber-600 border-2 border-amber-500 text-white font-black rounded-xl transition active:scale-95 w-full"
+              >
+                確認 ▶
+              </button>
             </div>
-            <button
-              onClick={handleDismissLevelUp}
-              className="mt-5 px-8 py-2.5 bg-amber-700 hover:bg-amber-600 border-2 border-amber-500 text-white font-black rounded-xl transition active:scale-95"
-            >
-              確認 ▶
-            </button>
           </div>
-        </div>
-      )}
+        )
+      })()}
 
       {/* 封印石取得演出 */}
       {sealFlash && (() => {
