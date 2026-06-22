@@ -7,7 +7,7 @@ import {
   restAtInn, buyItem, enterDungeon, fightBoss, battleAttack,
   battleSkill, battleUseItem, battleFlee, closeBattle,
   processNonPlayerTurn, checkLocationEvent, startEvent, advanceEvent,
-  chooseBranch, wander, setParty, getAvailableConnections,
+  chooseBranch, wander, campRest, setParty, getAvailableConnections,
 } from '@/lib/game/engine'
 import { LOCATIONS } from '@/lib/game/data'
 import {
@@ -188,6 +188,10 @@ export default function GameRoot() {
 
   const handleWander = () => {
     update(s => wander(s))
+  }
+
+  const handleCampRest = () => {
+    update(s => campRest(s))
   }
 
   const handleOpenPartyManage = () => {
@@ -451,6 +455,7 @@ export default function GameRoot() {
             onJoinCompanion={handleJoinCompanion}
             onSkipCompanion={handleSkipCompanion}
             onWander={handleWander}
+            onCampRest={handleCampRest}
             onOpenPartyManage={handleOpenPartyManage}
           />
         )}

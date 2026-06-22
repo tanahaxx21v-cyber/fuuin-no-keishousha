@@ -24,6 +24,7 @@ interface Props {
   onJoinCompanion: (id: CompanionId) => void
   onSkipCompanion: () => void
   onWander?: () => void
+  onCampRest?: () => void
   onOpenPartyManage?: () => void
 }
 
@@ -105,7 +106,7 @@ const COMPANION_LOC_LINES: Partial<Record<CompanionId, { town: string[]; relay: 
 }
 
 export default function LocationView({
-  gs, onBackToMap, onInn, onOpenShop, onEnterDungeon, onFightBoss, onJoinCompanion, onSkipCompanion, onWander, onOpenPartyManage
+  gs, onBackToMap, onInn, onOpenShop, onEnterDungeon, onFightBoss, onJoinCompanion, onSkipCompanion, onWander, onCampRest, onOpenPartyManage
 }: Props) {
   const loc = LOCATIONS[gs.currentLocId]
   const companion = loc.companionId ? COMPANIONS[loc.companionId] : undefined
@@ -495,6 +496,29 @@ export default function LocationView({
               </div>
             </button>
           )}
+
+          {loc.type === 'relay' && onCampRest && (() => {
+            const healable = gs.playerHp < gs.playerMaxHp || gs.party.some(id => gs.companions[id]?.alive && gs.companions[id].hp < gs.companions[id].maxHp)
+            return (
+              <button
+                onClick={onCampRest}
+                disabled={!healable}
+                className={`w-full py-3 px-4 rounded-xl border-2 transition text-left flex items-center gap-3 active:scale-95 ${
+                  healable
+                    ? 'bg-teal-950 hover:bg-teal-900 border-teal-700 text-white'
+                    : 'bg-slate-900 border-slate-700 text-gray-600 opacity-50 cursor-not-allowed'
+                }`}
+              >
+                <span className="text-xl">🏕️</span>
+                <div>
+                  <div className="font-black text-sm">野営して休む</div>
+                  <div className={`text-xs ${healable ? 'text-teal-400' : 'text-gray-600'}`}>
+                    {healable ? '無料・日数消費なし・HP 30%回復（MP回復なし）' : '既にHP満タン'}
+                  </div>
+                </div>
+              </button>
+            )
+          })()}
 
 
           {loc.type === 'castle' && (

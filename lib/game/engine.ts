@@ -1217,6 +1217,26 @@ export function setParty(state: GameState, newParty: CompanionId[]): GameState {
   return s
 }
 
+// ===== 野営して休む（中継地での無料部分回復） =====
+export function campRest(state: GameState): GameState {
+  const s = deepClone(state)
+  const healPct = 0.3
+  const playerHeal = Math.floor(s.playerMaxHp * healPct)
+  s.playerHp = Math.min(s.playerMaxHp, s.playerHp + playerHeal)
+
+  const compMsgs: string[] = []
+  for (const cid of s.party) {
+    const c = s.companions[cid]
+    if (c.joined && c.alive) {
+      const cheal = Math.floor(c.maxHp * healPct)
+      c.hp = Math.min(c.maxHp, c.hp + cheal)
+      compMsgs.push(`${state.companions[cid].hp < c.hp ? '' : ''}`)
+    }
+  }
+  s.message = `🏕️ 野営して体を休めた。HP +${playerHeal}（仲間も同様に回復）`
+  return s
+}
+
 // ===== うろつく（町・中継地での探索） =====
 
 // wanderフレーバーテキスト（場所タイプ別・PP4スタイル）
