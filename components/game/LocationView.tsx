@@ -639,7 +639,7 @@ export default function LocationView({
             </>
           )}
 
-          {(loc.type === 'town' || loc.type === 'relay') && onWander && (
+          {(loc.type === 'town' || loc.type === 'relay' || loc.type === 'castle') && onWander && (
             <button
               onClick={onWander}
               className="w-full py-3 px-4 bg-slate-800 hover:bg-slate-700 border-2 border-slate-600 text-white rounded-xl transition text-left flex items-center gap-3 active:scale-95"
@@ -647,7 +647,10 @@ export default function LocationView({
               <span className="text-xl">🚶</span>
               <div>
                 <div className="font-black text-sm">うろつく</div>
-                <div className="text-xs text-gray-400">1日消費・アイテム/EXP/Gをランダムに発見</div>
+                <div className="text-xs text-gray-400">
+                  1日消費・
+                  {loc.type === 'town' ? '市場でG発見・訓練・行商人' : loc.type === 'castle' ? '廃墟探索・G発見・訓練' : '野外探索・アイテム発見・回復'}
+                </div>
               </div>
             </button>
           )}
