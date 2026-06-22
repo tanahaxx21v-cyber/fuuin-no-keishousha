@@ -518,18 +518,35 @@ export default function LocationView({
             )
           })()}
 
-          {loc.hasInn && (
-            <button
-              onClick={onInn}
-              className="w-full py-3 px-4 bg-blue-950 hover:bg-blue-900 border-2 border-blue-700 text-white rounded-xl transition text-left flex items-center gap-3 active:scale-95"
-            >
-              <span className="text-xl">🏨</span>
-              <div>
-                <div className="font-black text-sm">宿屋で休む</div>
-                <div className="text-xs text-gray-400">{getInnPrice(gs.daysLeft, totalDays)}G・1日消費・HP/MP全回復</div>
-              </div>
-            </button>
-          )}
+          {loc.hasInn && (() => {
+            const innPrice = getInnPrice(gs.daysLeft, totalDays)
+            const canAfford = gs.gold >= innPrice
+            const hpMissing = gs.playerMaxHp - gs.playerHp
+            const mpMissing = gs.playerMaxMp - gs.playerMp
+            const isFullHp = hpMissing === 0 && mpMissing === 0
+            return (
+              <button
+                onClick={onInn}
+                disabled={!canAfford}
+                className={`w-full py-3 px-4 border-2 text-white rounded-xl transition text-left flex items-center gap-3 active:scale-95 ${
+                  canAfford ? 'bg-blue-950 hover:bg-blue-900 border-blue-700' : 'bg-slate-900 border-slate-700 opacity-50 cursor-not-allowed'
+                }`}
+              >
+                <span className="text-xl">🏨</span>
+                <div className="flex-1 min-w-0">
+                  <div className="font-black text-sm">宿屋で休む</div>
+                  <div className="text-xs text-gray-400">{innPrice}G・1日消費</div>
+                  {!isFullHp && canAfford && (
+                    <div className="text-xs text-green-400 font-bold mt-0.5">
+                      {hpMissing > 0 && `HP +${hpMissing}`}{hpMissing > 0 && mpMissing > 0 && ' / '}{mpMissing > 0 && `MP +${mpMissing}`}
+                    </div>
+                  )}
+                  {isFullHp && <div className="text-xs text-gray-500 mt-0.5">HP・MP満タン（宿泊不要）</div>}
+                  {!canAfford && <div className="text-xs text-red-400 mt-0.5">所持金不足（{innPrice}G必要）</div>}
+                </div>
+              </button>
+            )
+          })()}
 
           {loc.shopItems && (
             <button
