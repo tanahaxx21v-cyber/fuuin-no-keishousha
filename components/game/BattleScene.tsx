@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react'
 import type { GameState, BattleUnit, Skill, CompanionId } from '@/lib/game/types'
-import { ITEMS, COMPANIONS, getExpToNext } from '@/lib/game/data'
+import { ITEMS, COMPANIONS, getExpToNext, LOCATIONS } from '@/lib/game/data'
 import { CharPortrait } from './CharPortrait'
 
 interface Props {
@@ -419,19 +419,32 @@ export default function BattleScene({ gs, onAttack, onSkill, onItem, onFlee, onC
           <div className="absolute inset-0 z-50 pointer-events-none rounded" style={{ background: 'rgba(180,0,0,0.2)', transition: 'opacity 0.4s' }} />
         )}
 
-        {/* 空 + 草地の背景（パワポケ4スタイル）*/}
-        <div className="absolute inset-0" style={{
-          background: b.isBoss
+        {/* バトル背景（場所タイプ別）*/}
+        {(() => {
+          const locType = LOCATIONS[gs.currentLocId]?.type ?? 'relay'
+          const isDungeon = !b.isBoss && locType === 'dungeon'
+          const bg = b.isBoss
             ? 'linear-gradient(to bottom, #1a0a2e 0%, #2d1060 48%, #3a0a20 48%, #1a0508 80%, #0d0305 100%)'
-            : 'linear-gradient(to bottom, #4a9ed8 0%, #7ac8ee 50%, #62b830 50%, #2e8a18 74%, #1a5a08 100%)',
-        }} />
-        {/* 雲 (通常戦闘) */}
-        {!b.isBoss && (
+            : isDungeon
+            ? 'linear-gradient(to bottom, #0a0a14 0%, #141428 45%, #1e1e0a 45%, #14140a 80%, #0a0a08 100%)'
+            : 'linear-gradient(to bottom, #4a9ed8 0%, #7ac8ee 50%, #62b830 50%, #2e8a18 74%, #1a5a08 100%)'
+          return <div className="absolute inset-0" style={{ background: bg }} />
+        })()}
+        {/* 雲 (野外通常戦闘) */}
+        {!b.isBoss && LOCATIONS[gs.currentLocId]?.type !== 'dungeon' && (
           <>
             <div className="absolute" style={{ top: 8, left: 20, width: 80, height: 20, background: 'rgba(255,255,255,0.7)', borderRadius: '50%', filter: 'blur(5px)' }} />
             <div className="absolute" style={{ top: 4, right: 48, width: 104, height: 20, background: 'rgba(255,255,255,0.55)', borderRadius: '50%', filter: 'blur(5px)' }} />
             <div className="absolute" style={{ top: 16, right: 16, width: 56, height: 14, background: 'rgba(255,255,255,0.45)', borderRadius: '50%', filter: 'blur(3px)' }} />
             <div className="absolute" style={{ top: 28, left: 120, width: 48, height: 12, background: 'rgba(255,255,255,0.35)', borderRadius: '50%', filter: 'blur(4px)' }} />
+          </>
+        )}
+        {/* ダンジョン通常戦闘: 岩・苔の雰囲気 */}
+        {!b.isBoss && LOCATIONS[gs.currentLocId]?.type === 'dungeon' && (
+          <>
+            <div className="absolute inset-0" style={{ background: 'radial-gradient(ellipse 60% 40% at 50% 50%, rgba(30,20,0,0.3) 0%, transparent 70%)' }} />
+            <div className="absolute" style={{ bottom: 0, left: 0, right: 0, height: '20%', background: 'linear-gradient(to top, rgba(20,20,8,0.9), transparent)' }} />
+            <div className="absolute" style={{ top: 0, left: 0, right: 0, height: '10%', background: 'linear-gradient(to bottom, rgba(0,0,0,0.6), transparent)' }} />
           </>
         )}
         {/* ボス戦: 赤黒い禍々しい雰囲気 */}
