@@ -25,6 +25,7 @@ import GameOverScreen from './GameOverScreen'
 import StatusBar from './StatusBar'
 import EventScene from './EventScene'
 import PartyManage from './PartyManage'
+import AlbumScreen from './AlbumScreen'
 
 const SAVE_KEY = 'fuuin_save_v2'
 
@@ -205,6 +206,14 @@ export default function GameRoot() {
 
   const handleOpenPartyManage = () => {
     setGs(prev => ({ ...prev, phase: 'party_manage' }))
+  }
+
+  const handleOpenAlbum = () => {
+    setGs(prev => ({ ...prev, phase: 'album' as GameState['phase'] }))
+  }
+
+  const handleCloseAlbum = () => {
+    setGs(prev => ({ ...prev, phase: 'location' }))
   }
 
   const handleSetParty = (party: CompanionId[]) => {
@@ -491,10 +500,14 @@ export default function GameRoot() {
             onCampRest={handleCampRest}
             onOpenPartyManage={handleOpenPartyManage}
             onUseItem={handleUseItemOutOfBattle}
+            onOpenAlbum={handleOpenAlbum}
           />
         )}
         {gs.phase === 'party_manage' && (
           <PartyManage gs={gs} onSetParty={handleSetParty} onClose={handleClosePartyManage} />
+        )}
+        {gs.phase === 'album' && (
+          <AlbumScreen gs={gs} onClose={handleCloseAlbum} />
         )}
         {gs.phase === 'battle' && gs.battle && (
           <BattleScene

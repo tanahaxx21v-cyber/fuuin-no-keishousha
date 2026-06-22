@@ -28,6 +28,7 @@ interface Props {
   onCampRest?: () => void
   onOpenPartyManage?: () => void
   onUseItem?: (itemId: string, targetId: 'player' | CompanionId) => void
+  onOpenAlbum?: () => void
 }
 
 function getRoleBadge(cls: string): { label: string; color: string } {
@@ -108,7 +109,7 @@ const COMPANION_LOC_LINES: Partial<Record<CompanionId, { town: string[]; relay: 
 }
 
 export default function LocationView({
-  gs, onBackToMap, onInn, onOpenShop, onEnterDungeon, onFightBoss, onJoinCompanion, onSkipCompanion, onWander, onCampRest, onOpenPartyManage, onUseItem
+  gs, onBackToMap, onInn, onOpenShop, onEnterDungeon, onFightBoss, onJoinCompanion, onSkipCompanion, onWander, onCampRest, onOpenPartyManage, onUseItem, onOpenAlbum
 }: Props) {
   const [itemPanelOpen, setItemPanelOpen] = useState(false)
   const [selectedItemId, setSelectedItemId] = useState<string | null>(null)
@@ -524,6 +525,19 @@ export default function LocationView({
             )
           })()}
 
+
+          {onOpenAlbum && (
+            <button
+              onClick={onOpenAlbum}
+              className="w-full py-3 px-4 bg-slate-900 hover:bg-slate-800 border-2 border-slate-700 text-gray-400 hover:text-white rounded-xl transition text-left flex items-center gap-3 active:scale-95"
+            >
+              <span className="text-xl">📚</span>
+              <div>
+                <div className="font-black text-sm text-gray-300">冒険記録</div>
+                <div className="text-xs text-gray-600">実績・ボス討伐・旅の統計を確認</div>
+              </div>
+            </button>
+          )}
 
           {loc.type === 'castle' && (
             gs.sealStones.length < 3 ? (

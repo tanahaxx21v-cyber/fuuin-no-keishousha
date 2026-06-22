@@ -1,6 +1,6 @@
 export type GamePhase =
   | 'title' | 'prologue' | 'worldmap' | 'location'
-  | 'battle' | 'shop' | 'party_manage' | 'event' | 'win' | 'gameover'
+  | 'battle' | 'shop' | 'party_manage' | 'album' | 'event' | 'win' | 'gameover'
 
 // ===== EVENTS =====
 export interface DialogueLine {
