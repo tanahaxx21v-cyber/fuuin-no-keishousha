@@ -65,6 +65,7 @@ export default function GameRoot() {
   const [saveMsg, setSaveMsg] = useState<string | null>(null)
   const [muted, setMuted] = useState(false)
   const [sealFlash, setSealFlash] = useState<'fire' | 'storm' | 'dark' | null>(null)
+  const [battleSpeed, setBattleSpeed] = useState<'normal' | 'fast'>('normal')
   const prevSealStonesRef = useRef<string[]>([])
 
   useEffect(() => {
@@ -319,10 +320,10 @@ export default function GameRoot() {
     if (b.phase === 'victory' || b.phase === 'defeat') return
     const currentActor = b.units.find(u => u.uid === b.currentUid)
     if (!currentActor || currentActor.isPlayer) return
-    // 非プレイヤーターンを1600ms後に処理（行動が人間の目で見えるよう）
+    const delay = battleSpeed === 'fast' ? 600 : 1600
     const timer = setTimeout(() => {
       update(s => processNonPlayerTurn(s))
-    }, 1600)
+    }, delay)
     return () => clearTimeout(timer)
   }, [gs.battle?.currentUid, gs.battle?.phase, gs.phase])
 
@@ -339,6 +340,8 @@ export default function GameRoot() {
             setMuted(next)
           }}
           onReturnToTitle={handleReturnToTitle}
+          battleSpeed={battleSpeed}
+          onToggleBattleSpeed={() => setBattleSpeed(s => s === 'normal' ? 'fast' : 'normal')}
         />
       )}
 

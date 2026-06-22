@@ -10,9 +10,11 @@ interface Props {
   isMuted?: boolean
   onToggleMute?: () => void
   onReturnToTitle?: () => void
+  battleSpeed?: 'normal' | 'fast'
+  onToggleBattleSpeed?: () => void
 }
 
-export default function StatusBar({ gs, onSave, isMuted, onToggleMute, onReturnToTitle }: Props) {
+export default function StatusBar({ gs, onSave, isMuted, onToggleMute, onReturnToTitle, battleSpeed, onToggleBattleSpeed }: Props) {
   const [confirmReturn, setConfirmReturn] = useState(false)
   const hpPct = Math.max(0, (gs.playerHp / gs.playerMaxHp) * 100)
   const mpPct = Math.max(0, (gs.playerMp / gs.playerMaxMp) * 100)
@@ -140,6 +142,21 @@ export default function StatusBar({ gs, onSave, isMuted, onToggleMute, onReturnT
             <span className="text-xs text-gray-600 font-bold">仲間なし</span>
           )}
         </div>
+
+        {/* Battle speed */}
+        {onToggleBattleSpeed && gs.phase === 'battle' && (
+          <button
+            onClick={onToggleBattleSpeed}
+            title={battleSpeed === 'fast' ? '通常速度に切り替え' : '高速バトルに切り替え'}
+            className={`text-xs border-2 px-2 py-1 rounded font-bold transition ${
+              battleSpeed === 'fast'
+                ? 'bg-yellow-950 border-yellow-600 text-yellow-300'
+                : 'bg-slate-900 hover:bg-slate-800 border-slate-700 text-slate-300'
+            }`}
+          >
+            {battleSpeed === 'fast' ? '⚡速' : '▶速'}
+          </button>
+        )}
 
         {/* Mute */}
         {onToggleMute && (
