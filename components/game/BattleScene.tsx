@@ -407,6 +407,7 @@ export default function BattleScene({ gs, onAttack, onSkill, onItem, onFlee, onC
               <div className="flex flex-col gap-1.5 max-h-40 overflow-y-auto">
                 {(playerUnit?.skills ?? []).map(skill => {
                   const ok = (playerUnit?.mp ?? 0) >= skill.mpCost
+                  const targetLabel = skill.target === 'enemy_all' ? '全敵' : skill.target === 'ally_all' ? '全味方' : skill.target === 'self' ? '自分' : '1体'
                   return (
                     <button key={skill.id} disabled={!ok} onClick={() => handleSkillSelect(skill)}
                       className={`text-left px-3 py-2 rounded-lg border-2 transition ${
@@ -414,9 +415,15 @@ export default function BattleScene({ gs, onAttack, onSkill, onItem, onFlee, onC
                           ? 'border-purple-700 bg-purple-950 hover:bg-purple-900 text-white active:scale-95'
                           : 'border-gray-800 bg-gray-900/50 text-gray-600 cursor-not-allowed'
                       }`}>
-                      <div className="flex justify-between">
+                      <div className="flex justify-between items-center">
                         <span className="font-black text-sm">{skill.name}</span>
-                        <span className="text-blue-400 text-xs">MP {skill.mpCost}</span>
+                        <div className="flex items-center gap-1.5">
+                          <span className="text-gray-500 text-[9px]">{targetLabel}</span>
+                          <span className={`text-xs font-bold ${ok ? 'text-blue-400' : 'text-red-500'}`}>
+                            MP {skill.mpCost}
+                          </span>
+                          {!ok && <span className="text-[9px] text-red-600 font-bold">不足</span>}
+                        </div>
                       </div>
                       <div className="text-xs text-gray-400 mt-0.5">{skill.desc}</div>
                     </button>
@@ -497,11 +504,22 @@ export default function BattleScene({ gs, onAttack, onSkill, onItem, onFlee, onC
 
             {b.phase === 'victory' && (
               <div className="space-y-1.5 mb-4">
-                {/* EXP・Gold */}
-                <div className="flex justify-center gap-4 text-sm font-black">
+                {/* EXP・Gold・ターン数 */}
+                <div className="flex justify-center gap-4 text-base font-black">
                   <span className="text-purple-300">EXP +{b.rewardExp}</span>
-                  <span className="text-amber-300">Gold +{b.rewardGold}G</span>
+                  <span className="text-amber-300">+{b.rewardGold}G</span>
+                  <span className="text-gray-500 text-xs self-center">{b.turn}ターン</span>
                 </div>
+                {/* 生存HP率 */}
+                {(() => {
+                  const hpPct = Math.round(playerUnit.hp / playerUnit.maxHp * 100)
+                  const color = hpPct > 60 ? 'text-green-400' : hpPct > 30 ? 'text-yellow-400' : 'text-red-400'
+                  return (
+                    <div className={`text-xs font-bold ${color}`}>
+                      HP残{hpPct}%で生還
+                    </div>
+                  )
+                })()}
                 {/* 封印石 */}
                 {b.sealStoneFound && (
                   <div className="bg-amber-900/50 border-2 border-amber-400 rounded-xl px-4 py-2 text-amber-200 font-black animate-pulse"
@@ -513,6 +531,15 @@ export default function BattleScene({ gs, onAttack, onSkill, onItem, onFlee, onC
                 {b.logs.filter(l => l.type === 'system' && l.text.includes('レベルアップ')).map((l, i) => (
                   <div key={i} className="text-yellow-300 font-black text-sm">⭐ {l.text.replace('⭐ ', '')}</div>
                 ))}
+                {/* 仲間の勝利セリフ */}
+                {allies.filter(a => !a.isPlayer && a.hp > 0).length > 0 && (() => {
+                  const alive = allies.filter(a => !a.isPlayer && a.hp > 0)
+                  const speaker = alive[b.turn % alive.length]
+                  const quotes = ['やったな！', '悪くない戦いだ。', '次も任せろ！', '一緒に戦えて光栄だ。', '勝ったぞ！']
+                  return (
+                    <div className="text-xs text-gray-400 italic">「{quotes[b.turn % quotes.length]}」—— {speaker.name}</div>
+                  )
+                })()}
                 {/* 死亡した仲間 */}
                 {allies.filter(a => !a.isPlayer && a.hp <= 0).map(a => (
                   <div key={a.uid} className="text-red-400 font-bold text-xs">💔 {a.name} は力尽きた……</div>
