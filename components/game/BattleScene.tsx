@@ -152,6 +152,7 @@ export default function BattleScene({ gs, onAttack, onSkill, onItem, onFlee, onC
   const [critFlash, setCritFlash] = useState(false)
   const [deathFlash, setDeathFlash] = useState(false)
   const [deadCompanion, setDeadCompanion] = useState<{ id: CompanionId; lastWord: string } | null>(null)
+  const [showBossIntro, setShowBossIntro] = useState(b.isBoss && b.turn <= 1)
   const prevLogLen = useRef(0)
   const prevAllyHp = useRef<Record<string, number>>({})
 
@@ -214,6 +215,39 @@ export default function BattleScene({ gs, onAttack, onSkill, onItem, onFlee, onC
 
   return (
     <div className="bg-[#07071a] flex flex-col min-h-screen" style={playerDanger ? { boxShadow: 'inset 0 0 0 3px rgba(220,38,38,0.7)', animation: 'pulse 1s ease-in-out infinite' } : {}}>
+
+      {/* ボスバトル開始演出 */}
+      {showBossIntro && (() => {
+        const boss = b.units.find(u => u.isBoss)
+        if (!boss) return null
+        const openingLine = b.logs.find(l => l.type === 'system' && l.text.includes('「'))?.text ?? ''
+        return (
+          <div
+            className="fixed inset-0 z-[95] flex items-center justify-center cursor-pointer"
+            style={{ background: 'rgba(4,0,8,0.92)' }}
+            onClick={() => setShowBossIntro(false)}
+          >
+            <div className="relative text-center px-8 py-10 max-w-sm mx-4">
+              <div className="text-xs font-black text-red-700 tracking-widest mb-4 animate-pulse">⚠ BOSS BATTLE ⚠</div>
+              <div className="text-9xl mb-4" style={{ filter: 'drop-shadow(0 0 32px rgba(255,50,50,0.7))', animation: 'pulse 1s ease-in-out infinite' }}>
+                {boss.emoji}
+              </div>
+              <div className="text-3xl font-black text-white mb-1" style={{ textShadow: '0 0 20px rgba(255,100,100,0.8)' }}>
+                {boss.name}
+              </div>
+              <div className="text-xs text-red-500 font-black tracking-widest mb-5">
+                HP {boss.maxHp} | ATK {boss.atk} | DEF {boss.def}
+              </div>
+              {openingLine && (
+                <div className="text-sm text-gray-300 italic leading-relaxed mb-6 border-l-2 border-red-800 pl-3 text-left">
+                  {openingLine}
+                </div>
+              )}
+              <div className="text-xs text-gray-600 animate-pulse">タップして戦闘開始</div>
+            </div>
+          </div>
+        )
+      })()}
 
       {/* 仲間死亡追悼オーバーレイ */}
       {deadCompanion && (() => {
