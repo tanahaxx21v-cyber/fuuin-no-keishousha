@@ -186,9 +186,44 @@ export default function EventScene({ gs, onAdvance, onSkipAll }: Props) {
 
         {/* ナレーター表示 */}
         {isNarrator && (
-          <div className="flex flex-col items-center justify-center pb-16 gap-3">
-            <div style={{ fontSize: 72, opacity: 0.12, filter: 'grayscale(100%)' }}>📜</div>
-          </div>
+          <>
+            {/* 星のパーティクル */}
+            <div className="absolute inset-0 pointer-events-none">
+              {Array.from({ length: 20 }, (_, i) => (
+                <div key={i} className="absolute rounded-full bg-white"
+                  style={{
+                    left: `${(i * 11 + 5) % 100}%`,
+                    top: `${(i * 17 + 3) % 100}%`,
+                    width: (i % 3) + 1,
+                    height: (i % 3) + 1,
+                    opacity: 0.15 + (i % 4) * 0.05,
+                    animation: `pulse ${2 + (i % 3)}s ease-in-out ${(i * 0.2) % 2}s infinite`,
+                  }}
+                />
+              ))}
+            </div>
+            {/* 霧エフェクト */}
+            <div className="absolute inset-0 pointer-events-none" style={{
+              background: 'radial-gradient(ellipse 60% 40% at 50% 60%, rgba(30,20,60,0.4) 0%, transparent 70%)',
+            }} />
+            {/* 中央スクロール */}
+            <div className="relative flex flex-col items-center justify-center pb-20 gap-2" style={{ zIndex: 5 }}>
+              <div style={{
+                fontSize: 56,
+                opacity: 0.22,
+                filter: 'grayscale(60%) sepia(30%)',
+                animation: 'pulse 4s ease-in-out infinite',
+                textShadow: '0 0 20px rgba(100,80,160,0.5)',
+              }}>📜</div>
+              <div style={{
+                fontSize: 10,
+                color: 'rgba(100,90,150,0.5)',
+                fontWeight: 'bold',
+                letterSpacing: '0.25em',
+                textTransform: 'uppercase',
+              }}>─ Narrator ─</div>
+            </div>
+          </>
         )}
 
         {/* キャラクターポートレート */}

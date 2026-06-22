@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import type { GameState } from '@/lib/game/types'
-import { COMPANIONS, getExpToNext } from '@/lib/game/data'
+import { COMPANIONS, getExpToNext, getDifficultyMultiplier } from '@/lib/game/data'
 
 interface Props {
   gs: GameState
@@ -22,6 +22,8 @@ export default function StatusBar({ gs, onSave, isMuted, onToggleMute, onReturnT
   const expPct = Math.min(100, (gs.playerExp / expToNext) * 100)
   const daysUrgent = gs.daysLeft <= 20
   const daysWarn = gs.daysLeft <= 40
+  const totalDays = getDifficultyMultiplier(gs.difficulty).days
+  const currentDay = totalDays - gs.daysLeft + 1
 
   return (
     <div className="sticky top-0 z-30 bg-[#07071a] border-b-2 border-indigo-800 px-2 py-1.5 shadow-xl">
@@ -35,6 +37,7 @@ export default function StatusBar({ gs, onSave, isMuted, onToggleMute, onReturnT
             ? 'border-orange-600 bg-orange-950 text-orange-300'
             : 'border-indigo-700 bg-indigo-950 text-indigo-200'
         }`}>
+          <span className="text-[9px] text-gray-600 font-bold mr-0.5">{currentDay}日目</span>
           ⏰ <span className="text-lg font-black">{gs.daysLeft}</span>日
         </div>
 

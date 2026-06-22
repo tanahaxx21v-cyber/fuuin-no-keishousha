@@ -83,12 +83,26 @@ export default function ShopView({ gs, onBuy, onClose }: Props) {
             const isPriceUp = currentPrice > item.price
             const owned = gs.inventory.find(i => i.itemId === itemId)?.qty ?? 0
             const canBuy = gs.gold >= currentPrice
+            const hpPct = gs.playerHp / gs.playerMaxHp
+            const mpPct = gs.playerMp / gs.playerMaxMp
+            const isRecommended = (
+              (hpPct < 0.5 && (item.effect === 'heal_hp' || item.effect === 'heal_both')) ||
+              (mpPct < 0.4 && (item.effect === 'heal_mp' || item.effect === 'heal_both')) ||
+              (hpPct < 0.3 && item.effect === 'cure_status')
+            )
 
             return (
-              <div key={itemId} className={`bg-slate-900 border-2 rounded-xl p-4 flex items-center gap-3 ${canBuy ? 'border-slate-700' : 'border-slate-800 opacity-60'}`}>
+              <div key={itemId} className={`bg-slate-900 border-2 rounded-xl p-4 flex items-center gap-3 ${
+                isRecommended && canBuy ? 'border-yellow-600 ring-1 ring-yellow-500/30' : canBuy ? 'border-slate-700' : 'border-slate-800 opacity-60'
+              }`}>
                 <div className="text-4xl">{item.emoji}</div>
                 <div className="flex-1">
-                  <div className="font-black text-white text-sm">{item.name}</div>
+                  <div className="flex items-center gap-2">
+                    <span className="font-black text-white text-sm">{item.name}</span>
+                    {isRecommended && canBuy && (
+                      <span className="text-[9px] font-black px-1.5 py-0.5 rounded bg-yellow-950 border border-yellow-600 text-yellow-400 animate-pulse">おすすめ</span>
+                    )}
+                  </div>
                   <div className="text-xs text-gray-400 mt-0.5">{item.desc}</div>
                   {owned > 0 && <div className="text-xs text-blue-400 font-bold mt-0.5">所持: {owned}個</div>}
                 </div>
