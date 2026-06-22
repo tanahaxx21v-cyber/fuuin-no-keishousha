@@ -219,6 +219,11 @@ export default function BattleScene({ gs, onAttack, onSkill, onItem, onFlee, onC
               ⚠️危機
             </span>
           )}
+          {b.isBoss && enemies.find(e => e.isBoss && e.hp > 0 && e.hp <= e.maxHp * 0.3) && (
+            <span className="text-xs font-black px-2 py-0.5 rounded border border-orange-500 bg-orange-950 text-orange-300 animate-pulse">
+              🌋瀕死
+            </span>
+          )}
           <span className={`text-xs font-bold px-2 py-0.5 rounded border ${
             isPlayerTurn
               ? 'border-green-600 bg-green-950 text-green-300'

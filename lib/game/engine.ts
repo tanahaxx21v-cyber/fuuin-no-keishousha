@@ -711,11 +711,17 @@ function processEnemyTurn(state: GameState): GameState {
     b.bossRaged = true
     b.logs.push({ text: `💢 ${actor.name}が激怒した！攻撃が激化する！`, type: 'system' })
   }
+  // ボス瀕死フェーズ（HP30%以下）：さらにATK+30%・スキル率75%
+  const isBossDying = actor.isBoss && actor.hp <= actor.maxHp * 0.3
+  if (isBossDying && !b.logs.some(l => l.text.includes('最後の力'))) {
+    b.logs.push({ text: `🔥 ${actor.name}が最後の力を振り絞る！`, type: 'system' })
+  }
   const isRaging = actor.isBoss && b.bossRaged
+  const bossAtkMult = isBossDying ? 1.3 : 1.0
 
   // Occasionally use skill (only pick from affordable skills)
   const affordableSkills = actor.skills.filter(sk => actor.mp >= sk.mpCost)
-  const skillChance = isRaging ? 0.55 : 0.3  // 激怒時はスキル使用率55%
+  const skillChance = isBossDying ? 0.75 : isRaging ? 0.55 : 0.3
   const useSkill = affordableSkills.length > 0 && Math.random() < skillChance
   if (useSkill) {
     // 激怒中は最大ダメージスキルを優先
@@ -723,7 +729,7 @@ function processEnemyTurn(state: GameState): GameState {
       ? affordableSkills.reduce((best, sk) => sk.power > best.power ? sk : best, affordableSkills[0])
       : affordableSkills[Math.floor(Math.random() * affordableSkills.length)]
     actor.mp -= skill.mpCost
-    const logPrefix = isRaging ? '💥' : '🔥'
+    const logPrefix = isBossDying ? '🌋' : isRaging ? '💥' : '🔥'
     b.logs.push({ text: `${logPrefix} ${actor.name}は「${skill.name}」を使った！`, type: 'status' })
     const targets = skill.target === 'enemy_all'
       ? aliveAllies
@@ -739,11 +745,14 @@ function processEnemyTurn(state: GameState): GameState {
     ? [...aliveAllies].sort((a, b) => a.hp - b.hp)[0]
     : aliveAllies[Math.floor(Math.random() * aliveAllies.length)]
   const result = calcDamage(actor, target)
-  const diedFromAtk = applyDamage(target, result.dmg)
+  const boostedDmg = Math.floor(result.dmg * bossAtkMult)
+  const diedFromAtk = applyDamage(target, boostedDmg)
   b.logs.push({
     text: result.crit
-      ? `💥 ${actor.name}の会心！${target.name}に${result.dmg}ダメージ！`
-      : `⚔️ ${actor.name}の攻撃！${target.name}に${result.dmg}ダメージ`,
+      ? `💥 ${actor.name}の会心！${target.name}に${boostedDmg}ダメージ！`
+      : isBossDying
+      ? `🌋 ${actor.name}の渾身の一撃！${target.name}に${boostedDmg}ダメージ！`
+      : `⚔️ ${actor.name}の攻撃！${target.name}に${boostedDmg}ダメージ`,
     type: result.crit ? 'critical' : 'damage',
   })
   if (diedFromAtk) addDeathLog(b, target)
