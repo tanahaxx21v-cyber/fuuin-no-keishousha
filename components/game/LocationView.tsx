@@ -655,7 +655,7 @@ export default function LocationView({
             </button>
           )}
 
-          {loc.type === 'relay' && onCampRest && (() => {
+          {(loc.type === 'relay' || loc.type === 'castle') && onCampRest && (() => {
             const healable = gs.playerHp < gs.playerMaxHp || gs.playerMp < gs.playerMaxMp || gs.party.some(id => gs.companions[id]?.alive && (gs.companions[id].hp < gs.companions[id].maxHp || gs.companions[id].mp < gs.companions[id].maxMp))
             return (
               <button
