@@ -1,7 +1,8 @@
 'use client'
 
+import { useState } from 'react'
 import type { GameState, CompanionId } from '@/lib/game/types'
-import { LOCATIONS, COMPANIONS, ENEMIES, getInnPrice, getDifficultyMultiplier } from '@/lib/game/data'
+import { LOCATIONS, COMPANIONS, ENEMIES, ITEMS, getInnPrice, getDifficultyMultiplier } from '@/lib/game/data'
 import { CharPortrait, CharPortraitLarge, hasCharPortrait } from './CharPortrait'
 
 // ダンジョン危険度マッピング（ボスの強さから判定）
@@ -26,6 +27,7 @@ interface Props {
   onWander?: () => void
   onCampRest?: () => void
   onOpenPartyManage?: () => void
+  onUseItem?: (itemId: string, targetId: 'player' | CompanionId) => void
 }
 
 function getRoleBadge(cls: string): { label: string; color: string } {
@@ -106,8 +108,10 @@ const COMPANION_LOC_LINES: Partial<Record<CompanionId, { town: string[]; relay: 
 }
 
 export default function LocationView({
-  gs, onBackToMap, onInn, onOpenShop, onEnterDungeon, onFightBoss, onJoinCompanion, onSkipCompanion, onWander, onCampRest, onOpenPartyManage
+  gs, onBackToMap, onInn, onOpenShop, onEnterDungeon, onFightBoss, onJoinCompanion, onSkipCompanion, onWander, onCampRest, onOpenPartyManage, onUseItem
 }: Props) {
+  const [itemPanelOpen, setItemPanelOpen] = useState(false)
+  const [selectedItemId, setSelectedItemId] = useState<string | null>(null)
   const loc = LOCATIONS[gs.currentLocId]
   const companion = loc.companionId ? COMPANIONS[loc.companionId] : undefined
   const companionState = companion ? gs.companions[companion.id] : undefined
@@ -543,6 +547,86 @@ export default function LocationView({
           )}
         </div>
       </div>
+
+      {/* アイテム使用パネル */}
+      {onUseItem && gs.inventory.filter(i => i.qty > 0 && ['heal_hp','heal_mp','heal_both'].includes(ITEMS[i.itemId]?.effect ?? '')).length > 0 && (
+        <div className="bg-[#0c0c24] border-2 border-teal-800/60 rounded-xl overflow-hidden">
+          <button
+            onClick={() => setItemPanelOpen(v => !v)}
+            className="w-full flex items-center gap-3 px-4 py-3 text-left hover:bg-teal-950/30 transition"
+          >
+            <span className="text-lg">🎒</span>
+            <div className="flex-1">
+              <div className="font-black text-sm text-white">アイテムを使う</div>
+              <div className="text-[11px] text-teal-400">HP/MP回復アイテム（戦闘外使用可）</div>
+            </div>
+            <span className="text-gray-500 text-sm">{itemPanelOpen ? '▲' : '▼'}</span>
+          </button>
+          {itemPanelOpen && (
+            <div className="px-3 pb-3 border-t border-teal-800/40">
+              {/* アイテム選択 */}
+              <div className="flex flex-wrap gap-2 mt-2 mb-3">
+                {gs.inventory.filter(i => i.qty > 0 && ITEMS[i.itemId]).map(slot => {
+                  const item = ITEMS[slot.itemId]
+                  if (!['heal_hp','heal_mp','heal_both'].includes(item.effect)) return null
+                  return (
+                    <button
+                      key={slot.itemId}
+                      onClick={() => setSelectedItemId(selectedItemId === slot.itemId ? null : slot.itemId)}
+                      className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg border-2 text-xs font-bold transition ${
+                        selectedItemId === slot.itemId
+                          ? 'border-teal-400 bg-teal-950 text-white'
+                          : 'border-slate-600 bg-slate-900 text-gray-300 hover:border-teal-700'
+                      }`}
+                    >
+                      <span>{item.emoji}</span>
+                      <span>{item.name}</span>
+                      <span className="text-gray-500">×{slot.qty}</span>
+                    </button>
+                  )
+                })}
+              </div>
+              {/* ターゲット選択 */}
+              {selectedItemId && (
+                <div>
+                  <div className="text-[11px] text-teal-400 font-black mb-2">▶ 誰に使う？</div>
+                  <div className="flex flex-wrap gap-2">
+                    {/* プレイヤー */}
+                    <button
+                      onClick={() => { onUseItem(selectedItemId, 'player'); setSelectedItemId(null); setItemPanelOpen(false) }}
+                      className="flex items-center gap-2 bg-indigo-950 border border-indigo-700 rounded-lg px-3 py-2 text-xs font-bold text-white hover:bg-indigo-900 transition active:scale-95"
+                    >
+                      <span>🧑</span>
+                      <div>
+                        <div>{gs.playerName}</div>
+                        <div className="text-indigo-400">HP {gs.playerHp}/{gs.playerMaxHp}</div>
+                      </div>
+                    </button>
+                    {/* 仲間 */}
+                    {gs.party.filter(id => gs.companions[id]?.alive).map(id => {
+                      const c = gs.companions[id]
+                      const def = COMPANIONS[id]
+                      return (
+                        <button
+                          key={id}
+                          onClick={() => { onUseItem(selectedItemId, id); setSelectedItemId(null); setItemPanelOpen(false) }}
+                          className="flex items-center gap-2 bg-slate-900 border border-slate-600 rounded-lg px-3 py-2 text-xs font-bold text-white hover:bg-slate-800 transition active:scale-95"
+                        >
+                          <CharPortrait charId={id} size={32} rounded={4} />
+                          <div>
+                            <div>{def.name}</div>
+                            <div className="text-gray-400">HP {c.hp}/{c.maxHp}</div>
+                          </div>
+                        </button>
+                      )
+                    })}
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+      )}
 
       {/* Party status */}
       {gs.party.length > 0 && (

@@ -7,7 +7,7 @@ import {
   restAtInn, buyItem, enterDungeon, fightBoss, battleAttack,
   battleSkill, battleUseItem, battleFlee, closeBattle,
   processNonPlayerTurn, checkLocationEvent, startEvent, advanceEvent,
-  chooseBranch, wander, campRest, setParty, getAvailableConnections,
+  chooseBranch, wander, campRest, useItemOutOfBattle, setParty, getAvailableConnections,
 } from '@/lib/game/engine'
 import { LOCATIONS } from '@/lib/game/data'
 import {
@@ -192,6 +192,10 @@ export default function GameRoot() {
 
   const handleCampRest = () => {
     update(s => campRest(s))
+  }
+
+  const handleUseItemOutOfBattle = (itemId: string, targetId: string) => {
+    update(s => useItemOutOfBattle(s, itemId, targetId as 'player'))
   }
 
   const handleOpenPartyManage = () => {
@@ -457,6 +461,7 @@ export default function GameRoot() {
             onWander={handleWander}
             onCampRest={handleCampRest}
             onOpenPartyManage={handleOpenPartyManage}
+            onUseItem={handleUseItemOutOfBattle}
           />
         )}
         {gs.phase === 'party_manage' && (

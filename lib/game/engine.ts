@@ -1229,6 +1229,61 @@ export function setParty(state: GameState, newParty: CompanionId[]): GameState {
   return s
 }
 
+// ===== 戦闘外アイテム使用（ロケーション画面から） =====
+export function useItemOutOfBattle(state: GameState, itemId: string, targetId: 'player' | CompanionId): GameState {
+  const s = deepClone(state)
+  const slot = s.inventory.find(i => i.itemId === itemId)
+  if (!slot || slot.qty <= 0) return { ...s, message: 'アイテムがない。' }
+  const item = ITEMS[itemId]
+  if (!item) return { ...s, message: '不明なアイテムだ。' }
+
+  slot.qty -= 1
+  if (slot.qty === 0) s.inventory = s.inventory.filter(i => i.itemId !== itemId)
+
+  if (targetId === 'player') {
+    if (item.effect === 'heal_hp') {
+      const healed = Math.min(item.power, s.playerMaxHp - s.playerHp)
+      s.playerHp = Math.min(s.playerMaxHp, s.playerHp + item.power)
+      s.message = `🧪 ${item.name}を使った。HP +${healed}`
+    } else if (item.effect === 'heal_mp') {
+      const healed = Math.min(item.power, s.playerMaxMp - s.playerMp)
+      s.playerMp = Math.min(s.playerMaxMp, s.playerMp + item.power)
+      s.message = `✨ ${item.name}を使った。MP +${healed}`
+    } else if (item.effect === 'heal_both') {
+      const hp = Math.min(item.power, s.playerMaxHp - s.playerHp)
+      const mp = Math.min(40, s.playerMaxMp - s.playerMp)
+      s.playerHp = Math.min(s.playerMaxHp, s.playerHp + item.power)
+      s.playerMp = Math.min(s.playerMaxMp, s.playerMp + 40)
+      s.message = `🌿 ${item.name}を使った。HP +${hp}・MP +${mp}`
+    } else {
+      s.message = `${item.name}を使った。`
+    }
+  } else {
+    const c = s.companions[targetId]
+    if (!c || !c.alive) return { ...s, message: 'その仲間は回復できない。' }
+    if (item.effect === 'heal_hp') {
+      const healed = Math.min(item.power, c.maxHp - c.hp)
+      c.hp = Math.min(c.maxHp, c.hp + item.power)
+      const def = COMPANIONS[targetId]
+      s.message = `🧪 ${def.name}に${item.name}を使った。HP +${healed}`
+    } else if (item.effect === 'heal_mp') {
+      const healed = Math.min(item.power, c.maxMp - c.mp)
+      c.mp = Math.min(c.maxMp, c.mp + item.power)
+      const def = COMPANIONS[targetId]
+      s.message = `✨ ${def.name}に${item.name}を使った。MP +${healed}`
+    } else if (item.effect === 'heal_both') {
+      const hp = Math.min(item.power, c.maxHp - c.hp)
+      c.hp = Math.min(c.maxHp, c.hp + item.power)
+      c.mp = Math.min(c.maxMp, c.mp + 40)
+      const def = COMPANIONS[targetId]
+      s.message = `🌿 ${def.name}に${item.name}を使った。HP +${hp}`
+    } else {
+      s.message = `${item.name}を使った。`
+    }
+  }
+  return s
+}
+
 // ===== 野営して休む（中継地での無料部分回復） =====
 export function campRest(state: GameState): GameState {
   const s = deepClone(state)
@@ -1391,9 +1446,9 @@ export function wander(state: GameState): GameState {
   } else if (roll < 0.93) {
     // 謎の行商人（高額アイテムを格安で売る）
     const discountItems = [
-      { itemId: 'mega_potion', name: 'メガポーション', normalPrice: 200, deal: 60 },
-      { itemId: 'elixir', name: 'エリクサー', normalPrice: 500, deal: 120 },
-      { itemId: 'revive', name: '復活の草', normalPrice: 400, deal: 80 },
+      { itemId: 'hi_potion', name: 'ハイポーション', normalPrice: 250, deal: 60 },
+      { itemId: 'panacea', name: '万能薬', normalPrice: 300, deal: 80 },
+      { itemId: 'ether', name: 'エーテル', normalPrice: 120, deal: 35 },
     ]
     const pick = discountItems[Math.floor(Math.random() * discountItems.length)]
     if (s.gold >= pick.deal) {
