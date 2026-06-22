@@ -259,20 +259,38 @@ export default function WinScreen({ gs, onRestart }: Props) {
               </div>
             )}
 
-            {/* 実績（アルバム）*/}
-            {(gs.achievements ?? []).length > 0 && (
-              <div className="bg-amber-950/60 border-2 border-amber-700 rounded-xl p-3 mb-3 text-left">
-                <div className="text-xs font-black text-amber-500 mb-2 tracking-widest">— 実績解除 —</div>
-                <div className="flex flex-col gap-1.5">
-                  {(gs.achievements ?? []).map((ach, i) => (
-                    <div key={i} className="flex items-start gap-2 text-sm text-amber-200 font-bold">
-                      <span className="shrink-0">✨</span>
-                      <span>{ach}</span>
-                    </div>
-                  ))}
+            {/* 実績（動的計算） */}
+            {(() => {
+              const ACHIEVEMENT_DEFS = [
+                { icon: '🤝', title: '最初の出会い',  check: (g: GameState) => Object.values(g.companions).some(c => c.joined) },
+                { icon: '👥', title: '完全パーティ',  check: (g: GameState) => g.party.length >= 3 },
+                { icon: '⚔️', title: '初討伐',        check: (g: GameState) => g.defeatedBosses.length >= 1 },
+                { icon: '🏹', title: '討伐者',        check: (g: GameState) => g.defeatedBosses.length >= 3 },
+                { icon: '💎', title: '封印の欠片',    check: (g: GameState) => g.sealStones.length >= 1 },
+                { icon: '✨', title: '三石揃いし者',  check: (g: GameState) => g.sealStones.length >= 3 },
+                { icon: '🧭', title: '旅人',          check: (g: GameState) => g.visitedLocs.length >= 10 },
+                { icon: '🗺️', title: '冒険家',        check: (g: GameState) => g.visitedLocs.length >= 15 },
+                { icon: '📖', title: '語り部',        check: (g: GameState) => g.completedEvents.length >= 30 },
+                { icon: '🌟', title: '覚醒の勇者',   check: (g: GameState) => g.playerLevel >= 20 },
+                { icon: '💰', title: '商売人',        check: (g: GameState) => g.gold >= 500 },
+                { icon: '😈', title: '謎の魔族の絆', check: (g: GameState) => g.companions.zeno?.joined === true },
+              ]
+              const unlocked = ACHIEVEMENT_DEFS.filter(a => a.check(gs))
+              if (unlocked.length === 0) return null
+              return (
+                <div className="bg-amber-950/60 border-2 border-amber-700 rounded-xl p-3 mb-3 text-left">
+                  <div className="text-xs font-black text-amber-500 mb-2 tracking-widest">— 実績解除 {unlocked.length}/{ACHIEVEMENT_DEFS.length} —</div>
+                  <div className="flex flex-wrap gap-1.5">
+                    {unlocked.map((a, i) => (
+                      <div key={i} className="flex items-center gap-1 bg-amber-900/40 border border-amber-700/50 rounded-lg px-2 py-1">
+                        <span>{a.icon}</span>
+                        <span className="text-xs font-bold text-amber-200">{a.title}</span>
+                      </div>
+                    ))}
+                  </div>
                 </div>
-              </div>
-            )}
+              )
+            })()}
 
             <div className="flex gap-3 mt-4">
               <button
