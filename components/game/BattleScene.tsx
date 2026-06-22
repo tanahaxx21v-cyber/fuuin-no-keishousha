@@ -150,6 +150,7 @@ export default function BattleScene({ gs, onAttack, onSkill, onItem, onFlee, onC
   const [pendingSkill, setPendingSkill] = useState<Skill | null>(null)
   const [pendingItemId, setPendingItemId] = useState<string | null>(null)
   const [critFlash, setCritFlash] = useState(false)
+  const [critText, setCritText] = useState(false)
   const [deathFlash, setDeathFlash] = useState(false)
   const [deadCompanion, setDeadCompanion] = useState<{ id: CompanionId; lastWord: string } | null>(null)
   const [showBossIntro, setShowBossIntro] = useState(b.isBoss && b.turn <= 1)
@@ -161,7 +162,9 @@ export default function BattleScene({ gs, onAttack, onSkill, onItem, onFlee, onC
       const newLogs = b.logs.slice(prevLogLen.current)
       if (newLogs.some(l => l.type === 'critical')) {
         setCritFlash(true)
+        setCritText(true)
         setTimeout(() => setCritFlash(false), 350)
+        setTimeout(() => setCritText(false), 700)
       }
       if (newLogs.some(l => l.type === 'death')) {
         setDeathFlash(true)
@@ -334,6 +337,14 @@ export default function BattleScene({ gs, onAttack, onSkill, onItem, onFlee, onC
         {/* クリティカル・死亡フラッシュ */}
         {critFlash && (
           <div className="absolute inset-0 z-50 pointer-events-none rounded" style={{ background: 'rgba(255,230,0,0.18)', transition: 'opacity 0.35s' }} />
+        )}
+        {critText && (
+          <div className="absolute inset-x-0 top-1/3 z-50 pointer-events-none flex justify-center">
+            <div className="text-2xl font-black text-yellow-300 px-3 py-1 rounded-lg"
+              style={{ textShadow: '0 0 12px rgba(255,220,0,0.9), 0 2px 0 rgba(0,0,0,0.8)', animation: 'fadeIn 0.1s ease, fadeOut 0.4s ease 0.3s forwards' }}>
+              ✦ CRITICAL! ✦
+            </div>
+          </div>
         )}
         {deathFlash && (
           <div className="absolute inset-0 z-50 pointer-events-none rounded" style={{ background: 'rgba(180,0,0,0.2)', transition: 'opacity 0.4s' }} />
