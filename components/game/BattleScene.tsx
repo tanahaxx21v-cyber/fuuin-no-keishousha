@@ -236,7 +236,10 @@ export default function BattleScene({ gs, onAttack, onSkill, onItem, onFlee, onC
 
   function handleSkillSelect(skill: Skill) {
     if (['enemy_all', 'ally_all', 'self'].includes(skill.target)) { onSkill(skill); setMode('select') }
-    else if (skill.target === 'enemy_one') { setPendingSkill(skill); setMode('target_skill') }
+    else if (skill.target === 'enemy_one') {
+      if (aliveEnemies.length === 1) { onSkill(skill, aliveEnemies[0].uid); setMode('select') }
+      else { setPendingSkill(skill); setMode('target_skill') }
+    }
     else { setPendingSkill(skill); setMode('target_skill') }
   }
 

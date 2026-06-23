@@ -96,6 +96,31 @@ export default function StatusBar({ gs, onSave, isMuted, onToggleMute, onReturnT
           <span className="text-xs text-amber-700">G</span>
         </div>
 
+        {/* Status effects */}
+        {gs.playerStatus && gs.playerStatus.length > 0 && (
+          <div className="flex items-center gap-0.5">
+            {gs.playerStatus.map(ef => (
+              <div
+                key={ef.id}
+                className="text-xs px-1.5 py-0.5 rounded border font-black"
+                style={
+                  ef.id === 'poison'
+                    ? { background: '#1a0a2e', borderColor: '#7c3aed', color: '#c084fc' }
+                    : ef.id === 'stun'
+                    ? { background: '#1a1a00', borderColor: '#ca8a04', color: '#fde047' }
+                    : ef.id === 'atk_down'
+                    ? { background: '#0a1a2e', borderColor: '#1d4ed8', color: '#60a5fa' }
+                    : { background: '#0f172a', borderColor: '#475569', color: '#94a3b8' }
+                }
+                title={`${ef.id === 'poison' ? '毒' : ef.id === 'stun' ? 'スタン' : ef.id === 'atk_down' ? 'ATK低下' : ef.id}（残${ef.turnsLeft}T）`}
+              >
+                {ef.id === 'poison' ? '☠️' : ef.id === 'stun' ? '⚡' : ef.id === 'atk_down' ? '⬇️' : '❓'}
+                <span className="text-[9px] ml-0.5">{ef.turnsLeft}</span>
+              </div>
+            ))}
+          </div>
+        )}
+
         {/* Seal stones */}
         <div className="flex items-center gap-1">
           {(['fire', 'storm', 'dark'] as const).map(stone => {

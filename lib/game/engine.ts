@@ -1443,7 +1443,26 @@ export function campRest(state: GameState): GameState {
       c.mp = Math.min(c.maxMp, c.mp + cmpHeal)
     }
   }
-  s.message = `🏕️ 野営して体を休めた。HP +${playerHeal}・MP +${playerMpHeal}（仲間も同様に回復）${campQuote}`
+  const CAMP_REST_LOCATION_FLAVOR: Partial<Record<string, string>> = {
+    forest_entrance: '深い森の入口、木陰に身を潜めて夜を明かした。',
+    ancient_temple:  '古代神殿の回廊に天幕を張り、神の加護の下で眠った。',
+    dragon_pass:     '竜の気配が漂う峠道の岩陰に火を起こし、身を寄せた。',
+    lighthouse_cape: '海風が厳しい岬の灯台下、狭い軒先で夜を過ごした。',
+    bandit_hideout:  'アジトの隅に無断で陣を張った。怒られる前に出よう。',
+    spirit_spring:   '精霊の泉のほとりで眠ると、不思議と傷の癒えが早かった。',
+    checkpoint:      '関所の隅を借りて野営した。衛兵たちが火を分けてくれた。',
+    ruined_castle:   '崩れた城壁の陰に陣を張り、廃墟の静寂の中で眠った。',
+    mine_depths:     '坑道の奥、かつての採掘小屋の跡地で体を横たえた。',
+  }
+  const locType = LOCATIONS[s.currentLocId]?.type
+  const locFlavor = CAMP_REST_LOCATION_FLAVOR[s.currentLocId]
+  const typeFlavor = locType === 'castle'
+    ? '廃城の石造りの壁を風よけに、焚き火を囲んで夜営した。'
+    : locType === 'relay'
+    ? '野外に天幕を張り、旅の疲れを癒した。'
+    : null
+  const flavorPrefix = locFlavor ?? typeFlavor ?? '野営して体を休めた。'
+  s.message = `🏕️ ${flavorPrefix} HP +${playerHeal}・MP +${playerMpHeal}（仲間も同様に回復）${campQuote}`
   return s
 }
 

@@ -329,18 +329,23 @@ export default function WinScreen({ gs, onRestart }: Props) {
                 {'chars' in ep && ep.chars && (
                   <div className="space-y-4 mb-4">
                     {ep.chars.map((ch) => {
-                      // ゼノ: only show if player recruited him
-                      if ('isHidden' in ch && ch.isHidden && !hasZeno) {
+                      const companionId = NAME_TO_ID[ch.name]
+                      const companion = companionId ? gs.companions[companionId as keyof typeof gs.companions] : undefined
+                      const wasRecruited = companion?.joined === true
+
+                      // 未加入仲間: 存在は匂わせるが詳細は出さない
+                      if (!wasRecruited) {
                         return (
-                          <div key={ch.name} className="bg-black/30 border border-gray-700/50 rounded-xl p-4">
-                            <div className="flex items-center gap-2 mb-2">
-                              <span className="text-xl opacity-30">😈</span>
-                              <span className="text-gray-600 font-semibold text-sm">??? — 謎の魔族</span>
+                          <div key={ch.name} className="bg-black/20 border border-gray-800/60 rounded-xl p-4 opacity-50">
+                            <div className="flex items-center gap-2">
+                              <span className="text-xl grayscale opacity-40">{ch.emoji}</span>
+                              <span className="text-gray-600 font-semibold text-sm">{ch.name}</span>
+                              <span className="text-xs text-gray-700 ml-auto">この旅では出会わなかった</span>
                             </div>
-                            <p className="text-gray-600 text-xs italic">「この者の消息は不明だ。」</p>
                           </div>
                         )
                       }
+
                       const dead = isCompanionDead(ch.name)
                       return (
                         <div key={ch.name} className={`bg-black/30 border rounded-xl p-4 ${dead ? 'border-red-900/60' : 'border-gray-700'}`}>

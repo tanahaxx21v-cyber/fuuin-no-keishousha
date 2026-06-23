@@ -491,6 +491,21 @@ export default function LocationView({
         )
       })()}
 
+      {/* 状態異常警告 */}
+      {gs.playerStatus && gs.playerStatus.length > 0 && (
+        <div className="bg-purple-950/80 border-2 border-purple-700 rounded-xl px-4 py-3">
+          <div className="flex items-center gap-2 flex-wrap">
+            <span className="text-purple-400 font-black text-sm">⚠️ 状態異常中</span>
+            {gs.playerStatus.map(ef => (
+              <span key={ef.id} className="text-xs font-bold px-2 py-0.5 rounded border border-purple-600 bg-purple-900/60 text-purple-200">
+                {ef.id === 'poison' ? `☠️ 毒（残${ef.turnsLeft}T）` : ef.id === 'stun' ? `⚡ スタン（残${ef.turnsLeft}T）` : ef.id === 'atk_down' ? `⬇️ ATK低下（残${ef.turnsLeft}T）` : `${ef.id}（残${ef.turnsLeft}T）`}
+              </span>
+            ))}
+            <span className="text-xs text-purple-400 ml-auto">次の戦闘に影響します</span>
+          </div>
+        </div>
+      )}
+
       {/* Action menu */}
       <div className="bg-[#0c0c24] border-2 border-amber-800 rounded-xl p-3">
         <div className="text-xs font-black text-amber-500 mb-3 tracking-widest">— コマンド —</div>
