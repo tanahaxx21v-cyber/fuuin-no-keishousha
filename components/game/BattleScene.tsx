@@ -37,11 +37,14 @@ function getEnemyEmoji(uid: string, name: string): string {
   return '👾'
 }
 
-function EnemyDisplay({ enemies, isBoss, isTargetingEnemies, onSelectTarget }: {
+function EnemyDisplay({ enemies, isBoss, isTargetingEnemies, onSelectTarget, hitUnits, healUnits, floatingNums }: {
   enemies: BattleUnit[]
   isBoss: boolean
   isTargetingEnemies: boolean
   onSelectTarget: (e: BattleUnit) => void
+  hitUnits: Set<string>
+  healUnits: Set<string>
+  floatingNums: { uid: string; val: string; color: string; id: number }[]
 }) {
   const isLarge = isBoss || enemies.length === 1
   const fontSize = isBoss ? '6rem' : isLarge ? '4.5rem' : enemies.length <= 2 ? '3.5rem' : '2.5rem'
@@ -54,6 +57,9 @@ function EnemyDisplay({ enemies, isBoss, isTargetingEnemies, onSelectTarget }: {
           const emoji = e.emoji || getEnemyEmoji(e.uid, e.name)
           const hpPct = Math.max(0, (e.hp / e.maxHp) * 100)
           const hpFill = hpPct > 50 ? '#4ade80' : hpPct > 25 ? '#facc15' : '#ef4444'
+          const isHit = hitUnits.has(e.uid)
+          const isHeal = healUnits.has(e.uid)
+          const myFloats = floatingNums.filter(f => f.uid === e.uid)
 
           return (
             <div key={e.uid} className={`flex flex-col items-center gap-0.5 transition-opacity ${dead ? 'opacity-15' : ''}`}>
@@ -71,9 +77,34 @@ function EnemyDisplay({ enemies, isBoss, isTargetingEnemies, onSelectTarget }: {
                     : isTargetingEnemies && !dead
                     ? 'drop-shadow(0 0 10px rgba(255,220,0,0.8))'
                     : 'drop-shadow(0 0 5px rgba(255,255,255,0.25))',
+                  background: isHit ? 'rgba(239,68,68,0.35)' : isHeal ? 'rgba(74,222,128,0.25)' : 'transparent',
+                  borderRadius: 8,
+                  transition: 'background 0.1s',
                 }}
               >
-                <span style={{ fontSize, lineHeight: 1 }}>{emoji}</span>
+                <span style={{
+                  fontSize, lineHeight: 1,
+                  transform: isHit ? 'translateX(-3px)' : 'none',
+                  transition: 'transform 0.08s',
+                  display: 'block',
+                }}>{emoji}</span>
+                {/* フローティングダメージ/ヒール数字 */}
+                {myFloats.map(f => (
+                  <span
+                    key={f.id}
+                    className="absolute font-black pointer-events-none"
+                    style={{
+                      color: f.color,
+                      fontSize: isBoss ? 22 : 16,
+                      top: '-20px',
+                      left: '50%',
+                      transform: 'translateX(-50%)',
+                      textShadow: '0 1px 4px rgba(0,0,0,0.9)',
+                      animation: 'floatUp 0.9s ease-out forwards',
+                      zIndex: 20,
+                    }}
+                  >{f.val}</span>
+                ))}
                 {isTargetingEnemies && !dead && (
                   <span className="absolute -top-4 left-1/2 -translate-x-1/2 text-yellow-300 font-black text-lg animate-bounce">▼</span>
                 )}
@@ -157,6 +188,10 @@ export default function BattleScene({ gs, onAttack, onSkill, onItem, onFlee, onC
   const [spellCast, setSpellCast] = useState<{ label: string; color: string } | null>(null)
   const [deadCompanion, setDeadCompanion] = useState<{ id: CompanionId; lastWord: string } | null>(null)
   const [showBossIntro, setShowBossIntro] = useState(b.isBoss && b.turn <= 1)
+  const [hitUnits, setHitUnits] = useState<Set<string>>(new Set())
+  const [healUnits, setHealUnits] = useState<Set<string>>(new Set())
+  const [floatingNums, setFloatingNums] = useState<{ uid: string; val: string; color: string; id: number }[]>([])
+  const floatIdRef = useRef(0)
   const prevLogLen = useRef(0)
   const prevAllyHp = useRef<Record<string, number>>({})
 
@@ -168,6 +203,39 @@ export default function BattleScene({ gs, onAttack, onSkill, onItem, onFlee, onC
         setCritText(true)
         setTimeout(() => setCritFlash(false), 350)
         setTimeout(() => setCritText(false), 700)
+      }
+      // ヒット/ヒールエフェクト
+      const newHit = new Set<string>()
+      const newHeal = new Set<string>()
+      const newFloats: { uid: string; val: string; color: string; id: number }[] = []
+      for (const log of newLogs) {
+        if (log.type === 'damage' || log.type === 'critical') {
+          const match = log.text.match(/(\d+)ダメージ/)
+          const target = b.units.find(u => log.text.includes(u.name))
+          if (target) {
+            newHit.add(target.uid)
+            if (match) newFloats.push({ uid: target.uid, val: `-${match[1]}`, color: log.type === 'critical' ? '#fbbf24' : '#ef4444', id: floatIdRef.current++ })
+          }
+        } else if (log.type === 'heal') {
+          const match = log.text.match(/(\d+)回復/)
+          const target = b.units.find(u => log.text.includes(u.name))
+          if (target) {
+            newHeal.add(target.uid)
+            if (match) newFloats.push({ uid: target.uid, val: `+${match[1]}`, color: '#4ade80', id: floatIdRef.current++ })
+          }
+        }
+      }
+      if (newHit.size > 0) {
+        setHitUnits(newHit)
+        setTimeout(() => setHitUnits(new Set()), 300)
+      }
+      if (newHeal.size > 0) {
+        setHealUnits(newHeal)
+        setTimeout(() => setHealUnits(new Set()), 400)
+      }
+      if (newFloats.length > 0) {
+        setFloatingNums(prev => [...prev, ...newFloats])
+        setTimeout(() => setFloatingNums(prev => prev.filter(n => !newFloats.some(nf => nf.id === n.id))), 900)
       }
       // スキル発動演出
       const skillLog = newLogs.find(l => l.type === 'status' && l.text.includes('を使った'))
@@ -496,6 +564,9 @@ export default function BattleScene({ gs, onAttack, onSkill, onItem, onFlee, onC
           isBoss={b.isBoss}
           isTargetingEnemies={isTargetingEnemies}
           onSelectTarget={handleSelectTarget}
+          hitUnits={hitUnits}
+          healUnits={healUnits}
+          floatingNums={floatingNums}
         />
       </div>
 

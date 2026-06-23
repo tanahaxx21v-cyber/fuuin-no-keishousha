@@ -395,7 +395,7 @@ function applyEventReward(s: GameState, reward: { gold?: number; exp?: number; i
     if (ex) ex.qty += reward.itemQty ?? 1
     else s.inventory.push({ itemId: reward.itemId, qty: reward.itemQty ?? 1 })
   }
-  if (reward.pendingJoin && !s.companions[reward.pendingJoin].joined) {
+  if (reward.pendingJoin && !s.companions[reward.pendingJoin].joined && !s.companions[reward.pendingJoin].refused) {
     s.pendingCompanionJoin = reward.pendingJoin
   }
   if (reward.message) s.message = reward.message
@@ -418,6 +418,9 @@ const COMPANION_REJECTED_LINES: Partial<Record<CompanionId, string[]>> = {
   zeno: ['……人間らしい選択だ。', '……興味深い判断だ。記憶しておこう。'],
 }
 
+// 断ったら二度と加入オファーが来ない仲間（一度きりの縁）
+const ONE_TIME_COMPANIONS = new Set<string>(['zeno', 'logan', 'vais', 'iris', 'cecil'])
+
 export function skipCompanion(state: GameState): GameState {
   const s = deepClone(state)
   const skipped = s.pendingCompanionJoin
@@ -426,9 +429,18 @@ export function skipCompanion(state: GameState): GameState {
     const def = COMPANIONS[skipped]
     const lines = COMPANION_REJECTED_LINES[skipped] ?? ['……そうか。']
     const line = lines[Math.floor(Math.random() * lines.length)]
-    s.message = `${def.emoji}${def.name}「${line}」`
+    if (ONE_TIME_COMPANIONS.has(skipped)) {
+      s.companions[skipped].refused = true
+      s.message = `${def.emoji}${def.name}「${line}」（この仲間は二度と加入を申し出ない）`
+    } else {
+      s.message = `${def.emoji}${def.name}「${line}」`
+    }
   }
   return s
+}
+
+export function isOneTimeCompanion(id: string): boolean {
+  return ONE_TIME_COMPANIONS.has(id)
 }
 
 // ===== INN =====
@@ -1095,7 +1107,7 @@ function applyBattleRewards(state: GameState): GameState {
 
     // ダンジョンボス撃破後、仲間加入イベント
     const loc = LOCATIONS[s.currentLocId]
-    if (loc.companionId && !s.companions[loc.companionId].joined) {
+    if (loc.companionId && !s.companions[loc.companionId].joined && !s.companions[loc.companionId].refused) {
       s.pendingCompanionJoin = loc.companionId
     }
   }

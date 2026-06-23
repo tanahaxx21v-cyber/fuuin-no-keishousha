@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import type { GameState, CompanionId } from '@/lib/game/types'
 import { LOCATIONS, COMPANIONS, ENEMIES, ITEMS, getInnPrice, getDifficultyMultiplier } from '@/lib/game/data'
+import { isOneTimeCompanion } from '@/lib/game/engine'
 import { CharPortrait, CharPortraitLarge, hasCharPortrait } from './CharPortrait'
 
 // ダンジョン危険度マッピング（ボスの強さから判定）
@@ -426,6 +427,12 @@ export default function LocationView({
                     </div>
                   )}
 
+                  {isOneTimeCompanion(pendingJoin.id) && (
+                    <div className="text-xs text-red-400 font-bold mb-2.5 text-center bg-red-950/50 rounded-lg py-1.5 border border-red-800">
+                      ⚠️ この仲間は一度断ると、二度と加入を申し出ません。
+                    </div>
+                  )}
+
                   <div className="flex gap-2">
                     <button
                       onClick={() => onJoinCompanion(gs.pendingCompanionJoin!)}
@@ -437,9 +444,13 @@ export default function LocationView({
                     </button>
                     <button
                       onClick={onSkipCompanion}
-                      className="px-5 py-3 bg-slate-800 hover:bg-slate-700 border-2 border-slate-600 text-gray-300 font-bold rounded-xl transition active:scale-95"
+                      className={`px-5 py-3 border-2 font-bold rounded-xl transition active:scale-95 ${
+                        isOneTimeCompanion(pendingJoin.id)
+                          ? 'bg-red-950 hover:bg-red-900 border-red-700 text-red-300'
+                          : 'bg-slate-800 hover:bg-slate-700 border-slate-600 text-gray-300'
+                      }`}
                     >
-                      断る
+                      {isOneTimeCompanion(pendingJoin.id) ? '断る（永久）' : '断る'}
                     </button>
                   </div>
                 </div>

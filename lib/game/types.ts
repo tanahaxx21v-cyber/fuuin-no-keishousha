@@ -199,6 +199,7 @@ export interface CompanionState {
   id: CompanionId
   joined: boolean
   alive: boolean
+  refused?: boolean
   inParty: boolean
   hp: number
   maxHp: number

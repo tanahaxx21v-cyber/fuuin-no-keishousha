@@ -3,7 +3,7 @@
 import { useState, useCallback, useEffect, useRef } from 'react'
 import type { GameState, Difficulty, LocationId, CompanionId, Skill } from '@/lib/game/types'
 import {
-  createInitialState, travel, joinCompanion, skipCompanion,
+  createInitialState, travel, joinCompanion, skipCompanion, isOneTimeCompanion,
   restAtInn, buyItem, enterDungeon, fightBoss, battleAttack,
   battleSkill, battleUseItem, battleFlee, closeBattle,
   processNonPlayerTurn, checkLocationEvent, startEvent, advanceEvent, skipToEventEnd,
