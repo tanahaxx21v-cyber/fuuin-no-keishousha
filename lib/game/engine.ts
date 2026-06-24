@@ -1706,7 +1706,9 @@ export function enterDungeon(state: GameState): GameState {
   }
 
   const pool = loc.enemyPool
-  const count = Math.floor(Math.random() * 3) + 1  // 1〜3体
+  // 序盤（Lv7未満）は最大2体、中盤以降は最大3体（バランス調整）
+  const maxCount = s.playerLevel < 7 ? 2 : 3
+  const count = Math.floor(Math.random() * maxCount) + 1
   const enemies: string[] = []
   for (let i = 0; i < count; i++) {
     enemies.push(pool[Math.floor(Math.random() * pool.length)])
