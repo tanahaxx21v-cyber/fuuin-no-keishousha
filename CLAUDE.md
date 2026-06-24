@@ -145,6 +145,16 @@
 - ✅ fightBoss: engine側にrequireAllStonesガードを追加（UI依存だけでは不十分）
 - ✅ 全コードレビュー完了: WorldMap・LocationView・BattleScene・StatusBar・ShopView・data.tsイベント51件・engine.ts全関数に問題なし
 
+### 2026-06-25 バランス強化セッション（自律改善継続）
+- ✅ 全敵ステータル強化: 序盤HP×1.35/ATK×1.40、中盤HP×1.25/ATK×1.35、後半HP×1.15/ATK×1.25、ボスHP×1.20/ATK×1.15
+- ✅ 仲間全13人のbaseDef -25%削減（ガレスDEF 20→15など）ガレスが序盤狼から1ダメしか受けない無敵問題を解消
+- ✅ プレイヤー初期ステータル調整: ATK 15→10、DEF 12→4、MP 50→30、SPD 10→8（序盤苦戦感の向上）
+- ✅ BattleScene: プレイヤー・仲間へのヒットフラッシュ＋浮遊ダメージ数字エフェクト追加
+- ✅ engine.ts: processPlayerStun関数追加（スタン中プレイヤーターンの自動スキップ）
+- ✅ BattleScene/GameRoot: スタン中はコマンドグリッドを非表示・インジケーター表示・自動スキップ対応
+- ✅ enterDungeon: 序盤（Lv7未満）は最大2体制限（調整後の敵強化で序盤が過酷になりすぎた問題対処）
+- ✅ PP4_ANALYSIS.md新規作成（だいすけ調査 + 田中まとめ：PP4裏サクセス徹底分析・バランス設計根拠）
+
 ---
 
 ## 現在の実装状態
