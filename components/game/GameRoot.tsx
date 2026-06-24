@@ -6,7 +6,7 @@ import {
   createInitialState, travel, joinCompanion, skipCompanion, isOneTimeCompanion,
   restAtInn, buyItem, enterDungeon, fightBoss, battleAttack,
   battleSkill, battleUseItem, battleFlee, closeBattle,
-  processNonPlayerTurn, checkLocationEvent, startEvent, advanceEvent, skipToEventEnd,
+  processNonPlayerTurn, processPlayerStun, checkLocationEvent, startEvent, advanceEvent, skipToEventEnd,
   chooseBranch, wander, campRest, useItemOutOfBattle, setParty, getAvailableConnections,
 } from '@/lib/game/engine'
 import { LOCATIONS, ITEMS } from '@/lib/game/data'
@@ -337,13 +337,22 @@ export default function GameRoot() {
     prevSealStonesRef.current = [...curr]
   }, [gs.sealStones])
 
-  // バトル中に仲間・敵のターンを自動処理（バトル開始時は全員MAXHPで表示してから実行）
+  // バトル中に仲間・敵のターンを自動処理（スタン中プレイヤーも自動スキップ）
   useEffect(() => {
     if (gs.phase !== 'battle' || !gs.battle) return
     const b = gs.battle
     if (b.phase === 'victory' || b.phase === 'defeat') return
     const currentActor = b.units.find(u => u.uid === b.currentUid)
-    if (!currentActor || currentActor.isPlayer) return
+    if (!currentActor) return
+    // スタン中のプレイヤーターンは自動スキップ
+    if (currentActor.isPlayer && b.phase === 'select_action') {
+      const isStunned = currentActor.statusEffects.some(e => e.id === 'stun')
+      if (!isStunned) return
+      const delay = battleSpeed === 'fast' ? 700 : 1400
+      const timer = setTimeout(() => update(s => processPlayerStun(s)), delay)
+      return () => clearTimeout(timer)
+    }
+    if (currentActor.isPlayer) return
     const delay = battleSpeed === 'fast' ? 600 : 1600
     const timer = setTimeout(() => {
       update(s => processNonPlayerTurn(s))

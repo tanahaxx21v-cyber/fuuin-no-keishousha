@@ -529,18 +529,54 @@ export default function BattleScene({ gs, onAttack, onSkill, onItem, onFlee, onC
 
         {/* 左エリア: プレイヤー + 仲間スプライト */}
         <div className="absolute left-2 bottom-3 flex flex-col-reverse gap-1 items-start" style={{ zIndex: 10, maxWidth: '40%' }}>
-          <div className="flex flex-col items-center gap-0.5">
-            <CharPortrait charId="player" size={92} isActive={currentActor?.isPlayer} isDead={playerUnit.hp <= 0} rounded={6} />
+          {/* プレイヤースプライト */}
+          <div className="flex flex-col items-center gap-0.5 relative">
+            <div style={{ position: 'relative' }}>
+              <CharPortrait charId="player" size={92} isActive={currentActor?.isPlayer} isDead={playerUnit.hp <= 0} rounded={6} />
+              {/* プレイヤーヒットフラッシュ */}
+              {hitUnits.has(playerUnit.uid) && (
+                <div style={{ position: 'absolute', inset: 0, borderRadius: 6, background: 'rgba(239,68,68,0.45)', pointerEvents: 'none' }} />
+              )}
+              {healUnits.has(playerUnit.uid) && (
+                <div style={{ position: 'absolute', inset: 0, borderRadius: 6, background: 'rgba(74,222,128,0.3)', pointerEvents: 'none' }} />
+              )}
+              {/* プレイヤーフローティングダメージ数字 */}
+              {floatingNums.filter(f => f.uid === playerUnit.uid).map(f => (
+                <span key={f.id} className="absolute font-black pointer-events-none"
+                  style={{ color: f.color, fontSize: 16, top: '-20px', left: '50%', transform: 'translateX(-50%)', textShadow: '0 1px 4px rgba(0,0,0,0.9)', animation: 'floatUp 0.9s ease-out forwards', zIndex: 20 }}>
+                  {f.val}
+                </span>
+              ))}
+            </div>
             <div style={{ width: 92 }}><HpBar hp={playerUnit.hp} maxHp={playerUnit.maxHp} /></div>
           </div>
+          {/* 仲間スプライト */}
           {allies.filter(a => !a.isPlayer).map(a => {
             const charId = a.companionId ?? 'gares'
             const statusIcons = a.statusEffects.map(e =>
               e.id === 'poison' ? '☠️' : e.id === 'stun' ? '💫' : e.id === 'atk_up' ? '⬆️' : e.id === 'def_up' ? '🛡️' : e.id === 'atk_down' ? '⬇️' : ''
             ).filter(Boolean)
+            const isHit = hitUnits.has(a.uid)
+            const isHeal = healUnits.has(a.uid)
+            const myFloats = floatingNums.filter(f => f.uid === a.uid)
             return (
               <div key={a.uid} className="flex items-center gap-1.5">
-                <CharPortrait charId={charId} size={62} isActive={a.uid === b.currentUid} isDead={a.hp <= 0} rounded={4} />
+                {/* 仲間ポートレート（ヒットエフェクト付き）*/}
+                <div style={{ position: 'relative' }}>
+                  <CharPortrait charId={charId} size={62} isActive={a.uid === b.currentUid} isDead={a.hp <= 0} rounded={4} />
+                  {isHit && (
+                    <div style={{ position: 'absolute', inset: 0, borderRadius: 4, background: 'rgba(239,68,68,0.45)', pointerEvents: 'none' }} />
+                  )}
+                  {isHeal && (
+                    <div style={{ position: 'absolute', inset: 0, borderRadius: 4, background: 'rgba(74,222,128,0.3)', pointerEvents: 'none' }} />
+                  )}
+                  {myFloats.map(f => (
+                    <span key={f.id} className="absolute font-black pointer-events-none"
+                      style={{ color: f.color, fontSize: 13, top: '-18px', left: '50%', transform: 'translateX(-50%)', textShadow: '0 1px 4px rgba(0,0,0,0.9)', animation: 'floatUp 0.9s ease-out forwards', zIndex: 20 }}>
+                      {f.val}
+                    </span>
+                  ))}
+                </div>
                 <div className="flex flex-col gap-0.5" style={{ width: 60 }}>
                   <HpBar hp={a.hp} maxHp={a.maxHp} />
                   <div className="flex items-center justify-between gap-0.5">
@@ -609,8 +645,11 @@ export default function BattleScene({ gs, onAttack, onSkill, onItem, onFlee, onC
           ) : (
             <div className="text-sm text-gray-600">…</div>
           )}
-          {isPlayerTurn && mode === 'select' && (
+          {isPlayerTurn && mode === 'select' && !playerUnit.statusEffects.some(e => e.id === 'stun') && (
             <div className="text-xs text-yellow-300 mt-1 font-bold animate-pulse">▼ コマンドを選択</div>
+          )}
+          {isPlayerTurn && playerUnit.statusEffects.some(e => e.id === 'stun') && (
+            <div className="text-xs text-yellow-600 mt-1 font-bold animate-pulse">💫 スタン中 — 自動スキップ待機中...</div>
           )}
           {!isPlayerTurn && !isOver && (
             <div className="text-xs text-blue-400 mt-1 animate-pulse">
@@ -624,7 +663,7 @@ export default function BattleScene({ gs, onAttack, onSkill, onItem, onFlee, onC
       {!isOver && (
         <div className="mx-2 mt-1.5 mb-3">
 
-          {isPlayerTurn && mode === 'select' && (
+          {isPlayerTurn && mode === 'select' && !playerUnit.statusEffects.some(e => e.id === 'stun') && (
             <div className="grid grid-cols-4 gap-1.5">
               {[
                 {
@@ -753,7 +792,7 @@ export default function BattleScene({ gs, onAttack, onSkill, onItem, onFlee, onC
             </div>
           )}
 
-          {isPlayerTurn && mode === 'select' && (
+          {isPlayerTurn && mode === 'select' && !playerUnit.statusEffects.some(e => e.id === 'stun') && (
             <button
               onClick={handleAutoAction}
               className="w-full mt-1.5 py-1.5 border border-slate-600 rounded-xl text-xs font-black text-slate-300 bg-slate-900/70 hover:bg-slate-800 active:scale-95 transition tracking-wider"

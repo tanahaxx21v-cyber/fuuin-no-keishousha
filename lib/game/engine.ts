@@ -738,6 +738,21 @@ export function battleFlee(state: GameState): GameState {
   return advanceTurn(s)
 }
 
+// ===== プレイヤースタン時の自動スキップ =====
+export function processPlayerStun(state: GameState): GameState {
+  if (!state.battle) return state
+  const s = deepClone(state)
+  const b = s.battle!
+  const player = b.units.find(u => u.isPlayer)
+  if (!player) return s
+  const stun = player.statusEffects.find(e => e.id === 'stun')
+  if (!stun) return s
+  stun.turnsLeft -= 1
+  if (stun.turnsLeft <= 0) player.statusEffects = player.statusEffects.filter(e => e.id !== 'stun')
+  b.logs.push({ text: `💫 ${player.name}はスタンして動けない！`, type: 'status' })
+  return advanceTurn(s)
+}
+
 // ===== ENEMY AI =====
 
 function processEnemyTurn(state: GameState): GameState {
