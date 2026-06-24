@@ -278,10 +278,17 @@ export function travel(state: GameState, destId: LocationId): GameState {
         s.gold += gold
         s.message = `💰 道中で ${gold}G を見つけた！`
       } else if (ev < 0.65) {
-        const ex = s.inventory.find(i => i.itemId === 'potion')
+        // レベルに応じてドロップアイテムを決定
+        const travelDropTable =
+          s.playerLevel >= 15 ? ['hi_potion', 'ether', 'panacea', 'antidote']
+          : s.playerLevel >= 8  ? ['hi_potion', 'ether', 'potion', 'antidote']
+          : ['potion', 'ether', 'antidote']
+        const dropId = travelDropTable[Math.floor(Math.random() * travelDropTable.length)]
+        const dropItem = ITEMS[dropId]
+        const ex = s.inventory.find(i => i.itemId === dropId)
         if (ex) ex.qty += 1
-        else s.inventory.push({ itemId: 'potion', qty: 1 })
-        s.message = '🧪 道中でポーションを拾った！'
+        else s.inventory.push({ itemId: dropId, qty: 1 })
+        s.message = `${dropItem.emoji} 道中で${dropItem.name}を拾った！`
       } else {
         const heal = Math.floor(s.playerMaxHp * 0.10)
         s.playerHp = Math.min(s.playerMaxHp, s.playerHp + heal)
@@ -1405,28 +1412,34 @@ export function useItemOutOfBattle(state: GameState, itemId: string, targetId: '
       s.playerHp = Math.min(s.playerMaxHp, s.playerHp + item.power)
       s.playerMp = Math.min(s.playerMaxMp, s.playerMp + 40)
       s.message = `🌿 ${item.name}を使った。HP +${hp}・MP +${mp}`
+    } else if (item.effect === 'cure_status') {
+      const hadStatus = s.playerStatus.length > 0
+      s.playerStatus = []
+      s.message = hadStatus ? `🫙 ${item.name}を使った。状態異常が回復した！` : `🫙 ${item.name}を使ったが、状態異常ではなかった。`
     } else {
       s.message = `${item.name}を使った。`
     }
   } else {
     const c = s.companions[targetId]
     if (!c || !c.alive) return { ...s, message: 'その仲間は回復できない。' }
+    const def = COMPANIONS[targetId]
     if (item.effect === 'heal_hp') {
       const healed = Math.min(item.power, c.maxHp - c.hp)
       c.hp = Math.min(c.maxHp, c.hp + item.power)
-      const def = COMPANIONS[targetId]
       s.message = `🧪 ${def.name}に${item.name}を使った。HP +${healed}`
     } else if (item.effect === 'heal_mp') {
       const healed = Math.min(item.power, c.maxMp - c.mp)
       c.mp = Math.min(c.maxMp, c.mp + item.power)
-      const def = COMPANIONS[targetId]
       s.message = `✨ ${def.name}に${item.name}を使った。MP +${healed}`
     } else if (item.effect === 'heal_both') {
       const hp = Math.min(item.power, c.maxHp - c.hp)
       c.hp = Math.min(c.maxHp, c.hp + item.power)
       c.mp = Math.min(c.maxMp, c.mp + 40)
-      const def = COMPANIONS[targetId]
       s.message = `🌿 ${def.name}に${item.name}を使った。HP +${hp}`
+    } else if (item.effect === 'cure_status') {
+      const hadStatus = c.statusEffects.length > 0
+      c.statusEffects = []
+      s.message = hadStatus ? `🫙 ${def.name}の状態異常が回復した！` : `🫙 ${def.name}に${item.name}を使ったが、状態異常ではなかった。`
     } else {
       s.message = `${item.name}を使った。`
     }

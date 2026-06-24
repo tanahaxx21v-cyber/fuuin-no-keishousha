@@ -742,7 +742,7 @@ export default function LocationView({
       </div>
 
       {/* アイテム使用パネル */}
-      {onUseItem && gs.inventory.filter(i => i.qty > 0 && ['heal_hp','heal_mp','heal_both'].includes(ITEMS[i.itemId]?.effect ?? '')).length > 0 && (
+      {onUseItem && gs.inventory.filter(i => i.qty > 0 && ['heal_hp','heal_mp','heal_both','cure_status'].includes(ITEMS[i.itemId]?.effect ?? '')).length > 0 && (
         <div className="bg-[#0c0c24] border-2 border-teal-800/60 rounded-xl overflow-hidden">
           <button
             onClick={() => setItemPanelOpen(v => !v)}
@@ -761,7 +761,7 @@ export default function LocationView({
               <div className="flex flex-wrap gap-2 mt-2 mb-3">
                 {gs.inventory.filter(i => i.qty > 0 && ITEMS[i.itemId]).map(slot => {
                   const item = ITEMS[slot.itemId]
-                  if (!['heal_hp','heal_mp','heal_both'].includes(item.effect)) return null
+                  if (!['heal_hp','heal_mp','heal_both','cure_status'].includes(item.effect)) return null
                   return (
                     <button
                       key={slot.itemId}
