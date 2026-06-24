@@ -163,6 +163,8 @@ export interface EnemyDef {
   gold: number
   isBoss?: boolean
   sealStone?: SealStone
+  dropItemId?: string
+  dropChance?: number
 }
 
 export interface ItemDef {
@@ -309,4 +311,6 @@ export interface GameState {
 
   // 実績（今回プレイで達成したもの）
   achievements?: string[]
+  // 中盤実績通知済みID（同じ実績を2回トーストしない）
+  notifiedAchievements: string[]
 }

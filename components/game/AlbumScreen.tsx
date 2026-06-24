@@ -2,6 +2,7 @@
 
 import type { GameState } from '@/lib/game/types'
 import { COMPANIONS, getDifficultyMultiplier } from '@/lib/game/data'
+import { ACHIEVEMENT_DEFS } from '@/lib/game/achievements'
 
 interface Props {
   gs: GameState
@@ -15,24 +16,6 @@ const BOSS_INFO: { id: string; name: string; emoji: string; location: string }[]
   { id: 'storm_dragon',name: '嵐竜ストームレックス',     emoji: '🌩️', location: '竜の峠' },
   { id: 'forest_king', name: '森王モルガ',               emoji: '🦌', location: '古代神殿' },
   { id: 'archive',     name: '終末記録体アーカイブ',     emoji: '📚', location: '砂漠遺跡' },
-]
-
-const ACHIEVEMENT_DEFS: { id: string; icon: string; title: string; desc: string; check: (gs: GameState) => boolean }[] = [
-  { id: 'first_companion', icon: '🤝', title: '最初の出会い', desc: '最初の仲間を仲間にした', check: gs => Object.values(gs.companions).some(c => c.joined) },
-  { id: 'full_party',      icon: '👥', title: '完全パーティ', desc: '3人の仲間と一緒に旅した', check: gs => gs.party.length >= 3 },
-  { id: 'first_boss',      icon: '⚔️', title: '初討伐',       desc: '最初のボスを倒した',    check: gs => gs.defeatedBosses.length >= 1 },
-  { id: 'three_bosses',    icon: '🏹', title: '討伐者',       desc: '3体のボスを倒した',     check: gs => gs.defeatedBosses.length >= 3 },
-  { id: 'first_stone',     icon: '💎', title: '封印の欠片',   desc: '最初の封印石を入手',   check: gs => gs.sealStones.length >= 1 },
-  { id: 'two_stones',      icon: '🔮', title: '封印の継承',   desc: '2つの封印石を入手',    check: gs => gs.sealStones.length >= 2 },
-  { id: 'all_stones',      icon: '✨', title: '三石揃いし者', desc: '全ての封印石を入手',   check: gs => gs.sealStones.length >= 3 },
-  { id: 'explorer_10',     icon: '🧭', title: '旅人',         desc: '10か所を訪問した',      check: gs => gs.visitedLocs.length >= 10 },
-  { id: 'explorer_15',     icon: '🗺️', title: '冒険家',       desc: '15か所を訪問した',      check: gs => gs.visitedLocs.length >= 15 },
-  { id: 'event_10',        icon: '📜', title: '記録者',       desc: '10件以上のイベント体験', check: gs => gs.completedEvents.length >= 10 },
-  { id: 'event_30',        icon: '📖', title: '語り部',       desc: '30件以上のイベント体験', check: gs => gs.completedEvents.length >= 30 },
-  { id: 'level_15',        icon: '⭐', title: '修行者',       desc: 'Lv15に到達した',        check: gs => gs.playerLevel >= 15 },
-  { id: 'level_20',        icon: '🌟', title: '覚醒の勇者',   desc: 'Lv20に到達した',        check: gs => gs.playerLevel >= 20 },
-  { id: 'rich_500',        icon: '💰', title: '商売人',       desc: '500G以上保持した',      check: gs => gs.gold >= 500 },
-  { id: 'zeno',            icon: '😈', title: '謎の魔族の絆', desc: 'ゼノを仲間にした',      check: gs => gs.companions.zeno?.joined === true },
 ]
 
 export default function AlbumScreen({ gs, onClose }: Props) {

@@ -68,6 +68,7 @@ export function createInitialState(difficulty: Difficulty, playerName = 'レオ�
     party: [],
     completedEvents: [],
     locVisitCounts: { alseria: 1 },
+    notifiedAchievements: [],
   }
 }
 
@@ -1065,7 +1066,7 @@ function applyBattleRewards(state: GameState): GameState {
     s.playerDef += 2
     s.playerSpd += 1
     s.levelUpPending = true
-    b.logs.push({ text: `⭐ ${s.playerName}がLv${s.playerLevel}にレベルアップ！`, type: 'system' })
+    b.logs.push({ text: `⭐ ${s.playerName}がLv${s.playerLevel}にレベルアップ！　HP+12 MP+5 ATK+2 DEF+2 SPD+1`, type: 'system' })
     // スキル習得チェック
     const newSkill = PLAYER_SKILL_SCHEDULE.find(ps => ps.level === s.playerLevel)
     if (newSkill && !s.playerSkills.some(sk => sk.id === newSkill.skill.id)) {
@@ -1096,6 +1097,26 @@ function applyBattleRewards(state: GameState): GameState {
       if (newCompSkill && !c.learnedSkills.some(sk => sk.id === newCompSkill.skill.id)) {
         c.learnedSkills.push(newCompSkill.skill)
         b.logs.push({ text: `✨ ${def.name}が「${newCompSkill.skill.name}」を習得した！`, type: 'system' })
+      }
+    }
+  }
+
+  // ===== 敵ドロップ（通常戦闘のみ）=====
+  if (!b.isBoss) {
+    const defeatedEnemies = b.units.filter(u => !u.isAlly && u.hp <= 0)
+    for (const enemy of defeatedEnemies) {
+      const enemyDef = ENEMIES[enemy.uid.replace(/^enemy_\d+_/, '')]
+      if (!enemyDef?.dropItemId || !enemyDef.dropChance) continue
+      if (Math.random() < enemyDef.dropChance) {
+        const dropped = ITEMS[enemyDef.dropItemId]
+        if (!dropped) continue
+        const existing = s.inventory.find(i => i.itemId === enemyDef.dropItemId)
+        if (existing) {
+          existing.qty += 1
+        } else {
+          s.inventory.push({ itemId: enemyDef.dropItemId!, qty: 1 })
+        }
+        b.logs.push({ text: `✨ ${enemy.name}が ${dropped.emoji}${dropped.name} を落とした！`, type: 'system' })
       }
     }
   }

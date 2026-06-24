@@ -26,6 +26,7 @@ import StatusBar from './StatusBar'
 import EventScene from './EventScene'
 import PartyManage from './PartyManage'
 import AlbumScreen from './AlbumScreen'
+import { ACHIEVEMENT_DEFS } from '@/lib/game/achievements'
 
 const SAVE_KEY = 'fuuin_save_v2'
 
@@ -54,6 +55,7 @@ function loadGame(): GameState | null {
     if (!parsed.inventory) parsed.inventory = []
     if (!parsed.sealStones) parsed.sealStones = []
     if (!parsed.achievements) parsed.achievements = []
+    if (!parsed.notifiedAchievements) parsed.notifiedAchievements = []
     return parsed
   } catch { return null }
 }
@@ -70,6 +72,8 @@ export default function GameRoot() {
   const [autoBattle, setAutoBattle] = useState(false)
   const [diceRolling, setDiceRolling] = useState(false)
   const prevSealStonesRef = useRef<string[]>([])
+  const [achievementToast, setAchievementToast] = useState<{ icon: string; title: string; desc: string } | null>(null)
+  const achToastTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   useEffect(() => {
     const saved = loadGame()
@@ -337,6 +341,20 @@ export default function GameRoot() {
     prevSealStonesRef.current = [...curr]
   }, [gs.sealStones])
 
+  // 中盤実績解除トースト通知
+  useEffect(() => {
+    if (gs.phase === 'title' || gs.phase === 'win' || gs.phase === 'gameover') return
+    const notified = gs.notifiedAchievements ?? []
+    const newUnlocks = ACHIEVEMENT_DEFS.filter(a => !notified.includes(a.id) && a.check(gs))
+    if (newUnlocks.length === 0) return
+    const ids = newUnlocks.map(a => a.id)
+    setGs(prev => ({ ...prev, notifiedAchievements: [...(prev.notifiedAchievements ?? []), ...ids] }))
+    const first = newUnlocks[0]
+    setAchievementToast({ icon: first.icon, title: first.title, desc: first.desc })
+    if (achToastTimerRef.current) clearTimeout(achToastTimerRef.current)
+    achToastTimerRef.current = setTimeout(() => setAchievementToast(null), 4000)
+  }, [gs.companions, gs.defeatedBosses, gs.sealStones, gs.visitedLocs, gs.completedEvents, gs.playerLevel, gs.gold, gs.party])
+
   // バトル中に仲間・敵のターンを自動処理（スタン中プレイヤーも自動スキップ）
   useEffect(() => {
     if (gs.phase !== 'battle' || !gs.battle) return
@@ -494,6 +512,21 @@ export default function GameRoot() {
           </div>
         )
       })()}
+
+      {/* 実績解除トースト */}
+      {achievementToast && (
+        <div
+          className="fixed top-4 left-1/2 -translate-x-1/2 z-[60] flex items-center gap-3 px-5 py-3 rounded-2xl border-2 shadow-2xl"
+          style={{ background: '#1c1208', borderColor: '#d97706', boxShadow: '0 0 30px rgba(217,119,6,0.5)', minWidth: 260, maxWidth: 340 }}
+        >
+          <span style={{ fontSize: 28 }}>{achievementToast.icon}</span>
+          <div className="flex-1 min-w-0">
+            <div className="text-[10px] font-black tracking-widest" style={{ color: '#f59e0b' }}>🏆 実績解除！</div>
+            <div className="text-sm font-black text-white mt-0.5 truncate">{achievementToast.title}</div>
+            <div className="text-[10px] text-gray-400 mt-0.5 truncate">{achievementToast.desc}</div>
+          </div>
+        </div>
+      )}
 
       {/* Save notification */}
       {saveMsg && (

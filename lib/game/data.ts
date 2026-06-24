@@ -234,18 +234,21 @@ export const ENEMIES: Record<string, EnemyDef> = {
     id: 'wolf', name: '山狼', emoji: '🐺',
     hp: 43, mp: 0, atk: 13, def: 4, spd: 10,
     skills: [], exp: 16, gold: 10,
+    dropItemId: 'antidote', dropChance: 0.15,
   },
   goblin: {
     id: 'goblin', name: 'ゴブリン兵', emoji: '👺',
     hp: 61, mp: 10, atk: 17, def: 6, spd: 9,
     skills: [{ id: 'stab', name: '突き', desc: '素早い刺突。', mpCost: 4, target: 'enemy_one', effect: 'damage', power: 1.3 }],
     exp: 24, gold: 18,
+    dropItemId: 'potion', dropChance: 0.20,
   },
   bandit: {
     id: 'bandit', name: '盗賊', emoji: '🗡️',
     hp: 68, mp: 15, atk: 20, def: 7, spd: 12,
     skills: [{ id: 'poison_knife', name: '毒ナイフ', desc: '毒を塗った刃。', mpCost: 5, target: 'enemy_one', effect: 'poison', power: 1.0 }],
     exp: 28, gold: 24,
+    dropItemId: 'potion', dropChance: 0.25,
   },
   // 中盤
   fire_elemental: {
@@ -253,23 +256,27 @@ export const ENEMIES: Record<string, EnemyDef> = {
     hp: 75, mp: 30, atk: 23, def: 8, spd: 11,
     skills: [{ id: 'fire_blast', name: '炎弾', desc: '炎の塊を放つ。', mpCost: 8, target: 'enemy_one', effect: 'damage', power: 1.7 }],
     exp: 40, gold: 32,
+    dropItemId: 'ether', dropChance: 0.25,
   },
   mine_golem: {
     id: 'mine_golem', name: '鉱山ゴーレム', emoji: '⛏️',
     hp: 100, mp: 0, atk: 24, def: 14, spd: 5,
     skills: [], exp: 46, gold: 36,
+    dropItemId: 'hi_potion', dropChance: 0.20,
   },
   storm_bird: {
     id: 'storm_bird', name: '嵐鳥', emoji: '🦅',
     hp: 69, mp: 20, atk: 27, def: 6, spd: 18,
     skills: [{ id: 'gale', name: '旋風', desc: '翼で竜巻を起こす。', mpCost: 8, target: 'enemy_all', effect: 'damage', power: 1.1 }],
     exp: 36, gold: 28,
+    dropItemId: 'ether', dropChance: 0.20,
   },
   desert_scorpion: {
     id: 'desert_scorpion', name: '砂漠サソリ', emoji: '🦂',
     hp: 81, mp: 10, atk: 26, def: 9, spd: 13,
     skills: [{ id: 'sting', name: '猛毒の針', desc: '強力な毒を注入する。', mpCost: 6, target: 'enemy_one', effect: 'poison', power: 1.1 }],
     exp: 42, gold: 34,
+    dropItemId: 'antidote', dropChance: 0.30,
   },
   // 森エリア
   mofunezu: {
@@ -441,6 +448,7 @@ export const ENEMIES: Record<string, EnemyDef> = {
       { id: 'hanka_no_sakebi', name: 'へんかのさけび', desc: '豹変して自身の攻撃力を大幅に上げる。', mpCost: 10, target: 'self', effect: 'atk_up', power: 1 },
     ],
     exp: 75, gold: 58,
+    dropItemId: 'mega_potion', dropChance: 0.15,
   },
   mirror_lady: {
     id: 'mirror_lady', name: '鏡面婦人', emoji: '🪞',
@@ -451,6 +459,7 @@ export const ENEMIES: Record<string, EnemyDef> = {
       { id: 'majo_no_hitomi', name: 'まじょのひとみ', desc: '魔女の瞳で攻撃力を下げる。', mpCost: 10, target: 'enemy_one', effect: 'debuff_atk', power: 1 },
     ],
     exp: 80, gold: 62,
+    dropItemId: 'ether', dropChance: 0.25,
   },
   ito_kiri: {
     id: 'ito_kiri', name: '糸切り郷', emoji: '🕷️',
@@ -461,6 +470,7 @@ export const ENEMIES: Record<string, EnemyDef> = {
       { id: 'ayatsuri', name: 'あやつりにんぎょう', desc: '糸で操り自身の攻撃力を上げる。', mpCost: 10, target: 'self', effect: 'atk_up', power: 1 },
     ],
     exp: 85, gold: 66,
+    dropItemId: 'panacea', dropChance: 0.15,
   },
   // ===== 河川・海岸エリア（ダンジョン未決定）=====
   poyogaeru: {
@@ -564,11 +574,13 @@ export const ENEMIES: Record<string, EnemyDef> = {
 
 // ===== ITEMS =====
 export const ITEMS: Record<string, ItemDef> = {
-  potion:    { id: 'potion',    name: 'ポーション',   emoji: '🧪', desc: 'HPを50回復する。',           effect: 'heal_hp',   power: 50,  price: 100 },
-  hi_potion: { id: 'hi_potion', name: 'ハイポーション',emoji: '💊', desc: 'HPを120回復する。',          effect: 'heal_hp',   power: 120, price: 250 },
-  ether:     { id: 'ether',     name: 'エーテル',     emoji: '✨', desc: 'MPを30回復する。',           effect: 'heal_mp',   power: 30,  price: 120 },
-  panacea:   { id: 'panacea',   name: '万能薬',       emoji: '🌿', desc: 'HP100・MP40回復する。',     effect: 'heal_both', power: 100, price: 300 },
-  antidote:  { id: 'antidote',  name: '毒消し',       emoji: '🫙', desc: '毒・スタン状態を回復する。', effect: 'cure_status',power: 0,  price: 80  },
+  potion:      { id: 'potion',      name: 'ポーション',     emoji: '🧪', desc: 'HPを50回復する。',             effect: 'heal_hp',    power: 50,   price: 100 },
+  hi_potion:   { id: 'hi_potion',   name: 'ハイポーション', emoji: '💊', desc: 'HPを120回復する。',            effect: 'heal_hp',    power: 120,  price: 250 },
+  mega_potion: { id: 'mega_potion', name: 'メガポーション', emoji: '🧴', desc: 'HPを200回復する。',            effect: 'heal_hp',    power: 200,  price: 500 },
+  ether:       { id: 'ether',       name: 'エーテル',       emoji: '✨', desc: 'MPを30回復する。',             effect: 'heal_mp',    power: 30,   price: 120 },
+  panacea:     { id: 'panacea',     name: '万能薬',         emoji: '🌿', desc: 'HP100・MP40回復する。',        effect: 'heal_both',  power: 100,  price: 300 },
+  elixir:      { id: 'elixir',      name: 'エリクサー',     emoji: '💫', desc: 'HPとMPを完全回復する。',       effect: 'heal_both',  power: 9999, price: 1200 },
+  antidote:    { id: 'antidote',    name: '毒消し',         emoji: '🫙', desc: '毒・スタン状態を回復する。',   effect: 'cure_status', power: 0,   price: 80  },
 }
 
 // PP4スタイル値上がりシステム：10日消費ごとに1割UP（最大5割UP）
@@ -617,7 +629,7 @@ export const LOCATIONS: Record<LocationId, LocationDef> = {
     connections: ['bandit_hideout', 'coastal_road', 'desert_ruins', 'trading_post'],
     travelDays: { bandit_hideout: 2, coastal_road: 1, desert_ruins: 3, trading_post: 2 },
     companionId: 'logan',
-    shopItems: ['hi_potion', 'ether', 'panacea', 'antidote'],
+    shopItems: ['hi_potion', 'ether', 'panacea', 'antidote', 'mega_potion'],
     hasInn: true,
   },
   mirea: {
@@ -647,7 +659,7 @@ export const LOCATIONS: Record<LocationId, LocationDef> = {
     connections: ['traveler_inn', 'watchtower', 'demon_mine', 'dragon_pass'],
     travelDays: { traveler_inn: 2, watchtower: 2, demon_mine: 2, dragon_pass: 3 },
     companionId: 'cecil',
-    shopItems: ['hi_potion', 'panacea', 'ether', 'antidote'],
+    shopItems: ['hi_potion', 'panacea', 'mega_potion', 'ether', 'antidote', 'elixir'],
     hasInn: true,
   },
 
