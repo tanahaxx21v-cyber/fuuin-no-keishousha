@@ -49,11 +49,11 @@ export function createInitialState(difficulty: Difficulty, playerName = 'レオ�
     daysLeft: days,
     playerHp: baseHp,
     playerMaxHp: baseHp,
-    playerMp: 50,
-    playerMaxMp: 50,
-    playerAtk: 15,
-    playerDef: 12,
-    playerSpd: 10,
+    playerMp: 30,
+    playerMaxMp: 30,
+    playerAtk: 10,
+    playerDef: 4,
+    playerSpd: 8,
     playerLevel: 1,
     playerExp: 0,
     playerSkills: startSkills,
@@ -1218,6 +1218,9 @@ export function closeBattle(state: GameState): GameState {
     const c = s.companions[id]
     if (c.joined && c.alive) {
       c.statusEffects = []
+      // PP4スタイル: 仲間は戦闘終了後HP/MP全回復。主人公だけHPが削れる緊張感。
+      c.hp = c.maxHp
+      c.mp = c.maxMp
     } else if (c.joined && !c.alive) {
       newlyDead.push(COMPANIONS[id]?.name ?? id)
     }

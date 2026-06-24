@@ -57,7 +57,7 @@ export const COMPANIONS: Record<CompanionId, CompanionDef> = {
     desc: '元王都の騎士団長。誇り高く真面目で面倒見が良い。高DEF・挑発スキルで敵の攻撃を引き受けるタンク役。序盤から終盤まで安定して活躍できる。',
     joinLocId: 'checkpoint',
     joinText: '「旅人か。……封印石を探しているとは感じていた。俺はガレス。元騎士団長だ。共に行こう。」',
-    baseHp: 130, baseMp: 25, baseAtk: 14, baseDef: 20, baseSpd: 6, joinLevel: 2,
+    baseHp: 130, baseMp: 25, baseAtk: 14, baseDef: 15, baseSpd: 6, joinLevel: 2,
     hpGrowth: 15, mpGrowth: 2, atkGrowth: 2, defGrowth: 4, spdGrowth: 0,
     skills: [
       { id: 'shield_bash', name: '盾撃', desc: '盾で敵をスタンさせる。', mpCost: 6, target: 'enemy_one', effect: 'stun', power: 1.2 },
@@ -73,7 +73,7 @@ export const COMPANIONS: Record<CompanionId, CompanionDef> = {
     desc: '優しく穏やかな性格。信仰心が厚く、仲間の支えとなる存在。全体回復スキルが優秀なヒーラー。MP管理が勝利の鍵。パーティに1人は欲しい必須枠。',
     joinLocId: 'alseria',
     joinText: '「神様の導きがあなたをここへ連れてきた。私の癒しの力、お役に立てれば。」',
-    baseHp: 65, baseMp: 95, baseAtk: 9, baseDef: 9, baseSpd: 9, joinLevel: 2,
+    baseHp: 65, baseMp: 95, baseAtk: 9, baseDef: 7, baseSpd: 9, joinLevel: 2,
     hpGrowth: 7, mpGrowth: 10, atkGrowth: 1, defGrowth: 1, spdGrowth: 1,
     skills: [
       { id: 'heal', name: '癒し', desc: '味方1体のHPを50回復する。', mpCost: 6, target: 'ally_one', effect: 'heal', power: 50 },
@@ -88,7 +88,7 @@ export const COMPANIONS: Record<CompanionId, CompanionDef> = {
     desc: '明るく快活な性格。遠距離攻撃が得意で、行動も俊敏。高速アタッカー。連射・散弾で序盤から活躍。タンク+ヒーラーと組むと最大火力を発揮できる。',
     joinLocId: 'bern',
     joinText: '「俺、この旅に参加したい！遠くの敵はぜんぶ俺に任せといて！」',
-    baseHp: 75, baseMp: 35, baseAtk: 17, baseDef: 8, baseSpd: 15, joinLevel: 3,
+    baseHp: 75, baseMp: 35, baseAtk: 17, baseDef: 6, baseSpd: 15, joinLevel: 3,
     hpGrowth: 8, mpGrowth: 3, atkGrowth: 3, defGrowth: 1, spdGrowth: 2,
     skills: [
       { id: 'rapid_shot', name: '連射', desc: '敵1体に矢を連続で射る。', mpCost: 7, target: 'enemy_one', effect: 'damage', power: 1.9 },
@@ -100,7 +100,7 @@ export const COMPANIONS: Record<CompanionId, CompanionDef> = {
     desc: '知的でクール。魔法の扱いに長け、我が道を行くタイプ。高ATK魔法アタッカー。全体/単体の両スキルを持ち、ボス戦・雑魚戦どちらにも対応。ただし低HPなので要保護。',
     joinLocId: 'galdo',
     joinText: '「……封印石か。理論的には可能。私が同行すれば成功率が上がる。それだけよ。」',
-    baseHp: 60, baseMp: 85, baseAtk: 22, baseDef: 6, baseSpd: 12, joinLevel: 4,
+    baseHp: 60, baseMp: 85, baseAtk: 22, baseDef: 5, baseSpd: 12, joinLevel: 4,
     hpGrowth: 6, mpGrowth: 12, atkGrowth: 3, defGrowth: 1, spdGrowth: 1,
     skills: [
       { id: 'fireball', name: '炎球', desc: '炎の球で敵全体を焼き払う。', mpCost: 12, target: 'enemy_all', effect: 'damage', power: 1.4 },
@@ -112,7 +112,7 @@ export const COMPANIONS: Record<CompanionId, CompanionDef> = {
     desc: '豪快で頼れる兄貴分。戦いの経験が豊富で、力仕事はお手の物。高HP・高ATKの重戦士型。全体攻撃と超重撃を両立。ガレスのタンクと合わせると前衛が無敵になる。',
     joinLocId: 'elna',
     joinText: '「ガッハッハ！面白え旅じゃねえか！俺も連れてけ。この斧、貸してやるぜ！」',
-    baseHp: 115, baseMp: 25, baseAtk: 23, baseDef: 14, baseSpd: 8, joinLevel: 3,
+    baseHp: 115, baseMp: 25, baseAtk: 23, baseDef: 11, baseSpd: 8, joinLevel: 3,
     hpGrowth: 14, mpGrowth: 2, atkGrowth: 3, defGrowth: 2, spdGrowth: 1,
     skills: [
       { id: 'axe_swing', name: '大斧振り', desc: '大斧で敵全体を薙ぎ払う。', mpCost: 8, target: 'enemy_all', effect: 'damage', power: 1.3 },
@@ -124,7 +124,7 @@ export const COMPANIONS: Record<CompanionId, CompanionDef> = {
     desc: '元気いっぱいの熱血少年。いつか立派な冒険者になるのが夢。序盤は控えめだがLv8で「勇躍の一閃」を覚えると化ける成長型。育て甲斐のあるキャラクター。',
     joinLocId: 'riverside',
     joinText: '「お、お兄さん！冒険者ですよね？俺も連れてってください！絶対役に立ちます！」',
-    baseHp: 70, baseMp: 30, baseAtk: 13, baseDef: 11, baseSpd: 12, joinLevel: 2,
+    baseHp: 70, baseMp: 30, baseAtk: 13, baseDef: 8, baseSpd: 12, joinLevel: 2,
     hpGrowth: 10, mpGrowth: 3, atkGrowth: 2, defGrowth: 2, spdGrowth: 2,
     skills: [
       { id: 'young_slash', name: '若き剣閃', desc: '気合いの一撃。成長中の力が宿る。', mpCost: 6, target: 'enemy_one', effect: 'damage', power: 1.6 },
@@ -139,7 +139,7 @@ export const COMPANIONS: Record<CompanionId, CompanionDef> = {
     desc: '過去に裏切られた経験を持つ。口は悪いが根は仲間思い。最速クラスのスピードアタッカー。毒で継続ダメージ、高速奇襲で先手を取る。ガラスキャノンなので前に出しすぎ注意。',
     joinLocId: 'bandit_hideout',
     joinText: '「チッ……負けたか。いいだろう。どうせ居場所もない。しばらく付き合ってやる。」',
-    baseHp: 75, baseMp: 40, baseAtk: 18, baseDef: 8, baseSpd: 16, joinLevel: 3,
+    baseHp: 75, baseMp: 40, baseAtk: 18, baseDef: 6, baseSpd: 16, joinLevel: 3,
     hpGrowth: 8, mpGrowth: 4, atkGrowth: 2, defGrowth: 1, spdGrowth: 3,
     skills: [
       { id: 'poison_blade', name: '毒刃', desc: '毒を塗った刃で攻撃し毒状態にする。', mpCost: 5, target: 'enemy_one', effect: 'poison', power: 1.0 },
@@ -151,7 +151,7 @@ export const COMPANIONS: Record<CompanionId, CompanionDef> = {
     desc: '罪人を裁いてきた過去を持つ。無口で寡黙だが、信念は固い。HP・ATK最高クラスの純アタッカー。脅威スキルで敵全体を弱体化しつつ一撃必殺。低速なのでヒーラーと組ませると安定する。',
     joinLocId: 'sahal',
     joinText: '「……魔王を倒すか。それが罪滅ぼしになるなら、力を貸そう。」',
-    baseHp: 120, baseMp: 20, baseAtk: 27, baseDef: 16, baseSpd: 7, joinLevel: 4,
+    baseHp: 120, baseMp: 20, baseAtk: 27, baseDef: 12, baseSpd: 7, joinLevel: 4,
     hpGrowth: 13, mpGrowth: 2, atkGrowth: 4, defGrowth: 2, spdGrowth: 0,
     skills: [
       { id: 'execution', name: '処刑の一撃', desc: '過去の経験が宿る渾身の一撃。', mpCost: 12, target: 'enemy_one', effect: 'damage', power: 3.0 },
@@ -163,7 +163,7 @@ export const COMPANIONS: Record<CompanionId, CompanionDef> = {
     desc: 'かつて魔王軍に仕えていた。自由を求めて逃げ出したが、過去に苦しむことも。高MP魔法型で全体攻撃が強力。Lv12の「魔王軍覚醒」が最終盤の切り札。セシルと双魔法編成も強力。',
     joinLocId: 'demon_mine',
     joinText: '「魔王軍から逃げて、ここに隠れていた。……あなたが魔王を倒すというなら、協力する。」',
-    baseHp: 65, baseMp: 90, baseAtk: 20, baseDef: 7, baseSpd: 11, joinLevel: 4,
+    baseHp: 65, baseMp: 90, baseAtk: 20, baseDef: 5, baseSpd: 11, joinLevel: 4,
     hpGrowth: 6, mpGrowth: 12, atkGrowth: 3, defGrowth: 1, spdGrowth: 1,
     skills: [
       { id: 'magic_bullet', name: '魔弾', desc: '魔王軍仕込みの魔法弾。敵1体に大ダメージ。', mpCost: 9, target: 'enemy_one', effect: 'damage', power: 2.2 },
@@ -178,7 +178,7 @@ export const COMPANIONS: Record<CompanionId, CompanionDef> = {
     desc: 'お金儲けが大好きなちゃっかり者。口が上手く、情報収集が得意。デバッファー＆スタン役。煙幕で敵全体を弱体化し、急所突きでスタン。サポート特化型で後衛向き。',
     joinLocId: 'mirea',
     joinText: '「へへ、封印石探しか。俺、情報網があるんだよね。一緒に行けば得するよ、絶対。」',
-    baseHp: 68, baseMp: 45, baseAtk: 14, baseDef: 9, baseSpd: 14, joinLevel: 3,
+    baseHp: 68, baseMp: 45, baseAtk: 14, baseDef: 7, baseSpd: 14, joinLevel: 3,
     hpGrowth: 7, mpGrowth: 5, atkGrowth: 1, defGrowth: 1, spdGrowth: 3,
     skills: [
       { id: 'smoke_screen', name: '煙幕', desc: '煙幕を張り敵全体の攻撃力を下げる。', mpCost: 6, target: 'enemy_all', effect: 'debuff_atk', power: 1 },
@@ -190,7 +190,7 @@ export const COMPANIONS: Record<CompanionId, CompanionDef> = {
     desc: '寡黙でクール。戦闘能力が高く、仲間を守ることに忠実。後半合流の高スペック万能型。高HP・ATK・SPDを誇り、群狼の咆哮で敵全体を大幅弱体化。中盤以降のパーティを一気に強化する。',
     joinLocId: 'dragon_pass',
     joinText: '「……お前たちは強い。この峠を越えるなら俺が案内しよう。ついでに旅に加わる。」',
-    baseHp: 105, baseMp: 28, baseAtk: 24, baseDef: 14, baseSpd: 14, joinLevel: 5,
+    baseHp: 105, baseMp: 28, baseAtk: 24, baseDef: 11, baseSpd: 14, joinLevel: 5,
     hpGrowth: 11, mpGrowth: 3, atkGrowth: 3, defGrowth: 2, spdGrowth: 2,
     skills: [
       { id: 'wolf_claw', name: '狼の爪', desc: '鋭い爪で敵1体を切り裂く。', mpCost: 8, target: 'enemy_one', effect: 'damage', power: 2.1 },
@@ -202,7 +202,7 @@ export const COMPANIONS: Record<CompanionId, CompanionDef> = {
     desc: '森の民の出身。自然を愛し、穏やかで思慮深い性格。MP・速度最高クラスの全能支援型。精霊の矢で高火力、森の加護で全体防御バフ。最終盤まで価値が落ちないレアキャラ。',
     joinLocId: 'ancient_temple',
     joinText: '「古代神殿を守ってきた。……あなたならば封印石を任せられる。共に行きましょう。」',
-    baseHp: 75, baseMp: 70, baseAtk: 20, baseDef: 11, baseSpd: 16, joinLevel: 5,
+    baseHp: 75, baseMp: 70, baseAtk: 20, baseDef: 8, baseSpd: 16, joinLevel: 5,
     hpGrowth: 8, mpGrowth: 8, atkGrowth: 2, defGrowth: 1, spdGrowth: 2,
     skills: [
       { id: 'spirit_arrow', name: '精霊の矢', desc: '精霊の力が宿る矢。敵1体に大ダメージ。', mpCost: 9, target: 'enemy_one', effect: 'damage', power: 2.3 },
@@ -214,7 +214,7 @@ export const COMPANIONS: Record<CompanionId, CompanionDef> = {
     desc: '最も強力な隠しキャラ。交易所に潜伏中の謎の魔族。全ステータスが最高クラス。魔族の力（単体3.5倍）・魔界門（全体2.0倍）・Lv8で攻撃バフと3種の切り札を持つ究極のアタッカー。',
     joinLocId: 'trading_post',
     joinText: '「魔王の使いじゃない。奴を倒したい理由が、俺にもある。……一時的な同盟だ。」',
-    baseHp: 110, baseMp: 110, baseAtk: 32, baseDef: 16, baseSpd: 15, joinLevel: 7,
+    baseHp: 110, baseMp: 110, baseAtk: 32, baseDef: 12, baseSpd: 15, joinLevel: 7,
     isHidden: true,
     hpGrowth: 10, mpGrowth: 11, atkGrowth: 4, defGrowth: 2, spdGrowth: 1,
     skills: [
@@ -232,49 +232,49 @@ export const ENEMIES: Record<string, EnemyDef> = {
   // 序盤
   wolf: {
     id: 'wolf', name: '山狼', emoji: '🐺',
-    hp: 32, mp: 0, atk: 9, def: 4, spd: 10,
+    hp: 43, mp: 0, atk: 13, def: 4, spd: 10,
     skills: [], exp: 16, gold: 10,
   },
   goblin: {
     id: 'goblin', name: 'ゴブリン兵', emoji: '👺',
-    hp: 45, mp: 10, atk: 12, def: 6, spd: 9,
+    hp: 61, mp: 10, atk: 17, def: 6, spd: 9,
     skills: [{ id: 'stab', name: '突き', desc: '素早い刺突。', mpCost: 4, target: 'enemy_one', effect: 'damage', power: 1.3 }],
     exp: 24, gold: 18,
   },
   bandit: {
     id: 'bandit', name: '盗賊', emoji: '🗡️',
-    hp: 50, mp: 15, atk: 14, def: 7, spd: 12,
+    hp: 68, mp: 15, atk: 20, def: 7, spd: 12,
     skills: [{ id: 'poison_knife', name: '毒ナイフ', desc: '毒を塗った刃。', mpCost: 5, target: 'enemy_one', effect: 'poison', power: 1.0 }],
     exp: 28, gold: 24,
   },
   // 中盤
   fire_elemental: {
     id: 'fire_elemental', name: '炎精霊', emoji: '🔥',
-    hp: 60, mp: 30, atk: 17, def: 8, spd: 11,
+    hp: 75, mp: 30, atk: 23, def: 8, spd: 11,
     skills: [{ id: 'fire_blast', name: '炎弾', desc: '炎の塊を放つ。', mpCost: 8, target: 'enemy_one', effect: 'damage', power: 1.7 }],
     exp: 40, gold: 32,
   },
   mine_golem: {
     id: 'mine_golem', name: '鉱山ゴーレム', emoji: '⛏️',
-    hp: 80, mp: 0, atk: 18, def: 14, spd: 5,
+    hp: 100, mp: 0, atk: 24, def: 14, spd: 5,
     skills: [], exp: 46, gold: 36,
   },
   storm_bird: {
     id: 'storm_bird', name: '嵐鳥', emoji: '🦅',
-    hp: 55, mp: 20, atk: 20, def: 6, spd: 18,
+    hp: 69, mp: 20, atk: 27, def: 6, spd: 18,
     skills: [{ id: 'gale', name: '旋風', desc: '翼で竜巻を起こす。', mpCost: 8, target: 'enemy_all', effect: 'damage', power: 1.1 }],
     exp: 36, gold: 28,
   },
   desert_scorpion: {
     id: 'desert_scorpion', name: '砂漠サソリ', emoji: '🦂',
-    hp: 65, mp: 10, atk: 19, def: 9, spd: 13,
+    hp: 81, mp: 10, atk: 26, def: 9, spd: 13,
     skills: [{ id: 'sting', name: '猛毒の針', desc: '強力な毒を注入する。', mpCost: 6, target: 'enemy_one', effect: 'poison', power: 1.1 }],
     exp: 42, gold: 34,
   },
   // 森エリア
   mofunezu: {
     id: 'mofunezu', name: 'モフネズ', emoji: '🐿️',
-    hp: 28, mp: 0, atk: 8, def: 3, spd: 10,
+    hp: 38, mp: 0, atk: 11, def: 3, spd: 10,
     skills: [
       { id: 'tackle_m', name: 'たいあたり', desc: '体当たり攻撃。', mpCost: 0, target: 'enemy_one', effect: 'damage', power: 1.0 },
       { id: 'gnaw', name: 'かじる', desc: '鋭い歯で噛みつく。', mpCost: 0, target: 'enemy_one', effect: 'damage', power: 1.2 },
@@ -283,7 +283,7 @@ export const ENEMIES: Record<string, EnemyDef> = {
   },
   kinobokku: {
     id: 'kinobokku', name: 'キノボック', emoji: '🍄',
-    hp: 42, mp: 35, atk: 11, def: 6, spd: 7,
+    hp: 53, mp: 35, atk: 15, def: 6, spd: 7,
     skills: [
       { id: 'poison_spore', name: 'どくほうし', desc: '毒の胞子をまき散らす。', mpCost: 6, target: 'enemy_one', effect: 'poison', power: 1.0 },
       { id: 'sleep_spore', name: 'ねむりほうし', desc: '眠り胞子でスタン状態にする。', mpCost: 8, target: 'enemy_one', effect: 'stun', power: 1.0 },
@@ -293,7 +293,7 @@ export const ENEMIES: Record<string, EnemyDef> = {
   },
   donguraa: {
     id: 'donguraa', name: 'ドングラー', emoji: '🌰',
-    hp: 68, mp: 15, atk: 14, def: 13, spd: 5,
+    hp: 85, mp: 15, atk: 19, def: 13, spd: 5,
     skills: [
       { id: 'tackle_d', name: 'たいあたり', desc: '重い体で体当たり。', mpCost: 0, target: 'enemy_one', effect: 'damage', power: 1.1 },
       { id: 'acorn_guard', name: 'ぼうぎょ', desc: '帽子をかぶり防御力を上げる。', mpCost: 8, target: 'self', effect: 'def_up', power: 1 },
@@ -302,7 +302,7 @@ export const ENEMIES: Record<string, EnemyDef> = {
   },
   hari_wolf: {
     id: 'hari_wolf', name: 'ハリオオカミ', emoji: '🐺',
-    hp: 58, mp: 22, atk: 19, def: 8, spd: 17,
+    hp: 73, mp: 22, atk: 26, def: 8, spd: 17,
     skills: [
       { id: 'scratch_hw', name: 'ひっかく', desc: '鋭い爪で引っかく。', mpCost: 0, target: 'enemy_one', effect: 'damage', power: 1.2 },
       { id: 'spine_shot', name: 'ハリとばし', desc: '背中の針を全体に飛ばす。', mpCost: 8, target: 'enemy_all', effect: 'damage', power: 0.9 },
@@ -312,7 +312,7 @@ export const ENEMIES: Record<string, EnemyDef> = {
   },
   mori_doll: {
     id: 'mori_doll', name: '森人形', emoji: '🪆',
-    hp: 72, mp: 18, atk: 16, def: 11, spd: 6,
+    hp: 90, mp: 18, atk: 22, def: 11, spd: 6,
     skills: [
       { id: 'grab', name: 'つかむ', desc: '強引に掴みスタン状態にする。', mpCost: 8, target: 'enemy_one', effect: 'stun', power: 1.3 },
       { id: 'eerie_stare', name: 'みつめる', desc: '不気味な視線で攻撃力を下げる。', mpCost: 6, target: 'enemy_one', effect: 'debuff_atk', power: 1 },
@@ -321,7 +321,7 @@ export const ENEMIES: Record<string, EnemyDef> = {
   },
   forest_king: {
     id: 'forest_king', name: '森王モルガ', emoji: '🦌',
-    hp: 1200, mp: 100, atk: 38, def: 19, spd: 11,
+    hp: 1440, mp: 100, atk: 44, def: 19, spd: 11,
     skills: [
       { id: 'king_scratch', name: 'ひっかく', desc: '巨大な爪で引っかく。', mpCost: 0, target: 'enemy_one', effect: 'damage', power: 1.5 },
       { id: 'stomp', name: 'ふみつけ', desc: '重い足で踏みつける。全体攻撃。', mpCost: 12, target: 'enemy_all', effect: 'damage', power: 1.2 },
@@ -333,7 +333,7 @@ export const ENEMIES: Record<string, EnemyDef> = {
   // ===== 山岳エリア（廃鉱山・竜の峠）=====
   goromin: {
     id: 'goromin', name: 'ゴロミン', emoji: '🪨',
-    hp: 40, mp: 0, atk: 11, def: 7, spd: 6,
+    hp: 54, mp: 0, atk: 15, def: 7, spd: 6,
     skills: [
       { id: 'iwa_koro', name: 'いわコロ', desc: '岩のように転がりぶつかる。', mpCost: 0, target: 'enemy_one', effect: 'damage', power: 1.0 },
       { id: 'taiatar_g', name: 'たいあたり', desc: '体当たりで押しつぶす。', mpCost: 0, target: 'enemy_one', effect: 'damage', power: 1.1 },
@@ -342,7 +342,7 @@ export const ENEMIES: Record<string, EnemyDef> = {
   },
   tsuru_hammer: {
     id: 'tsuru_hammer', name: 'ツルハンマー', emoji: '⛏️',
-    hp: 35, mp: 10, atk: 15, def: 4, spd: 10,
+    hp: 47, mp: 10, atk: 21, def: 4, spd: 10,
     skills: [
       { id: 'hammer_buri', name: 'ハンマーぶり', desc: '鉱道具を全力で振り下ろす。', mpCost: 0, target: 'enemy_one', effect: 'damage', power: 1.6 },
       { id: 'hori_okoshi', name: 'ほりおこし', desc: '掘り起こしてスタン状態にする。', mpCost: 8, target: 'enemy_one', effect: 'stun', power: 1.0 },
@@ -351,7 +351,7 @@ export const ENEMIES: Record<string, EnemyDef> = {
   },
   kabemimi: {
     id: 'kabemimi', name: 'カベミミ', emoji: '🦇',
-    hp: 50, mp: 15, atk: 13, def: 9, spd: 7,
+    hp: 63, mp: 15, atk: 18, def: 9, spd: 7,
     skills: [
       { id: 'kabedon', name: 'かべドン', desc: '岩壁に叩きつける。', mpCost: 0, target: 'enemy_one', effect: 'damage', power: 1.3 },
       { id: 'choushu', name: 'チョウシュ', desc: '壁に耳を当て弱点を察知。攻撃力を下げる。', mpCost: 7, target: 'enemy_one', effect: 'debuff_atk', power: 1 },
@@ -360,7 +360,7 @@ export const ENEMIES: Record<string, EnemyDef> = {
   },
   ganseki_bou: {
     id: 'ganseki_bou', name: 'ガンセキ坊', emoji: '🗿',
-    hp: 78, mp: 0, atk: 14, def: 17, spd: 3,
+    hp: 98, mp: 0, atk: 19, def: 17, spd: 3,
     skills: [
       { id: 'omoi_tsubushi', name: 'おもいつぶし', desc: '重い体でゆっくり押しつぶす。', mpCost: 0, target: 'enemy_one', effect: 'damage', power: 1.8 },
       { id: 'katamaru', name: 'かたまる', desc: '石のように固まり防御力を上げる。', mpCost: 8, target: 'self', effect: 'def_up', power: 1 },
@@ -370,7 +370,7 @@ export const ENEMIES: Record<string, EnemyDef> = {
   // ===== 砂漠エリア（砂漠遺跡）=====
   sabotenu: {
     id: 'sabotenu', name: 'サボテヌ', emoji: '🌵',
-    hp: 55, mp: 0, atk: 14, def: 7, spd: 9,
+    hp: 69, mp: 0, atk: 19, def: 7, spd: 9,
     skills: [
       { id: 'toge_atari', name: 'とげあたり', desc: '鋭いとげを刺して毒状態にする。', mpCost: 0, target: 'enemy_one', effect: 'poison', power: 1.0 },
       { id: 'saboten_kick', name: 'サボテンキック', desc: 'とげだらけの足で蹴る。', mpCost: 0, target: 'enemy_one', effect: 'damage', power: 1.3 },
@@ -379,7 +379,7 @@ export const ENEMIES: Record<string, EnemyDef> = {
   },
   sunabukuro: {
     id: 'sunabukuro', name: 'スナブクロ', emoji: '🎒',
-    hp: 70, mp: 10, atk: 12, def: 13, spd: 5,
+    hp: 88, mp: 10, atk: 16, def: 13, spd: 5,
     skills: [
       { id: 'suna_arashi', name: 'すなあらし', desc: '砂を全体に撒き散らす。', mpCost: 8, target: 'enemy_all', effect: 'damage', power: 1.0 },
       { id: 'omoi_crush', name: 'おもいつぶし', desc: '重い砂袋で叩きつける。', mpCost: 0, target: 'enemy_one', effect: 'damage', power: 1.5 },
@@ -388,7 +388,7 @@ export const ENEMIES: Record<string, EnemyDef> = {
   },
   hibikamen: {
     id: 'hibikamen', name: 'ヒビカメン', emoji: '🗺️',
-    hp: 60, mp: 25, atk: 17, def: 8, spd: 10,
+    hp: 75, mp: 25, atk: 23, def: 8, spd: 10,
     skills: [
       { id: 'noroi', name: 'のろい', desc: '遺跡の呪いで全体の攻撃力を下げる。', mpCost: 10, target: 'enemy_all', effect: 'debuff_atk', power: 1 },
       { id: 'inishie_honoo', name: 'いにしえのほのお', desc: '古代の炎を放つ。', mpCost: 8, target: 'enemy_one', effect: 'damage', power: 1.6 },
@@ -397,7 +397,7 @@ export const ENEMIES: Record<string, EnemyDef> = {
   },
   mizunomin: {
     id: 'mizunomin', name: 'ミズノミン', emoji: '🫙',
-    hp: 45, mp: 30, atk: 11, def: 6, spd: 13,
+    hp: 56, mp: 30, atk: 15, def: 6, spd: 13,
     skills: [
       { id: 'mizu_housya', name: 'みずほうしゃ', desc: '水筒から水を勢いよく噴射する。', mpCost: 0, target: 'enemy_one', effect: 'damage', power: 1.2 },
       { id: 'uruoi', name: 'うるおい', desc: '自分を水で潤し防御力を上げる。', mpCost: 8, target: 'self', effect: 'def_up', power: 1 },
@@ -407,7 +407,7 @@ export const ENEMIES: Record<string, EnemyDef> = {
   // ===== 魔王軍 一般兵（砂漠遺跡 後半）=====
   tsugihagi_hei: {
     id: 'tsugihagi_hei', name: 'ツギハギ兵', emoji: '🪡',
-    hp: 72, mp: 15, atk: 21, def: 11, spd: 11,
+    hp: 83, mp: 15, atk: 26, def: 11, spd: 11,
     skills: [
       { id: 'tsugihagi_giri', name: 'つぎはぎぎり', desc: '継ぎはぎだらけの剣で斬りつける。', mpCost: 0, target: 'enemy_one', effect: 'damage', power: 1.5 },
       { id: 'gamushara', name: 'がむしゃら', desc: '我武者羅に攻撃し自身の攻撃力を上げる。', mpCost: 8, target: 'self', effect: 'atk_up', power: 1 },
@@ -416,7 +416,7 @@ export const ENEMIES: Record<string, EnemyDef> = {
   },
   baketsu_hei: {
     id: 'baketsu_hei', name: 'バケツ兵', emoji: '🪣',
-    hp: 80, mp: 0, atk: 19, def: 16, spd: 7,
+    hp: 92, mp: 0, atk: 24, def: 16, spd: 7,
     skills: [
       { id: 'baketsu_naguri', name: 'バケツなぐり', desc: 'バケツを全力で叩きつける。', mpCost: 0, target: 'enemy_one', effect: 'damage', power: 1.4 },
       { id: 'jourou_maki', name: 'じょうろまき', desc: 'じょうろで水をかけスタンさせる。', mpCost: 8, target: 'enemy_one', effect: 'stun', power: 1.0 },
@@ -425,7 +425,7 @@ export const ENEMIES: Record<string, EnemyDef> = {
   },
   memo_hei: {
     id: 'memo_hei', name: 'メモ兵', emoji: '📝',
-    hp: 65, mp: 25, atk: 17, def: 9, spd: 13,
+    hp: 75, mp: 25, atk: 21, def: 9, spd: 13,
     skills: [
       { id: 'memo_nage', name: 'メモなげ', desc: 'メモを丸めて投げつける。', mpCost: 0, target: 'enemy_one', effect: 'damage', power: 1.2 },
       { id: 'jouhou_koukou', name: 'じょうほうこうかん', desc: '弱点情報を共有し攻撃力を下げる。', mpCost: 8, target: 'enemy_one', effect: 'debuff_atk', power: 1 },
@@ -435,7 +435,7 @@ export const ENEMIES: Record<string, EnemyDef> = {
   // ===== 魔王軍 幹部（砂漠遺跡 深部）=====
   sansec_general: {
     id: 'sansec_general', name: '三秒将軍', emoji: '🎭',
-    hp: 110, mp: 40, atk: 25, def: 14, spd: 13,
+    hp: 127, mp: 40, atk: 31, def: 14, spd: 13,
     skills: [
       { id: 'kimaguregiri', name: 'きまぐれぎり', desc: '気まぐれな一撃。毎回威力が変わる。', mpCost: 0, target: 'enemy_one', effect: 'damage', power: 1.6 },
       { id: 'hanka_no_sakebi', name: 'へんかのさけび', desc: '豹変して自身の攻撃力を大幅に上げる。', mpCost: 10, target: 'self', effect: 'atk_up', power: 1 },
@@ -444,7 +444,7 @@ export const ENEMIES: Record<string, EnemyDef> = {
   },
   mirror_lady: {
     id: 'mirror_lady', name: '鏡面婦人', emoji: '🪞',
-    hp: 95, mp: 65, atk: 22, def: 12, spd: 15,
+    hp: 109, mp: 65, atk: 28, def: 12, spd: 15,
     skills: [
       { id: 'kyoumen_hansha', name: 'きょうめんはんしゃ', desc: '鏡で光を反射し敵を攻撃。', mpCost: 8, target: 'enemy_one', effect: 'damage', power: 1.4 },
       { id: 'maboroshi', name: 'まぼろし', desc: '幻を見せスタン状態にする。', mpCost: 12, target: 'enemy_one', effect: 'stun', power: 1.0 },
@@ -454,7 +454,7 @@ export const ENEMIES: Record<string, EnemyDef> = {
   },
   ito_kiri: {
     id: 'ito_kiri', name: '糸切り郷', emoji: '🕷️',
-    hp: 105, mp: 50, atk: 23, def: 11, spd: 16,
+    hp: 121, mp: 50, atk: 29, def: 11, spd: 16,
     skills: [
       { id: 'ito_shibari', name: 'いとしばり', desc: '糸で縛りスタン状態にする。', mpCost: 8, target: 'enemy_one', effect: 'stun', power: 1.0 },
       { id: 'kumosu_zan', name: 'くものすざん', desc: '蜘蛛の巣で全体を切り裂く。', mpCost: 12, target: 'enemy_all', effect: 'damage', power: 1.1 },
@@ -465,7 +465,7 @@ export const ENEMIES: Record<string, EnemyDef> = {
   // ===== 河川・海岸エリア（ダンジョン未決定）=====
   poyogaeru: {
     id: 'poyogaeru', name: 'ポヨガエル', emoji: '🐸',
-    hp: 48, mp: 20, atk: 10, def: 5, spd: 14,
+    hp: 65, mp: 20, atk: 14, def: 5, spd: 14,
     skills: [
       { id: 'fuwa_tobi', name: 'ふわとび', desc: 'ぷくっとふくらんで飛びかかりスタンさせる。', mpCost: 8, target: 'enemy_one', effect: 'stun', power: 1.0 },
       { id: 'shita_uchi', name: 'したうち', desc: '長い舌でぺちんと叩く。', mpCost: 0, target: 'enemy_one', effect: 'damage', power: 1.3 },
@@ -474,7 +474,7 @@ export const ENEMIES: Record<string, EnemyDef> = {
   },
   yadotsubo: {
     id: 'yadotsubo', name: 'ヤドツボ', emoji: '🫙',
-    hp: 62, mp: 0, atk: 12, def: 15, spd: 4,
+    hp: 84, mp: 0, atk: 17, def: 15, spd: 4,
     skills: [
       { id: 'tsubo_komori', name: 'ツボにひきこもる', desc: '壺に隠れ防御力を大幅に上げる。', mpCost: 8, target: 'self', effect: 'def_up', power: 1 },
       { id: 'hasami_kudaki', name: 'ハサミくだき', desc: '大きなハサミで強力に挟む。', mpCost: 0, target: 'enemy_one', effect: 'damage', power: 1.5 },
@@ -483,7 +483,7 @@ export const ENEMIES: Record<string, EnemyDef> = {
   },
   mokumokumo: {
     id: 'mokumokumo', name: 'モクモクモ', emoji: '🌊',
-    hp: 70, mp: 28, atk: 11, def: 8, spd: 8,
+    hp: 88, mp: 28, atk: 15, def: 8, spd: 8,
     skills: [
       { id: 'matowari_tsuku', name: 'まとわりつく', desc: '藻が絡みついてスタン状態にする。', mpCost: 8, target: 'enemy_one', effect: 'stun', power: 1.0 },
       { id: 'doku_no_moku', name: 'どくのもく', desc: '毒を帯びた藻でダメージを与える。', mpCost: 6, target: 'enemy_one', effect: 'poison', power: 1.0 },
@@ -492,7 +492,7 @@ export const ENEMIES: Record<string, EnemyDef> = {
   },
   kuchipaku: {
     id: 'kuchipaku', name: 'クチパク', emoji: '🐡',
-    hp: 55, mp: 0, atk: 17, def: 5, spd: 15,
+    hp: 69, mp: 0, atk: 23, def: 5, spd: 15,
     skills: [
       { id: 'gabu_nomi', name: 'がぶのみ', desc: '大きな口でまるごと噛みつく。', mpCost: 0, target: 'enemy_one', effect: 'damage', power: 1.9 },
       { id: 'hageshii_nagare', name: 'はげしいながれ', desc: '激流を起こして全体を攻撃する。', mpCost: 8, target: 'enemy_all', effect: 'damage', power: 0.9 },
@@ -502,7 +502,7 @@ export const ENEMIES: Record<string, EnemyDef> = {
   // ===== ボス =====
   bandit_king: {
     id: 'bandit_king', name: '盗賊王カルド', emoji: '👑',
-    hp: 420, mp: 40, atk: 27, def: 12, spd: 14,
+    hp: 504, mp: 40, atk: 31, def: 12, spd: 14,
     skills: [
       { id: 'triple_slash', name: '三連斬り', desc: '三段連続攻撃。', mpCost: 10, target: 'enemy_one', effect: 'damage', power: 2.0 },
       { id: 'smoke_bomb', name: '煙幕爆弾', desc: '敵全体の攻撃力を下げる。', mpCost: 8, target: 'enemy_all', effect: 'debuff_atk', power: 1 },
@@ -512,7 +512,7 @@ export const ENEMIES: Record<string, EnemyDef> = {
   },
   mine_king: {
     id: 'mine_king', name: '鉱王グラドル', emoji: '💎',
-    hp: 600, mp: 80, atk: 34, def: 22, spd: 8,
+    hp: 720, mp: 80, atk: 39, def: 22, spd: 8,
     skills: [
       { id: 'crystal_rush', name: 'クリスタルラッシュ', desc: '水晶の刃で全体を切り裂く。', mpCost: 14, target: 'enemy_all', effect: 'damage', power: 1.3 },
       { id: 'ore_shield', name: '鉱石の盾', desc: '鉱石の盾で防御力を大幅に上げる。', mpCost: 10, target: 'self', effect: 'def_up', power: 1 },
@@ -522,7 +522,7 @@ export const ENEMIES: Record<string, EnemyDef> = {
   },
   storm_dragon: {
     id: 'storm_dragon', name: '嵐竜ストームレックス', emoji: '🌩️',
-    hp: 900, mp: 90, atk: 36, def: 15, spd: 17,
+    hp: 1080, mp: 90, atk: 41, def: 15, spd: 17,
     skills: [
       { id: 'storm_blast', name: '嵐の爆風', desc: '全体に嵐ダメージ。', mpCost: 14, target: 'enemy_all', effect: 'damage', power: 1.4 },
       { id: 'lightning_dive', name: '雷撃落とし', desc: '1体に超強力な雷。', mpCost: 12, target: 'enemy_one', effect: 'damage', power: 2.6 },
@@ -531,7 +531,7 @@ export const ENEMIES: Record<string, EnemyDef> = {
   },
   ruins_guardian: {
     id: 'ruins_guardian', name: '遺跡守ラザーム', emoji: '🗿',
-    hp: 200, mp: 60, atk: 26, def: 16, spd: 9,
+    hp: 240, mp: 60, atk: 30, def: 16, spd: 9,
     skills: [
       { id: 'inishie_sabaki', name: 'いにしえのさばき', desc: '古代の力で全体を裁く。', mpCost: 14, target: 'enemy_all', effect: 'damage', power: 1.3 },
       { id: 'razaam_ikari', name: 'ラザームのいかり', desc: '怒りで自身の攻撃力を大幅に上げる。', mpCost: 10, target: 'self', effect: 'atk_up', power: 1 },
@@ -541,7 +541,7 @@ export const ENEMIES: Record<string, EnemyDef> = {
   },
   tidal_king: {
     id: 'tidal_king', name: '潮王ネブラ', emoji: '🐳',
-    hp: 560, mp: 90, atk: 33, def: 17, spd: 13,
+    hp: 672, mp: 90, atk: 38, def: 17, spd: 13,
     skills: [
       { id: 'taida_no_nami', name: 'たいだのなみ', desc: '怠惰な大波で全体を攻撃する。', mpCost: 13, target: 'enemy_all', effect: 'damage', power: 1.3 },
       { id: 'kaitei_shihai', name: 'かいていのしはい', desc: '海底から全体の攻撃力を下げる。', mpCost: 10, target: 'enemy_all', effect: 'debuff_atk', power: 1 },
@@ -551,7 +551,7 @@ export const ENEMIES: Record<string, EnemyDef> = {
   },
   archive: {
     id: 'archive', name: '終末記録体アーカイブ', emoji: '📚',
-    hp: 1100, mp: 180, atk: 45, def: 25, spd: 14,
+    hp: 1320, mp: 180, atk: 52, def: 25, spd: 14,
     skills: [
       { id: 'kiroku_sabaki', name: 'きろくのさばき', desc: '世界の記録が全体に降り注ぐ。', mpCost: 18, target: 'enemy_all', effect: 'damage', power: 1.7 },
       { id: 'kako_no_kodama', name: 'かこのこだま', desc: '過去の記録が全体の攻撃力を下げる。', mpCost: 14, target: 'enemy_all', effect: 'debuff_atk', power: 1 },
