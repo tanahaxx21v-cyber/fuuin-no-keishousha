@@ -28,7 +28,7 @@ export default function StatusBar({ gs, onSave, isMuted, onToggleMute, onReturnT
   const currentDay = totalDays - gs.daysLeft + 1
 
   return (
-    <div className="sticky top-0 z-30 bg-[#07071a] border-b-2 border-indigo-800 px-2 py-1.5 shadow-xl">
+    <div className="sticky top-0 z-30 bg-[#07071a] border-b-2 border-indigo-800 px-2 py-1.5">
       <div className="flex items-center gap-2 flex-wrap max-w-4xl mx-auto">
 
         {/* Days */}
@@ -49,7 +49,7 @@ export default function StatusBar({ gs, onSave, isMuted, onToggleMute, onReturnT
           <span className="text-slate-600">·</span>
           <span className="text-xs text-slate-400">Lv</span>
           <span className="text-sm font-black text-white">{gs.playerLevel}</span>
-          <div className="w-12 h-2 bg-gray-900 rounded-sm border border-gray-700 overflow-hidden ml-1" title={`EXP ${gs.playerExp}/${expToNext}`}>
+          <div className="w-12 h-2 bg-gray-900 border border-gray-700 overflow-hidden ml-1" title={`EXP ${gs.playerExp}/${expToNext}`}>
             <div
               className="h-full bg-purple-600 transition-all duration-500"
               style={{ width: `${expPct}%` }}
@@ -60,7 +60,7 @@ export default function StatusBar({ gs, onSave, isMuted, onToggleMute, onReturnT
         {/* HP */}
         <div className="flex items-center gap-1.5">
           <span className={`text-xs font-black w-5 ${hpPct <= 25 ? 'text-red-400 animate-pulse' : 'text-red-400'}`}>HP</span>
-          <div className="w-20 h-3.5 bg-gray-900 rounded-sm border border-gray-700 overflow-hidden">
+          <div className="w-20 h-3.5 bg-gray-900 border border-gray-700 overflow-hidden">
             <div
               className={`h-full transition-all duration-300 ${
                 hpPct > 50 ? 'bg-green-600'
@@ -78,7 +78,7 @@ export default function StatusBar({ gs, onSave, isMuted, onToggleMute, onReturnT
         {/* MP */}
         <div className="flex items-center gap-1.5">
           <span className="text-xs font-black text-blue-400 w-5">MP</span>
-          <div className="w-14 h-3.5 bg-gray-900 rounded-sm border border-gray-700 overflow-hidden">
+          <div className="w-14 h-3.5 bg-gray-900 border border-gray-700 overflow-hidden">
             <div
               className="h-full bg-blue-700 transition-all duration-300"
               style={{ width: `${mpPct}%` }}
@@ -154,7 +154,7 @@ export default function StatusBar({ gs, onSave, isMuted, onToggleMute, onReturnT
                 <span className={`text-xl leading-none ${c.alive ? '' : 'grayscale opacity-30'}`}>
                   {def.emoji}
                 </span>
-                <div className="w-7 h-1.5 bg-gray-900 rounded-sm border border-gray-700 overflow-hidden">
+                <div className="w-7 h-1.5 bg-gray-900 border border-gray-700 overflow-hidden">
                   <div
                     className={`h-full transition-all duration-300 ${
                       !c.alive ? 'bg-gray-700'
@@ -238,7 +238,7 @@ export default function StatusBar({ gs, onSave, isMuted, onToggleMute, onReturnT
       {/* Confirm return to title overlay */}
       {confirmReturn && (
         <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/70">
-          <div className="bg-[#0c0c24] border-2 border-red-700 p-6 text-center shadow-2xl max-w-xs w-full mx-4">
+          <div className="bg-[#0c0c24] border-2 border-red-700 p-6 text-center max-w-xs w-full mx-4">
             <div className="text-3xl mb-3">🏠</div>
             <div className="text-base font-black text-white mb-1">タイトルに戻る</div>
             <div className="text-xs text-gray-400 mb-4">セーブデータは保持されます。<br/>現在の進行状況を保存してから戻りますか？</div>

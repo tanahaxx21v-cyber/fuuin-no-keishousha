@@ -158,30 +158,12 @@ export default function EventScene({ gs, onAdvance, onSkipAll }: Props) {
       {/* ===== キャラクターエリア ===== */}
       <div className="flex-1 relative overflow-hidden flex items-end justify-center">
 
-        {/* 背景グラデーション（スピーカーカラー）*/}
+        {/* 境界線（スピーカーカラー）*/}
         {!isNarrator && (
-          <>
-            <div
-              className="absolute inset-0 pointer-events-none transition-all duration-500"
-              style={{
-                background: `radial-gradient(ellipse 80% 60% at 50% 100%, ${cfg.glow}18 0%, transparent 65%)`,
-              }}
-            />
-            <div
-              className="absolute bottom-0 left-0 right-0"
-              style={{
-                height: 1,
-                background: `linear-gradient(to right, transparent, ${cfg.glow}40, transparent)`,
-              }}
-            />
-            <div
-              className="absolute bottom-0 left-0 right-0"
-              style={{
-                height: 24,
-                background: `linear-gradient(to top, ${cfg.glow}08, transparent)`,
-              }}
-            />
-          </>
+          <div
+            className="absolute bottom-0 left-0 right-0"
+            style={{ height: 1, background: cfg.border }}
+          />
         )}
 
         {/* ナレーター表示 */}
@@ -190,7 +172,7 @@ export default function EventScene({ gs, onAdvance, onSkipAll }: Props) {
             {/* 星のパーティクル */}
             <div className="absolute inset-0 pointer-events-none">
               {Array.from({ length: 20 }, (_, i) => (
-                <div key={i} className="absolute rounded-full bg-white"
+                <div key={i} className="absolute bg-white"
                   style={{
                     left: `${(i * 11 + 5) % 100}%`,
                     top: `${(i * 17 + 3) % 100}%`,
@@ -202,10 +184,6 @@ export default function EventScene({ gs, onAdvance, onSkipAll }: Props) {
                 />
               ))}
             </div>
-            {/* 霧エフェクト */}
-            <div className="absolute inset-0 pointer-events-none" style={{
-              background: 'radial-gradient(ellipse 60% 40% at 50% 60%, rgba(30,20,60,0.4) 0%, transparent 70%)',
-            }} />
             {/* 中央スクロール */}
             <div className="relative flex flex-col items-center justify-center pb-20 gap-2" style={{ zIndex: 5 }}>
               <div style={{

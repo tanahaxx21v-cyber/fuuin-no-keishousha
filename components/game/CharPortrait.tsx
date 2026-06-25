@@ -45,7 +45,7 @@ function calcPortraitBgPosRect(col: number, row: number, w: number, h: number) {
   return { bgPosX, bgPosY }
 }
 
-export function CharPortrait({ charId, size, isActive = false, isDead = false, rounded = 4 }: {
+export function CharPortrait({ charId, size, isActive = false, isDead = false, rounded = 0 }: {
   charId: string
   size: number
   isActive?: boolean

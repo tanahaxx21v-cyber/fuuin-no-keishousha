@@ -536,7 +536,7 @@ export default function GameRoot() {
       {/* 実績解除トースト */}
       {achievementToast && (
         <div
-          className="fixed top-4 left-1/2 -translate-x-1/2 z-[60] flex items-center gap-3 px-5 py-3 border-2 shadow-2xl"
+          className="fixed top-4 left-1/2 -translate-x-1/2 z-[60] flex items-center gap-3 px-5 py-3 border-2"
           style={{ background: '#1c1208', borderColor: '#d97706', minWidth: 260, maxWidth: 340 }}
         >
           <span style={{ fontSize: 28 }}>{achievementToast.icon}</span>
@@ -550,7 +550,7 @@ export default function GameRoot() {
 
       {/* Save notification */}
       {saveMsg && (
-        <div className="fixed bottom-4 right-4 z-50 bg-green-950 border-2 border-green-600 text-green-300 px-4 py-2 text-sm font-black shadow-xl">
+        <div className="fixed bottom-4 right-4 z-50 bg-green-950 border-2 border-green-600 text-green-300 px-4 py-2 text-sm font-black">
           💾 {saveMsg}
         </div>
       )}
@@ -572,7 +572,7 @@ export default function GameRoot() {
           ? 'bg-yellow-950 border-yellow-600 text-yellow-200'
           : 'bg-indigo-950 border-indigo-600 text-indigo-200'
         return (
-          <div className={`fixed top-20 left-1/2 -translate-x-1/2 z-40 ${cls} border-2 px-4 py-2 text-sm font-black shadow-xl max-w-xs text-center`}>
+          <div className={`fixed top-20 left-1/2 -translate-x-1/2 z-40 ${cls} border-2 px-4 py-2 text-sm font-black max-w-xs text-center`}>
             {msg}
           </div>
         )
@@ -657,7 +657,7 @@ export default function GameRoot() {
 
         {gs.pendingBranch && gs.phase === 'location' && !diceRolling && (
           <div className="fixed inset-0 z-50 flex flex-col items-center justify-end pb-8 px-4" style={{ background: 'rgba(0,0,0,0.85)' }}>
-            <div className="w-full max-w-md bg-[#0c0c24] border-2 border-amber-600 p-5 shadow-2xl">
+            <div className="w-full max-w-md bg-[#0c0c24] border-2 border-amber-600 p-5">
               <div className="flex items-center justify-between mb-1">
                 <div className="text-xs font-black text-amber-500 tracking-widest">— 選択 —</div>
                 <div className="text-xs font-black text-amber-300 bg-amber-950 border border-amber-800 px-2 py-0.5">💰 {gs.gold}G</div>
@@ -704,7 +704,7 @@ function NamingScreen({ onConfirm }: { onConfirm: (name: string) => void }) {
   return (
     <div className="min-h-screen flex items-center justify-center bg-[#07071a] p-6">
       <div className="w-full max-w-xs">
-        <div className="bg-[#0c0c24] border-2 border-indigo-900 p-6 shadow-2xl">
+        <div className="bg-[#0c0c24] border-2 border-indigo-900 p-6">
           <div className="border-b border-indigo-900/50 pb-3 mb-5 text-center">
             <div className="text-[10px] text-indigo-700 tracking-[0.5em] uppercase mb-2">NAME ENTRY</div>
             <div className="flex justify-center mb-3">
@@ -800,7 +800,7 @@ function PrologueScreen({ onDone, playerName, daysLeft }: { onDone: () => void; 
   return (
     <div className="min-h-screen flex items-center justify-center bg-[#07071a] p-4" onClick={handleClick}>
       <div className="w-full max-w-sm">
-        <div className={`bg-[#0c0c24] border-2 ${current.accent} p-6 shadow-2xl transition-all duration-500`}>
+        <div className={`bg-[#0c0c24] border-2 ${current.accent} p-6 transition-all duration-500`}>
           <div className="flex items-center gap-3 mb-4">
             <span className="text-3xl">{current.icon}</span>
             <div>

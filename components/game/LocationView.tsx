@@ -242,7 +242,7 @@ export default function LocationView({
         const isLowHp = avgHpPct < 0.5
         return (
           <div className="fixed inset-0 z-[80] flex items-center justify-center" style={{ background: 'rgba(4,4,10,0.92)' }}>
-            <div className="relative max-w-sm w-full mx-4 border-2 border-red-600 p-0 shadow-2xl" style={{ background: '#0a0404', animation: 'fadeIn 0.3s ease' }}>
+            <div className="relative max-w-sm w-full mx-4 border-2 border-red-600 p-0" style={{ background: '#0a0404', animation: 'fadeIn 0.3s ease' }}>
               <div className="border-b border-red-900 px-4 py-2 flex items-center gap-2" style={{ background: 'rgba(180,0,0,0.12)' }}>
                 <span className="text-xs font-black text-red-500 tracking-widest">⚠ BOSS BATTLE</span>
                 <span className="ml-auto text-xl">{boss.emoji}</span>
@@ -357,9 +357,6 @@ export default function LocationView({
           >
             {/* キャラクターエリア */}
             <div className="flex-1 relative overflow-hidden flex items-end justify-center">
-              <div className="absolute inset-0 pointer-events-none" style={{
-                background: `radial-gradient(ellipse 80% 60% at 50% 100%, ${glow}22 0%, transparent 65%)`,
-              }} />
               <div className="absolute bottom-0 left-0 right-0" style={{ height: 1, background: '#1a1a2e' }} />
               <div
                 className="relative z-10"

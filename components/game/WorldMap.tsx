@@ -137,11 +137,7 @@ export default function WorldMap({ gs, onTravel, onEnterLocation, getAvailableCo
             className="h-full transition-all duration-500"
             style={{
               width: `${elapsedPct}%`,
-              background: daysUrgent
-                ? 'linear-gradient(to right, #7f1d1d, #ef4444)'
-                : daysWarn
-                ? 'linear-gradient(to right, #7c2d12, #f97316)'
-                : 'linear-gradient(to right, #1e3a8a, #6366f1)',
+              background: daysUrgent ? '#ef4444' : daysWarn ? '#f97316' : '#6366f1',
             }}
           />
           {[25, 50, 75].map(pct => (
@@ -177,7 +173,7 @@ export default function WorldMap({ gs, onTravel, onEnterLocation, getAvailableCo
       )}
 
       {/* メインマップ */}
-      <div className="relative border-2 border-amber-800/60 overflow-hidden shadow-2xl" style={{ paddingBottom: '96%' }}>
+      <div className="relative border-2 border-amber-800/60 overflow-hidden" style={{ paddingBottom: '96%' }}>
         {/* 地形背景 */}
         <div className="absolute inset-0" style={{
           background: `
@@ -376,7 +372,7 @@ export default function WorldMap({ gs, onTravel, onEnterLocation, getAvailableCo
       })()}
 
       {/* 現在地パネル */}
-      <div className="bg-[#0c0c24] border-2 border-indigo-700 p-3 shadow-xl">
+      <div className="bg-[#0c0c24] border-2 border-indigo-700 p-3">
         <div className="text-[10px] font-black text-indigo-400 mb-1.5 tracking-widest">— 現在地 —</div>
         <div className="text-xl font-black text-white mb-1">{currentLoc.emoji} {currentLoc.name}</div>
         <div className="text-xs text-gray-400 mb-2 leading-relaxed">{currentLoc.desc}</div>

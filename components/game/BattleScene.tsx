@@ -78,7 +78,7 @@ function EnemyDisplay({ enemies, isBoss, isTargetingEnemies, onSelectTarget, hit
                     ? 'drop-shadow(0 0 10px rgba(255,220,0,0.8))'
                     : 'drop-shadow(0 0 5px rgba(255,255,255,0.25))',
                   background: isHit ? 'rgba(239,68,68,0.35)' : isHeal ? 'rgba(74,222,128,0.25)' : 'transparent',
-                  borderRadius: 8,
+                  borderRadius: 0,
                   transition: 'background 0.1s',
                 }}
               >
@@ -165,7 +165,7 @@ function HpBar({ hp, maxHp, color = 'green' }: { hp: number; maxHp: number; colo
   const fill = color === 'blue' ? 'bg-blue-400'
     : pct > 50 ? 'bg-green-400' : pct > 25 ? 'bg-yellow-400' : 'bg-red-500'
   return (
-    <div className="w-full h-2 bg-black/50 border border-white/20 overflow-hidden rounded-sm">
+    <div className="w-full h-2 bg-black/50 border border-white/20 overflow-hidden">
       <div className={`h-full transition-all duration-300 ${fill}`} style={{ width: `${pct}%` }} />
     </div>
   )
@@ -390,7 +390,7 @@ export default function BattleScene({ gs, onAttack, onSkill, onItem, onFlee, onC
         return (
           <div className="fixed inset-0 z-[90] flex items-center justify-center pointer-events-none">
             <div className="bg-black/80 backdrop-blur-sm absolute inset-0" />
-            <div className="relative z-10 border-2 border-gray-700 bg-[#0a0a20]/98 shadow-2xl max-w-xs mx-4"
+            <div className="relative z-10 border-2 border-gray-700 bg-[#0a0a20]/98 max-w-xs mx-4"
               style={{ animation: 'fadeIn 0.4s ease' }}
             >
               <div className="border-b border-gray-700/50 px-4 py-2 flex items-center gap-2" style={{ background: 'rgba(255,255,255,0.03)' }}>
@@ -516,21 +516,9 @@ export default function BattleScene({ gs, onAttack, onSkill, onItem, onFlee, onC
             <div className="absolute" style={{ top: 28, left: 120, width: 48, height: 12, background: 'rgba(255,255,255,0.35)', borderRadius: '50%', filter: 'blur(4px)' }} />
           </>
         )}
-        {/* ダンジョン通常戦闘: 岩・苔の雰囲気 */}
-        {!b.isBoss && LOCATIONS[gs.currentLocId]?.type === 'dungeon' && (
-          <>
-            <div className="absolute inset-0" style={{ background: 'radial-gradient(ellipse 60% 40% at 50% 50%, rgba(30,20,0,0.3) 0%, transparent 70%)' }} />
-            <div className="absolute" style={{ bottom: 0, left: 0, right: 0, height: '20%', background: 'linear-gradient(to top, rgba(20,20,8,0.9), transparent)' }} />
-            <div className="absolute" style={{ top: 0, left: 0, right: 0, height: '10%', background: 'linear-gradient(to bottom, rgba(0,0,0,0.6), transparent)' }} />
-          </>
-        )}
-        {/* ボス戦: 赤黒い禍々しい雰囲気 */}
+        {/* ボス戦: スキャンラインで緊張感を演出 */}
         {b.isBoss && (
-          <>
-            <div className="absolute inset-0" style={{ background: 'radial-gradient(ellipse 80% 50% at 70% 40%, rgba(180,20,20,0.25) 0%, transparent 70%)' }} />
-            <div className="absolute" style={{ top: 8, right: 24, width: 120, height: 32, background: 'rgba(180,0,0,0.18)', borderRadius: '50%', filter: 'blur(12px)' }} />
-            <div className="absolute" style={{ top: 0, left: 0, right: 0, bottom: 0, backgroundImage: 'repeating-linear-gradient(90deg, transparent, transparent 40px, rgba(255,0,0,0.015) 40px, rgba(255,0,0,0.015) 41px)', pointerEvents: 'none' }} />
-          </>
+          <div className="absolute" style={{ top: 0, left: 0, right: 0, bottom: 0, backgroundImage: 'repeating-linear-gradient(90deg, transparent, transparent 40px, rgba(255,0,0,0.015) 40px, rgba(255,0,0,0.015) 41px)', pointerEvents: 'none' }} />
         )}
 
         {/* 左エリア: プレイヤー + 仲間スプライト */}
@@ -862,7 +850,7 @@ export default function BattleScene({ gs, onAttack, onSkill, onItem, onFlee, onC
                   return (
                     <div className="flex flex-col items-center gap-0.5">
                       <div className="flex items-center gap-2 w-full justify-center">
-                        <div className="w-32 h-2 bg-gray-900 rounded-sm border border-gray-700 overflow-hidden">
+                        <div className="w-32 h-2 bg-gray-900 border border-gray-700 overflow-hidden">
                           <div className="h-full bg-purple-600 transition-all duration-500" style={{ width: `${expPct}%` }} />
                         </div>
                         <span className="text-[10px] text-purple-400 font-bold">Lv{gs.playerLevel}</span>
