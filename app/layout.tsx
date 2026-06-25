@@ -22,7 +22,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ja">
-      <body className={`${dotGothic.variable} font-[family-name:var(--font-dot-gothic)] antialiased`}>
+      <body className={`${dotGothic.variable} font-[family-name:var(--font-dot-gothic)]`}>
         {children}
       </body>
     </html>
