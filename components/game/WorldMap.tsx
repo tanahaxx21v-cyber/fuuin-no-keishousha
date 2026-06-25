@@ -119,7 +119,7 @@ export default function WorldMap({ gs, onTravel, onEnterLocation, getAvailableCo
   const missingStones = SEAL_GUIDE.filter(g => !gs.sealStones.includes(g.stone))
 
   return (
-    <div className="flex flex-col gap-2 p-2 max-w-2xl mx-auto">
+    <div className="flex flex-col gap-2 p-2">
       <div className="flex items-center gap-2">
         <span className="text-amber-400 font-black text-xs tracking-widest">🗺️ ルミナ大陸</span>
         <div className="ml-auto flex items-center gap-3 text-xs">
@@ -177,7 +177,7 @@ export default function WorldMap({ gs, onTravel, onEnterLocation, getAvailableCo
       )}
 
       {/* メインマップ */}
-      <div className="relative border-2 border-amber-800/60 rounded-xl overflow-hidden shadow-2xl" style={{ paddingBottom: '96%' }}>
+      <div className="relative border-2 border-amber-800/60 overflow-hidden shadow-2xl" style={{ paddingBottom: '96%' }}>
         {/* 地形背景 */}
         <div className="absolute inset-0" style={{
           background: `

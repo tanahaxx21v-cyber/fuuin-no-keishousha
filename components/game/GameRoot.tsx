@@ -432,7 +432,8 @@ export default function GameRoot() {
   }, [gs.battle?.currentUid, gs.battle?.phase, autoBattle])
 
   return (
-    <div className="min-h-screen bg-gray-950 text-gray-100 flex flex-col">
+    <div className="min-h-screen bg-[#020208] text-gray-100 flex flex-col items-center">
+      <div className="w-full max-w-[480px] flex flex-col min-h-screen relative" style={{ borderLeft: '1px solid #1a1a30', borderRight: '1px solid #1a1a30' }}>
       {/* Status bar — shown during gameplay */}
       {['worldmap', 'location', 'battle', 'shop', 'event', 'party_manage'].includes(gs.phase) && (
         <StatusBar
@@ -690,6 +691,7 @@ export default function GameRoot() {
         {gs.phase === 'win' && <WinScreen gs={gs} onRestart={() => { setGs(createInitialState('normal')); setPendingDiff(null); setHasSave(false) }} />}
         {gs.phase === 'gameover' && <GameOverScreen gs={gs} onRestart={() => { setGs(createInitialState('normal')); setPendingDiff(null); setHasSave(false) }} />}
       </div>
+      </div>
     </div>
   )
 }
@@ -698,26 +700,29 @@ function NamingScreen({ onConfirm }: { onConfirm: (name: string) => void }) {
   const [name, setName] = useState('レオン')
   return (
     <div className="min-h-screen flex items-center justify-center bg-[#07071a] p-6">
-      <div className="max-w-md w-full">
-        <div className="bg-[#0c0c24] border-2 border-indigo-700 rounded-2xl p-8 shadow-2xl text-center">
-          <div className="flex justify-center mb-4">
-            <div className="rounded-2xl overflow-hidden border-2 border-amber-600" style={{ boxShadow: '0 0 24px rgba(245,158,11,0.4)' }}>
-              <CharPortrait charId="player" size={96} rounded={12} />
+      <div className="w-full max-w-xs">
+        <div className="bg-[#0c0c24] border-2 border-indigo-900 p-6 shadow-2xl">
+          <div className="border-b border-indigo-900/50 pb-3 mb-5 text-center">
+            <div className="text-[10px] text-indigo-700 tracking-[0.5em] uppercase mb-2">NAME ENTRY</div>
+            <div className="flex justify-center mb-3">
+              <div className="overflow-hidden border border-amber-800">
+                <CharPortrait charId="player" size={72} rounded={0} />
+              </div>
             </div>
+            <div className="text-sm font-black text-white">勇者の名前を入力</div>
+            <div className="text-[10px] text-gray-600 mt-0.5">最大8文字</div>
           </div>
-          <h2 className="text-2xl font-black text-white mb-2">勇者の名前</h2>
-          <p className="text-gray-400 text-sm mb-6 font-bold">あなたの名前を入力してください（最大8文字）</p>
           <input
             type="text"
             value={name}
             onChange={e => setName(e.target.value.slice(0, 8))}
             maxLength={8}
-            className="w-full bg-slate-900 border-2 border-slate-700 rounded-xl px-4 py-3 text-white text-center text-xl font-black mb-6 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
+            className="w-full bg-[#060615] border border-indigo-900 px-4 py-3 text-white text-center text-xl font-black mb-4 focus:outline-none focus:border-indigo-600"
             placeholder="レオン"
           />
           <button
             onClick={() => onConfirm((name.trim() || 'レオン'))}
-            className="w-full py-3.5 bg-indigo-800 hover:bg-indigo-700 border-2 border-indigo-500 text-white font-black rounded-xl transition text-lg active:scale-95"
+            className="w-full py-3 bg-indigo-900 hover:bg-indigo-800 border border-indigo-700 text-white font-black transition text-base active:scale-95"
           >
             この名前で冒険へ ▶
           </button>
@@ -790,9 +795,9 @@ function PrologueScreen({ onDone, playerName, daysLeft }: { onDone: () => void; 
 
   const current = pages[page]
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#07071a] p-6" onClick={handleClick}>
-      <div className="max-w-2xl w-full">
-        <div className={`bg-[#0c0c24] border-2 ${current.accent} rounded-2xl p-8 shadow-2xl transition-all duration-500`}>
+    <div className="min-h-screen flex items-center justify-center bg-[#07071a] p-4" onClick={handleClick}>
+      <div className="w-full max-w-sm">
+        <div className={`bg-[#0c0c24] border-2 ${current.accent} p-6 shadow-2xl transition-all duration-500`}>
           <div className="flex items-center gap-3 mb-4">
             <span className="text-3xl">{current.icon}</span>
             <div>
@@ -817,14 +822,14 @@ function PrologueScreen({ onDone, playerName, daysLeft }: { onDone: () => void; 
             {isTypingDone && (page < pages.length - 1 ? (
               <button
                 onClick={e => { e.stopPropagation(); setPage(p => p + 1) }}
-                className="px-8 py-2.5 bg-indigo-800 hover:bg-indigo-700 border-2 border-indigo-600 text-white font-black rounded-xl transition active:scale-95"
+                className="px-6 py-2 bg-indigo-900 hover:bg-indigo-800 border border-indigo-700 text-white font-black transition active:scale-95 text-sm"
               >
                 次へ ▶
               </button>
             ) : (
               <button
                 onClick={e => { e.stopPropagation(); onDone() }}
-                className="px-8 py-2.5 bg-amber-700 hover:bg-amber-600 border-2 border-amber-500 text-white font-black rounded-xl transition active:scale-95 shadow-lg shadow-amber-900/50"
+                className="px-6 py-2 bg-amber-800 hover:bg-amber-700 border border-amber-600 text-white font-black transition active:scale-95 text-sm"
               >
                 旅に出る ⚔️
               </button>

@@ -192,7 +192,7 @@ export default function LocationView({
   const dangerInfo = loc.bossId ? DUNGEON_DANGER[loc.bossId] : null
 
   return (
-    <div className="p-3 max-w-2xl mx-auto flex flex-col gap-3">
+    <div className="p-3 flex flex-col gap-3">
 
       {/* 初訪問オーバーレイ */}
       {showArrival && (
@@ -297,25 +297,27 @@ export default function LocationView({
       })()}
 
       {/* Header */}
-      <div className={`bg-[#0c0c24] border-2 ${typeBorder} rounded-xl p-4`}>
-        <div className="flex items-center gap-3 mb-2">
+      <div className={`border-2 ${typeBorder}`} style={{ background: '#08080e' }}>
+        <div className="flex items-center gap-3 px-3 py-2.5" style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
           <button
             onClick={onBackToMap}
-            className="text-xs font-bold text-gray-400 hover:text-white bg-slate-800 hover:bg-slate-700 border border-slate-600 px-3 py-1.5 rounded-lg transition"
+            className="text-xs font-bold text-gray-600 hover:text-gray-300 transition px-2 py-1 border border-[#2a2a40] hover:border-gray-500 shrink-0"
           >
-            ← マップへ
+            ← マップ
           </button>
-          <div>
-            <h2 className="text-xl font-black text-white">{loc.emoji} {loc.name}</h2>
-            <div className="text-xs text-gray-400 font-bold">{typeLabel}</div>
+          <div className="flex-1 min-w-0">
+            <h2 className="text-base font-black text-white truncate">{loc.emoji} {loc.name}</h2>
           </div>
+          <div className="text-[10px] font-black tracking-wider shrink-0 text-gray-600">{typeLabel}</div>
         </div>
-        <p className="text-sm text-gray-300 leading-relaxed">{loc.desc}</p>
+        <div className="px-4 py-2">
+          <p className="text-xs text-gray-600 leading-relaxed">{loc.desc}</p>
+        </div>
       </div>
 
       {/* プレイヤー独白（仲間なし時）*/}
       {soloLine && (
-        <div className="bg-[#0c0c24] border border-slate-700 rounded-xl px-4 py-2.5 flex items-start gap-3">
+        <div className="bg-[#0c0c24] border border-slate-700 px-4 py-2.5 flex items-start gap-3">
           <span className="text-2xl shrink-0 mt-0.5">🧑</span>
           <div className="flex-1 min-w-0">
             <div className="text-xs text-gray-500 font-bold mb-0.5">{gs.playerName}（心の声）</div>
@@ -328,7 +330,7 @@ export default function LocationView({
       {flavorLine && (() => {
         const def = COMPANIONS[flavorLine.speakerId]
         return (
-          <div className="bg-[#0c0c24] border border-slate-700 rounded-xl px-4 py-2.5 flex items-start gap-3">
+          <div className="bg-[#0c0c24] border border-slate-700 px-4 py-2.5 flex items-start gap-3">
             <div className="shrink-0 rounded-lg overflow-hidden border border-slate-600 mt-0.5">
               <CharPortrait charId={flavorLine.speakerId} size={36} rounded={4} />
             </div>
@@ -466,7 +468,7 @@ export default function LocationView({
         const bossHp = Math.floor(boss.hp * enemyHpMult)
         const danger = DUNGEON_DANGER[loc.bossId!]
         return (
-          <div className="bg-[#100808] border-2 border-red-900 rounded-xl overflow-hidden">
+          <div className="bg-[#100808] border-2 border-red-900 overflow-hidden">
             <div className="flex items-center gap-2 px-4 py-2 border-b border-red-900/50" style={{ background: 'rgba(180,0,0,0.12)' }}>
               <span className="text-red-400 text-sm font-black animate-pulse">⚠</span>
               <span className="text-xs font-black text-red-400 tracking-widest">— 危険区域 —</span>
@@ -515,28 +517,23 @@ export default function LocationView({
       )}
 
       {/* Action menu */}
-      <div className="bg-[#0c0c24] border-2 border-amber-800 rounded-xl p-3">
-        <div className="text-xs font-black text-amber-500 mb-3 tracking-widest">— コマンド —</div>
-        <div className="flex flex-col gap-2">
+      <div className="border border-[#2d2000] overflow-hidden" style={{ background: '#0a0900' }}>
+        <div className="px-4 py-2 border-b border-[#2d2000]">
+          <span className="text-[10px] font-black text-amber-800 tracking-[0.4em]">コ マ ン ド</span>
+        </div>
+        <div className="flex flex-col">
 
           {onOpenPartyManage && Object.values(gs.companions).some(c => c.joined && c.alive) && (() => {
             const notInParty = Object.values(gs.companions).some(c => c.joined && c.alive && !gs.party.includes(c.id as CompanionId))
             return (
               <button
                 onClick={onOpenPartyManage}
-                className={`w-full py-3 px-4 rounded-xl transition text-left flex items-center gap-3 active:scale-95 border-2 ${
-                  notInParty
-                    ? 'bg-purple-900 hover:bg-purple-800 border-purple-500 text-white animate-pulse'
-                    : 'bg-slate-800 hover:bg-slate-700 border-slate-600 text-white'
-                }`}
+                className="w-full px-3 py-2.5 text-left flex items-center border-b border-[#2d2000] hover:bg-[#0d0a00] transition active:scale-95"
+                style={notInParty ? { animation: 'pulse 2s ease-in-out infinite' } : {}}
               >
-                <span className="text-xl">👥</span>
-                <div>
-                  <div className="font-black text-sm">パーティ編成</div>
-                  <div className={`text-xs ${notInParty ? 'text-purple-300 font-bold' : 'text-gray-400'}`}>
-                    {notInParty ? '⚠️ 未参戦の仲間がいます！メンバーを組み替えよう' : '仲間の組み合わせを変更する'}
-                  </div>
-                </div>
+                <span className="w-4 text-xs font-black shrink-0" style={{ color: notInParty ? '#c084fc' : '#d97706' }}>▶</span>
+                <span className="font-black text-sm flex-1" style={{ color: notInParty ? '#e9d5ff' : '#fef3c7' }}>パーティ編成</span>
+                {notInParty && <span className="text-[10px] text-purple-400 font-bold">未参戦あり</span>}
               </button>
             )
           })()}
@@ -551,22 +548,14 @@ export default function LocationView({
               <button
                 onClick={onInn}
                 disabled={!canAfford}
-                className={`w-full py-3 px-4 border-2 text-white rounded-xl transition text-left flex items-center gap-3 active:scale-95 ${
-                  canAfford ? 'bg-blue-950 hover:bg-blue-900 border-blue-700' : 'bg-slate-900 border-slate-700 opacity-50 cursor-not-allowed'
-                }`}
+                className="w-full px-3 py-2.5 text-left flex items-center border-b border-[#2d2000] hover:bg-[#0d0a00] transition active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed"
               >
-                <span className="text-xl">🏨</span>
-                <div className="flex-1 min-w-0">
-                  <div className="font-black text-sm">宿屋で休む</div>
-                  <div className="text-xs text-gray-400">{innPrice}G・1日消費</div>
-                  {!isFullHp && canAfford && (
-                    <div className="text-xs text-green-400 font-bold mt-0.5">
-                      {hpMissing > 0 && `HP +${hpMissing}`}{hpMissing > 0 && mpMissing > 0 && ' / '}{mpMissing > 0 && `MP +${mpMissing}`}
-                    </div>
-                  )}
-                  {isFullHp && <div className="text-xs text-gray-500 mt-0.5">HP・MP満タン（宿泊不要）</div>}
-                  {!canAfford && <div className="text-xs text-red-400 mt-0.5">所持金不足（{innPrice}G必要）</div>}
-                </div>
+                <span className="w-4 text-xs font-black text-amber-700 shrink-0">{canAfford ? '▶' : '×'}</span>
+                <span className={`font-black text-sm flex-1 ${canAfford ? 'text-amber-100' : 'text-gray-600'}`}>宿屋で休む</span>
+                <span className={`text-[10px] ${canAfford ? 'text-blue-400' : 'text-red-600'}`}>
+                  {innPrice}G / 1日
+                  {!isFullHp && canAfford && ` | HP+${hpMissing > 0 ? hpMissing : ''}${mpMissing > 0 ? ` MP+${mpMissing}` : ''}`}
+                </span>
               </button>
             )
           })()}
@@ -574,13 +563,11 @@ export default function LocationView({
           {loc.shopItems && (
             <button
               onClick={onOpenShop}
-              className="w-full py-3 px-4 bg-green-950 hover:bg-green-900 border-2 border-green-700 text-white rounded-xl transition text-left flex items-center gap-3 active:scale-95"
+              className="w-full px-3 py-2.5 text-left flex items-center border-b border-[#2d2000] hover:bg-[#0d0a00] transition active:scale-95"
             >
-              <span className="text-xl">🛒</span>
-              <div>
-                <div className="font-black text-sm">ショップ</div>
-                <div className="text-xs text-gray-400">アイテムを購入する</div>
-              </div>
+              <span className="w-4 text-xs font-black text-amber-700 shrink-0">▶</span>
+              <span className="font-black text-sm text-amber-100 flex-1">ショップ</span>
+              <span className="text-[10px] text-gray-600">アイテム購入</span>
             </button>
           )}
 
@@ -601,45 +588,19 @@ export default function LocationView({
               })()}
               <button
                 onClick={onEnterDungeon}
-                className="w-full py-3 px-4 bg-orange-950 hover:bg-orange-900 border-2 border-orange-700 text-white rounded-xl transition text-left flex items-center gap-3 active:scale-95"
+                className="w-full px-3 py-2.5 text-left flex items-center border-b border-[#2d2000] hover:bg-[#0d0a00] transition active:scale-95"
               >
-                <span className="text-xl">⚔️</span>
-                <div className="flex-1 min-w-0">
-                  <div className="font-black text-sm">ダンジョン探索</div>
-                  {loc.enemyPool && loc.enemyPool.length > 0 ? (() => {
-                    const pool = loc.enemyPool!
-                    const uniqueIds = pool.filter((id, i) => pool.indexOf(id) === i)
-                    const enemyEmojis = uniqueIds.slice(0, 3).map(id => ENEMIES[id]?.emoji ?? '👾').join(' ')
-                    return (
-                      <div className="text-xs text-orange-300 mt-0.5">
-                        {enemyEmojis} 出現：{uniqueIds.slice(0, 3).map(id => ENEMIES[id]?.name ?? id).join('・')}
-                        {uniqueIds.length > 3 && ' ほか'}
-                      </div>
-                    )
-                  })() : (
-                    <div className="text-xs text-gray-400">雑魚敵と戦う（EXP・Gold獲得）</div>
-                  )}
-                </div>
+                <span className="w-4 text-xs font-black text-red-700 shrink-0">▶</span>
+                <span className="font-black text-sm text-red-200 flex-1">ダンジョン探索</span>
+                <span className="text-[10px] text-gray-600">EXP・Gold獲得</span>
               </button>
               <button
                 onClick={() => setShowBossConfirm(true)}
-                className="w-full py-3 px-4 bg-red-950 hover:bg-red-900 border-2 border-red-600 text-white rounded-xl transition text-left flex items-center gap-3 active:scale-95"
+                className="w-full px-3 py-2.5 text-left flex items-center border-b border-[#2d2000] hover:bg-[#1a0000] transition active:scale-95"
               >
-                <span className="text-xl">👑</span>
-                <div>
-                  <div className="font-black text-sm">ボスに挑む！</div>
-                  {loc.bossId && ENEMIES[loc.bossId] && (() => {
-                    const boss = ENEMIES[loc.bossId!]
-                    const { enemyHpMult } = getDifficultyMultiplier(gs.difficulty)
-                    const bossHp = Math.floor(boss.hp * enemyHpMult)
-                    return (
-                      <div className="text-xs text-red-300 font-bold mt-0.5">
-                        {boss.emoji} {boss.name} — HP {bossHp} / ATK {boss.atk}
-                        {loc.sealStone && !sealObtained && <span className="text-amber-400 ml-2">💎 封印石あり</span>}
-                      </div>
-                    )
-                  })()}
-                </div>
+                <span className="w-4 text-xs font-black text-red-500 shrink-0">▶</span>
+                <span className="font-black text-sm text-red-300 flex-1">ボスに挑む！</span>
+                {loc.sealStone && !sealObtained && <span className="text-[10px] text-amber-500">封印石あり</span>}
               </button>
             </>
           )}
@@ -652,12 +613,10 @@ export default function LocationView({
               </div>
               <button
                 onClick={onEnterDungeon}
-                className="w-full py-3 px-4 bg-slate-800 hover:bg-slate-700 border-2 border-slate-600 text-gray-300 rounded-xl transition text-left flex items-center gap-3 active:scale-95"
+                className="w-full px-3 py-2.5 text-left flex items-center border-b border-[#2d2000] hover:bg-[#0d0a00] transition active:scale-95"
               >
-                <span className="text-xl">⚔️</span>
-                <div>
-                  <div className="font-black text-sm">再探索（EXP稼ぎ）</div>
-                </div>
+                <span className="w-4 text-xs font-black text-gray-600 shrink-0">▶</span>
+                <span className="font-black text-sm text-gray-400 flex-1">再探索（EXP稼ぎ）</span>
               </button>
             </>
           )}
@@ -665,16 +624,11 @@ export default function LocationView({
           {(loc.type === 'town' || loc.type === 'relay' || loc.type === 'castle') && onWander && (
             <button
               onClick={onWander}
-              className="w-full py-3 px-4 bg-slate-800 hover:bg-slate-700 border-2 border-slate-600 text-white rounded-xl transition text-left flex items-center gap-3 active:scale-95"
+              className="w-full px-3 py-2.5 text-left flex items-center border-b border-[#2d2000] hover:bg-[#0d0a00] transition active:scale-95"
             >
-              <span className="text-xl">🚶</span>
-              <div>
-                <div className="font-black text-sm">うろつく</div>
-                <div className="text-xs text-gray-400">
-                  1日消費・
-                  {loc.type === 'town' ? '市場でG発見・訓練・行商人' : loc.type === 'castle' ? '廃墟探索・G発見・訓練' : '野外探索・アイテム発見・回復'}
-                </div>
-              </div>
+              <span className="w-4 text-xs font-black text-amber-700 shrink-0">▶</span>
+              <span className="font-black text-sm text-amber-100 flex-1">うろつく</span>
+              <span className="text-[10px] text-gray-600">1日消費</span>
             </button>
           )}
 
@@ -684,19 +638,13 @@ export default function LocationView({
               <button
                 onClick={onCampRest}
                 disabled={!healable}
-                className={`w-full py-3 px-4 rounded-xl border-2 transition text-left flex items-center gap-3 active:scale-95 ${
-                  healable
-                    ? 'bg-teal-950 hover:bg-teal-900 border-teal-700 text-white'
-                    : 'bg-slate-900 border-slate-700 text-gray-600 opacity-50 cursor-not-allowed'
-                }`}
+                className="w-full px-3 py-2.5 text-left flex items-center border-b border-[#2d2000] hover:bg-[#0d0a00] transition active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed"
               >
-                <span className="text-xl">🏕️</span>
-                <div>
-                  <div className="font-black text-sm">野営して休む</div>
-                  <div className={`text-xs ${healable ? 'text-teal-400' : 'text-gray-600'}`}>
-                    {healable ? '無料・日数消費なし・HP 30%・MP 10%回復' : '既にHP・MP満タン'}
-                  </div>
-                </div>
+                <span className="w-4 text-xs font-black shrink-0" style={{ color: healable ? '#2dd4bf' : '#374151' }}>{healable ? '▶' : '×'}</span>
+                <span className={`font-black text-sm flex-1 ${healable ? 'text-teal-100' : 'text-gray-600'}`}>野営して休む</span>
+                <span className={`text-[10px] ${healable ? 'text-teal-600' : 'text-gray-700'}`}>
+                  {healable ? '無料・日数消費なし' : '満タン'}
+                </span>
               </button>
             )
           })()}
@@ -705,34 +653,31 @@ export default function LocationView({
           {onOpenAlbum && (
             <button
               onClick={onOpenAlbum}
-              className="w-full py-3 px-4 bg-slate-900 hover:bg-slate-800 border-2 border-slate-700 text-gray-400 hover:text-white rounded-xl transition text-left flex items-center gap-3 active:scale-95"
+              className="w-full px-3 py-2.5 text-left flex items-center border-b border-[#2d2000] hover:bg-[#0d0a00] transition active:scale-95"
             >
-              <span className="text-xl">📚</span>
-              <div>
-                <div className="font-black text-sm text-gray-300">冒険記録</div>
-                <div className="text-xs text-gray-600">実績・ボス討伐・旅の統計を確認</div>
-              </div>
+              <span className="w-4 text-xs font-black text-amber-900 shrink-0">▶</span>
+              <span className="font-black text-sm text-gray-500 flex-1">冒険記録</span>
+              <span className="text-[10px] text-gray-700">実績・統計</span>
             </button>
           )}
 
           {loc.type === 'castle' && (
             gs.sealStones.length < 3 ? (
-              <div className="bg-red-950/60 border-2 border-red-800 rounded-xl p-4 text-center">
-                <div className="text-red-400 font-black">🔒 封印石が足りない</div>
-                <div className="text-sm text-gray-400 mt-1">3つの封印石を全て集めてから挑め（{gs.sealStones.length}/3）</div>
+              <div className="px-3 py-2.5 border-b border-[#2d2000] flex items-center">
+                <span className="w-4 text-xs font-black text-red-900 shrink-0">×</span>
+                <span className="font-black text-sm text-red-900 flex-1">封印石が足りない</span>
+                <span className="text-[10px] text-red-900">{gs.sealStones.length}/3</span>
               </div>
             ) : (
-              <>
-                <div className="bg-red-950/80 border-2 border-red-700 rounded-xl p-3 text-center">
-                  <div className="text-red-300 font-black">⚠️ 全ての封印石が揃った！</div>
-                </div>
-                <button
-                  onClick={() => setShowBossConfirm(true)}
-                  className="w-full py-4 bg-red-900 hover:bg-red-800 border-2 border-red-500 text-white rounded-xl font-black text-lg text-center animate-pulse transition active:scale-95"
-                >
-                  👑 終末記録体アーカイブに挑む！
-                </button>
-              </>
+              <button
+                onClick={() => setShowBossConfirm(true)}
+                className="w-full px-3 py-3 text-left flex items-center border-b border-[#2d2000] hover:bg-[#1a0000] transition active:scale-95"
+                style={{ animation: 'pulse 2s ease-in-out infinite' }}
+              >
+                <span className="w-4 text-xs font-black text-red-400 shrink-0">▶</span>
+                <span className="font-black text-sm text-red-300 flex-1">終末記録体アーカイブに挑む！</span>
+                <span className="text-[10px] text-amber-500">封印石3/3</span>
+              </button>
             )
           )}
         </div>

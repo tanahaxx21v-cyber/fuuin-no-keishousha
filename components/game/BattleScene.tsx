@@ -626,13 +626,10 @@ export default function BattleScene({ gs, onAttack, onSkill, onItem, onFlee, onC
 
       {/* ===== メッセージボックス（パワポケ4スタイル：濃紺・下部）===== */}
       <div className="mx-2 mt-1.5 shrink-0">
-        <div className="border-2 rounded-xl px-3 py-2"
+        <div className="border-2 px-3 py-2"
           style={{
             backgroundColor: '#080f38',
-            borderColor: b.bossRaged ? '#dc2626' : '#2848c0',
-            boxShadow: b.bossRaged
-              ? 'inset 0 0 18px rgba(220,38,38,0.15), 0 0 10px rgba(220,38,38,0.2)'
-              : 'inset 0 0 18px rgba(50,70,190,0.2), 0 0 10px rgba(40,72,192,0.15)',
+            borderColor: b.bossRaged ? '#dc2626' : '#1a2860',
             minHeight: '62px',
           }}>
           {latestLog ? (
@@ -664,56 +661,54 @@ export default function BattleScene({ gs, onAttack, onSkill, onItem, onFlee, onC
         <div className="mx-2 mt-1.5 mb-3">
 
           {isPlayerTurn && mode === 'select' && !playerUnit.statusEffects.some(e => e.id === 'stun') && (
-            <div className="grid grid-cols-4 gap-1.5">
+            <div className="border border-[#1a2860] overflow-hidden" style={{ background: '#08102a', display: 'grid', gridTemplateColumns: '1fr 1fr' }}>
               {[
                 {
-                  label: 'こうげき', icon: '⚔️',
-                  bg: 'bg-[#8a1515] hover:bg-[#aa2020] border-[#dd3030]',
+                  label: 'こうげき', icon: '⚔',
+                  color: '#fca5a5',
                   action: () => aliveEnemies.length === 1 ? onAttack(aliveEnemies[0].uid) : setMode('target_attack'),
                   disabled: false,
                 },
                 {
-                  label: 'スキル', icon: '✨',
-                  bg: 'bg-[#2a1060] hover:bg-[#3a1880] border-[#7030e0]',
+                  label: 'スキル', icon: '✦',
+                  color: '#c4b5fd',
                   action: () => setMode('skill'),
                   disabled: false,
                 },
                 {
-                  label: 'どうぐ', icon: '🧪',
-                  bg: availableItems.length === 0
-                    ? 'bg-gray-900 border-gray-700 opacity-40 cursor-not-allowed'
-                    : 'bg-[#0e3a18] hover:bg-[#186028] border-[#30b040]',
+                  label: 'どうぐ', icon: '◎',
+                  color: availableItems.length === 0 ? '#374151' : '#86efac',
                   action: () => availableItems.length > 0 && setMode('item'),
                   disabled: availableItems.length === 0,
                 },
                 {
-                  label: b.isBoss ? 'にげる' : '逃走60%',
-                  icon: '💨',
-                  bg: b.isBoss
-                    ? 'bg-gray-900 border-gray-700 opacity-40 cursor-not-allowed'
-                    : 'bg-[#1a1a2a] hover:bg-[#252540] border-[#505070]',
+                  label: b.isBoss ? 'にげる' : '逃走',
+                  icon: '→',
+                  color: b.isBoss ? '#374151' : '#94a3b8',
                   action: () => !b.isBoss && onFlee(),
                   disabled: b.isBoss,
                 },
-              ].map(btn => (
+              ].map((btn, i) => (
                 <button
                   key={btn.label}
                   onClick={btn.action}
                   disabled={btn.disabled}
-                  className={`flex flex-col items-center justify-center py-3 border-2 rounded-xl transition active:scale-95 ${btn.bg}`}
+                  className={`flex items-center gap-2.5 px-4 py-3 text-left transition active:scale-95 hover:bg-[#0d1848] ${
+                    i % 2 === 0 ? 'border-r border-[#1a2860]' : ''
+                  } ${i < 2 ? 'border-b border-[#1a2860]' : ''}`}
                 >
-                  <span className="text-2xl leading-none">{btn.icon}</span>
-                  <span className="text-xs font-black text-white mt-1">{btn.label}</span>
+                  <span className="text-sm font-black w-4 text-center leading-none shrink-0" style={{ color: btn.color }}>{btn.icon}</span>
+                  <span className="text-sm font-black" style={{ color: btn.disabled ? '#4b5563' : '#e2e8f0' }}>{btn.label}</span>
                 </button>
               ))}
             </div>
           )}
 
           {mode === 'skill' && (
-            <div className="bg-[#080f38] border-2 border-[#2848c0] rounded-xl p-3">
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-sm font-black text-white">✨ スキルを選択</span>
-                <button onClick={cancelTarget} className="text-xs text-gray-400 border border-gray-700 px-2 py-0.5 rounded">← もどる</button>
+            <div className="border border-[#1a2860]" style={{ background: '#08102a' }}>
+              <div className="flex items-center justify-between px-3 py-2 border-b border-[#1a2860]">
+                <span className="text-xs font-black text-indigo-400 tracking-wider">スキルを選択</span>
+                <button onClick={cancelTarget} className="text-xs text-gray-500 hover:text-gray-300 transition px-2">← もどる</button>
               </div>
               <div className="flex flex-col gap-1.5 max-h-40 overflow-y-auto">
                 {(playerUnit?.skills ?? []).map(skill => {
@@ -736,25 +731,27 @@ export default function BattleScene({ gs, onAttack, onSkill, onItem, onFlee, onC
                   })()
                   return (
                     <button key={skill.id} disabled={!ok} onClick={() => handleSkillSelect(skill)}
-                      className={`text-left px-3 py-2 rounded-lg border-2 transition ${
+                      className={`text-left px-3 py-2.5 border-b border-[#1a2860] last:border-b-0 transition flex items-center gap-2 ${
                         ok
-                          ? 'border-purple-700 bg-purple-950 hover:bg-purple-900 text-white active:scale-95'
-                          : 'border-gray-800 bg-gray-900/50 text-gray-600 cursor-not-allowed'
+                          ? 'hover:bg-[#0d1848] text-white active:scale-95'
+                          : 'text-gray-600 cursor-not-allowed'
                       }`}>
-                      <div className="flex justify-between items-center">
-                        <span className="font-black text-sm">{skill.name}</span>
-                        <div className="flex items-center gap-1.5">
-                          {estimate && (
-                            <span className="text-[9px] font-black" style={{ color: estimate.color }}>{estimate.label}</span>
-                          )}
-                          <span className="text-gray-500 text-[9px]">{targetLabel}</span>
-                          <span className={`text-xs font-bold ${ok ? 'text-blue-400' : 'text-red-500'}`}>
-                            MP {skill.mpCost}
-                          </span>
-                          {!ok && <span className="text-[9px] text-red-600 font-bold">不足</span>}
+                      <span className="text-xs font-black w-3 shrink-0" style={{ color: ok ? '#818cf8' : 'transparent' }}>▶</span>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex justify-between items-center">
+                          <span className="font-black text-sm">{skill.name}</span>
+                          <div className="flex items-center gap-1.5 shrink-0">
+                            {estimate && (
+                              <span className="text-[9px] font-black" style={{ color: estimate.color }}>{estimate.label}</span>
+                            )}
+                            <span className="text-gray-600 text-[9px]">{targetLabel}</span>
+                            <span className={`text-xs font-bold ${ok ? 'text-blue-400' : 'text-red-600'}`}>
+                              MP {skill.mpCost}
+                            </span>
+                          </div>
                         </div>
+                        <div className="text-[10px] text-gray-500 mt-0.5">{skill.desc}</div>
                       </div>
-                      <div className="text-xs text-gray-400 mt-0.5">{skill.desc}</div>
                     </button>
                   )
                 })}
@@ -763,12 +760,12 @@ export default function BattleScene({ gs, onAttack, onSkill, onItem, onFlee, onC
           )}
 
           {mode === 'item' && (
-            <div className="bg-[#080f38] border-2 border-[#2848c0] rounded-xl p-3">
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-sm font-black text-white">🧪 どうぐを選択</span>
-                <button onClick={cancelTarget} className="text-xs text-gray-400 border border-gray-700 px-2 py-0.5 rounded">← もどる</button>
+            <div className="border border-[#1a2860] overflow-hidden" style={{ background: '#08102a' }}>
+              <div className="flex items-center justify-between px-3 py-2 border-b border-[#1a2860]">
+                <span className="text-xs font-black text-green-500 tracking-wider">どうぐを選択</span>
+                <button onClick={cancelTarget} className="text-xs text-gray-500 hover:text-gray-300 transition px-2">← もどる</button>
               </div>
-              <div className="flex flex-col gap-1.5 max-h-40 overflow-y-auto">
+              <div className="flex flex-col max-h-36 overflow-y-auto">
                 {availableItems.map(({ itemId, qty }) => {
                   const item = ITEMS[itemId]
                   if (!item) return null
@@ -780,12 +777,10 @@ export default function BattleScene({ gs, onAttack, onSkill, onItem, onFlee, onC
                           setMode('target_item')
                         }
                       }}
-                      className="text-left px-3 py-2 rounded-lg border-2 border-green-800 bg-green-950 hover:bg-green-900 text-white transition active:scale-95">
-                      <div className="flex justify-between">
-                        <span className="font-black text-sm">{item.emoji} {item.name}</span>
-                        <span className="text-xs text-gray-400">x{qty}</span>
-                      </div>
-                      <div className="text-xs text-gray-400 mt-0.5">{item.desc}</div>
+                      className="text-left px-3 py-2.5 border-b border-[#1a2860] last:border-b-0 flex items-center gap-2 hover:bg-[#0d1848] transition active:scale-95 text-white">
+                      <span className="text-xs font-black text-green-400 w-3">▶</span>
+                      <span className="font-black text-sm flex-1">{item.emoji} {item.name}</span>
+                      <span className="text-xs text-gray-500">×{qty}</span>
                     </button>
                   )
                 })}
@@ -796,7 +791,8 @@ export default function BattleScene({ gs, onAttack, onSkill, onItem, onFlee, onC
           {isPlayerTurn && mode === 'select' && !playerUnit.statusEffects.some(e => e.id === 'stun') && (
             <button
               onClick={handleAutoAction}
-              className="w-full mt-1.5 py-1.5 border border-slate-600 rounded-xl text-xs font-black text-slate-300 bg-slate-900/70 hover:bg-slate-800 active:scale-95 transition tracking-wider"
+              className="w-full mt-1 py-1.5 border-t border-[#1a2860] text-xs font-black text-slate-500 hover:text-slate-300 hover:bg-[#0d1040] active:scale-95 transition tracking-wider"
+              style={{ background: '#08102a' }}
             >
               ⚡ オート（AI最適行動）
             </button>
