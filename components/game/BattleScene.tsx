@@ -72,11 +72,7 @@ function EnemyDisplay({ enemies, isBoss, isTargetingEnemies, onSelectTarget, hit
                     : 'cursor-default'
                 }`}
                 style={{
-                  filter: isBoss && !dead
-                    ? 'drop-shadow(0 0 18px rgba(255,30,30,0.9)) drop-shadow(0 0 6px rgba(255,100,0,0.7))'
-                    : isTargetingEnemies && !dead
-                    ? 'drop-shadow(0 0 10px rgba(255,220,0,0.8))'
-                    : 'drop-shadow(0 0 5px rgba(255,255,255,0.25))',
+                  filter: 'none',
                   background: isHit ? 'rgba(239,68,68,0.35)' : isHeal ? 'rgba(74,222,128,0.25)' : 'transparent',
                   borderRadius: 0,
                   transition: 'background 0.1s',
@@ -479,7 +475,7 @@ export default function BattleScene({ gs, onAttack, onSkill, onItem, onFlee, onC
         {critText && (
           <div className="absolute inset-x-0 top-1/3 z-50 pointer-events-none flex justify-center">
             <div className="text-2xl font-black text-yellow-300 px-3 py-1"
-              style={{ textShadow: '0 0 12px rgba(255,220,0,0.9), 0 2px 0 rgba(0,0,0,0.8)', animation: 'fadeIn 0.1s ease, fadeOut 0.4s ease 0.3s forwards' }}>
+              style={{ textShadow: '0 2px 0 rgba(0,0,0,0.8)', animation: 'fadeIn 0.1s ease, fadeOut 0.4s ease 0.3s forwards' }}>
               ✦ CRITICAL! ✦
             </div>
           </div>
@@ -487,7 +483,7 @@ export default function BattleScene({ gs, onAttack, onSkill, onItem, onFlee, onC
         {spellCast && (
           <div className="absolute inset-x-0 top-2/5 z-50 pointer-events-none flex justify-center" style={{ top: '40%' }}>
             <div className="text-xl font-black px-3 py-1"
-              style={{ color: spellCast.color, textShadow: `0 0 16px ${spellCast.color}, 0 2px 0 rgba(0,0,0,0.9)`, animation: 'fadeIn 0.1s ease, fadeOut 0.35s ease 0.25s forwards' }}>
+              style={{ color: spellCast.color, textShadow: '0 2px 0 rgba(0,0,0,0.9)', animation: 'fadeIn 0.1s ease, fadeOut 0.35s ease 0.25s forwards' }}>
               {spellCast.label}
             </div>
           </div>
