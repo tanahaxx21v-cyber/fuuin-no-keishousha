@@ -246,7 +246,7 @@ export default function WinScreen({ gs, onRestart }: Props) {
                           {def.emoji} {def.name} <span className="text-gray-600">Lv{c.level}</span>
                         </div>
                         {memorial && (
-                          <div className="text-xs text-gray-600 italic">{memorial}</div>
+                          <div className="text-xs text-gray-600">{memorial}</div>
                         )}
                       </div>
                     )
@@ -335,7 +335,7 @@ export default function WinScreen({ gs, onRestart }: Props) {
                           <div key={ch.name} className="bg-[#0c0c18] border border-gray-800 p-4 opacity-50">
                             <div className="flex items-center gap-2">
                               <span className="text-xl grayscale opacity-40">{ch.emoji}</span>
-                              <span className="text-gray-600 font-semibold text-sm">{ch.name}</span>
+                              <span className="text-gray-600 font-bold text-sm">{ch.name}</span>
                               <span className="text-xs text-gray-700 ml-auto">この旅では出会わなかった</span>
                             </div>
                           </div>
@@ -347,10 +347,10 @@ export default function WinScreen({ gs, onRestart }: Props) {
                         <div key={ch.name} className={`bg-[#0c0c18] border p-4 ${dead ? 'border-red-900' : 'border-gray-700'}`}>
                           <div className="flex items-center gap-2 mb-2">
                             <span className={`text-xl ${dead ? 'grayscale opacity-60' : ''}`}>{ch.emoji}</span>
-                            <span className={`${dead ? 'text-gray-500' : ep.accent} font-semibold text-sm`}>{ch.name}</span>
+                            <span className={`${dead ? 'text-gray-500' : ep.accent} font-bold text-sm`}>{ch.name}</span>
                             {dead && <span className="text-xs text-red-700 font-bold ml-auto">💀 この旅で命を落とした</span>}
                           </div>
-                          <p className={`text-sm leading-relaxed ${dead ? 'text-gray-600 italic' : 'text-gray-300'}`}>{ch.text}</p>
+                          <p className={`text-sm leading-relaxed ${dead ? 'text-gray-600' : 'text-gray-300'}`}>{ch.text}</p>
                         </div>
                       )
                     })}
@@ -363,7 +363,7 @@ export default function WinScreen({ gs, onRestart }: Props) {
                     {(() => {
                       const extraLines = ep.extra(gs.playerName)
                       return extraLines.map((line, i) => (
-                        <p key={i} className={`text-sm leading-relaxed ${i === 0 ? 'text-gray-200 font-semibold' : i === extraLines.length - 1 ? 'text-gray-400 italic' : 'text-gray-300'}`}>{line}</p>
+                        <p key={i} className={`text-sm leading-relaxed ${i === 0 ? 'text-gray-200 font-bold' : i === extraLines.length - 1 ? 'text-gray-400' : 'text-gray-300'}`}>{line}</p>
                       ))
                     })()}
                   </div>
@@ -381,7 +381,7 @@ export default function WinScreen({ gs, onRestart }: Props) {
                   )}
                   <button
                     onClick={() => setPage(p => p + 1)}
-                    className="flex-1 py-2 bg-indigo-700 hover:bg-indigo-600 text-white font-semibold transition text-sm"
+                    className="flex-1 py-2 bg-indigo-700 hover:bg-indigo-600 text-white font-bold transition text-sm"
                   >
                     {page === EPILOGUE_PAGES.length - 1 ? '📊 クリア記録を見る' : '次へ →'}
                   </button>

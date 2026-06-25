@@ -55,7 +55,7 @@ export default function ShopView({ gs, onBuy, onClose }: Props) {
         </div>
         <div className="flex items-start gap-2">
           <span className="text-xl shrink-0">🧑‍💼</span>
-          <p className="text-sm text-green-200 italic leading-relaxed">「{greeting}」</p>
+          <p className="text-sm text-green-200 leading-relaxed">「{greeting}」</p>
         </div>
       </div>
 

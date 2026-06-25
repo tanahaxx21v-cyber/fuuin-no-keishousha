@@ -513,7 +513,6 @@ export default function LocationView({
               <button
                 onClick={onOpenPartyManage}
                 className="w-full px-3 py-2.5 text-left flex items-center border-b border-[#2d2000] hover:bg-[#0d0a00] transition active:scale-95"
-                style={notInParty ? { animation: 'pulse 2s ease-in-out infinite' } : {}}
               >
                 <span className="w-4 text-xs font-black shrink-0" style={{ color: notInParty ? '#c084fc' : '#d97706' }}>▶</span>
                 <span className="font-black text-sm flex-1" style={{ color: notInParty ? '#e9d5ff' : '#fef3c7' }}>パーティ編成</span>

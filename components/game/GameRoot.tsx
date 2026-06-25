@@ -809,7 +809,7 @@ function PrologueScreen({ onDone, playerName, daysLeft }: { onDone: () => void; 
             </div>
           </div>
           <div style={{ minHeight: 120 }}>
-            <p className="text-gray-300 leading-relaxed whitespace-pre-line text-sm font-medium">
+            <p className="text-gray-300 leading-relaxed whitespace-pre-line text-sm font-bold">
               {displayedText}
               {!isTypingDone && (
                 <span className="inline-block w-0.5 h-4 bg-indigo-400 ml-0.5 align-text-bottom animate-pulse" style={{ borderRadius: 0 }} />
