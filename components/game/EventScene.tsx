@@ -128,7 +128,7 @@ export default function EventScene({ gs, onAdvance, onSkipAll }: Props) {
       {/* ===== タイトルバー ===== */}
       <div
         className="flex items-center justify-between px-4 py-2 border-b shrink-0"
-        style={{ background: 'rgba(3,6,8,0.98)', borderColor: '#1a1f2e' }}
+        style={{ background: '#030608', borderColor: '#1a1f2e' }}
       >
         <div className="text-xs font-black text-indigo-400 tracking-widest">📖 {ev.title}</div>
         <div className="flex items-center gap-2">
@@ -194,7 +194,7 @@ export default function EventScene({ gs, onAdvance, onSkipAll }: Props) {
               }}>📜</div>
               <div style={{
                 fontSize: 10,
-                color: 'rgba(100,90,150,0.5)',
+                color: '#5a5070',
                 fontWeight: 'bold',
                 letterSpacing: '0.25em',
                 textTransform: 'uppercase',

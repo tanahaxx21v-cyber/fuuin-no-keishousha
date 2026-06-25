@@ -457,7 +457,7 @@ export default function GameRoot() {
         const newLvSkill = [5,10,15,20,25].includes(gs.playerLevel)
         const lastSkill = newLvSkill && gs.playerSkills.length > 0 ? gs.playerSkills[gs.playerSkills.length - 1] : null
         return (
-          <div className="fixed inset-0 z-50 flex items-center justify-center" style={{ background: 'rgba(0,0,0,0.82)' }}>
+          <div className="fixed inset-0 z-50 flex items-center justify-center" style={{ background: '#08080f' }}>
             <div className="bg-[#0c0c24] border-2 border-amber-500 max-w-sm w-full mx-4">
               <div className="border-b border-amber-800 px-4 py-2.5 flex items-center gap-3" style={{ background: '#1a0e00' }}>
                 <span className="text-xl">⭐</span>
@@ -509,14 +509,14 @@ export default function GameRoot() {
       {/* 封印石取得演出 */}
       {sealFlash && (() => {
         const cfg = {
-          fire:  { icon: '🔥', name: '炎の封印石', color: '#ef4444', bg: '#450a0a', border: '#b91c1c', glow: 'rgba(239,68,68,0.4)' },
-          storm: { icon: '⚡', name: '嵐の封印石', color: '#60a5fa', bg: '#0c1a45', border: '#1d4ed8', glow: 'rgba(96,165,250,0.4)' },
-          dark:  { icon: '🌑', name: '闇の封印石', color: '#c4b5fd', bg: '#2e1065', border: '#6d28d9', glow: 'rgba(196,181,253,0.4)' },
+          fire:  { icon: '🔥', name: '炎の封印石', color: '#ef4444', bg: '#450a0a', border: '#b91c1c' },
+          storm: { icon: '⚡', name: '嵐の封印石', color: '#60a5fa', bg: '#0c1a45', border: '#1d4ed8' },
+          dark:  { icon: '🌑', name: '闇の封印石', color: '#c4b5fd', bg: '#2e1065', border: '#6d28d9' },
         }[sealFlash]
         return (
           <div
             className="fixed inset-0 z-[55] flex items-center justify-center pointer-events-none"
-            style={{ background: 'rgba(0,0,0,0.82)' }}
+            style={{ background: '#08080f' }}
           >
             <div
               className="text-center border-2 px-10 py-8"
@@ -647,7 +647,7 @@ export default function GameRoot() {
         )}
         {/* サイコロ演出 */}
         {diceRolling && (
-          <div className="fixed inset-0 z-[70] flex items-center justify-center" style={{ background: 'rgba(0,0,0,0.75)' }}>
+          <div className="fixed inset-0 z-[70] flex items-center justify-center" style={{ background: '#0a0a12' }}>
             <div className="text-center">
               <div className="text-2xl mb-3" style={{ animation: "diceSpin 0.35s linear infinite" }}>🎲</div>
               <div className="text-xl font-black text-yellow-300 animate-pulse">運命を決める…</div>
@@ -656,7 +656,7 @@ export default function GameRoot() {
         )}
 
         {gs.pendingBranch && gs.phase === 'location' && !diceRolling && (
-          <div className="fixed inset-0 z-50 flex flex-col items-center justify-end pb-8 px-4" style={{ background: 'rgba(0,0,0,0.85)' }}>
+          <div className="fixed inset-0 z-50 flex flex-col items-center justify-end pb-8 px-4" style={{ background: '#060608' }}>
             <div className="w-full max-w-md bg-[#0c0c24] border-2 border-amber-600 p-5">
               <div className="flex items-center justify-between mb-1">
                 <div className="text-xs font-black text-amber-500 tracking-widest">— 選択 —</div>
