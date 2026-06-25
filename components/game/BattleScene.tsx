@@ -68,7 +68,7 @@ function EnemyDisplay({ enemies, isBoss, isTargetingEnemies, onSelectTarget, hit
                 disabled={!isTargetingEnemies || dead}
                 className={`relative flex items-center justify-center transition-transform ${
                   isTargetingEnemies && !dead
-                    ? 'cursor-pointer scale-110 animate-pulse'
+                    ? 'cursor-pointer'
                     : 'cursor-default'
                 }`}
                 style={{
@@ -102,7 +102,7 @@ function EnemyDisplay({ enemies, isBoss, isTargetingEnemies, onSelectTarget, hit
                   >{f.val}</span>
                 ))}
                 {isTargetingEnemies && !dead && (
-                  <span className="absolute -top-4 left-1/2 -translate-x-1/2 text-yellow-300 font-black text-lg animate-bounce">▼</span>
+                  <span className="absolute -top-4 left-1/2 -translate-x-1/2 text-yellow-300 font-black text-lg">▼</span>
                 )}
                 {isBoss && !dead && (
                   <span className="absolute -top-2 -right-2 text-xs font-black text-red-400 animate-pulse">💀</span>
