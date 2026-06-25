@@ -526,7 +526,7 @@ export default function BattleScene({ gs, onAttack, onSkill, onItem, onFlee, onC
           {/* プレイヤースプライト */}
           <div className="flex flex-col items-center gap-0.5 relative">
             <div style={{ position: 'relative' }}>
-              <CharPortrait charId="player" size={92} isActive={currentActor?.isPlayer} isDead={playerUnit.hp <= 0} rounded={6} />
+              <CharPortrait charId="player" size={92} isActive={currentActor?.isPlayer} isDead={playerUnit.hp <= 0} rounded={0} />
               {/* プレイヤーヒットフラッシュ */}
               {hitUnits.has(playerUnit.uid) && (
                 <div style={{ position: 'absolute', inset: 0, borderRadius: 6, background: 'rgba(239,68,68,0.45)', pointerEvents: 'none' }} />
@@ -557,7 +557,7 @@ export default function BattleScene({ gs, onAttack, onSkill, onItem, onFlee, onC
               <div key={a.uid} className="flex items-center gap-1.5">
                 {/* 仲間ポートレート（ヒットエフェクト付き）*/}
                 <div style={{ position: 'relative' }}>
-                  <CharPortrait charId={charId} size={62} isActive={a.uid === b.currentUid} isDead={a.hp <= 0} rounded={4} />
+                  <CharPortrait charId={charId} size={62} isActive={a.uid === b.currentUid} isDead={a.hp <= 0} rounded={0} />
                   {isHit && (
                     <div style={{ position: 'absolute', inset: 0, borderRadius: 4, background: 'rgba(239,68,68,0.45)', pointerEvents: 'none' }} />
                   )}

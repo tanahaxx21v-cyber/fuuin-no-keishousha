@@ -328,7 +328,7 @@ export default function LocationView({
         return (
           <div className="bg-[#0c0c24] border border-slate-700 px-4 py-2.5 flex items-start gap-3">
             <div className="shrink-0 overflow-hidden border border-slate-600 mt-0.5">
-              <CharPortrait charId={flavorLine.speakerId} size={36} rounded={4} />
+              <CharPortrait charId={flavorLine.speakerId} size={36} rounded={0} />
             </div>
             <div className="flex-1 min-w-0">
               <div className="text-xs text-gray-500 font-bold mb-0.5">{def.emoji} {def.name}</div>
@@ -746,7 +746,7 @@ export default function LocationView({
                           onClick={() => { onUseItem(selectedItemId, id); setSelectedItemId(null); setItemPanelOpen(false) }}
                           className="flex items-center gap-2 bg-slate-900 border border-slate-600 px-3 py-2 text-xs font-bold text-white hover:bg-slate-800 transition active:scale-95"
                         >
-                          <CharPortrait charId={id} size={32} rounded={4} />
+                          <CharPortrait charId={id} size={32} rounded={0} />
                           <div>
                             <div>{def.name}</div>
                             <div className="text-gray-400">HP {c.hp}/{c.maxHp}</div>
@@ -778,7 +778,7 @@ export default function LocationView({
               const isLowHp = c.alive && hpPct < 30
               return (
                 <div key={id} className={`flex items-center gap-2 px-2 py-2 border ${!c.alive ? 'bg-slate-900 border-red-900 opacity-40' : isLowHp ? 'bg-red-950 border-red-700 animate-pulse' : 'bg-slate-800 border-slate-700'}`}>
-                  <CharPortrait charId={id} size={40} isDead={!c.alive} rounded={6} />
+                  <CharPortrait charId={id} size={40} isDead={!c.alive} rounded={0} />
                   <div>
                     <div className="text-xs font-black text-white">{def.name}</div>
                     <div className="w-16 h-1.5 bg-gray-900 rounded-sm overflow-hidden mt-0.5">

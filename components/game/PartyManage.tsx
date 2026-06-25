@@ -64,7 +64,7 @@ export default function PartyManage({ gs, onSetParty, onClose }: Props) {
                 {def ? (
                   <>
                     <div className="overflow-hidden border border-amber-700">
-                      <CharPortrait charId={memberId!} size={44} rounded={6} />
+                      <CharPortrait charId={memberId!} size={44} rounded={0} />
                     </div>
                     <div className="text-[10px] font-black text-white">{def.name}</div>
                   </>
@@ -114,7 +114,7 @@ export default function PartyManage({ gs, onSetParty, onClose }: Props) {
                     }`}
                   >
                     <div className="shrink-0 overflow-hidden border border-slate-600">
-                      <CharPortrait charId={def.id} size={48} rounded={6} />
+                      <CharPortrait charId={def.id} size={48} rounded={0} />
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 flex-wrap">
