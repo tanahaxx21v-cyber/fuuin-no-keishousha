@@ -332,7 +332,7 @@ export default function WinScreen({ gs, onRestart }: Props) {
                       // 未加入仲間: 存在は匂わせるが詳細は出さない
                       if (!wasRecruited) {
                         return (
-                          <div key={ch.name} className="bg-black/20 border border-gray-800/60 p-4 opacity-50">
+                          <div key={ch.name} className="bg-[#0c0c18] border border-gray-800 p-4 opacity-50">
                             <div className="flex items-center gap-2">
                               <span className="text-xl grayscale opacity-40">{ch.emoji}</span>
                               <span className="text-gray-600 font-semibold text-sm">{ch.name}</span>
@@ -344,7 +344,7 @@ export default function WinScreen({ gs, onRestart }: Props) {
 
                       const dead = isCompanionDead(ch.name)
                       return (
-                        <div key={ch.name} className={`bg-black/30 border p-4 ${dead ? 'border-red-900/60' : 'border-gray-700'}`}>
+                        <div key={ch.name} className={`bg-[#0c0c18] border p-4 ${dead ? 'border-red-900' : 'border-gray-700'}`}>
                           <div className="flex items-center gap-2 mb-2">
                             <span className={`text-xl ${dead ? 'grayscale opacity-60' : ''}`}>{ch.emoji}</span>
                             <span className={`${dead ? 'text-gray-500' : ep.accent} font-semibold text-sm`}>{ch.name}</span>
