@@ -112,17 +112,11 @@ function EnemyDisplay({ enemies, isBoss, isTargetingEnemies, onSelectTarget, hit
                   <span className="absolute -top-2 -right-2 text-xs font-black text-red-400 animate-pulse">💀</span>
                 )}
               </button>
-              {/* HP bar + numbers + name + status */}
+              {/* 敵名 + 状態異常のみ（PP4仕様：敵HPは非表示）*/}
               <div style={{ width: isLarge ? 96 : 68 }}>
-                <div className="w-full bg-black/70 border border-white/20 rounded-sm overflow-hidden" style={{ height: isBoss ? 5 : 3 }}>
-                  <div className="h-full transition-all duration-300" style={{ width: `${hpPct}%`, backgroundColor: hpFill }} />
-                </div>
-                <div className="flex justify-between items-center mt-0.5">
+                <div className="text-center mt-0.5">
                   <span className="font-black" style={{ fontSize: 9, color: isBoss ? '#fca5a5' : '#d1d5db', textShadow: '0 1px 3px #000' }}>
-                    {e.name}
-                  </span>
-                  <span className="font-black" style={{ fontSize: 9, color: dead ? '#6b7280' : hpFill, textShadow: '0 1px 3px #000' }}>
-                    {dead ? '---' : `${e.hp}/${e.maxHp}`}
+                    {dead ? '---' : e.name}
                   </span>
                 </div>
                 {e.statusEffects.length > 0 && (
@@ -370,8 +364,8 @@ export default function BattleScene({ gs, onAttack, onSkill, onItem, onFlee, onC
               <div className="text-3xl font-black text-white mb-1" style={{ textShadow: '0 0 20px rgba(255,100,100,0.8)' }}>
                 {boss.name}
               </div>
-              <div className="text-xs text-red-500 font-black tracking-widest mb-5">
-                HP {boss.maxHp} | ATK {boss.atk} | DEF {boss.def}
+              <div className="text-xs text-red-700 font-black tracking-widest mb-5">
+                ATK {boss.atk} | DEF {boss.def}
               </div>
               {openingLine && (
                 <div className="text-sm text-gray-300 italic leading-relaxed mb-6 border-l-2 border-red-800 pl-3 text-left">

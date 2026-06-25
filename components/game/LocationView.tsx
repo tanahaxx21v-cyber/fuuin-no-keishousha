@@ -233,9 +233,6 @@ export default function LocationView({
       {/* ボス挑戦確認ダイアログ */}
       {showBossConfirm && loc.bossId && ENEMIES[loc.bossId] && (() => {
         const boss = ENEMIES[loc.bossId!]
-        const { enemyHpMult } = getDifficultyMultiplier(gs.difficulty)
-        const bossHp = Math.floor(boss.hp * enemyHpMult)
-        const playerHpPct = gs.playerHp / gs.playerMaxHp
         const aliveParty = gs.party.filter(id => gs.companions[id]?.alive)
         const allUnits = [{ name: gs.playerName, hp: gs.playerHp, maxHp: gs.playerMaxHp }, ...aliveParty.map(id => ({ name: COMPANIONS[id]?.name ?? id, hp: gs.companions[id].hp, maxHp: gs.companions[id].maxHp }))]
         const avgHpPct = allUnits.reduce((s, u) => s + u.hp / u.maxHp, 0) / allUnits.length
@@ -247,7 +244,6 @@ export default function LocationView({
               <div className="text-5xl mb-2" style={{ filter: 'drop-shadow(0 0 20px rgba(255,50,50,0.6))' }}>{boss.emoji}</div>
               <div className="text-xl font-black text-red-200 mb-1">{boss.name}</div>
               <div className="flex justify-center gap-4 text-sm font-black mb-4">
-                <span className="text-red-400">HP {bossHp}</span>
                 <span className="text-orange-400">ATK {boss.atk}</span>
                 <span className="text-blue-400">DEF {boss.def}</span>
               </div>
@@ -464,8 +460,6 @@ export default function LocationView({
       {/* ダンジョン危険情報パネル（ボス未討伐時のみ）*/}
       {loc.type === 'dungeon' && !bossDefeated && loc.bossId && ENEMIES[loc.bossId] && (() => {
         const boss = ENEMIES[loc.bossId!]
-        const { enemyHpMult } = getDifficultyMultiplier(gs.difficulty)
-        const bossHp = Math.floor(boss.hp * enemyHpMult)
         const danger = DUNGEON_DANGER[loc.bossId!]
         return (
           <div className="bg-[#100808] border-2 border-red-900 overflow-hidden">
@@ -489,8 +483,8 @@ export default function LocationView({
                   <div className="text-xs mt-0.5" style={{ color: danger.color }}>{danger.rank}</div>
                 )}
                 <div className="flex gap-3 mt-1.5">
-                  <span className="text-[11px] text-red-300 font-bold">HP {bossHp}</span>
                   <span className="text-[11px] text-orange-300 font-bold">ATK {boss.atk}</span>
+                  <span className="text-[11px] text-blue-300 font-bold">DEF {boss.def}</span>
                   {loc.sealStone && !sealObtained && (
                     <span className="text-[11px] text-amber-400 font-bold">💎 封印石あり</span>
                   )}
