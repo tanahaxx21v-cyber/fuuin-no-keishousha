@@ -252,7 +252,6 @@ export default function WorldMap({ gs, onTravel, onEnterLocation, getAvailableCo
           const size = shape === 'final' ? 42 : isCurrent ? 40 : isCastle ? 36 : isDungeon ? 30 : 26
           const bg     = isCurrent ? '#7a5010' : canTravel ? '#1a3a60' : cfg?.color ?? '#1e1e1e'
           const border = isCurrent ? '#ffd000' : canTravel ? '#60c0ff' : isLocked ? '#303030' : cfg?.border ?? '#505050'
-          const glow   = isCurrent ? '0 0 14px 5px rgba(255,210,0,0.9)' : canTravel ? '0 0 10px 3px rgba(80,180,255,0.75)' : 'none'
           const opacity = isLocked ? 0.15 : (!isVisited && !canTravel && !isCurrent) ? 0.2 : 1
           const lo = LABEL_OFFSET[locId] ?? {}
           const days = loc.travelDays[gs.currentLocId] ?? (canTravel ? currentLoc.travelDays[locId] : undefined)

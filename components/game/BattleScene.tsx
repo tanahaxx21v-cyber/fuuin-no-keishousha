@@ -118,7 +118,7 @@ function EnemyDisplay({ enemies, isBoss, isTargetingEnemies, onSelectTarget, hit
                 {e.statusEffects.length > 0 && (
                   <div className="flex justify-center gap-0.5 mt-0.5 flex-wrap">
                     {e.statusEffects.map(ef => (
-                      <span key={ef.id} style={{ fontSize: 9, background: 'rgba(0,0,0,0.7)', border: '1px solid rgba(255,255,255,0.15)', borderRadius: 0, padding: '0 2px', display: 'inline-flex', alignItems: 'center', gap: 1 }}>
+                      <span key={ef.id} style={{ fontSize: 9, background: '#0a0a0a', border: '1px solid #333344', borderRadius: 0, padding: '0 2px', display: 'inline-flex', alignItems: 'center', gap: 1 }}>
                         {statusIcon(ef.id)}<span style={{ color: '#d1d5db', fontSize: 8 }}>{ef.turnsLeft}</span>
                       </span>
                     ))}
