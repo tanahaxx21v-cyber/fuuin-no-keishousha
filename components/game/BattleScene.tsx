@@ -386,7 +386,7 @@ export default function BattleScene({ gs, onAttack, onSkill, onItem, onFlee, onC
         return (
           <div className="fixed inset-0 z-[90] flex items-center justify-center pointer-events-none">
             <div className="bg-[#0a0a10] absolute inset-0" />
-            <div className="relative z-10 border-2 border-gray-700 bg-[#0a0a20]/98 max-w-xs mx-4"
+            <div className="relative z-10 border-2 border-gray-700 bg-[#0a0a20] max-w-xs mx-4"
               style={{ animation: 'fadeIn 0.4s ease' }}
             >
               <div className="border-b border-gray-700 px-4 py-2 flex items-center gap-2" style={{ background: '#0a0a0e' }}>

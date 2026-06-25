@@ -306,8 +306,8 @@ export default function WorldMap({ gs, onTravel, onEnterLocation, getAvailableCo
                   display:'inline-block', fontSize: isCurrent ? 10 : isCastle ? 9.5 : 8.5,
                   fontWeight: isCurrent ? '900' : isCastle ? '800' : '700',
                   color: isCurrent ? '#ffd060' : canTravel ? '#90d8ff' : isVisited ? '#909880' : '#60605a',
-                  background:'rgba(0,0,0,0.72)', borderRadius:0, padding:'1px 3px',
-                  border: isCurrent ? '1px solid rgba(255,208,80,0.4)' : 'none',
+                  background:'#040408', borderRadius:0, padding:'1px 3px',
+                  border: isCurrent ? '1px solid #ffd050' : 'none',
                 }}>
                   {isCurrent ? '📍 ' : ''}{cfg?.label ?? loc.name}
                 </span>
