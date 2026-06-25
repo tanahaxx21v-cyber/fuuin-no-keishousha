@@ -356,23 +356,28 @@ export default function BattleScene({ gs, onAttack, onSkill, onItem, onFlee, onC
             style={{ background: 'rgba(4,0,8,0.92)' }}
             onClick={() => setShowBossIntro(false)}
           >
-            <div className="relative text-center px-8 py-10 max-w-sm mx-4">
-              <div className="text-xs font-black text-red-700 tracking-widest mb-4 animate-pulse">⚠ BOSS BATTLE ⚠</div>
-              <div className="text-9xl mb-4" style={{ filter: 'drop-shadow(0 0 32px rgba(255,50,50,0.7))', animation: 'pulse 1s ease-in-out infinite' }}>
-                {boss.emoji}
-              </div>
-              <div className="text-3xl font-black text-white mb-1" style={{ textShadow: '0 0 20px rgba(255,100,100,0.8)' }}>
-                {boss.name}
-              </div>
-              <div className="text-xs text-red-700 font-black tracking-widest mb-5">
-                ATK {boss.atk} | DEF {boss.def}
+            <div className="relative max-w-xs mx-4 border-2 border-red-700" style={{ background: '#07010a' }}>
+              <div className="border-b border-red-900 px-4 py-2 flex items-center gap-3" style={{ background: 'rgba(180,0,0,0.15)' }}>
+                <span className="text-2xl">{boss.emoji}</span>
+                <div>
+                  <div className="text-xs font-black text-red-600 tracking-widest animate-pulse">⚠ BOSS BATTLE</div>
+                  <div className="text-base font-black text-white">{boss.name}</div>
+                </div>
+                <div className="ml-auto text-right">
+                  <div className="text-[10px] text-orange-400 font-black">ATK {boss.atk}</div>
+                  <div className="text-[10px] text-blue-400 font-black">DEF {boss.def}</div>
+                </div>
               </div>
               {openingLine && (
-                <div className="text-sm text-gray-300 italic leading-relaxed mb-6 border-l-2 border-red-800 pl-3 text-left">
-                  {openingLine}
+                <div className="px-4 py-3 border-b border-red-900/40">
+                  <p className="text-sm text-gray-300 italic leading-relaxed border-l-2 border-red-800 pl-3">
+                    「{openingLine}」
+                  </p>
                 </div>
               )}
-              <div className="text-xs text-gray-600 animate-pulse">タップして戦闘開始</div>
+              <div className="px-4 py-2 text-center">
+                <div className="text-[10px] text-gray-700 animate-pulse">タップして戦闘開始 ▶</div>
+              </div>
             </div>
           </div>
         )
@@ -385,18 +390,25 @@ export default function BattleScene({ gs, onAttack, onSkill, onItem, onFlee, onC
         return (
           <div className="fixed inset-0 z-[90] flex items-center justify-center pointer-events-none">
             <div className="bg-black/80 backdrop-blur-sm absolute inset-0" />
-            <div className="relative z-10 text-center px-8 py-10 border-2 border-gray-700 bg-[#0a0a20]/95 shadow-2xl max-w-xs mx-4"
+            <div className="relative z-10 border-2 border-gray-700 bg-[#0a0a20]/98 shadow-2xl max-w-xs mx-4"
               style={{ animation: 'fadeIn 0.4s ease' }}
             >
-              <div className="text-xs font-black text-gray-500 tracking-widest mb-3">— FALLEN HERO —</div>
-              <div className="text-8xl mb-3" style={{ filter: 'grayscale(0.6) drop-shadow(0 0 24px rgba(100,100,200,0.4))' }}>{def.emoji}</div>
-              <div className="text-xl font-black text-white mb-0.5">{def.name}</div>
-              <div className="text-xs text-gray-500 mb-4">{def.cls}</div>
-              <div className="text-sm text-gray-300 italic leading-relaxed mb-5 border-l-2 border-gray-600 pl-3 text-left">
-                「{deadCompanion.lastWord}」
+              <div className="border-b border-gray-700/50 px-4 py-2 flex items-center gap-2" style={{ background: 'rgba(255,255,255,0.03)' }}>
+                <span className="text-xs font-black text-gray-600 tracking-widest">— FALLEN HERO —</span>
+                <span className="ml-auto text-xs text-red-500 font-black">💀 永眠</span>
               </div>
-              <div className="text-2xl">💀</div>
-              <div className="text-xs text-red-400 font-black mt-1">永眠</div>
+              <div className="px-4 py-4">
+                <div className="flex items-center gap-3 mb-3">
+                  <span className="text-3xl grayscale opacity-60">{def.emoji}</span>
+                  <div>
+                    <div className="text-base font-black text-gray-400 line-through">{def.name}</div>
+                    <div className="text-xs text-gray-600">{def.cls}</div>
+                  </div>
+                </div>
+                <div className="text-sm text-gray-400 italic leading-relaxed border-l-2 border-gray-700 pl-3">
+                  「{deadCompanion.lastWord}」
+                </div>
+              </div>
             </div>
           </div>
         )

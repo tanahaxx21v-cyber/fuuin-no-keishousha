@@ -201,31 +201,34 @@ export default function LocationView({
           style={{ background: 'rgba(4,4,20,0.88)' }}
           onClick={() => setShowArrival(false)}
         >
-          <div className={`relative max-w-sm w-full mx-6 border-2 ${arrivalBorder} bg-gradient-to-b ${arrivalBg} p-8 text-center shadow-2xl`}
-            style={{ animation: 'fadeIn 0.5s ease' }}
+          <div className={`relative max-w-sm w-full mx-6 border-2 ${arrivalBorder}`}
+            style={{ background: '#07071a', animation: 'fadeIn 0.3s ease' }}
           >
-            {/* タイプラベル */}
-            <div className="text-xs font-black text-gray-400 tracking-widest uppercase mb-3">{typeLabel}</div>
+            {/* ヘッダー */}
+            <div className={`border-b ${arrivalBorder} px-4 py-2 flex items-center gap-2`} style={{ background: 'rgba(255,255,255,0.04)' }}>
+              <span className="text-xs font-black text-gray-500 tracking-widest uppercase">{typeLabel}</span>
+              <span className="ml-auto text-[10px] text-indigo-500 font-black">✦ 初めての訪問 ✦</span>
+            </div>
+            <div className="p-6 text-center">
             {/* 絵文字 */}
-            <div className="text-7xl mb-4" style={{ filter: 'drop-shadow(0 0 18px rgba(255,255,200,0.4))' }}>{loc.emoji}</div>
+            <div className="text-4xl mb-3">{loc.emoji}</div>
             {/* 地名 */}
-            <div className="text-3xl font-black text-white mb-1" style={{ textShadow: '0 0 20px rgba(150,150,255,0.5)' }}>{loc.name}</div>
+            <div className="text-2xl font-black text-white mb-2">{loc.name}</div>
             {/* 説明文 */}
-            <div className="text-sm text-gray-400 leading-relaxed mb-4 px-2">{loc.desc}</div>
+            <div className="text-xs text-gray-500 leading-relaxed mb-3">{loc.desc}</div>
             {/* ダンジョン危険度 */}
             {dangerInfo && (
-              <div className="inline-flex items-center gap-2 bg-red-950/80 border border-red-700 px-4 py-1.5 mb-4">
+              <div className="inline-flex items-center gap-2 bg-red-950/80 border border-red-700 px-3 py-1 mb-3">
                 <span className="text-xs font-black text-red-400">危険度</span>
-                <span className="text-sm text-orange-300">{dangerInfo.rank}</span>
-                <span className="text-xs font-black px-1.5 py-0.5 text-white"
+                <span className="text-xs text-orange-300 font-bold">{dangerInfo.rank}</span>
+                <span className="text-xs font-black px-1 text-white"
                   style={{ background: dangerInfo.color }}
                 >{dangerInfo.label}</span>
               </div>
             )}
-            {/* 初訪問バッジ */}
-            <div className="text-xs text-indigo-400 font-bold mb-4">✦ 初めての訪問 ✦</div>
             {/* 閉じるヒント */}
-            <div className="text-xs text-gray-600 animate-pulse">タップして続ける</div>
+            <div className="text-[10px] text-gray-700 animate-pulse">タップして続ける ▶</div>
+            </div>
           </div>
         </div>
       )}
@@ -239,14 +242,13 @@ export default function LocationView({
         const isLowHp = avgHpPct < 0.5
         return (
           <div className="fixed inset-0 z-[80] flex items-center justify-center" style={{ background: 'rgba(4,4,10,0.92)' }}>
-            <div className="relative max-w-sm w-full mx-4 border-2 border-red-600 bg-gradient-to-b from-red-950 to-[#1a0808] p-6 text-center shadow-2xl" style={{ animation: 'fadeIn 0.3s ease' }}>
-              <div className="text-xs font-black text-red-500 tracking-widest mb-3">⚠️ BOSS BATTLE 確認</div>
-              <div className="text-5xl mb-2" style={{ filter: 'drop-shadow(0 0 20px rgba(255,50,50,0.6))' }}>{boss.emoji}</div>
-              <div className="text-xl font-black text-red-200 mb-1">{boss.name}</div>
-              <div className="flex justify-center gap-4 text-sm font-black mb-4">
-                <span className="text-orange-400">ATK {boss.atk}</span>
-                <span className="text-blue-400">DEF {boss.def}</span>
+            <div className="relative max-w-sm w-full mx-4 border-2 border-red-600 p-0 shadow-2xl" style={{ background: '#0a0404', animation: 'fadeIn 0.3s ease' }}>
+              <div className="border-b border-red-900 px-4 py-2 flex items-center gap-2" style={{ background: 'rgba(180,0,0,0.12)' }}>
+                <span className="text-xs font-black text-red-500 tracking-widest">⚠ BOSS BATTLE</span>
+                <span className="ml-auto text-xl">{boss.emoji}</span>
+                <span className="text-sm font-black text-red-200">{boss.name}</span>
               </div>
+              <div className="p-4">
               <div className="bg-black/40 border border-slate-700 p-3 mb-3 text-left">
                 <div className="text-[10px] font-black text-slate-400 mb-2 tracking-widest">現在のパーティ状態</div>
                 {allUnits.map((u, i) => {
@@ -286,6 +288,7 @@ export default function LocationView({
                 >
                   引き返す
                 </button>
+              </div>
               </div>
             </div>
           </div>

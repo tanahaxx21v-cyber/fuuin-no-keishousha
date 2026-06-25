@@ -51,7 +51,7 @@ export default function StatusBar({ gs, onSave, isMuted, onToggleMute, onReturnT
           <span className="text-sm font-black text-white">{gs.playerLevel}</span>
           <div className="w-12 h-2 bg-gray-900 rounded-sm border border-gray-700 overflow-hidden ml-1" title={`EXP ${gs.playerExp}/${expToNext}`}>
             <div
-              className="h-full bg-gradient-to-r from-purple-700 to-purple-400 transition-all duration-500"
+              className="h-full bg-purple-600 transition-all duration-500"
               style={{ width: `${expPct}%` }}
             />
           </div>
@@ -63,9 +63,9 @@ export default function StatusBar({ gs, onSave, isMuted, onToggleMute, onReturnT
           <div className="w-20 h-3.5 bg-gray-900 rounded-sm border border-gray-700 overflow-hidden">
             <div
               className={`h-full transition-all duration-300 ${
-                hpPct > 50 ? 'bg-gradient-to-r from-green-700 to-green-500'
-                : hpPct > 25 ? 'bg-gradient-to-r from-yellow-700 to-yellow-500'
-                : 'bg-gradient-to-r from-red-800 to-red-600 animate-pulse'
+                hpPct > 50 ? 'bg-green-600'
+                : hpPct > 25 ? 'bg-yellow-600'
+                : 'bg-red-600 animate-pulse'
               }`}
               style={{ width: `${hpPct}%` }}
             />
@@ -80,7 +80,7 @@ export default function StatusBar({ gs, onSave, isMuted, onToggleMute, onReturnT
           <span className="text-xs font-black text-blue-400 w-5">MP</span>
           <div className="w-14 h-3.5 bg-gray-900 rounded-sm border border-gray-700 overflow-hidden">
             <div
-              className="h-full bg-gradient-to-r from-blue-800 to-blue-500 transition-all duration-300"
+              className="h-full bg-blue-700 transition-all duration-300"
               style={{ width: `${mpPct}%` }}
             />
           </div>

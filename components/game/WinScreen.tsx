@@ -171,9 +171,11 @@ export default function WinScreen({ gs, onRestart }: Props) {
         {/* STATS PAGE (last) */}
         {page === totalPages - 1 ? (
           <div className="text-center">
-            <div className="text-5xl mb-3">🏆</div>
-            <h1 className="text-3xl font-bold text-yellow-300 mb-1">クリア！</h1>
-            <p className="text-gray-400 text-sm mb-5">残り{gs.daysLeft}日で封印の継承者となった</p>
+            <div className="border-2 border-amber-600 px-6 py-4 mb-4" style={{ background: '#0a0800' }}>
+              <div className="text-3xl mb-1">🏆</div>
+              <h1 className="text-2xl font-black text-amber-300 tracking-wider">CLEAR！</h1>
+              <p className="text-gray-500 text-xs mt-1">残り{gs.daysLeft}日で封印の継承者となった</p>
+            </div>
 
             {/* クリアランク */}
             <div className="bg-gray-900 border border-gray-700 p-4 mb-3 flex items-center gap-4">

@@ -75,11 +75,10 @@ export default function GameOverScreen({ gs, onRestart }: Props) {
     <div className="min-h-screen bg-[#07071a] flex items-center justify-center p-4">
       <div className="max-w-md w-full text-center">
 
-        <div className="text-7xl mb-3 drop-shadow-2xl">💀</div>
-        <h1 className="text-5xl font-black text-red-500 mb-2 tracking-wider"
-            style={{ textShadow: '0 0 30px rgba(239,68,68,0.5)' }}>
-          GAME OVER
-        </h1>
+        <div className="border-2 border-red-900 px-6 py-5 mb-4 text-center" style={{ background: '#0a0202' }}>
+          <div className="text-4xl mb-2">💀</div>
+          <h1 className="text-3xl font-black text-red-500 tracking-wider">GAME OVER</h1>
+        </div>
         <div className="text-base font-black text-red-300 mb-1">{heading}</div>
         <p className="text-gray-500 mb-4 text-sm font-bold">{body}</p>
 
