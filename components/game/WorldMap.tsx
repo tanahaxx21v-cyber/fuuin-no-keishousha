@@ -288,7 +288,7 @@ export default function WorldMap({ gs, onTravel, onEnterLocation, getAvailableCo
                   <span style={{ position:'absolute', top:-5, right:-5, fontSize:9 }}>👑</span>
                 )}
                 {canTravel && days !== undefined && (
-                  <span style={{ position:'absolute', bottom:-7, left:'50%', transform:'translateX(-50%)', fontSize:8, background:'#0a2040', border:'1px solid #4080c0', borderRadius:4, padding:'0 3px', color:'#80c8ff', fontWeight:'bold', whiteSpace:'nowrap' }}>{days}日</span>
+                  <span style={{ position:'absolute', bottom:-7, left:'50%', transform:'translateX(-50%)', fontSize:8, background:'#0a2040', border:'1px solid #4080c0', borderRadius:0, padding:'0 3px', color:'#80c8ff', fontWeight:'bold', whiteSpace:'nowrap' }}>{days}日</span>
                 )}
                 {loc.sealStone && !gs.sealStones.includes(loc.sealStone) && (
                   <span style={{ position:'absolute', top:-5, left:-5, fontSize:10 }}>💎</span>
@@ -297,7 +297,7 @@ export default function WorldMap({ gs, onTravel, onEnterLocation, getAvailableCo
                   <span style={{ position:'absolute', top:-5, left:-5, fontSize:10 }}>✅</span>
                 )}
                 {eventAvailableLocs.has(locId) && !isCurrent && isVisited && (
-                  <span style={{ position:'absolute', bottom:-3, right:-3, fontSize:8, background:'#7c2d0a', border:'1px solid #f97316', borderRadius:'50%', width:11, height:11, display:'flex', alignItems:'center', justifyContent:'center', color:'#fed7aa', fontWeight:'bold', animation:'pulse 1.5s ease-in-out infinite' }}>!</span>
+                  <span style={{ position:'absolute', bottom:-3, right:-3, fontSize:8, background:'#7c2d0a', border:'1px solid #f97316', borderRadius:0, width:11, height:11, display:'flex', alignItems:'center', justifyContent:'center', color:'#fed7aa', fontWeight:'bold', animation:'pulse 1.5s ease-in-out infinite' }}>!</span>
                 )}
               </button>
               {/* ラベル */}
@@ -312,7 +312,7 @@ export default function WorldMap({ gs, onTravel, onEnterLocation, getAvailableCo
                   display:'inline-block', fontSize: isCurrent ? 10 : isCastle ? 9.5 : 8.5,
                   fontWeight: isCurrent ? '900' : isCastle ? '800' : '700',
                   color: isCurrent ? '#ffd060' : canTravel ? '#90d8ff' : isVisited ? '#909880' : '#60605a',
-                  background:'rgba(0,0,0,0.72)', borderRadius:3, padding:'1px 3px',
+                  background:'rgba(0,0,0,0.72)', borderRadius:0, padding:'1px 3px',
                   border: isCurrent ? '1px solid rgba(255,208,80,0.4)' : 'none',
                 }}>
                   {isCurrent ? '📍 ' : ''}{cfg?.label ?? loc.name}
@@ -326,17 +326,17 @@ export default function WorldMap({ gs, onTravel, onEnterLocation, getAvailableCo
       {/* 凡例 */}
       <div className="flex flex-wrap gap-x-3 gap-y-1 text-[9px] text-gray-400 px-1">
         {[
-          { s:{ width:12, height:12, borderRadius:4, background:'#3a2060', border:'2px solid #ffd000' }, l:'現在地' },
-          { s:{ width:10, height:10, borderRadius:3, background:'#1a3a60', border:'1.5px solid #60c0ff' }, l:'移動可能' },
-          { s:{ width:10, height:10, borderRadius:'50%', background:'#1e1e1e', border:'1.5px solid #505050' }, l:'未訪問' },
-          { s:{ width:10, height:10, borderRadius:2, background:'#1a1010', border:'1.5px solid #d04040' }, l:'ダンジョン' },
+          { s:{ width:12, height:12, borderRadius:0, background:'#3a2060', border:'2px solid #ffd000' }, l:'現在地' },
+          { s:{ width:10, height:10, borderRadius:0, background:'#1a3a60', border:'1.5px solid #60c0ff' }, l:'移動可能' },
+          { s:{ width:10, height:10, borderRadius:0, background:'#1e1e1e', border:'1.5px solid #505050' }, l:'未訪問' },
+          { s:{ width:10, height:10, borderRadius:0, background:'#1a1010', border:'1.5px solid #d04040' }, l:'ダンジョン' },
         ].map((item, i) => (
           <div key={i} className="flex items-center gap-1"><div style={item.s} /><span>{item.l}</span></div>
         ))}
         <div className="flex items-center gap-1"><span>💎</span><span>封印石</span></div>
-        <div className="flex items-center gap-1"><span style={{fontSize:8,background:'#7c2d0a',border:'1px solid #f97316',borderRadius:'50%',width:11,height:11,display:'inline-flex',alignItems:'center',justifyContent:'center',color:'#fed7aa',fontWeight:'bold'}}>!</span><span>イベントあり</span></div>
+        <div className="flex items-center gap-1"><span style={{fontSize:8,background:'#7c2d0a',border:'1px solid #f97316',borderRadius:0,width:11,height:11,display:'inline-flex',alignItems:'center',justifyContent:'center',color:'#fed7aa',fontWeight:'bold'}}>!</span><span>イベントあり</span></div>
         <div className="flex items-center gap-1">
-          <span style={{fontSize:8,background:'#0a2040',border:'1px solid #4080c0',borderRadius:3,padding:'0 2px',color:'#80c8ff'}}>N日</span>
+          <span style={{fontSize:8,background:'#0a2040',border:'1px solid #4080c0',borderRadius:0,padding:'0 2px',color:'#80c8ff'}}>N日</span>
           <span>移動日数</span>
         </div>
       </div>

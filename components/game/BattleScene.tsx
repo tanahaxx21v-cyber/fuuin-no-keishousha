@@ -122,7 +122,7 @@ function EnemyDisplay({ enemies, isBoss, isTargetingEnemies, onSelectTarget, hit
                 {e.statusEffects.length > 0 && (
                   <div className="flex justify-center gap-0.5 mt-0.5 flex-wrap">
                     {e.statusEffects.map(ef => (
-                      <span key={ef.id} style={{ fontSize: 9, background: 'rgba(0,0,0,0.7)', border: '1px solid rgba(255,255,255,0.15)', borderRadius: 3, padding: '0 2px', display: 'inline-flex', alignItems: 'center', gap: 1 }}>
+                      <span key={ef.id} style={{ fontSize: 9, background: 'rgba(0,0,0,0.7)', border: '1px solid rgba(255,255,255,0.15)', borderRadius: 0, padding: '0 2px', display: 'inline-flex', alignItems: 'center', gap: 1 }}>
                         {statusIcon(ef.id)}<span style={{ color: '#d1d5db', fontSize: 8 }}>{ef.turnsLeft}</span>
                       </span>
                     ))}
@@ -389,7 +389,7 @@ export default function BattleScene({ gs, onAttack, onSkill, onItem, onFlee, onC
         if (!def) return null
         return (
           <div className="fixed inset-0 z-[90] flex items-center justify-center pointer-events-none">
-            <div className="bg-black/80 backdrop-blur-sm absolute inset-0" />
+            <div className="bg-black/85 absolute inset-0" />
             <div className="relative z-10 border-2 border-gray-700 bg-[#0a0a20]/98 max-w-xs mx-4"
               style={{ animation: 'fadeIn 0.4s ease' }}
             >
@@ -507,13 +507,13 @@ export default function BattleScene({ gs, onAttack, onSkill, onItem, onFlee, onC
             : 'linear-gradient(to bottom, #4a9ed8 0%, #7ac8ee 50%, #62b830 50%, #2e8a18 74%, #1a5a08 100%)'
           return <div className="absolute inset-0" style={{ background: bg }} />
         })()}
-        {/* 雲 (野外通常戦闘) */}
+        {/* 雲 (野外通常戦闘 — フラット矩形でGBAピクセル風) */}
         {!b.isBoss && LOCATIONS[gs.currentLocId]?.type !== 'dungeon' && (
           <>
-            <div className="absolute" style={{ top: 8, left: 20, width: 80, height: 20, background: 'rgba(255,255,255,0.7)', borderRadius: '50%', filter: 'blur(5px)' }} />
-            <div className="absolute" style={{ top: 4, right: 48, width: 104, height: 20, background: 'rgba(255,255,255,0.55)', borderRadius: '50%', filter: 'blur(5px)' }} />
-            <div className="absolute" style={{ top: 16, right: 16, width: 56, height: 14, background: 'rgba(255,255,255,0.45)', borderRadius: '50%', filter: 'blur(3px)' }} />
-            <div className="absolute" style={{ top: 28, left: 120, width: 48, height: 12, background: 'rgba(255,255,255,0.35)', borderRadius: '50%', filter: 'blur(4px)' }} />
+            <div className="absolute" style={{ top: 8, left: 20, width: 80, height: 10, background: 'rgba(255,255,255,0.55)' }} />
+            <div className="absolute" style={{ top: 4, right: 48, width: 104, height: 10, background: 'rgba(255,255,255,0.45)' }} />
+            <div className="absolute" style={{ top: 16, right: 16, width: 56, height: 8, background: 'rgba(255,255,255,0.35)' }} />
+            <div className="absolute" style={{ top: 28, left: 120, width: 48, height: 8, background: 'rgba(255,255,255,0.28)' }} />
           </>
         )}
         {/* ボス戦: スキャンラインで緊張感を演出 */}
@@ -529,10 +529,10 @@ export default function BattleScene({ gs, onAttack, onSkill, onItem, onFlee, onC
               <CharPortrait charId="player" size={92} isActive={currentActor?.isPlayer} isDead={playerUnit.hp <= 0} rounded={0} />
               {/* プレイヤーヒットフラッシュ */}
               {hitUnits.has(playerUnit.uid) && (
-                <div style={{ position: 'absolute', inset: 0, borderRadius: 6, background: 'rgba(239,68,68,0.45)', pointerEvents: 'none' }} />
+                <div style={{ position: 'absolute', inset: 0, borderRadius: 0, background: 'rgba(239,68,68,0.45)', pointerEvents: 'none' }} />
               )}
               {healUnits.has(playerUnit.uid) && (
-                <div style={{ position: 'absolute', inset: 0, borderRadius: 6, background: 'rgba(74,222,128,0.3)', pointerEvents: 'none' }} />
+                <div style={{ position: 'absolute', inset: 0, borderRadius: 0, background: 'rgba(74,222,128,0.3)', pointerEvents: 'none' }} />
               )}
               {/* プレイヤーフローティングダメージ数字 */}
               {floatingNums.filter(f => f.uid === playerUnit.uid).map(f => (
@@ -559,10 +559,10 @@ export default function BattleScene({ gs, onAttack, onSkill, onItem, onFlee, onC
                 <div style={{ position: 'relative' }}>
                   <CharPortrait charId={charId} size={62} isActive={a.uid === b.currentUid} isDead={a.hp <= 0} rounded={0} />
                   {isHit && (
-                    <div style={{ position: 'absolute', inset: 0, borderRadius: 4, background: 'rgba(239,68,68,0.45)', pointerEvents: 'none' }} />
+                    <div style={{ position: 'absolute', inset: 0, borderRadius: 0, background: 'rgba(239,68,68,0.45)', pointerEvents: 'none' }} />
                   )}
                   {isHeal && (
-                    <div style={{ position: 'absolute', inset: 0, borderRadius: 4, background: 'rgba(74,222,128,0.3)', pointerEvents: 'none' }} />
+                    <div style={{ position: 'absolute', inset: 0, borderRadius: 0, background: 'rgba(74,222,128,0.3)', pointerEvents: 'none' }} />
                   )}
                   {myFloats.map(f => (
                     <span key={f.id} className="absolute font-black pointer-events-none"

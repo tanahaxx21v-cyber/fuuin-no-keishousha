@@ -649,7 +649,7 @@ export default function GameRoot() {
         {diceRolling && (
           <div className="fixed inset-0 z-[70] flex items-center justify-center" style={{ background: 'rgba(0,0,0,0.75)' }}>
             <div className="text-center">
-              <div className="text-8xl mb-3" style={{ animation: 'diceSpin 0.35s linear infinite' }}>🎲</div>
+              <div className="text-4xl mb-3" style={{ animation: 'diceSpin 0.35s linear infinite' }}>🎲</div>
               <div className="text-xl font-black text-yellow-300 animate-pulse">運命を決める…</div>
             </div>
           </div>
@@ -812,7 +812,7 @@ function PrologueScreen({ onDone, playerName, daysLeft }: { onDone: () => void; 
             <p className="text-gray-300 leading-relaxed whitespace-pre-line text-sm font-medium">
               {displayedText}
               {!isTypingDone && (
-                <span className="inline-block w-0.5 h-4 bg-indigo-400 ml-0.5 align-text-bottom animate-pulse" style={{ borderRadius: 1 }} />
+                <span className="inline-block w-0.5 h-4 bg-indigo-400 ml-0.5 align-text-bottom animate-pulse" style={{ borderRadius: 0 }} />
               )}
             </p>
           </div>
