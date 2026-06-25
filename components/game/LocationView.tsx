@@ -465,7 +465,7 @@ export default function LocationView({
               <span className="text-xs font-black text-red-400 tracking-widest">— 危険区域 —</span>
               {danger && (
                 <span className="ml-auto text-xs font-black px-2 py-0.5 border border-red-800"
-                  style={{ color: danger.color, borderColor: danger.color, background: `${danger.color}18` }}>
+                  style={{ color: danger.color, borderColor: danger.color, background: '#1a0808' }}>
                   {danger.label}
                 </span>
               )}
