@@ -324,7 +324,7 @@ export default function EventScene({ gs, onAdvance, onSkipAll }: Props) {
               {Array.from({ length: dotCount }).map((_, i) => (
                 <div
                   key={i}
-                  className="rounded-full transition-all duration-300"
+                  className="transition-all duration-300"
                   style={{
                     width: i === lineIdx ? 14 : 6,
                     height: 5,

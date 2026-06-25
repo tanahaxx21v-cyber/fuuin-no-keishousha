@@ -816,7 +816,7 @@ function PrologueScreen({ onDone, playerName, daysLeft }: { onDone: () => void; 
           <div className="mt-8 flex items-center justify-between">
             <div className="flex gap-1">
               {pages.map((_, i) => (
-                <div key={i} className={`w-2 h-2 rounded-full transition-all ${i === page ? 'bg-indigo-400 w-4' : i < page ? 'bg-indigo-700' : 'bg-gray-700'}`} />
+                <div key={i} className={`h-2 transition-all ${i === page ? 'bg-indigo-400 w-4' : i < page ? 'bg-indigo-700 w-2' : 'bg-gray-700 w-2'}`} />
               ))}
             </div>
             {isTypingDone && (page < pages.length - 1 ? (
