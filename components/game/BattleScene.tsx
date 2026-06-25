@@ -161,7 +161,7 @@ function HpBar({ hp, maxHp, color = 'green' }: { hp: number; maxHp: number; colo
   const fill = color === 'blue' ? 'bg-blue-400'
     : pct > 50 ? 'bg-green-400' : pct > 25 ? 'bg-yellow-400' : 'bg-red-500'
   return (
-    <div className="w-full h-2 bg-black/50 border border-white/20 overflow-hidden">
+    <div className="w-full h-2 bg-[#0a0a0a] border border-gray-700 overflow-hidden">
       <div className={`h-full transition-all duration-300 ${fill}`} style={{ width: `${pct}%` }} />
     </div>
   )
@@ -353,7 +353,7 @@ export default function BattleScene({ gs, onAttack, onSkill, onItem, onFlee, onC
             onClick={() => setShowBossIntro(false)}
           >
             <div className="relative max-w-xs mx-4 border-2 border-red-700" style={{ background: '#07010a' }}>
-              <div className="border-b border-red-900 px-4 py-2 flex items-center gap-3" style={{ background: 'rgba(180,0,0,0.15)' }}>
+              <div className="border-b border-red-900 px-4 py-2 flex items-center gap-3" style={{ background: '#150000' }}>
                 <span className="text-2xl">{boss.emoji}</span>
                 <div>
                   <div className="text-xs font-black text-red-600 tracking-widest animate-pulse">⚠ BOSS BATTLE</div>
@@ -385,11 +385,11 @@ export default function BattleScene({ gs, onAttack, onSkill, onItem, onFlee, onC
         if (!def) return null
         return (
           <div className="fixed inset-0 z-[90] flex items-center justify-center pointer-events-none">
-            <div className="bg-black/85 absolute inset-0" />
+            <div className="bg-[#0a0a10] absolute inset-0" />
             <div className="relative z-10 border-2 border-gray-700 bg-[#0a0a20]/98 max-w-xs mx-4"
               style={{ animation: 'fadeIn 0.4s ease' }}
             >
-              <div className="border-b border-gray-700 px-4 py-2 flex items-center gap-2" style={{ background: 'rgba(255,255,255,0.03)' }}>
+              <div className="border-b border-gray-700 px-4 py-2 flex items-center gap-2" style={{ background: '#0a0a0e' }}>
                 <span className="text-xs font-black text-gray-600 tracking-widest">— FALLEN HERO —</span>
                 <span className="ml-auto text-xs text-red-500 font-black">💀 永眠</span>
               </div>

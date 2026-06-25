@@ -211,7 +211,7 @@ export default function LocationView({
             </div>
             <div className="p-6 text-center">
             {/* 絵文字 */}
-            <div className="text-4xl mb-3">{loc.emoji}</div>
+            <div className="text-2xl mb-3">{loc.emoji}</div>
             {/* 地名 */}
             <div className="text-2xl font-black text-white mb-2">{loc.name}</div>
             {/* 説明文 */}
@@ -249,7 +249,7 @@ export default function LocationView({
                 <span className="text-sm font-black text-red-200">{boss.name}</span>
               </div>
               <div className="p-4">
-              <div className="bg-black/40 border border-slate-700 p-3 mb-3 text-left">
+              <div className="bg-[#0a0a0a] border border-slate-700 p-3 mb-3 text-left">
                 <div className="text-[10px] font-black text-slate-400 mb-2 tracking-widest">現在のパーティ状態</div>
                 {allUnits.map((u, i) => {
                   const pct = u.hp / u.maxHp * 100
@@ -430,7 +430,7 @@ export default function LocationView({
                       onClick={() => onJoinCompanion(gs.pendingCompanionJoin!)}
                       disabled={joinedCount >= 3}
                       className="flex-1 py-3 font-black text-white transition active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed border-2"
-                      style={{ background: `${glow}33`, borderColor: glow }}
+                      style={{ background: '#0a0a1a', borderColor: glow }}
                     >
                       ✅ 仲間にする
                     </button>
@@ -471,9 +471,7 @@ export default function LocationView({
               )}
             </div>
             <div className="px-4 py-3 flex items-center gap-4">
-              <div className="text-4xl">
-                {boss.emoji}
-              </div>
+              <div className="text-2xl shrink-0">{boss.emoji}</div>
               <div className="flex-1 min-w-0">
                 <div className="font-black text-white text-sm">{boss.name}</div>
                 {danger && (

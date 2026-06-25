@@ -459,7 +459,7 @@ export default function GameRoot() {
         return (
           <div className="fixed inset-0 z-50 flex items-center justify-center" style={{ background: 'rgba(0,0,0,0.82)' }}>
             <div className="bg-[#0c0c24] border-2 border-amber-500 max-w-sm w-full mx-4">
-              <div className="border-b border-amber-800 px-4 py-2.5 flex items-center gap-3" style={{ background: 'rgba(180,120,0,0.15)' }}>
+              <div className="border-b border-amber-800 px-4 py-2.5 flex items-center gap-3" style={{ background: '#1a0e00' }}>
                 <span className="text-xl">⭐</span>
                 <div>
                   <div className="text-xs font-black text-amber-500 tracking-widest">LEVEL UP!</div>
@@ -649,7 +649,7 @@ export default function GameRoot() {
         {diceRolling && (
           <div className="fixed inset-0 z-[70] flex items-center justify-center" style={{ background: 'rgba(0,0,0,0.75)' }}>
             <div className="text-center">
-              <div className="text-4xl mb-3" style={{ animation: 'diceSpin 0.35s linear infinite' }}>🎲</div>
+              <div className="text-2xl mb-3" style={{ animation: "diceSpin 0.35s linear infinite" }}>🎲</div>
               <div className="text-xl font-black text-yellow-300 animate-pulse">運命を決める…</div>
             </div>
           </div>
@@ -802,7 +802,7 @@ function PrologueScreen({ onDone, playerName, daysLeft }: { onDone: () => void; 
       <div className="w-full max-w-sm">
         <div className={`bg-[#0c0c24] border-2 ${current.accent} p-6 transition-all duration-500`}>
           <div className="flex items-center gap-3 mb-4">
-            <span className="text-3xl">{current.icon}</span>
+            <span className="text-xl">{current.icon}</span>
             <div>
               <div className="text-xs font-black text-indigo-400 tracking-widest">PROLOGUE {page + 1}/{pages.length}</div>
               <h2 className="text-xl font-black text-white">{current.title}</h2>
