@@ -238,7 +238,7 @@ export default function StatusBar({ gs, onSave, isMuted, onToggleMute, onReturnT
       {confirmReturn && (
         <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black">
           <div className="bg-[#0c0c24] border-2 border-red-700 p-6 text-center max-w-xs w-full mx-4">
-            <div className="text-3xl mb-3">🏠</div>
+            <div className="text-2xl mb-3">🏠</div>
             <div className="text-base font-black text-white mb-1">タイトルに戻る</div>
             <div className="text-xs text-gray-400 mb-4">セーブデータは保持されます。<br/>現在の進行状況を保存してから戻りますか？</div>
             <div className="flex gap-3 justify-center">

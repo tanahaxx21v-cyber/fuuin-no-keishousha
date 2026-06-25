@@ -395,7 +395,7 @@ export default function BattleScene({ gs, onAttack, onSkill, onItem, onFlee, onC
               </div>
               <div className="px-4 py-4">
                 <div className="flex items-center gap-3 mb-3">
-                  <span className="text-3xl grayscale opacity-60">{def.emoji}</span>
+                  <span className="text-2xl grayscale opacity-60">{def.emoji}</span>
                   <div>
                     <div className="text-base font-black text-gray-400 line-through">{def.name}</div>
                     <div className="text-xs text-gray-600">{def.cls}</div>
@@ -824,7 +824,7 @@ export default function BattleScene({ gs, onAttack, onSkill, onItem, onFlee, onC
           )}
 
           <div className="p-5 text-center">
-            <div className={`font-black mb-2 ${b.phase === 'victory' ? 'text-4xl' : 'text-3xl text-red-400'}`}
+            <div className={`font-black mb-2 ${b.phase === 'victory' ? 'text-3xl' : 'text-2xl text-red-400'}`}
               style={{}}>
               {b.phase === 'victory' ? '🎉 VICTORY！' : '💀 DEFEAT...'}
             </div>
