@@ -159,7 +159,7 @@ export default function WinScreen({ gs, onRestart }: Props) {
   const totalPages = EPILOGUE_PAGES.length + 1 // +1 for stats page
 
   return (
-    <div className="min-h-screen bg-gray-950 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-[#07071a] flex items-center justify-center p-4">
       <div className="max-w-2xl w-full">
 
         {/* STATS PAGE (last) */}
@@ -172,7 +172,7 @@ export default function WinScreen({ gs, onRestart }: Props) {
             </div>
 
             {/* クリアランク */}
-            <div className="bg-gray-900 border border-gray-700 p-4 mb-3 flex items-center gap-4">
+            <div className="bg-[#0c0c24] border border-gray-700 p-4 mb-3 flex items-center gap-4">
               <div className="text-center shrink-0">
                 <div className={`text-4xl font-black ${rank.color}`}>{rank.rank}</div>
                 <div className="text-xs text-gray-500 mt-0.5">{rank.label}</div>
@@ -194,7 +194,7 @@ export default function WinScreen({ gs, onRestart }: Props) {
               </div>
             </div>
 
-            <div className="bg-gray-900 border border-gray-700 p-4 mb-4 text-left">
+            <div className="bg-[#0c0c24] border border-gray-700 p-4 mb-4 text-left">
               <div className="text-xs text-gray-400 mb-3 uppercase tracking-wider">クリア記録</div>
               <div className="grid grid-cols-2 gap-3 text-sm">
                 <div><span className="text-gray-400">最終レベル: </span><span className="text-white font-bold">Lv{gs.playerLevel}</span></div>
@@ -215,7 +215,7 @@ export default function WinScreen({ gs, onRestart }: Props) {
             </div>
 
             {joinedCompanions.length > 0 && (
-              <div className="bg-gray-900 border border-gray-700 p-3 mb-3 text-left">
+              <div className="bg-[#0c0c24] border border-gray-700 p-3 mb-3 text-left">
                 <div className="text-xs text-green-400 mb-2">共に戦った仲間 ({joinedCompanions.length}人)</div>
                 <div className="flex flex-col gap-1.5">
                   {joinedCompanions.map(c => {
@@ -234,7 +234,7 @@ export default function WinScreen({ gs, onRestart }: Props) {
               </div>
             )}
             {deadCompanions.length > 0 && (
-              <div className="bg-gray-900 border border-red-900 p-3 mb-3 text-left">
+              <div className="bg-[#0c0c24] border border-red-900 p-3 mb-3 text-left">
                 <div className="text-xs text-red-400 mb-2">冒険で命を落とした仲間 ({deadCompanions.length}人)</div>
                 <div className="flex flex-col gap-2">
                   {deadCompanions.map(c => {
