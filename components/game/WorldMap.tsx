@@ -360,7 +360,7 @@ export default function WorldMap({ gs, onTravel, onEnterLocation, getAvailableCo
               <span className="text-base">{guide.icon}</span>
               <span className="font-black text-sm">{guide.text}</span>
             </div>
-            <div className="text-[10px] opacity-80 ml-6">{guide.sub}</div>
+            <div className="text-[10px] text-gray-400 ml-6">{guide.sub}</div>
           </div>
         ) : null
       })()}
