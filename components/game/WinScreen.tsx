@@ -166,7 +166,7 @@ export default function WinScreen({ gs, onRestart }: Props) {
         {page === totalPages - 1 ? (
           <div className="text-center">
             <div className="border-2 border-amber-600 px-6 py-4 mb-4" style={{ background: '#0a0800' }}>
-              <div className="text-3xl mb-1">🏆</div>
+              <div className="text-2xl mb-1">🏆</div>
               <h1 className="text-2xl font-black text-amber-300 tracking-wider">CLEAR！</h1>
               <p className="text-gray-500 text-xs mt-1">残り{gs.daysLeft}日で封印の継承者となった</p>
             </div>
@@ -174,7 +174,7 @@ export default function WinScreen({ gs, onRestart }: Props) {
             {/* クリアランク */}
             <div className="bg-[#0c0c24] border border-gray-700 p-4 mb-3 flex items-center gap-4">
               <div className="text-center shrink-0">
-                <div className={`text-4xl font-black ${rank.color}`}>{rank.rank}</div>
+                <div className={`text-2xl font-black ${rank.color}`}>{rank.rank}</div>
                 <div className="text-xs text-gray-500 mt-0.5">{rank.label}</div>
               </div>
               <div className="flex-1 text-left">

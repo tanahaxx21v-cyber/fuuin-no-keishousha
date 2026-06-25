@@ -76,8 +76,8 @@ export default function GameOverScreen({ gs, onRestart }: Props) {
       <div className="max-w-md w-full text-center">
 
         <div className="border-2 border-red-900 px-6 py-5 mb-4 text-center" style={{ background: '#0a0202' }}>
-          <div className="text-4xl mb-2">💀</div>
-          <h1 className="text-3xl font-black text-red-500 tracking-wider">GAME OVER</h1>
+          <div className="text-2xl mb-2">💀</div>
+          <h1 className="text-2xl font-black text-red-500 tracking-wider">GAME OVER</h1>
         </div>
         <div className="text-base font-black text-red-300 mb-1">{heading}</div>
         <p className="text-gray-500 mb-4 text-sm font-bold">{body}</p>
@@ -162,7 +162,7 @@ export default function GameOverScreen({ gs, onRestart }: Props) {
                           {def?.emoji} {def?.name} <span className="text-gray-600">Lv{c.level}</span>
                         </div>
                         {memorial && (
-                          <div className="text-xs text-gray-600 italic">{memorial}</div>
+                          <div className="text-xs text-gray-600">{memorial}</div>
                         )}
                       </div>
                     )

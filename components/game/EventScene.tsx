@@ -263,7 +263,7 @@ export default function EventScene({ gs, onAdvance, onSkipAll }: Props) {
               style={{
                 fontSize: 15,
                 color: isNarrator ? '#9ca3af' : '#f1f5f9',
-                fontStyle: isNarrator ? 'italic' : 'normal',
+                fontStyle: 'normal',
               }}
             >
               {isNarrator && (

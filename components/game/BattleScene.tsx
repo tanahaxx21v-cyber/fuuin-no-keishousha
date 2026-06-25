@@ -366,7 +366,7 @@ export default function BattleScene({ gs, onAttack, onSkill, onItem, onFlee, onC
               </div>
               {openingLine && (
                 <div className="px-4 py-3 border-b border-red-900">
-                  <p className="text-sm text-gray-300 italic leading-relaxed border-l-2 border-red-800 pl-3">
+                  <p className="text-sm text-gray-300 leading-relaxed border-l-2 border-red-800 pl-3">
                     「{openingLine}」
                   </p>
                 </div>
@@ -401,7 +401,7 @@ export default function BattleScene({ gs, onAttack, onSkill, onItem, onFlee, onC
                     <div className="text-xs text-gray-600">{def.cls}</div>
                   </div>
                 </div>
-                <div className="text-sm text-gray-400 italic leading-relaxed border-l-2 border-gray-700 pl-3">
+                <div className="text-sm text-gray-400 leading-relaxed border-l-2 border-gray-700 pl-3">
                   「{deadCompanion.lastWord}」
                 </div>
               </div>
@@ -881,12 +881,12 @@ export default function BattleScene({ gs, onAttack, onSkill, onItem, onFlee, onC
                 {(() => {
                   const companionLog = b.logs.slice().reverse().find(l => l.type === 'system' && /「.+」/.test(l.text) && !l.text.startsWith('👹'))
                   if (companionLog) return (
-                    <div className="text-xs text-gray-300 italic bg-slate-900 border border-slate-700 px-3 py-1.5">{companionLog.text}</div>
+                    <div className="text-xs text-gray-300 bg-slate-900 border border-slate-700 px-3 py-1.5">{companionLog.text}</div>
                   )
                   const alive = allies.filter(a => !a.isPlayer && a.hp > 0)
                   if (alive.length === 0) return null
                   const speaker = alive[b.turn % alive.length]
-                  return <div className="text-xs text-gray-400 italic">「次も頼んだぞ。」—— {speaker.name}</div>
+                  return <div className="text-xs text-gray-400 ">「次も頼んだぞ。」—— {speaker.name}</div>
                 })()}
                 {/* 死亡した仲間 */}
                 {allies.filter(a => !a.isPlayer && a.hp <= 0).map(a => (

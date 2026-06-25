@@ -316,7 +316,7 @@ export default function LocationView({
           <span className="text-2xl shrink-0 mt-0.5">🧑</span>
           <div className="flex-1 min-w-0">
             <div className="text-xs text-gray-500 font-bold mb-0.5">{gs.playerName}（心の声）</div>
-            <div className="text-sm text-gray-300 italic leading-relaxed">「{soloLine}」</div>
+            <div className="text-sm text-gray-300 leading-relaxed">「{soloLine}」</div>
           </div>
         </div>
       )}
@@ -331,7 +331,7 @@ export default function LocationView({
             </div>
             <div className="flex-1 min-w-0">
               <div className="text-xs text-gray-500 font-bold mb-0.5">{def.emoji} {def.name}</div>
-              <div className="text-sm text-gray-200 italic leading-relaxed">「{flavorLine.line}」</div>
+              <div className="text-sm text-gray-200 leading-relaxed">「{flavorLine.line}」</div>
             </div>
           </div>
         )

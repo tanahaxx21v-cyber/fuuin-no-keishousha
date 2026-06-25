@@ -60,7 +60,7 @@ export default function PartyManage({ gs, onSetParty, onClose }: Props) {
             const memberId = draft[i]
             const def = memberId ? COMPANIONS[memberId] : null
             return (
-              <div key={i} className={`flex-1 border-2 flex flex-col items-center justify-center gap-1 py-1.5 transition ${def ? 'border-amber-600 bg-amber-950' : 'border-dashed border-slate-700 bg-slate-900'}`} style={{ minHeight: 68 }}>
+              <div key={i} className={`flex-1 border-2 flex flex-col items-center justify-center gap-1 py-1.5 transition ${def ? 'border-amber-600 bg-amber-950' : 'border-slate-700 bg-slate-900'}`} style={{ minHeight: 68 }}>
                 {def ? (
                   <>
                     <div className="overflow-hidden border border-amber-700">
