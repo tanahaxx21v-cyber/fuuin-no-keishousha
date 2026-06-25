@@ -886,7 +886,7 @@ export default function BattleScene({ gs, onAttack, onSkill, onItem, onFlee, onC
                   const alive = allies.filter(a => !a.isPlayer && a.hp > 0)
                   if (alive.length === 0) return null
                   const speaker = alive[b.turn % alive.length]
-                  return <div className="text-xs text-gray-400 ">「次も頼んだぞ。」—— {speaker.name}</div>
+                  return <div className="text-xs text-gray-400">「次も頼んだぞ。」—— {speaker.name}</div>
                 })()}
                 {/* 死亡した仲間 */}
                 {allies.filter(a => !a.isPlayer && a.hp <= 0).map(a => (
