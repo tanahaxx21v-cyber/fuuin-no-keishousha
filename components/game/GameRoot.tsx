@@ -800,7 +800,7 @@ function PrologueScreen({ onDone, playerName, daysLeft }: { onDone: () => void; 
   return (
     <div className="min-h-screen flex items-center justify-center bg-[#07071a] p-4" onClick={handleClick}>
       <div className="w-full max-w-sm">
-        <div className={`bg-[#0c0c24] border-2 ${current.accent} p-6 transition-all duration-500`}>
+        <div className={`bg-[#0c0c24] border-2 ${current.accent} p-6`}>
           <div className="flex items-center gap-3 mb-4">
             <span className="text-xl">{current.icon}</span>
             <div>

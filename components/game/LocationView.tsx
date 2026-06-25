@@ -655,7 +655,6 @@ export default function LocationView({
               <button
                 onClick={() => setShowBossConfirm(true)}
                 className="w-full px-3 py-3 text-left flex items-center border-b border-[#2d2000] hover:bg-[#1a0000] transition active:scale-95"
-                style={{ animation: 'pulse 2s ease-in-out infinite' }}
               >
                 <span className="w-4 text-xs font-black text-red-400 shrink-0">▶</span>
                 <span className="font-black text-sm text-red-300 flex-1">終末記録体アーカイブに挑む！</span>

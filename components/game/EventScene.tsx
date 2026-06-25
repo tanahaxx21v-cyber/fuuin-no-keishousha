@@ -147,7 +147,7 @@ export default function EventScene({ gs, onAdvance, onSkipAll }: Props) {
       {/* ===== 進行バー ===== */}
       <div className="h-0.5 shrink-0" style={{ background: '#0d0f1a' }}>
         <div
-          className="h-full transition-all duration-500"
+          className="h-full"
           style={{
             width: `${(progress / total) * 100}%`,
             background: isNarrator ? '#3730a3' : cfg.glow,
@@ -297,7 +297,6 @@ export default function EventScene({ gs, onAdvance, onSkipAll }: Props) {
               {Array.from({ length: dotCount }).map((_, i) => (
                 <div
                   key={i}
-                  className="transition-all duration-300"
                   style={{
                     width: i === lineIdx ? 14 : 6,
                     height: 5,
@@ -340,7 +339,6 @@ export default function EventScene({ gs, onAdvance, onSkipAll }: Props) {
             style={{
               background: '#1c0a00',
               borderColor: '#92400e',
-              animation: 'pulse 2s ease-in-out infinite',
             }}
           >
             <div className="text-xs font-black" style={{ color: '#fbbf24' }}>

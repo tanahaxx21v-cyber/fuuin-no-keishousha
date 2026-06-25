@@ -134,7 +134,7 @@ export default function WorldMap({ gs, onTravel, onEnterLocation, getAvailableCo
         <span className="text-[9px] text-gray-600 font-bold w-8">0日</span>
         <div className="flex-1 h-2 bg-gray-900 border border-gray-800 overflow-hidden relative">
           <div
-            className="h-full transition-all duration-500"
+            className="h-full"
             style={{
               width: `${elapsedPct}%`,
               background: daysUrgent ? '#ef4444' : daysWarn ? '#f97316' : '#6366f1',
@@ -290,7 +290,7 @@ export default function WorldMap({ gs, onTravel, onEnterLocation, getAvailableCo
                   <span style={{ position:'absolute', top:-5, left:-5, fontSize:10 }}>✅</span>
                 )}
                 {eventAvailableLocs.has(locId) && !isCurrent && isVisited && (
-                  <span style={{ position:'absolute', bottom:-3, right:-3, fontSize:8, background:'#7c2d0a', border:'1px solid #f97316', borderRadius:0, width:11, height:11, display:'flex', alignItems:'center', justifyContent:'center', color:'#fed7aa', fontWeight:'bold', animation:'pulse 1.5s ease-in-out infinite' }}>!</span>
+                  <span style={{ position:'absolute', bottom:-3, right:-3, fontSize:8, background:'#7c2d0a', border:'1px solid #f97316', borderRadius:0, width:11, height:11, display:'flex', alignItems:'center', justifyContent:'center', color:'#fed7aa', fontWeight:'bold' }}>!</span>
                 )}
               </button>
               {/* ラベル */}
@@ -391,7 +391,7 @@ export default function WorldMap({ gs, onTravel, onEnterLocation, getAvailableCo
           ]).map(({ stone, name, icon, loc: locName }) => {
             const obtained = gs.sealStones.includes(stone)
             return (
-              <div key={stone} className={`flex-1 flex flex-col items-center gap-1 py-2 border transition-all ${obtained ? 'border-amber-500 bg-amber-950' : 'border-gray-700 bg-gray-900 opacity-40 grayscale'}`}>
+              <div key={stone} className={`flex-1 flex flex-col items-center gap-1 py-2 border ${obtained ? 'border-amber-500 bg-amber-950' : 'border-gray-700 bg-gray-900 opacity-40 grayscale'}`}>
                 <span className="text-2xl">{icon}</span>
                 <span className={`text-[9px] font-black text-center leading-tight ${obtained ? 'text-amber-300' : 'text-gray-500'}`}>
                   {obtained ? name : locName + 'で入手'}
