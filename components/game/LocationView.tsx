@@ -257,7 +257,7 @@ export default function LocationView({
                   return (
                     <div key={i} className="flex items-center gap-2 mb-1.5">
                       <span className="text-xs text-gray-300 font-bold w-14 truncate">{u.name}</span>
-                      <div className="flex-1 h-2 bg-gray-900 rounded-sm border border-gray-700 overflow-hidden">
+                      <div className="flex-1 h-2 bg-gray-900 border border-gray-700 overflow-hidden">
                         <div className="h-full transition-all" style={{ width: `${pct}%`, backgroundColor: fill }} />
                       </div>
                       <span className="text-[10px] font-black" style={{ color: fill }}>{u.hp}/{u.maxHp}</span>
@@ -778,7 +778,7 @@ export default function LocationView({
                   <CharPortrait charId={id} size={40} isDead={!c.alive} rounded={0} />
                   <div>
                     <div className="text-xs font-black text-white">{def.name}</div>
-                    <div className="w-16 h-1.5 bg-gray-900 rounded-sm overflow-hidden mt-0.5">
+                    <div className="w-16 h-1.5 bg-gray-900 overflow-hidden mt-0.5">
                       <div className={`h-full ${hpPct > 50 ? 'bg-green-600' : hpPct > 25 ? 'bg-yellow-600' : 'bg-red-700'}`} style={{ width: `${hpPct}%` }} />
                     </div>
                     <div className={`text-xs ${isLowHp ? 'text-red-400 font-bold' : 'text-gray-500'}`}>HP {c.hp}/{c.maxHp}</div>

@@ -136,7 +136,7 @@ export default function AlbumScreen({ gs, onClose }: Props) {
                       <span className="text-[9px] text-purple-400 font-bold">Lv{c.level}</span>
                     </div>
                     <div className="flex items-center gap-1.5 mt-0.5">
-                      <div className="w-16 h-1.5 bg-gray-800 rounded-sm overflow-hidden">
+                      <div className="w-16 h-1.5 bg-gray-800 overflow-hidden">
                         <div className={`h-full ${hpPct > 50 ? 'bg-green-600' : hpPct > 25 ? 'bg-yellow-600' : 'bg-red-700'}`} style={{ width: `${hpPct}%` }} />
                       </div>
                       <span className="text-[9px] text-gray-500">{c.hp}/{c.maxHp}</span>

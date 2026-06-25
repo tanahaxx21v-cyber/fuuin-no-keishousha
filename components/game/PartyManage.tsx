@@ -123,7 +123,7 @@ export default function PartyManage({ gs, onSetParty, onClose }: Props) {
                         <span className="text-xs text-purple-400 font-black">Lv{c.level}</span>
                       </div>
                       <div className="flex items-center gap-2 mt-1">
-                        <div className="w-20 h-2.5 bg-gray-900 rounded-sm border border-gray-700 overflow-hidden">
+                        <div className="w-20 h-2.5 bg-gray-900 border border-gray-700 overflow-hidden">
                           <div className={`h-full ${hpPct > 50 ? 'bg-green-600' : hpPct > 25 ? 'bg-yellow-600' : 'bg-red-700'}`} style={{ width: `${hpPct}%` }} />
                         </div>
                         <span className="text-xs text-gray-400 font-bold">HP {c.hp}/{c.maxHp}</span>
