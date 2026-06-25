@@ -198,7 +198,7 @@ export default function LocationView({
       {showArrival && (
         <div
           className="fixed inset-0 z-[80] flex items-center justify-center cursor-pointer"
-          style={{ background: 'rgba(4,4,20,0.88)' }}
+          style={{ background: '#040414' }}
           onClick={() => setShowArrival(false)}
         >
           <div className={`relative max-w-sm w-full mx-6 border-2 ${arrivalBorder}`}
@@ -241,9 +241,9 @@ export default function LocationView({
         const avgHpPct = allUnits.reduce((s, u) => s + u.hp / u.maxHp, 0) / allUnits.length
         const isLowHp = avgHpPct < 0.5
         return (
-          <div className="fixed inset-0 z-[80] flex items-center justify-center" style={{ background: 'rgba(4,4,10,0.92)' }}>
+          <div className="fixed inset-0 z-[80] flex items-center justify-center" style={{ background: '#04040a' }}>
             <div className="relative max-w-sm w-full mx-4 border-2 border-red-600 p-0" style={{ background: '#0a0404', animation: 'fadeIn 0.3s ease' }}>
-              <div className="border-b border-red-900 px-4 py-2 flex items-center gap-2" style={{ background: 'rgba(180,0,0,0.12)' }}>
+              <div className="border-b border-red-900 px-4 py-2 flex items-center gap-2" style={{ background: '#150000' }}>
                 <span className="text-xs font-black text-red-500 tracking-widest">⚠ BOSS BATTLE</span>
                 <span className="ml-auto text-xl">{boss.emoji}</span>
                 <span className="text-sm font-black text-red-200">{boss.name}</span>
@@ -388,7 +388,7 @@ export default function LocationView({
 
               {/* メインボックス */}
               <div className="overflow-hidden border-2"
-                style={{ background: 'rgba(2,4,14,0.97)', borderColor: glow }}>
+                style={{ background: '#02040e', borderColor: glow }}>
 
                 {/* 加入セリフ */}
                 <div className="px-5 py-4">
@@ -460,7 +460,7 @@ export default function LocationView({
         const danger = DUNGEON_DANGER[loc.bossId!]
         return (
           <div className="bg-[#100808] border-2 border-red-900 overflow-hidden">
-            <div className="flex items-center gap-2 px-4 py-2 border-b border-red-900" style={{ background: 'rgba(180,0,0,0.12)' }}>
+            <div className="flex items-center gap-2 px-4 py-2 border-b border-red-900" style={{ background: '#150000' }}>
               <span className="text-red-400 text-sm font-black animate-pulse">⚠</span>
               <span className="text-xs font-black text-red-400 tracking-widest">— 危険区域 —</span>
               {danger && (

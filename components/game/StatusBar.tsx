@@ -125,7 +125,6 @@ export default function StatusBar({ gs, onSave, isMuted, onToggleMute, onReturnT
         <div className="flex items-center gap-1">
           {(['fire', 'storm', 'dark'] as const).map(stone => {
             const has = gs.sealStones.includes(stone)
-            const glow = stone === 'fire' ? 'rgba(239,68,68,0.5)' : stone === 'storm' ? 'rgba(59,130,246,0.5)' : 'rgba(168,85,247,0.5)'
             return (
               <div
                 key={stone}

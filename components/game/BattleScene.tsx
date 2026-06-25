@@ -349,7 +349,7 @@ export default function BattleScene({ gs, onAttack, onSkill, onItem, onFlee, onC
         return (
           <div
             className="fixed inset-0 z-[95] flex items-center justify-center cursor-pointer"
-            style={{ background: 'rgba(4,0,8,0.92)' }}
+            style={{ background: '#040008' }}
             onClick={() => setShowBossIntro(false)}
           >
             <div className="relative max-w-xs mx-4 border-2 border-red-700" style={{ background: '#07010a' }}>

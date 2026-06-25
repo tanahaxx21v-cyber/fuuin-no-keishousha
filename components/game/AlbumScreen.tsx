@@ -79,9 +79,9 @@ export default function AlbumScreen({ gs, onClose }: Props) {
         <div className="text-xs font-black text-amber-500 mb-2 tracking-widest">— 封印石 {gs.sealStones.length}/3 —</div>
         <div className="flex gap-3 justify-around">
           {[
-            { id: 'fire' as const,  icon: '🔥', name: '炎の封印石',  glow: 'rgba(239,68,68,0.4)', border: '#b91c1c' },
-            { id: 'storm' as const, icon: '⚡', name: '嵐の封印石',  glow: 'rgba(59,130,246,0.4)', border: '#1d4ed8' },
-            { id: 'dark' as const,  icon: '🌑', name: '闇の封印石',  glow: 'rgba(168,85,247,0.4)', border: '#7e22ce' },
+            { id: 'fire' as const,  icon: '🔥', name: '炎の封印石',  border: '#b91c1c' },
+            { id: 'storm' as const, icon: '⚡', name: '嵐の封印石',  border: '#1d4ed8' },
+            { id: 'dark' as const,  icon: '🌑', name: '闇の封印石',  border: '#7e22ce' },
           ].map(s => {
             const has = gs.sealStones.includes(s.id)
             return (

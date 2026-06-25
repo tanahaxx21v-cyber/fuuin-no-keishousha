@@ -253,7 +253,7 @@ export default function EventScene({ gs, onAdvance, onSkipAll }: Props) {
           className="overflow-hidden border-2"
           style={{
             borderRadius: 0,
-            background: 'rgba(2,4,14,0.97)',
+            background: '#02040e',
             borderColor: isNarrator ? '#1f2937' : cfg.border,
           }}
         >
