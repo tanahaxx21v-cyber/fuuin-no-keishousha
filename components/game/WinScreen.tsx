@@ -314,7 +314,7 @@ export default function WinScreen({ gs, onRestart }: Props) {
           (() => {
             const ep = EPILOGUE_PAGES[page]
             return (
-              <div className={`bg-gradient-to-b ${ep.bg} p-6 border border-gray-800 shadow-2xl`}>
+              <div className="p-6 border border-gray-800" style={{ background: '#0a0a12' }}>
                 <div className="text-xs text-gray-500 mb-2 tracking-wider uppercase">エピローグ {page + 1} / {EPILOGUE_PAGES.length}</div>
                 <h2 className={`text-xl font-bold ${ep.accent} mb-4`}>{ep.title}</h2>
 

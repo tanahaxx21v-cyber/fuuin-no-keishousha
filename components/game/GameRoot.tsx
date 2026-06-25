@@ -457,13 +457,17 @@ export default function GameRoot() {
         const newLvSkill = [5,10,15,20,25].includes(gs.playerLevel)
         const lastSkill = newLvSkill && gs.playerSkills.length > 0 ? gs.playerSkills[gs.playerSkills.length - 1] : null
         return (
-          <div className="fixed inset-0 z-50 flex items-center justify-center" style={{ background: 'radial-gradient(ellipse at center, rgba(245,158,11,0.15) 0%, rgba(0,0,0,0.85) 70%)' }}>
-            <div className="bg-[#0c0c24] border-2 border-amber-500 px-8 py-7 text-center shadow-2xl max-w-sm w-full mx-4"
-                 style={{ boxShadow: '0 0 60px rgba(245,158,11,0.4), 0 0 20px rgba(245,158,11,0.2)' }}>
-              <div className="text-6xl mb-2" style={{ filter: 'drop-shadow(0 0 16px rgba(245,158,11,0.8))' }}>⭐</div>
-              <div className="text-3xl font-black text-amber-300 tracking-wider" style={{ textShadow: '0 0 20px rgba(245,158,11,0.6)' }}>LEVEL UP!</div>
-              <div className="text-lg text-white font-bold mt-1">{gs.playerName} <span className="text-amber-400 text-2xl font-black">Lv {gs.playerLevel}</span></div>
-              <div className="grid grid-cols-5 gap-1.5 mt-4 mb-3">
+          <div className="fixed inset-0 z-50 flex items-center justify-center" style={{ background: 'rgba(0,0,0,0.82)' }}>
+            <div className="bg-[#0c0c24] border-2 border-amber-500 max-w-sm w-full mx-4">
+              <div className="border-b border-amber-800 px-4 py-2.5 flex items-center gap-3" style={{ background: 'rgba(180,120,0,0.15)' }}>
+                <span className="text-xl">⭐</span>
+                <div>
+                  <div className="text-xs font-black text-amber-500 tracking-widest">LEVEL UP!</div>
+                  <div className="text-sm text-white font-bold">{gs.playerName} <span className="text-amber-400 font-black">Lv {gs.playerLevel}</span></div>
+                </div>
+              </div>
+              <div className="px-4 py-3">
+              <div className="grid grid-cols-5 gap-1.5 mb-3">
                 {[
                   { label: 'HP', val: '+12', color: '#4ade80' },
                   { label: 'MP', val: '+5', color: '#60a5fa' },
@@ -478,8 +482,7 @@ export default function GameRoot() {
                 ))}
               </div>
               {lastSkill && (
-                <div className="bg-purple-950/80 border-2 border-purple-500 px-4 py-2.5 mb-3"
-                     style={{ boxShadow: '0 0 20px rgba(168,85,247,0.3)' }}>
+                <div className="bg-purple-950/80 border-2 border-purple-500 px-4 py-2.5 mb-3">
                   <div className="text-xs text-purple-400 font-black mb-0.5">✨ 新スキル習得！</div>
                   <div className="font-black text-purple-200 text-base">「{lastSkill.name}」</div>
                   <div className="flex items-center justify-center gap-3 mt-1 mb-1">
@@ -497,6 +500,7 @@ export default function GameRoot() {
               >
                 確認 ▶
               </button>
+              </div>
             </div>
           </div>
         )

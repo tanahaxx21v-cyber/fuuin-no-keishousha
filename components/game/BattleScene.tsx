@@ -836,7 +836,7 @@ export default function BattleScene({ gs, onAttack, onSkill, onItem, onFlee, onC
         >
           {/* ボス勝利ヘッダー */}
           {b.phase === 'victory' && b.isBoss && (
-            <div className="bg-gradient-to-r from-amber-900 to-yellow-900 px-4 py-2 text-center">
+            <div className="bg-amber-950 border-b border-amber-700 px-4 py-2 text-center">
               <div className="text-xs font-black text-amber-300 tracking-widest animate-pulse">👑 BOSS DEFEATED 👑</div>
             </div>
           )}
@@ -865,7 +865,7 @@ export default function BattleScene({ gs, onAttack, onSkill, onItem, onFlee, onC
                     <div className="flex flex-col items-center gap-0.5">
                       <div className="flex items-center gap-2 w-full justify-center">
                         <div className="w-32 h-2 bg-gray-900 rounded-sm border border-gray-700 overflow-hidden">
-                          <div className="h-full bg-gradient-to-r from-purple-700 to-purple-400 transition-all duration-500" style={{ width: `${expPct}%` }} />
+                          <div className="h-full bg-purple-600 transition-all duration-500" style={{ width: `${expPct}%` }} />
                         </div>
                         <span className="text-[10px] text-purple-400 font-bold">Lv{gs.playerLevel}</span>
                       </div>
