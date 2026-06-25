@@ -60,7 +60,7 @@ export default function PartyManage({ gs, onSetParty, onClose }: Props) {
             const memberId = draft[i]
             const def = memberId ? COMPANIONS[memberId] : null
             return (
-              <div key={i} className={`flex-1 border-2 flex flex-col items-center justify-center gap-1 py-1.5 transition ${def ? 'border-amber-600 bg-amber-950/40' : 'border-dashed border-slate-700 bg-slate-900/50'}`} style={{ minHeight: 68 }}>
+              <div key={i} className={`flex-1 border-2 flex flex-col items-center justify-center gap-1 py-1.5 transition ${def ? 'border-amber-600 bg-amber-950' : 'border-dashed border-slate-700 bg-slate-900'}`} style={{ minHeight: 68 }}>
                 {def ? (
                   <>
                     <div className="overflow-hidden border border-amber-700">
@@ -107,10 +107,10 @@ export default function PartyManage({ gs, onSetParty, onClose }: Props) {
                     onClick={() => toggle(def.id)}
                     className={`w-full flex items-center gap-3 border-2 p-3 text-left transition-all active:scale-95 ${
                       inDraft
-                        ? 'border-amber-500 bg-amber-950/30'
+                        ? 'border-amber-500 bg-[#0a0500]'
                         : draft.length >= 3
-                        ? 'border-slate-700 bg-slate-900/50 opacity-50 cursor-not-allowed'
-                        : 'border-slate-700 bg-slate-900/50 hover:border-indigo-600 hover:bg-indigo-950/30'
+                        ? 'border-slate-700 bg-slate-900 opacity-50 cursor-not-allowed'
+                        : 'border-slate-700 bg-slate-900 hover:border-indigo-600 hover:bg-indigo-950'
                     }`}
                   >
                     <div className="shrink-0 overflow-hidden border border-slate-600">
@@ -140,13 +140,13 @@ export default function PartyManage({ gs, onSetParty, onClose }: Props) {
                   {/* スキル詳細ボタン */}
                   <button
                     onClick={e => { e.stopPropagation(); setDetailId(detailId === def.id ? null : def.id) }}
-                    className="absolute top-2 right-10 text-[10px] text-indigo-400 hover:text-indigo-200 border border-indigo-800 bg-indigo-950/80 px-1.5 py-0.5 font-bold"
+                    className="absolute top-2 right-10 text-[10px] text-indigo-400 hover:text-indigo-200 border border-indigo-800 bg-indigo-950 px-1.5 py-0.5 font-bold"
                   >
                     スキル
                   </button>
                   {/* スキル詳細パネル */}
                   {detailId === def.id && (
-                    <div className="mt-1 bg-slate-900/90 border border-indigo-700/60 px-3 py-2">
+                    <div className="mt-1 bg-slate-900 border border-indigo-700 px-3 py-2">
                       <div className="text-[10px] text-indigo-400 font-black mb-1.5">✨ {def.name}のスキル</div>
                       {[...def.skills, ...c.learnedSkills].map(sk => (
                         <div key={sk.id} className="flex justify-between items-start text-xs py-0.5 border-b border-slate-800 last:border-0">

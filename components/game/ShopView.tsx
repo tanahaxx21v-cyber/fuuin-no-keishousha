@@ -65,7 +65,7 @@ export default function ShopView({ gs, onBuy, onClose }: Props) {
         const tiers = Math.min(5, Math.floor(daysSpent / 10))
         if (tiers <= 0) return null
         return (
-          <div className="bg-amber-950/60 border-2 border-amber-700 px-4 py-2 flex items-center gap-2">
+          <div className="bg-amber-950 border-2 border-amber-700 px-4 py-2 flex items-center gap-2">
             <span className="text-amber-400 text-xl">📈</span>
             <div className="text-xs text-amber-300 font-bold">物価上昇中（+{tiers * 10}%）経過日数: {daysSpent}日 — 早めに買おう！</div>
           </div>

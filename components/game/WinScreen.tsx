@@ -210,7 +210,7 @@ export default function WinScreen({ gs, onRestart }: Props) {
 
             <div className="flex justify-center gap-3 mb-4">
               {['🔥 炎', '⚡ 嵐', '🌑 闇'].map(s => (
-                <div key={s} className="text-sm text-yellow-300 bg-yellow-900/30 border border-yellow-800 px-3 py-1">✅ {s}の封印石</div>
+                <div key={s} className="text-sm text-yellow-300 bg-yellow-900 border border-yellow-800 px-3 py-1">✅ {s}の封印石</div>
               ))}
             </div>
 
@@ -234,14 +234,14 @@ export default function WinScreen({ gs, onRestart }: Props) {
               </div>
             )}
             {deadCompanions.length > 0 && (
-              <div className="bg-gray-900/50 border border-red-900/60 p-3 mb-3 text-left">
+              <div className="bg-gray-900 border border-red-900 p-3 mb-3 text-left">
                 <div className="text-xs text-red-400 mb-2">冒険で命を落とした仲間 ({deadCompanions.length}人)</div>
                 <div className="flex flex-col gap-2">
                   {deadCompanions.map(c => {
                     const def = COMPANIONS[c.id]
                     const memorial = COMPANION_MEMORIAL[c.id]
                     return (
-                      <div key={c.id} className="bg-red-950/20 border border-red-900/40 px-3 py-2">
+                      <div key={c.id} className="bg-red-950 border border-red-900 px-3 py-2">
                         <div className="text-sm text-gray-500 line-through font-bold mb-0.5">
                           {def.emoji} {def.name} <span className="text-gray-600">Lv{c.level}</span>
                         </div>
@@ -274,11 +274,11 @@ export default function WinScreen({ gs, onRestart }: Props) {
               const unlocked = ACHIEVEMENT_DEFS.filter(a => a.check(gs))
               if (unlocked.length === 0) return null
               return (
-                <div className="bg-amber-950/60 border-2 border-amber-700 p-3 mb-3 text-left">
+                <div className="bg-amber-950 border-2 border-amber-700 p-3 mb-3 text-left">
                   <div className="text-xs font-black text-amber-500 mb-2 tracking-widest">— 実績解除 {unlocked.length}/{ACHIEVEMENT_DEFS.length} —</div>
                   <div className="flex flex-wrap gap-1.5">
                     {unlocked.map((a, i) => (
-                      <div key={i} className="flex items-center gap-1 bg-amber-900/40 border border-amber-700/50 px-2 py-1">
+                      <div key={i} className="flex items-center gap-1 bg-amber-900 border border-amber-700 px-2 py-1">
                         <span>{a.icon}</span>
                         <span className="text-xs font-bold text-amber-200">{a.title}</span>
                       </div>
@@ -359,7 +359,7 @@ export default function WinScreen({ gs, onRestart }: Props) {
 
                 {/* Extra text (last epilogue page) */}
                 {'extra' in ep && ep.extra && (
-                  <div className="mt-4 space-y-2 border-t border-gray-700/50 pt-4">
+                  <div className="mt-4 space-y-2 border-t border-gray-700 pt-4">
                     {(() => {
                       const extraLines = ep.extra(gs.playerName)
                       return extraLines.map((line, i) => (

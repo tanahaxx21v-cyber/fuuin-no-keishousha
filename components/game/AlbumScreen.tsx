@@ -105,7 +105,7 @@ export default function AlbumScreen({ gs, onClose }: Props) {
             const defeated = gs.defeatedBosses.includes(b.id)
             return (
               <div key={b.id} className={`flex items-center gap-2 px-2 py-1.5 border ${
-                defeated ? 'bg-amber-950/40 border-amber-700/60' : 'bg-gray-900/50 border-gray-800 opacity-50'
+                defeated ? 'bg-amber-950 border-amber-700' : 'bg-gray-900 border-gray-800 opacity-50'
               }`}>
                 <span className="text-base">{b.emoji}</span>
                 <div className="min-w-0">
@@ -148,7 +148,7 @@ export default function AlbumScreen({ gs, onClose }: Props) {
             {deadCompanions.map(c => {
               const def = COMPANIONS[c.id]
               return (
-                <div key={c.id} className="flex items-center gap-2 bg-red-950/20 border border-red-900/40 px-2 py-1.5 opacity-60">
+                <div key={c.id} className="flex items-center gap-2 bg-red-950 border border-red-900 px-2 py-1.5 opacity-60">
                   <span className="text-lg grayscale">{def?.emoji}</span>
                   <span className="text-xs text-gray-600 line-through font-bold">{def?.name} Lv{c.level}</span>
                   <span className="text-[9px] text-red-700 ml-auto">💀 永眠</span>
@@ -164,7 +164,7 @@ export default function AlbumScreen({ gs, onClose }: Props) {
         <div className="text-xs font-black text-amber-500 mb-2 tracking-widest">— 実績 {unlockedAchs.length}/{ACHIEVEMENT_DEFS.length} —</div>
         <div className="flex flex-col gap-1.5">
           {unlockedAchs.map(a => (
-            <div key={a.id} className="flex items-center gap-2 bg-amber-950/30 border border-amber-700/50 px-2 py-1.5">
+            <div key={a.id} className="flex items-center gap-2 bg-amber-950 border border-amber-700 px-2 py-1.5">
               <span className="text-base">{a.icon}</span>
               <div className="flex-1 min-w-0">
                 <div className="text-xs font-black text-amber-200">{a.title}</div>
@@ -174,7 +174,7 @@ export default function AlbumScreen({ gs, onClose }: Props) {
             </div>
           ))}
           {lockedAchs.map(a => (
-            <div key={a.id} className="flex items-center gap-2 bg-gray-900/30 border border-gray-800 px-2 py-1.5 opacity-50">
+            <div key={a.id} className="flex items-center gap-2 bg-gray-900 border border-gray-800 px-2 py-1.5 opacity-50">
               <span className="text-base grayscale">{a.icon}</span>
               <div className="flex-1 min-w-0">
                 <div className="text-xs font-black text-gray-600">{a.title}</div>

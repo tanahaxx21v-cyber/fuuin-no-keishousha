@@ -218,7 +218,7 @@ export default function LocationView({
             <div className="text-xs text-gray-500 leading-relaxed mb-3">{loc.desc}</div>
             {/* ダンジョン危険度 */}
             {dangerInfo && (
-              <div className="inline-flex items-center gap-2 bg-red-950/80 border border-red-700 px-3 py-1 mb-3">
+              <div className="inline-flex items-center gap-2 bg-red-950 border border-red-700 px-3 py-1 mb-3">
                 <span className="text-xs font-black text-red-400">危険度</span>
                 <span className="text-xs text-orange-300 font-bold">{dangerInfo.rank}</span>
                 <span className="text-xs font-black px-1 text-white"
@@ -266,12 +266,12 @@ export default function LocationView({
                 })}
               </div>
               {isLowHp && (
-                <div className="bg-yellow-950/80 border border-yellow-700 px-3 py-2 text-xs text-yellow-300 font-bold mb-3">
+                <div className="bg-yellow-950 border border-yellow-700 px-3 py-2 text-xs text-yellow-300 font-bold mb-3">
                   ⚠️ HP平均 {Math.round(avgHpPct * 100)}%。宿屋での回復を推奨します。
                 </div>
               )}
               {loc.sealStone && !gs.sealStones.includes(loc.sealStone) && (
-                <div className="bg-amber-950/60 border border-amber-700 px-3 py-1.5 text-xs text-amber-300 font-bold mb-3">
+                <div className="bg-amber-950 border border-amber-700 px-3 py-1.5 text-xs text-amber-300 font-bold mb-3">
                   💎 勝利で封印石を入手できます！
                 </div>
               )}
@@ -399,7 +399,7 @@ export default function LocationView({
 
                 {/* ステータス */}
                 <div className="px-4 pb-3">
-                  <div className="grid grid-cols-4 gap-1.5 bg-slate-900/80 px-3 py-2.5 border border-slate-700 mb-3">
+                  <div className="grid grid-cols-4 gap-1.5 bg-slate-900 px-3 py-2.5 border border-slate-700 mb-3">
                     {[
                       { label: 'HP', value: cs.maxHp, color: '#4ade80' },
                       { label: 'ATK', value: cs.atk, color: '#f87171' },
@@ -414,13 +414,13 @@ export default function LocationView({
                   </div>
 
                   {joinedCount >= 3 && (
-                    <div className="text-xs text-amber-400 font-bold mb-2.5 text-center bg-amber-950/50 py-1.5 border border-amber-800">
+                    <div className="text-xs text-amber-400 font-bold mb-2.5 text-center bg-amber-950 py-1.5 border border-amber-800">
                       ⚠️ 仲間はすでに3人。これ以上は加入できません。
                     </div>
                   )}
 
                   {isOneTimeCompanion(pendingJoin.id) && (
-                    <div className="text-xs text-red-400 font-bold mb-2.5 text-center bg-red-950/50 py-1.5 border border-red-800">
+                    <div className="text-xs text-red-400 font-bold mb-2.5 text-center bg-red-950 py-1.5 border border-red-800">
                       ⚠️ この仲間は一度断ると、二度と加入を申し出ません。
                     </div>
                   )}
@@ -460,7 +460,7 @@ export default function LocationView({
         const danger = DUNGEON_DANGER[loc.bossId!]
         return (
           <div className="bg-[#100808] border-2 border-red-900 overflow-hidden">
-            <div className="flex items-center gap-2 px-4 py-2 border-b border-red-900/50" style={{ background: 'rgba(180,0,0,0.12)' }}>
+            <div className="flex items-center gap-2 px-4 py-2 border-b border-red-900" style={{ background: 'rgba(180,0,0,0.12)' }}>
               <span className="text-red-400 text-sm font-black animate-pulse">⚠</span>
               <span className="text-xs font-black text-red-400 tracking-widest">— 危険区域 —</span>
               {danger && (
@@ -494,11 +494,11 @@ export default function LocationView({
 
       {/* 状態異常警告 */}
       {gs.playerStatus && gs.playerStatus.length > 0 && (
-        <div className="bg-purple-950/80 border-2 border-purple-700 px-4 py-3">
+        <div className="bg-purple-950 border-2 border-purple-700 px-4 py-3">
           <div className="flex items-center gap-2 flex-wrap">
             <span className="text-purple-400 font-black text-sm">⚠️ 状態異常中</span>
             {gs.playerStatus.map(ef => (
-              <span key={ef.id} className="text-xs font-bold px-2 py-0.5 border border-purple-600 bg-purple-900/60 text-purple-200">
+              <span key={ef.id} className="text-xs font-bold px-2 py-0.5 border border-purple-600 bg-purple-900 text-purple-200">
                 {ef.id === 'poison' ? `☠️ 毒（残${ef.turnsLeft}T）` : ef.id === 'stun' ? `⚡ スタン（残${ef.turnsLeft}T）` : ef.id === 'atk_down' ? `⬇️ ATK低下（残${ef.turnsLeft}T）` : `${ef.id}（残${ef.turnsLeft}T）`}
               </span>
             ))}
@@ -572,7 +572,7 @@ export default function LocationView({
                   ? allUnits.reduce((sum, u) => sum + u.hp / u.maxHp, 0) / allUnits.length
                   : 1
                 return avgHpPct < 0.5 ? (
-                  <div className="bg-yellow-950/80 border border-yellow-700 px-3 py-2 text-xs text-yellow-300 font-bold">
+                  <div className="bg-yellow-950 border border-yellow-700 px-3 py-2 text-xs text-yellow-300 font-bold">
                     ⚠️ HP平均 {Math.round(avgHpPct * 100)}%。宿屋で回復してから挑むと安全です。
                   </div>
                 ) : null
@@ -676,10 +676,10 @@ export default function LocationView({
 
       {/* アイテム使用パネル */}
       {onUseItem && gs.inventory.filter(i => i.qty > 0 && ['heal_hp','heal_mp','heal_both','cure_status'].includes(ITEMS[i.itemId]?.effect ?? '')).length > 0 && (
-        <div className="bg-[#0c0c24] border-2 border-teal-800/60 overflow-hidden">
+        <div className="bg-[#0c0c24] border-2 border-teal-800 overflow-hidden">
           <button
             onClick={() => setItemPanelOpen(v => !v)}
-            className="w-full flex items-center gap-3 px-4 py-3 text-left hover:bg-teal-950/30 transition"
+            className="w-full flex items-center gap-3 px-4 py-3 text-left hover:bg-teal-950 transition"
           >
             <span className="text-lg">🎒</span>
             <div className="flex-1">
@@ -689,7 +689,7 @@ export default function LocationView({
             <span className="text-gray-500 text-sm">{itemPanelOpen ? '▲' : '▼'}</span>
           </button>
           {itemPanelOpen && (
-            <div className="px-3 pb-3 border-t border-teal-800/40">
+            <div className="px-3 pb-3 border-t border-teal-800">
               {/* アイテム選択 */}
               <div className="flex flex-wrap gap-2 mt-2 mb-3">
                 {gs.inventory.filter(i => i.qty > 0 && ITEMS[i.itemId]).map(slot => {

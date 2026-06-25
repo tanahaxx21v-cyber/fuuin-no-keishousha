@@ -157,7 +157,7 @@ export default function GameOverScreen({ gs, onRestart }: Props) {
                     const def = COMPANIONS[c.id]
                     const memorial = COMPANION_MEMORIAL[c.id]
                     return (
-                      <div key={c.id} className="bg-red-950/30 border border-red-900/60 px-3 py-2">
+                      <div key={c.id} className="bg-red-950 border border-red-900 px-3 py-2">
                         <div className="text-sm text-gray-500 line-through font-bold mb-0.5">
                           {def?.emoji} {def?.name} <span className="text-gray-600">Lv{c.level}</span>
                         </div>

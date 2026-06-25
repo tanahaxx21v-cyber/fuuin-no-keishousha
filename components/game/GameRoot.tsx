@@ -482,7 +482,7 @@ export default function GameRoot() {
                 ))}
               </div>
               {lastSkill && (
-                <div className="bg-purple-950/80 border-2 border-purple-500 px-4 py-2.5 mb-3">
+                <div className="bg-purple-950 border-2 border-purple-500 px-4 py-2.5 mb-3">
                   <div className="text-xs text-purple-400 font-black mb-0.5">✨ 新スキル習得！</div>
                   <div className="font-black text-purple-200 text-base">「{lastSkill.name}」</div>
                   <div className="flex items-center justify-center gap-3 mt-1 mb-1">
@@ -705,7 +705,7 @@ function NamingScreen({ onConfirm }: { onConfirm: (name: string) => void }) {
     <div className="min-h-screen flex items-center justify-center bg-[#07071a] p-6">
       <div className="w-full max-w-xs">
         <div className="bg-[#0c0c24] border-2 border-indigo-900 p-6">
-          <div className="border-b border-indigo-900/50 pb-3 mb-5 text-center">
+          <div className="border-b border-indigo-900 pb-3 mb-5 text-center">
             <div className="text-[10px] text-indigo-700 tracking-[0.5em] uppercase mb-2">NAME ENTRY</div>
             <div className="flex justify-center mb-3">
               <div className="overflow-hidden border border-amber-800">

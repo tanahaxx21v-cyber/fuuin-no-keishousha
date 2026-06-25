@@ -339,7 +339,7 @@ export default function BattleScene({ gs, onAttack, onSkill, onItem, onFlee, onC
   }
 
   return (
-    <div className="bg-[#07071a] flex flex-col min-h-screen" style={playerDanger ? { boxShadow: 'inset 0 0 0 3px rgba(220,38,38,0.7)', animation: 'pulse 1s ease-in-out infinite' } : {}}>
+    <div className="bg-[#07071a] flex flex-col min-h-screen">
 
       {/* ボスバトル開始演出 */}
       {showBossIntro && (() => {
@@ -365,7 +365,7 @@ export default function BattleScene({ gs, onAttack, onSkill, onItem, onFlee, onC
                 </div>
               </div>
               {openingLine && (
-                <div className="px-4 py-3 border-b border-red-900/40">
+                <div className="px-4 py-3 border-b border-red-900">
                   <p className="text-sm text-gray-300 italic leading-relaxed border-l-2 border-red-800 pl-3">
                     「{openingLine}」
                   </p>
@@ -389,7 +389,7 @@ export default function BattleScene({ gs, onAttack, onSkill, onItem, onFlee, onC
             <div className="relative z-10 border-2 border-gray-700 bg-[#0a0a20]/98 max-w-xs mx-4"
               style={{ animation: 'fadeIn 0.4s ease' }}
             >
-              <div className="border-b border-gray-700/50 px-4 py-2 flex items-center gap-2" style={{ background: 'rgba(255,255,255,0.03)' }}>
+              <div className="border-b border-gray-700 px-4 py-2 flex items-center gap-2" style={{ background: 'rgba(255,255,255,0.03)' }}>
                 <span className="text-xs font-black text-gray-600 tracking-widest">— FALLEN HERO —</span>
                 <span className="ml-auto text-xs text-red-500 font-black">💀 永眠</span>
               </div>
@@ -601,7 +601,7 @@ export default function BattleScene({ gs, onAttack, onSkill, onItem, onFlee, onC
         <div className="mx-2 mt-1 flex gap-1.5">
           {allies.filter(a => a.hp > 0).map(a => (
             <button key={a.uid} onClick={() => handleSelectTarget(a)}
-              className="flex-1 flex items-center gap-2 bg-green-900/90 border-2 border-green-500 p-2 hover:bg-green-800 active:scale-95 transition">
+              className="flex-1 flex items-center gap-2 bg-green-900 border-2 border-green-500 p-2 hover:bg-green-800 active:scale-95 transition">
               <CharPortrait charId={a.companionId ?? (a.isPlayer ? 'player' : 'gares')} size={40} />
               <div className="flex-1 min-w-0">
                 <span className="text-xs font-black text-white block truncate">{a.name}</span>
@@ -869,7 +869,7 @@ export default function BattleScene({ gs, onAttack, onSkill, onItem, onFlee, onC
                 })()}
                 {/* 封印石 */}
                 {b.sealStoneFound && (
-                  <div className="bg-amber-900/50 border-2 border-amber-400 px-4 py-2 text-amber-200 font-black animate-pulse">
+                  <div className="bg-amber-900 border-2 border-amber-400 px-4 py-2 text-amber-200 font-black animate-pulse">
                     💎 封印石を入手！
                   </div>
                 )}
@@ -881,7 +881,7 @@ export default function BattleScene({ gs, onAttack, onSkill, onItem, onFlee, onC
                 {(() => {
                   const companionLog = b.logs.slice().reverse().find(l => l.type === 'system' && /「.+」/.test(l.text) && !l.text.startsWith('👹'))
                   if (companionLog) return (
-                    <div className="text-xs text-gray-300 italic bg-slate-900/60 border border-slate-700 px-3 py-1.5">{companionLog.text}</div>
+                    <div className="text-xs text-gray-300 italic bg-slate-900 border border-slate-700 px-3 py-1.5">{companionLog.text}</div>
                   )
                   const alive = allies.filter(a => !a.isPlayer && a.hp > 0)
                   if (alive.length === 0) return null

@@ -151,8 +151,8 @@ export default function WorldMap({ gs, onTravel, onEnterLocation, getAvailableCo
       {mapMessage && (
         <div className={`text-xs font-black text-center py-1.5 px-3 border ${
           daysUrgent
-            ? 'bg-red-950/60 border-red-700 text-red-300 animate-pulse'
-            : 'bg-amber-950/60 border-amber-700 text-amber-300'
+            ? 'bg-red-950 border-red-700 text-red-300 animate-pulse'
+            : 'bg-amber-950 border-amber-700 text-amber-300'
         }`}>
           {mapMessage}
         </div>
@@ -160,7 +160,7 @@ export default function WorldMap({ gs, onTravel, onEnterLocation, getAvailableCo
 
       {/* 封印石ガイドパネル */}
       {missingStones.length > 0 && (
-        <div className="bg-[#0c0c1a] border border-indigo-800/60 px-3 py-2 flex flex-wrap gap-x-4 gap-y-1">
+        <div className="bg-[#0c0c1a] border border-indigo-800 px-3 py-2 flex flex-wrap gap-x-4 gap-y-1">
           <span className="text-[10px] text-indigo-400 font-black tracking-widest w-full">— 未取得の封印石 —</span>
           {missingStones.map(g => (
             <div key={g.stone} className="flex items-center gap-1.5 text-[10px]">
@@ -173,7 +173,7 @@ export default function WorldMap({ gs, onTravel, onEnterLocation, getAvailableCo
       )}
 
       {/* メインマップ */}
-      <div className="relative border-2 border-amber-800/60 overflow-hidden" style={{ paddingBottom: '96%' }}>
+      <div className="relative border-2 border-amber-800 overflow-hidden" style={{ paddingBottom: '96%' }}>
         {/* 地形背景 */}
         <div className="absolute inset-0" style={{
           background: `
@@ -194,12 +194,7 @@ export default function WorldMap({ gs, onTravel, onEnterLocation, getAvailableCo
 
         {/* 接続線 — 全ルートを明示・アクティブルート強調 */}
         <svg className="absolute inset-0 w-full h-full" style={{ zIndex: 3 }}>
-          <defs>
-            <filter id="road-glow">
-              <feGaussianBlur stdDeviation="1.5" result="blur" />
-              <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
-            </filter>
-          </defs>
+          <defs></defs>
           {CONN_PAIRS.map(([a, b]) => {
             const from = MAP_POS[a]!
             const to   = MAP_POS[b]!
@@ -218,8 +213,7 @@ export default function WorldMap({ gs, onTravel, onEnterLocation, getAvailableCo
                   stroke="rgba(200,150,30,0.9)" strokeWidth={5} />
                 {/* 中心の明るいライン */}
                 <line x1={`${from.x}%`} y1={`${from.y}%`} x2={`${to.x}%`} y2={`${to.y}%`}
-                  stroke="rgba(255,225,100,1)" strokeWidth={2.5}
-                  filter="url(#road-glow)" />
+                  stroke="rgba(255,225,100,1)" strokeWidth={2.5} />
               </g>
             )
             if (bothVisited) return (
@@ -348,16 +342,16 @@ export default function WorldMap({ gs, onTravel, onEnterLocation, getAvailableCo
         let guide: { icon: string; text: string; sub: string; color: string } | null = null
 
         if (joinedCount === 0) {
-          guide = { icon: '👤', text: '仲間を探そう！', sub: '旅人の宿・アルセリア・ベルンなどに仲間が待っている', color: 'border-purple-700 bg-purple-950/60 text-purple-200' }
+          guide = { icon: '👤', text: '仲間を探そう！', sub: '旅人の宿・アルセリア・ベルンなどに仲間が待っている', color: 'border-purple-700 bg-purple-950 text-purple-200' }
         } else if (remainStones > 0) {
           const targets = [
             !gs.sealStones.includes('fire')  && '廃鉱山（炎の封印石🔥）',
             !gs.sealStones.includes('storm') && '竜の峠（嵐の封印石⚡）',
             !gs.sealStones.includes('dark')  && '古代神殿（闇の封印石🌑）',
           ].filter(Boolean)
-          guide = { icon: '💎', text: `封印石を集めよう！ あと${remainStones}個`, sub: targets.join(' / '), color: 'border-amber-700 bg-amber-950/60 text-amber-200' }
+          guide = { icon: '💎', text: `封印石を集めよう！ あと${remainStones}個`, sub: targets.join(' / '), color: 'border-amber-700 bg-amber-950 text-amber-200' }
         } else {
-          guide = { icon: '⚡', text: '全ての封印石が揃った！', sub: '砂漠遺跡へ向かい、終末記録体アーカイブを倒せ！', color: 'border-red-700 bg-red-950/60 text-red-200 animate-pulse' }
+          guide = { icon: '⚡', text: '全ての封印石が揃った！', sub: '砂漠遺跡へ向かい、終末記録体アーカイブを倒せ！', color: 'border-red-700 bg-red-950 text-red-200 animate-pulse' }
         }
 
         return guide ? (
@@ -388,7 +382,7 @@ export default function WorldMap({ gs, onTravel, onEnterLocation, getAvailableCo
       </div>
 
       {/* 封印石進捗 */}
-      <div className="bg-[#0c0c24] border-2 border-amber-800/60 p-3">
+      <div className="bg-[#0c0c24] border-2 border-amber-800 p-3">
         <div className="text-[10px] font-black text-amber-500 mb-2 tracking-widest">— 封印石の進捗 —</div>
         <div className="flex gap-2">
           {([
@@ -398,7 +392,7 @@ export default function WorldMap({ gs, onTravel, onEnterLocation, getAvailableCo
           ]).map(({ stone, name, icon, loc: locName }) => {
             const obtained = gs.sealStones.includes(stone)
             return (
-              <div key={stone} className={`flex-1 flex flex-col items-center gap-1 py-2 border transition-all ${obtained ? 'border-amber-500 bg-amber-950/50' : 'border-gray-700 bg-gray-900/20 opacity-40 grayscale'}`}>
+              <div key={stone} className={`flex-1 flex flex-col items-center gap-1 py-2 border transition-all ${obtained ? 'border-amber-500 bg-amber-950' : 'border-gray-700 bg-gray-900 opacity-40 grayscale'}`}>
                 <span className="text-2xl">{icon}</span>
                 <span className={`text-[9px] font-black text-center leading-tight ${obtained ? 'text-amber-300' : 'text-gray-500'}`}>
                   {obtained ? name : locName + 'で入手'}
