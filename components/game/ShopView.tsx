@@ -38,16 +38,16 @@ export default function ShopView({ gs, onBuy, onClose }: Props) {
     <div className="p-3 max-w-lg mx-auto flex flex-col gap-3">
 
       {/* Header */}
-      <div className="bg-[#0c0c24] border-2 border-green-800 rounded-xl p-4">
+      <div className="bg-[#0c0c24] border-2 border-green-800 p-4">
         <div className="flex items-center gap-3 mb-3">
           <button
             onClick={onClose}
-            className="text-xs font-bold text-gray-400 hover:text-white bg-slate-800 hover:bg-slate-700 border border-slate-600 px-3 py-1.5 rounded-lg transition"
+            className="text-xs font-bold text-gray-400 hover:text-white bg-slate-800 hover:bg-slate-700 border border-slate-600 px-3 py-1.5 transition"
           >
             ← もどる
           </button>
           <h2 className="text-xl font-black text-white">🛒 ショップ</h2>
-          <div className="ml-auto flex items-center gap-1 bg-amber-950 border-2 border-amber-800 rounded-lg px-3 py-1">
+          <div className="ml-auto flex items-center gap-1 bg-amber-950 border-2 border-amber-800 px-3 py-1">
             <span className="text-xs">💰</span>
             <span className="font-black text-amber-300">{gs.gold}</span>
             <span className="text-xs text-amber-700">G</span>
@@ -65,7 +65,7 @@ export default function ShopView({ gs, onBuy, onClose }: Props) {
         const tiers = Math.min(5, Math.floor(daysSpent / 10))
         if (tiers <= 0) return null
         return (
-          <div className="bg-amber-950/60 border-2 border-amber-700 rounded-xl px-4 py-2 flex items-center gap-2">
+          <div className="bg-amber-950/60 border-2 border-amber-700 px-4 py-2 flex items-center gap-2">
             <span className="text-amber-400 text-xl">📈</span>
             <div className="text-xs text-amber-300 font-bold">物価上昇中（+{tiers * 10}%）経過日数: {daysSpent}日 — 早めに買おう！</div>
           </div>
@@ -73,9 +73,9 @@ export default function ShopView({ gs, onBuy, onClose }: Props) {
       })()}
 
       {/* Items */}
-      <div className="bg-[#0c0c24] border-2 border-amber-800 rounded-xl p-3">
-        <div className="text-xs font-black text-amber-500 mb-3 tracking-widest">— ラインナップ —</div>
-        <div className="flex flex-col gap-2">
+      <div className="bg-[#0c0c24] border-2 border-amber-800">
+        <div className="text-xs font-black text-amber-500 px-3 py-2 border-b border-[#1a1a38] tracking-widest">— ラインナップ —</div>
+        <div className="flex flex-col">
           {shopItems.map(itemId => {
             const item = ITEMS[itemId]
             if (!item) return null
@@ -92,66 +92,54 @@ export default function ShopView({ gs, onBuy, onClose }: Props) {
             )
 
             return (
-              <div key={itemId} className={`bg-slate-900 border-2 rounded-xl p-4 flex items-center gap-3 ${
-                isRecommended && canBuy ? 'border-yellow-600 ring-1 ring-yellow-500/30' : canBuy ? 'border-slate-700' : 'border-slate-800 opacity-60'
-              }`}>
-                <div className="text-4xl">{item.emoji}</div>
-                <div className="flex-1">
-                  <div className="flex items-center gap-2">
-                    <span className="font-black text-white text-sm">{item.name}</span>
-                    {isRecommended && canBuy && (
-                      <span className="text-[9px] font-black px-1.5 py-0.5 rounded bg-yellow-950 border border-yellow-600 text-yellow-400 animate-pulse">おすすめ</span>
+              <div key={itemId} className={`flex items-center gap-0 border-b border-[#1a1a38] last:border-b-0 ${!canBuy ? 'opacity-50' : ''}`}>
+                {/* ▶ cursor */}
+                <span className="w-5 shrink-0 text-center text-xs font-black" style={{ color: isRecommended && canBuy ? '#fbbf24' : 'transparent' }}>▶</span>
+                {/* emoji + info */}
+                <div className="flex items-center gap-2 py-2.5 flex-1 min-w-0">
+                  <span className="text-base w-6 text-center shrink-0">{item.emoji}</span>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-1.5 flex-wrap">
+                      <span className="font-black text-sm text-white">{item.name}</span>
+                      {owned > 0 && <span className="text-[9px] text-blue-400 font-bold">×{owned}</span>}
+                      {isRecommended && canBuy && (
+                        <span className="text-[8px] font-black px-1 border border-yellow-600 text-yellow-400 animate-pulse">おすすめ</span>
+                      )}
+                    </div>
+                    <div className="text-[9px] text-gray-500 mt-0.5 truncate">{item.desc}</div>
+                    {item.effect === 'heal_hp' && gs.playerHp < gs.playerMaxHp && (
+                      <div className="text-[9px] text-green-400 font-bold">HP +{Math.min(item.power, gs.playerMaxHp - gs.playerHp)}</div>
+                    )}
+                    {item.effect === 'heal_mp' && gs.playerMp < gs.playerMaxMp && (
+                      <div className="text-[9px] text-blue-400 font-bold">MP +{Math.min(item.power, gs.playerMaxMp - gs.playerMp)}</div>
+                    )}
+                    {item.effect === 'heal_both' && (
+                      <div className="text-[9px] text-purple-400 font-bold">HP+{Math.min(item.power, gs.playerMaxHp - gs.playerHp)} / MP+{Math.min(40, gs.playerMaxMp - gs.playerMp)}</div>
                     )}
                   </div>
-                  <div className="text-xs text-gray-400 mt-0.5">{item.desc}</div>
-                  {/* Recovery preview */}
-                  {item.effect === 'heal_hp' && gs.playerHp < gs.playerMaxHp && (
-                    <div className="text-[10px] text-green-400 font-bold mt-0.5">
-                      HP {gs.playerHp} → {Math.min(gs.playerMaxHp, gs.playerHp + item.power)}（+{Math.min(item.power, gs.playerMaxHp - gs.playerHp)}）
-                    </div>
-                  )}
-                  {item.effect === 'heal_mp' && gs.playerMp < gs.playerMaxMp && (
-                    <div className="text-[10px] text-blue-400 font-bold mt-0.5">
-                      MP {gs.playerMp} → {Math.min(gs.playerMaxMp, gs.playerMp + item.power)}（+{Math.min(item.power, gs.playerMaxMp - gs.playerMp)}）
-                    </div>
-                  )}
-                  {item.effect === 'heal_both' && (
-                    <div className="text-[10px] text-purple-400 font-bold mt-0.5">
-                      HP +{Math.min(item.power, gs.playerMaxHp - gs.playerHp)} / MP +{Math.min(40, gs.playerMaxMp - gs.playerMp)}
-                    </div>
-                  )}
-                  {owned > 0 && <div className="text-xs text-blue-400 font-bold mt-0.5">所持: {owned}個</div>}
                 </div>
-                <div className="text-right shrink-0">
-                  <div className={`font-black text-base ${isPriceUp ? 'text-red-400' : 'text-amber-300'}`}>
-                    {currentPrice}G
-                    {isPriceUp && <span className="text-xs text-red-500 ml-1">↑</span>}
+                {/* price + buy */}
+                <div className="flex items-center gap-1 shrink-0 pr-1">
+                  <div className="text-right mr-1">
+                    <div className={`font-black text-sm ${isPriceUp ? 'text-red-400' : 'text-amber-300'}`}>
+                      {currentPrice}G{isPriceUp && <span className="text-[9px] text-red-500 ml-0.5">↑</span>}
+                    </div>
+                    {isPriceUp && <div className="text-[9px] text-gray-700 line-through">{item.price}G</div>}
                   </div>
-                  {isPriceUp && <div className="text-xs text-gray-600 line-through">{item.price}G</div>}
-                  <div className="flex gap-1 mt-1.5">
-                    <button
-                      onClick={() => onBuy(itemId)}
-                      disabled={!canBuy}
-                      className={`flex-1 px-3 py-1.5 rounded-lg text-sm font-black border-2 transition active:scale-95 ${
-                        canBuy
-                          ? 'bg-green-900 hover:bg-green-800 border-green-600 text-white'
-                          : 'bg-gray-900 border-gray-800 text-gray-600 cursor-not-allowed'
-                      }`}
-                    >
-                      ×1
-                    </button>
-                    <button
-                      onClick={() => { onBuy(itemId); onBuy(itemId); onBuy(itemId) }}
-                      disabled={gs.gold < currentPrice * 3}
-                      className={`px-2 py-1.5 rounded-lg text-xs font-black border-2 transition active:scale-95 ${
-                        gs.gold >= currentPrice * 3
-                          ? 'bg-blue-900 hover:bg-blue-800 border-blue-600 text-white'
-                          : 'bg-gray-900 border-gray-800 text-gray-600 cursor-not-allowed'
-                      }`}
-                    >
-                      ×3
-                    </button>
-                  </div>
+                  <button
+                    onClick={() => onBuy(itemId)}
+                    disabled={!canBuy}
+                    className={`px-2.5 py-1.5 text-xs font-black border transition active:scale-95 ${
+                      canBuy ? 'bg-green-900 hover:bg-green-800 border-green-700 text-white' : 'bg-gray-900 border-gray-800 text-gray-600 cursor-not-allowed'
+                    }`}
+                  >×1</button>
+                  <button
+                    onClick={() => { onBuy(itemId); onBuy(itemId); onBuy(itemId) }}
+                    disabled={gs.gold < currentPrice * 3}
+                    className={`px-2 py-1.5 text-xs font-black border transition active:scale-95 ${
+                      gs.gold >= currentPrice * 3 ? 'bg-blue-900 hover:bg-blue-800 border-blue-700 text-white' : 'bg-gray-900 border-gray-800 text-gray-600 cursor-not-allowed'
+                    }`}
+                  >×3</button>
                 </div>
               </div>
             )

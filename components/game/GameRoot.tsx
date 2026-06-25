@@ -458,7 +458,7 @@ export default function GameRoot() {
         const lastSkill = newLvSkill && gs.playerSkills.length > 0 ? gs.playerSkills[gs.playerSkills.length - 1] : null
         return (
           <div className="fixed inset-0 z-50 flex items-center justify-center" style={{ background: 'radial-gradient(ellipse at center, rgba(245,158,11,0.15) 0%, rgba(0,0,0,0.85) 70%)' }}>
-            <div className="bg-[#0c0c24] border-2 border-amber-500 rounded-2xl px-8 py-7 text-center shadow-2xl max-w-sm w-full mx-4"
+            <div className="bg-[#0c0c24] border-2 border-amber-500 px-8 py-7 text-center shadow-2xl max-w-sm w-full mx-4"
                  style={{ boxShadow: '0 0 60px rgba(245,158,11,0.4), 0 0 20px rgba(245,158,11,0.2)' }}>
               <div className="text-6xl mb-2" style={{ filter: 'drop-shadow(0 0 16px rgba(245,158,11,0.8))' }}>⭐</div>
               <div className="text-3xl font-black text-amber-300 tracking-wider" style={{ textShadow: '0 0 20px rgba(245,158,11,0.6)' }}>LEVEL UP!</div>
@@ -471,19 +471,19 @@ export default function GameRoot() {
                   { label: 'DEF', val: '+2', color: '#93c5fd' },
                   { label: 'SPD', val: '+1', color: '#fbbf24' },
                 ].map(s => (
-                  <div key={s.label} className="bg-slate-900 border border-slate-700 rounded-lg py-2 text-center">
+                  <div key={s.label} className="bg-slate-900 border border-slate-700 py-2 text-center">
                     <div className="text-[10px] text-gray-500 font-bold">{s.label}</div>
                     <div className="text-sm font-black" style={{ color: s.color }}>{s.val}</div>
                   </div>
                 ))}
               </div>
               {lastSkill && (
-                <div className="bg-purple-950/80 border-2 border-purple-500 rounded-xl px-4 py-2.5 mb-3"
+                <div className="bg-purple-950/80 border-2 border-purple-500 px-4 py-2.5 mb-3"
                      style={{ boxShadow: '0 0 20px rgba(168,85,247,0.3)' }}>
                   <div className="text-xs text-purple-400 font-black mb-0.5">✨ 新スキル習得！</div>
                   <div className="font-black text-purple-200 text-base">「{lastSkill.name}」</div>
                   <div className="flex items-center justify-center gap-3 mt-1 mb-1">
-                    <span className="text-[10px] text-blue-400 font-bold bg-blue-950 border border-blue-700 px-2 py-0.5 rounded">MP {lastSkill.mpCost}</span>
+                    <span className="text-[10px] text-blue-400 font-bold bg-blue-950 border border-blue-700 px-2 py-0.5">MP {lastSkill.mpCost}</span>
                     <span className="text-[10px] text-gray-400 font-bold">
                       {lastSkill.target === 'enemy_one' ? '敵1体' : lastSkill.target === 'enemy_all' ? '敵全体' : lastSkill.target === 'ally_all' ? '味方全体' : lastSkill.target === 'ally_one' ? '味方1体' : '自分'}
                     </span>
@@ -493,7 +493,7 @@ export default function GameRoot() {
               )}
               <button
                 onClick={handleDismissLevelUp}
-                className="px-8 py-2.5 bg-amber-700 hover:bg-amber-600 border-2 border-amber-500 text-white font-black rounded-xl transition active:scale-95 w-full"
+                className="px-8 py-2.5 bg-amber-700 hover:bg-amber-600 border-2 border-amber-500 text-white font-black transition active:scale-95 w-full"
               >
                 確認 ▶
               </button>
@@ -515,7 +515,7 @@ export default function GameRoot() {
             style={{ background: `radial-gradient(ellipse at center, ${cfg.glow} 0%, rgba(0,0,0,0.7) 60%)` }}
           >
             <div
-              className="text-center border-2 rounded-2xl px-10 py-8"
+              className="text-center border-2 px-10 py-8"
               style={{ background: cfg.bg, borderColor: cfg.border, boxShadow: `0 0 60px ${cfg.glow}` }}
             >
               <div style={{ fontSize: 72, lineHeight: 1, filter: `drop-shadow(0 0 20px ${cfg.color})` }}>{cfg.icon}</div>
@@ -532,7 +532,7 @@ export default function GameRoot() {
       {/* 実績解除トースト */}
       {achievementToast && (
         <div
-          className="fixed top-4 left-1/2 -translate-x-1/2 z-[60] flex items-center gap-3 px-5 py-3 rounded-2xl border-2 shadow-2xl"
+          className="fixed top-4 left-1/2 -translate-x-1/2 z-[60] flex items-center gap-3 px-5 py-3 border-2 shadow-2xl"
           style={{ background: '#1c1208', borderColor: '#d97706', boxShadow: '0 0 30px rgba(217,119,6,0.5)', minWidth: 260, maxWidth: 340 }}
         >
           <span style={{ fontSize: 28 }}>{achievementToast.icon}</span>
@@ -546,7 +546,7 @@ export default function GameRoot() {
 
       {/* Save notification */}
       {saveMsg && (
-        <div className="fixed bottom-4 right-4 z-50 bg-green-950 border-2 border-green-600 text-green-300 px-4 py-2 rounded-xl text-sm font-black shadow-xl">
+        <div className="fixed bottom-4 right-4 z-50 bg-green-950 border-2 border-green-600 text-green-300 px-4 py-2 text-sm font-black shadow-xl">
           💾 {saveMsg}
         </div>
       )}
@@ -558,7 +558,7 @@ export default function GameRoot() {
         const isSuccess = /^(💰|🎁|✨|🎉|💪|⭐|💎|🏆)/.test(msg)
         const isWarn = /^(⚠️|☠️|💀)/.test(msg)
         if (isJoin) return (
-          <div className="fixed top-20 left-1/2 -translate-x-1/2 z-40 bg-purple-950 border-2 border-purple-400 px-5 py-3 rounded-2xl text-sm font-black shadow-2xl max-w-sm text-center"
+          <div className="fixed top-20 left-1/2 -translate-x-1/2 z-40 bg-purple-950 border-2 border-purple-400 px-5 py-3 text-sm font-black shadow-2xl max-w-sm text-center"
             style={{ boxShadow: '0 0 30px rgba(168,85,247,0.4)' }}>
             <div className="text-purple-200">{msg}</div>
           </div>
@@ -569,7 +569,7 @@ export default function GameRoot() {
           ? 'bg-yellow-950 border-yellow-600 text-yellow-200'
           : 'bg-indigo-950 border-indigo-600 text-indigo-200'
         return (
-          <div className={`fixed top-20 left-1/2 -translate-x-1/2 z-40 ${cls} border-2 px-4 py-2 rounded-xl text-sm font-black shadow-xl max-w-xs text-center`}>
+          <div className={`fixed top-20 left-1/2 -translate-x-1/2 z-40 ${cls} border-2 px-4 py-2 text-sm font-black shadow-xl max-w-xs text-center`}>
             {msg}
           </div>
         )
@@ -654,10 +654,10 @@ export default function GameRoot() {
 
         {gs.pendingBranch && gs.phase === 'location' && !diceRolling && (
           <div className="fixed inset-0 z-50 flex flex-col items-center justify-end pb-8 px-4" style={{ background: 'rgba(0,0,0,0.85)' }}>
-            <div className="w-full max-w-md bg-[#0c0c24] border-2 border-amber-600 rounded-2xl p-5 shadow-2xl">
+            <div className="w-full max-w-md bg-[#0c0c24] border-2 border-amber-600 p-5 shadow-2xl">
               <div className="flex items-center justify-between mb-1">
                 <div className="text-xs font-black text-amber-500 tracking-widest">— 選択 —</div>
-                <div className="text-xs font-black text-amber-300 bg-amber-950 border border-amber-800 rounded px-2 py-0.5">💰 {gs.gold}G</div>
+                <div className="text-xs font-black text-amber-300 bg-amber-950 border border-amber-800 px-2 py-0.5">💰 {gs.gold}G</div>
               </div>
               {gs.pendingBranch.prompt && (
                 <div className="text-base font-bold text-white text-center mb-4 px-2">{gs.pendingBranch.prompt}</div>
@@ -670,7 +670,7 @@ export default function GameRoot() {
                       key={i}
                       onClick={() => handleChooseBranch(i)}
                       disabled={cantAfford}
-                      className="w-full py-3 px-4 bg-indigo-900 hover:bg-indigo-800 border-2 border-indigo-500 text-white font-black rounded-xl transition active:scale-95 text-sm text-left disabled:opacity-40 disabled:cursor-not-allowed"
+                      className="w-full py-3 px-4 bg-indigo-900 hover:bg-indigo-800 border-2 border-indigo-500 text-white font-black transition active:scale-95 text-sm text-left disabled:opacity-40 disabled:cursor-not-allowed"
                     >
                       <div>▶ {opt.label}</div>
                       {opt.cost !== undefined && (

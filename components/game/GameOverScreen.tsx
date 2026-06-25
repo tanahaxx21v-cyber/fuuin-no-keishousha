@@ -84,7 +84,7 @@ export default function GameOverScreen({ gs, onRestart }: Props) {
         <p className="text-gray-500 mb-4 text-sm font-bold">{body}</p>
 
         {/* 基本記録 */}
-        <div className="bg-[#0c0c24] border-2 border-red-900 rounded-xl p-4 mb-3 text-left">
+        <div className="bg-[#0c0c24] border-2 border-red-900 p-4 mb-3 text-left">
           <div className="text-xs font-black text-red-400 mb-3 tracking-widest">— 記録 —</div>
           <div className="grid grid-cols-2 gap-3 text-sm">
             <div>
@@ -107,11 +107,11 @@ export default function GameOverScreen({ gs, onRestart }: Props) {
         </div>
 
         {/* 封印石 */}
-        <div className="bg-[#0c0c24] border-2 border-red-900 rounded-xl p-4 mb-3 text-left">
+        <div className="bg-[#0c0c24] border-2 border-red-900 p-4 mb-3 text-left">
           <div className="text-xs font-black text-red-400 mb-2 tracking-widest">— 封印石 {gs.sealStones.length}/3 —</div>
           <div className="flex gap-2 flex-wrap">
             {(['fire', 'storm', 'dark'] as const).map(stone => (
-              <div key={stone} className={`text-xs font-bold px-3 py-1 rounded-full border ${
+              <div key={stone} className={`text-xs font-bold px-3 py-1 border ${
                 gs.sealStones.includes(stone)
                   ? 'border-amber-600 bg-amber-950 text-amber-300'
                   : 'border-gray-700 bg-gray-900 text-gray-600'
@@ -124,7 +124,7 @@ export default function GameOverScreen({ gs, onRestart }: Props) {
 
         {/* 討伐ボス */}
         {defeatedBosses.length > 0 && (
-          <div className="bg-[#0c0c24] border-2 border-red-900 rounded-xl p-4 mb-3 text-left">
+          <div className="bg-[#0c0c24] border-2 border-red-900 p-4 mb-3 text-left">
             <div className="text-xs font-black text-red-400 mb-2 tracking-widest">— 討伐したボス ({defeatedBosses.length}体) —</div>
             <div className="flex flex-col gap-1">
               {defeatedBosses.map(id => (
@@ -136,7 +136,7 @@ export default function GameOverScreen({ gs, onRestart }: Props) {
 
         {/* 仲間 */}
         {(joinedCompanions.length > 0 || deadCompanions.length > 0) && (
-          <div className="bg-[#0c0c24] border-2 border-red-900 rounded-xl p-4 mb-4 text-left">
+          <div className="bg-[#0c0c24] border-2 border-red-900 p-4 mb-4 text-left">
             <div className="text-xs font-black text-red-400 mb-2 tracking-widest">— 仲間 —</div>
             {joinedCompanions.length > 0 && (
               <div className="mb-2">
@@ -158,7 +158,7 @@ export default function GameOverScreen({ gs, onRestart }: Props) {
                     const def = COMPANIONS[c.id]
                     const memorial = COMPANION_MEMORIAL[c.id]
                     return (
-                      <div key={c.id} className="bg-red-950/30 border border-red-900/60 rounded-lg px-3 py-2">
+                      <div key={c.id} className="bg-red-950/30 border border-red-900/60 px-3 py-2">
                         <div className="text-sm text-gray-500 line-through font-bold mb-0.5">
                           {def?.emoji} {def?.name} <span className="text-gray-600">Lv{c.level}</span>
                         </div>
@@ -176,7 +176,7 @@ export default function GameOverScreen({ gs, onRestart }: Props) {
 
         <button
           onClick={onRestart}
-          className="w-full py-4 bg-slate-800 hover:bg-slate-700 border-2 border-slate-600 text-white font-black text-xl rounded-xl transition active:scale-95"
+          className="w-full py-4 bg-slate-800 hover:bg-slate-700 border-2 border-slate-600 text-white font-black text-xl transition active:scale-95"
         >
           タイトルへ戻る
         </button>

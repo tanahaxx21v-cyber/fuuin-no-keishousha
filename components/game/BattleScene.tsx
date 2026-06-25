@@ -385,7 +385,7 @@ export default function BattleScene({ gs, onAttack, onSkill, onItem, onFlee, onC
         return (
           <div className="fixed inset-0 z-[90] flex items-center justify-center pointer-events-none">
             <div className="bg-black/80 backdrop-blur-sm absolute inset-0" />
-            <div className="relative z-10 text-center px-8 py-10 rounded-2xl border-2 border-gray-700 bg-[#0a0a20]/95 shadow-2xl max-w-xs mx-4"
+            <div className="relative z-10 text-center px-8 py-10 border-2 border-gray-700 bg-[#0a0a20]/95 shadow-2xl max-w-xs mx-4"
               style={{ animation: 'fadeIn 0.4s ease' }}
             >
               <div className="text-xs font-black text-gray-500 tracking-widest mb-3">— FALLEN HERO —</div>
@@ -405,7 +405,7 @@ export default function BattleScene({ gs, onAttack, onSkill, onItem, onFlee, onC
       {/* ===== ステータスバー（上部）===== */}
       <div className="flex items-stretch bg-[#12123a] border-b-2 border-[#2848c0] px-2 py-1 shrink-0 gap-2">
         <div className="flex items-center gap-1.5 shrink-0">
-          <span className={`text-xs font-black px-2 py-0.5 rounded border ${
+          <span className={`text-xs font-black px-2 py-0.5 border ${
             b.isBoss
               ? 'border-red-500 bg-red-950 text-red-300'
               : 'border-yellow-700 bg-yellow-950 text-yellow-400'
@@ -413,21 +413,21 @@ export default function BattleScene({ gs, onAttack, onSkill, onItem, onFlee, onC
             {b.isBoss ? '👑BOSS' : `T${b.turn}`}
           </span>
           {b.bossRaged && (
-            <span className="text-xs font-black px-2 py-0.5 rounded border border-red-600 bg-red-950 text-red-400 animate-pulse">
+            <span className="text-xs font-black px-2 py-0.5 border border-red-600 bg-red-950 text-red-400 animate-pulse">
               💢激怒
             </span>
           )}
           {playerDanger && (
-            <span className="text-xs font-black px-2 py-0.5 rounded border border-red-500 bg-red-950 text-red-300 animate-pulse">
+            <span className="text-xs font-black px-2 py-0.5 border border-red-500 bg-red-950 text-red-300 animate-pulse">
               ⚠️危機
             </span>
           )}
           {b.isBoss && enemies.find(e => e.isBoss && e.hp > 0 && e.hp <= e.maxHp * 0.3) && (
-            <span className="text-xs font-black px-2 py-0.5 rounded border border-orange-500 bg-orange-950 text-orange-300 animate-pulse">
+            <span className="text-xs font-black px-2 py-0.5 border border-orange-500 bg-orange-950 text-orange-300 animate-pulse">
               🌋瀕死
             </span>
           )}
-          <span className={`text-xs font-bold px-2 py-0.5 rounded border ${
+          <span className={`text-xs font-bold px-2 py-0.5 border ${
             isPlayerTurn
               ? 'border-green-600 bg-green-950 text-green-300'
               : 'border-slate-700 bg-slate-950 text-slate-400'
@@ -449,7 +449,7 @@ export default function BattleScene({ gs, onAttack, onSkill, onItem, onFlee, onC
           {playerUnit.statusEffects.length > 0 && (
             <div className="flex gap-1 flex-wrap">
               {playerUnit.statusEffects.map(e => (
-                <span key={e.id} className="text-[9px] bg-slate-900 border border-slate-700 rounded px-1 leading-tight" style={{ color: e.id === 'poison' ? '#f87171' : e.id === 'stun' ? '#fde047' : e.id === 'atk_down' ? '#fca5a5' : '#86efac' }}>
+                <span key={e.id} className="text-[9px] bg-slate-900 border border-slate-700 px-1 leading-tight" style={{ color: e.id === 'poison' ? '#f87171' : e.id === 'stun' ? '#fde047' : e.id === 'atk_down' ? '#fca5a5' : '#86efac' }}>
                   {statusIcon(e.id)}{e.turnsLeft}
                 </span>
               ))}
@@ -462,11 +462,11 @@ export default function BattleScene({ gs, onAttack, onSkill, onItem, onFlee, onC
       <div className="relative shrink-0" style={{ height: '256px' }}>
         {/* クリティカル・死亡フラッシュ */}
         {critFlash && (
-          <div className="absolute inset-0 z-50 pointer-events-none rounded" style={{ background: 'rgba(255,230,0,0.18)', transition: 'opacity 0.35s' }} />
+          <div className="absolute inset-0 z-50 pointer-events-none" style={{ background: 'rgba(255,230,0,0.18)', transition: 'opacity 0.35s' }} />
         )}
         {critText && (
           <div className="absolute inset-x-0 top-1/3 z-50 pointer-events-none flex justify-center">
-            <div className="text-2xl font-black text-yellow-300 px-3 py-1 rounded-lg"
+            <div className="text-2xl font-black text-yellow-300 px-3 py-1"
               style={{ textShadow: '0 0 12px rgba(255,220,0,0.9), 0 2px 0 rgba(0,0,0,0.8)', animation: 'fadeIn 0.1s ease, fadeOut 0.4s ease 0.3s forwards' }}>
               ✦ CRITICAL! ✦
             </div>
@@ -474,14 +474,14 @@ export default function BattleScene({ gs, onAttack, onSkill, onItem, onFlee, onC
         )}
         {spellCast && (
           <div className="absolute inset-x-0 top-2/5 z-50 pointer-events-none flex justify-center" style={{ top: '40%' }}>
-            <div className="text-xl font-black px-3 py-1 rounded-lg"
+            <div className="text-xl font-black px-3 py-1"
               style={{ color: spellCast.color, textShadow: `0 0 16px ${spellCast.color}, 0 2px 0 rgba(0,0,0,0.9)`, animation: 'fadeIn 0.1s ease, fadeOut 0.35s ease 0.25s forwards' }}>
               {spellCast.label}
             </div>
           </div>
         )}
         {deathFlash && (
-          <div className="absolute inset-0 z-50 pointer-events-none rounded" style={{ background: 'rgba(180,0,0,0.2)', transition: 'opacity 0.4s' }} />
+          <div className="absolute inset-0 z-50 pointer-events-none" style={{ background: 'rgba(180,0,0,0.2)', transition: 'opacity 0.4s' }} />
         )}
 
         {/* バトル背景（場所タイプ別）*/}
@@ -605,7 +605,7 @@ export default function BattleScene({ gs, onAttack, onSkill, onItem, onFlee, onC
         <div className="mx-2 mt-1 flex gap-1.5">
           {allies.filter(a => a.hp > 0).map(a => (
             <button key={a.uid} onClick={() => handleSelectTarget(a)}
-              className="flex-1 flex items-center gap-2 bg-green-900/90 border-2 border-green-500 rounded-xl p-2 hover:bg-green-800 active:scale-95 transition">
+              className="flex-1 flex items-center gap-2 bg-green-900/90 border-2 border-green-500 p-2 hover:bg-green-800 active:scale-95 transition">
               <CharPortrait charId={a.companionId ?? (a.isPlayer ? 'player' : 'gares')} size={40} />
               <div className="flex-1 min-w-0">
                 <span className="text-xs font-black text-white block truncate">{a.name}</span>
@@ -614,7 +614,7 @@ export default function BattleScene({ gs, onAttack, onSkill, onItem, onFlee, onC
               </div>
             </button>
           ))}
-          <button onClick={cancelTarget} className="px-3 text-xs text-gray-400 border border-gray-700 rounded-xl shrink-0">← もどる</button>
+          <button onClick={cancelTarget} className="px-3 text-xs text-gray-400 border border-gray-700 shrink-0">← もどる</button>
         </div>
       )}
 
@@ -797,7 +797,7 @@ export default function BattleScene({ gs, onAttack, onSkill, onItem, onFlee, onC
               <div className="text-xs font-black text-yellow-400 animate-pulse tracking-wide">
                 {mode === 'target_attack' ? '⚔️ 攻撃する敵をタップ' : `✨ ${pendingSkill?.name} — 対象をタップ`}
               </div>
-              <button onClick={cancelTarget} className="text-xs text-gray-400 hover:text-white border border-gray-700 px-4 py-1.5 rounded-xl w-full">
+              <button onClick={cancelTarget} className="text-xs text-gray-400 hover:text-white border border-gray-700 px-4 py-1.5 w-full">
                 ← もどる
               </button>
             </div>
@@ -813,7 +813,7 @@ export default function BattleScene({ gs, onAttack, onSkill, onItem, onFlee, onC
 
       {/* ===== 勝利 / 敗北 ===== */}
       {isOver && (
-        <div className={`mx-2 mt-2 mb-3 rounded-2xl border-2 overflow-hidden ${
+        <div className={`mx-2 mt-2 mb-3 border-2 overflow-hidden ${
           b.phase === 'victory'
             ? b.isBoss ? 'bg-amber-950 border-amber-400' : 'bg-amber-950 border-amber-600'
             : 'bg-red-950 border-red-700'
@@ -875,7 +875,7 @@ export default function BattleScene({ gs, onAttack, onSkill, onItem, onFlee, onC
                 })()}
                 {/* 封印石 */}
                 {b.sealStoneFound && (
-                  <div className="bg-amber-900/50 border-2 border-amber-400 rounded-xl px-4 py-2 text-amber-200 font-black animate-pulse"
+                  <div className="bg-amber-900/50 border-2 border-amber-400 px-4 py-2 text-amber-200 font-black animate-pulse"
                     style={{ boxShadow: '0 0 20px rgba(251,191,36,0.3)' }}>
                     💎 封印石を入手！
                   </div>
@@ -888,7 +888,7 @@ export default function BattleScene({ gs, onAttack, onSkill, onItem, onFlee, onC
                 {(() => {
                   const companionLog = b.logs.slice().reverse().find(l => l.type === 'system' && /「.+」/.test(l.text) && !l.text.startsWith('👹'))
                   if (companionLog) return (
-                    <div className="text-xs text-gray-300 italic bg-slate-900/60 border border-slate-700 rounded-lg px-3 py-1.5">{companionLog.text}</div>
+                    <div className="text-xs text-gray-300 italic bg-slate-900/60 border border-slate-700 px-3 py-1.5">{companionLog.text}</div>
                   )
                   const alive = allies.filter(a => !a.isPlayer && a.hp > 0)
                   if (alive.length === 0) return null
@@ -908,7 +908,7 @@ export default function BattleScene({ gs, onAttack, onSkill, onItem, onFlee, onC
 
             <button
               onClick={onClose}
-              className={`px-10 py-3 rounded-xl font-black border-2 transition active:scale-95 text-lg ${
+              className={`px-10 py-3 font-black border-2 transition active:scale-95 text-lg ${
                 b.phase === 'victory'
                   ? b.isBoss
                     ? 'bg-amber-600 hover:bg-amber-500 border-amber-300 text-white'

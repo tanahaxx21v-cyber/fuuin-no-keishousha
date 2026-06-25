@@ -201,7 +201,7 @@ export default function LocationView({
           style={{ background: 'rgba(4,4,20,0.88)' }}
           onClick={() => setShowArrival(false)}
         >
-          <div className={`relative max-w-sm w-full mx-6 rounded-2xl border-2 ${arrivalBorder} bg-gradient-to-b ${arrivalBg} p-8 text-center shadow-2xl`}
+          <div className={`relative max-w-sm w-full mx-6 border-2 ${arrivalBorder} bg-gradient-to-b ${arrivalBg} p-8 text-center shadow-2xl`}
             style={{ animation: 'fadeIn 0.5s ease' }}
           >
             {/* タイプラベル */}
@@ -214,10 +214,10 @@ export default function LocationView({
             <div className="text-sm text-gray-400 leading-relaxed mb-4 px-2">{loc.desc}</div>
             {/* ダンジョン危険度 */}
             {dangerInfo && (
-              <div className="inline-flex items-center gap-2 bg-red-950/80 border border-red-700 rounded-lg px-4 py-1.5 mb-4">
+              <div className="inline-flex items-center gap-2 bg-red-950/80 border border-red-700 px-4 py-1.5 mb-4">
                 <span className="text-xs font-black text-red-400">危険度</span>
                 <span className="text-sm text-orange-300">{dangerInfo.rank}</span>
-                <span className="text-xs font-black px-1.5 py-0.5 rounded text-white"
+                <span className="text-xs font-black px-1.5 py-0.5 text-white"
                   style={{ background: dangerInfo.color }}
                 >{dangerInfo.label}</span>
               </div>
@@ -239,7 +239,7 @@ export default function LocationView({
         const isLowHp = avgHpPct < 0.5
         return (
           <div className="fixed inset-0 z-[80] flex items-center justify-center" style={{ background: 'rgba(4,4,10,0.92)' }}>
-            <div className="relative max-w-sm w-full mx-4 rounded-2xl border-2 border-red-600 bg-gradient-to-b from-red-950 to-[#1a0808] p-6 text-center shadow-2xl" style={{ animation: 'fadeIn 0.3s ease' }}>
+            <div className="relative max-w-sm w-full mx-4 border-2 border-red-600 bg-gradient-to-b from-red-950 to-[#1a0808] p-6 text-center shadow-2xl" style={{ animation: 'fadeIn 0.3s ease' }}>
               <div className="text-xs font-black text-red-500 tracking-widest mb-3">⚠️ BOSS BATTLE 確認</div>
               <div className="text-5xl mb-2" style={{ filter: 'drop-shadow(0 0 20px rgba(255,50,50,0.6))' }}>{boss.emoji}</div>
               <div className="text-xl font-black text-red-200 mb-1">{boss.name}</div>
@@ -247,7 +247,7 @@ export default function LocationView({
                 <span className="text-orange-400">ATK {boss.atk}</span>
                 <span className="text-blue-400">DEF {boss.def}</span>
               </div>
-              <div className="bg-black/40 border border-slate-700 rounded-xl p-3 mb-3 text-left">
+              <div className="bg-black/40 border border-slate-700 p-3 mb-3 text-left">
                 <div className="text-[10px] font-black text-slate-400 mb-2 tracking-widest">現在のパーティ状態</div>
                 {allUnits.map((u, i) => {
                   const pct = u.hp / u.maxHp * 100
@@ -264,25 +264,25 @@ export default function LocationView({
                 })}
               </div>
               {isLowHp && (
-                <div className="bg-yellow-950/80 border border-yellow-700 rounded-lg px-3 py-2 text-xs text-yellow-300 font-bold mb-3">
+                <div className="bg-yellow-950/80 border border-yellow-700 px-3 py-2 text-xs text-yellow-300 font-bold mb-3">
                   ⚠️ HP平均 {Math.round(avgHpPct * 100)}%。宿屋での回復を推奨します。
                 </div>
               )}
               {loc.sealStone && !gs.sealStones.includes(loc.sealStone) && (
-                <div className="bg-amber-950/60 border border-amber-700 rounded-lg px-3 py-1.5 text-xs text-amber-300 font-bold mb-3">
+                <div className="bg-amber-950/60 border border-amber-700 px-3 py-1.5 text-xs text-amber-300 font-bold mb-3">
                   💎 勝利で封印石を入手できます！
                 </div>
               )}
               <div className="flex gap-2">
                 <button
                   onClick={() => { setShowBossConfirm(false); onFightBoss() }}
-                  className="flex-1 py-2.5 bg-red-800 hover:bg-red-700 border-2 border-red-500 text-white font-black rounded-xl transition active:scale-95 text-sm"
+                  className="flex-1 py-2.5 bg-red-800 hover:bg-red-700 border-2 border-red-500 text-white font-black transition active:scale-95 text-sm"
                 >
                   ⚔️ 挑む！
                 </button>
                 <button
                   onClick={() => setShowBossConfirm(false)}
-                  className="flex-1 py-2.5 bg-slate-800 hover:bg-slate-700 border-2 border-slate-600 text-gray-300 font-black rounded-xl transition active:scale-95 text-sm"
+                  className="flex-1 py-2.5 bg-slate-800 hover:bg-slate-700 border-2 border-slate-600 text-gray-300 font-black transition active:scale-95 text-sm"
                 >
                   引き返す
                 </button>
@@ -327,7 +327,7 @@ export default function LocationView({
         const def = COMPANIONS[flavorLine.speakerId]
         return (
           <div className="bg-[#0c0c24] border border-slate-700 px-4 py-2.5 flex items-start gap-3">
-            <div className="shrink-0 rounded-lg overflow-hidden border border-slate-600 mt-0.5">
+            <div className="shrink-0 overflow-hidden border border-slate-600 mt-0.5">
               <CharPortrait charId={flavorLine.speakerId} size={36} rounded={4} />
             </div>
             <div className="flex-1 min-w-0">
@@ -383,14 +383,14 @@ export default function LocationView({
             <div className="relative z-20 px-3 pb-4 shrink-0">
               {/* 名前タブ */}
               <div className="ml-3 mb-0 flex">
-                <div className="px-4 py-1.5 text-sm font-black rounded-t-xl border-t-2 border-x-2"
+                <div className="px-4 py-1.5 text-sm font-black border-t-2 border-x-2"
                   style={{ color: glow, borderColor: glow, background: '#0a0a1a', boxShadow: `0 -6px 16px ${glow}20` }}>
                   {pendingJoin.emoji} {pendingJoin.name} — {pendingJoin.cls}
                 </div>
               </div>
 
               {/* メインボックス */}
-              <div className="overflow-hidden border-2 rounded-b-xl rounded-tr-xl"
+              <div className="overflow-hidden border-2"
                 style={{ background: 'rgba(2,4,14,0.97)', borderColor: glow, boxShadow: `0 0 40px ${glow}20` }}>
 
                 {/* 加入セリフ */}
@@ -402,7 +402,7 @@ export default function LocationView({
 
                 {/* ステータス */}
                 <div className="px-4 pb-3">
-                  <div className="grid grid-cols-4 gap-1.5 bg-slate-900/80 rounded-lg px-3 py-2.5 border border-slate-700 mb-3">
+                  <div className="grid grid-cols-4 gap-1.5 bg-slate-900/80 px-3 py-2.5 border border-slate-700 mb-3">
                     {[
                       { label: 'HP', value: cs.maxHp, color: '#4ade80' },
                       { label: 'ATK', value: cs.atk, color: '#f87171' },
@@ -417,13 +417,13 @@ export default function LocationView({
                   </div>
 
                   {joinedCount >= 3 && (
-                    <div className="text-xs text-amber-400 font-bold mb-2.5 text-center bg-amber-950/50 rounded-lg py-1.5 border border-amber-800">
+                    <div className="text-xs text-amber-400 font-bold mb-2.5 text-center bg-amber-950/50 py-1.5 border border-amber-800">
                       ⚠️ 仲間はすでに3人。これ以上は加入できません。
                     </div>
                   )}
 
                   {isOneTimeCompanion(pendingJoin.id) && (
-                    <div className="text-xs text-red-400 font-bold mb-2.5 text-center bg-red-950/50 rounded-lg py-1.5 border border-red-800">
+                    <div className="text-xs text-red-400 font-bold mb-2.5 text-center bg-red-950/50 py-1.5 border border-red-800">
                       ⚠️ この仲間は一度断ると、二度と加入を申し出ません。
                     </div>
                   )}
@@ -432,14 +432,14 @@ export default function LocationView({
                     <button
                       onClick={() => onJoinCompanion(gs.pendingCompanionJoin!)}
                       disabled={joinedCount >= 3}
-                      className="flex-1 py-3 font-black text-white rounded-xl transition active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed border-2"
+                      className="flex-1 py-3 font-black text-white transition active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed border-2"
                       style={{ background: `${glow}33`, borderColor: glow, boxShadow: `0 0 16px ${glow}30` }}
                     >
                       ✅ 仲間にする
                     </button>
                     <button
                       onClick={onSkipCompanion}
-                      className={`px-5 py-3 border-2 font-bold rounded-xl transition active:scale-95 ${
+                      className={`px-5 py-3 border-2 font-bold transition active:scale-95 ${
                         isOneTimeCompanion(pendingJoin.id)
                           ? 'bg-red-950 hover:bg-red-900 border-red-700 text-red-300'
                           : 'bg-slate-800 hover:bg-slate-700 border-slate-600 text-gray-300'
@@ -467,7 +467,7 @@ export default function LocationView({
               <span className="text-red-400 text-sm font-black animate-pulse">⚠</span>
               <span className="text-xs font-black text-red-400 tracking-widest">— 危険区域 —</span>
               {danger && (
-                <span className="ml-auto text-xs font-black px-2 py-0.5 rounded border border-red-800"
+                <span className="ml-auto text-xs font-black px-2 py-0.5 border border-red-800"
                   style={{ color: danger.color, borderColor: danger.color, background: `${danger.color}18` }}>
                   {danger.label}
                 </span>
@@ -497,11 +497,11 @@ export default function LocationView({
 
       {/* 状態異常警告 */}
       {gs.playerStatus && gs.playerStatus.length > 0 && (
-        <div className="bg-purple-950/80 border-2 border-purple-700 rounded-xl px-4 py-3">
+        <div className="bg-purple-950/80 border-2 border-purple-700 px-4 py-3">
           <div className="flex items-center gap-2 flex-wrap">
             <span className="text-purple-400 font-black text-sm">⚠️ 状態異常中</span>
             {gs.playerStatus.map(ef => (
-              <span key={ef.id} className="text-xs font-bold px-2 py-0.5 rounded border border-purple-600 bg-purple-900/60 text-purple-200">
+              <span key={ef.id} className="text-xs font-bold px-2 py-0.5 border border-purple-600 bg-purple-900/60 text-purple-200">
                 {ef.id === 'poison' ? `☠️ 毒（残${ef.turnsLeft}T）` : ef.id === 'stun' ? `⚡ スタン（残${ef.turnsLeft}T）` : ef.id === 'atk_down' ? `⬇️ ATK低下（残${ef.turnsLeft}T）` : `${ef.id}（残${ef.turnsLeft}T）`}
               </span>
             ))}
@@ -575,7 +575,7 @@ export default function LocationView({
                   ? allUnits.reduce((sum, u) => sum + u.hp / u.maxHp, 0) / allUnits.length
                   : 1
                 return avgHpPct < 0.5 ? (
-                  <div className="bg-yellow-950/80 border border-yellow-700 rounded-lg px-3 py-2 text-xs text-yellow-300 font-bold">
+                  <div className="bg-yellow-950/80 border border-yellow-700 px-3 py-2 text-xs text-yellow-300 font-bold">
                     ⚠️ HP平均 {Math.round(avgHpPct * 100)}%。宿屋で回復してから挑むと安全です。
                   </div>
                 ) : null
@@ -679,7 +679,7 @@ export default function LocationView({
 
       {/* アイテム使用パネル */}
       {onUseItem && gs.inventory.filter(i => i.qty > 0 && ['heal_hp','heal_mp','heal_both','cure_status'].includes(ITEMS[i.itemId]?.effect ?? '')).length > 0 && (
-        <div className="bg-[#0c0c24] border-2 border-teal-800/60 rounded-xl overflow-hidden">
+        <div className="bg-[#0c0c24] border-2 border-teal-800/60 overflow-hidden">
           <button
             onClick={() => setItemPanelOpen(v => !v)}
             className="w-full flex items-center gap-3 px-4 py-3 text-left hover:bg-teal-950/30 transition"
@@ -702,7 +702,7 @@ export default function LocationView({
                     <button
                       key={slot.itemId}
                       onClick={() => setSelectedItemId(selectedItemId === slot.itemId ? null : slot.itemId)}
-                      className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg border-2 text-xs font-bold transition ${
+                      className={`flex items-center gap-1.5 px-3 py-1.5 border-2 text-xs font-bold transition ${
                         selectedItemId === slot.itemId
                           ? 'border-teal-400 bg-teal-950 text-white'
                           : 'border-slate-600 bg-slate-900 text-gray-300 hover:border-teal-700'
@@ -728,7 +728,7 @@ export default function LocationView({
                     {/* プレイヤー */}
                     <button
                       onClick={() => { onUseItem(selectedItemId, 'player'); setSelectedItemId(null); setItemPanelOpen(false) }}
-                      className="flex items-center gap-2 bg-indigo-950 border border-indigo-700 rounded-lg px-3 py-2 text-xs font-bold text-white hover:bg-indigo-900 transition active:scale-95"
+                      className="flex items-center gap-2 bg-indigo-950 border border-indigo-700 px-3 py-2 text-xs font-bold text-white hover:bg-indigo-900 transition active:scale-95"
                     >
                       <span>🧑</span>
                       <div>
@@ -744,7 +744,7 @@ export default function LocationView({
                         <button
                           key={id}
                           onClick={() => { onUseItem(selectedItemId, id); setSelectedItemId(null); setItemPanelOpen(false) }}
-                          className="flex items-center gap-2 bg-slate-900 border border-slate-600 rounded-lg px-3 py-2 text-xs font-bold text-white hover:bg-slate-800 transition active:scale-95"
+                          className="flex items-center gap-2 bg-slate-900 border border-slate-600 px-3 py-2 text-xs font-bold text-white hover:bg-slate-800 transition active:scale-95"
                         >
                           <CharPortrait charId={id} size={32} rounded={4} />
                           <div>
@@ -764,7 +764,7 @@ export default function LocationView({
 
       {/* Party status */}
       {gs.party.length > 0 && (
-        <div className="bg-[#0c0c24] border-2 border-slate-700 rounded-xl p-3">
+        <div className="bg-[#0c0c24] border-2 border-slate-700 p-3">
           <div className="text-xs font-black text-slate-400 mb-2 tracking-widest">— 現在のパーティ —</div>
           {gs.party.some(id => gs.companions[id].alive && gs.companions[id].hp < gs.companions[id].maxHp * 0.3) && (
             <div className="text-xs text-yellow-400 font-bold mb-2">⚠️ HPが危険な仲間がいます。宿屋で回復を！</div>
@@ -777,7 +777,7 @@ export default function LocationView({
               const hpPct = (c.hp / c.maxHp) * 100
               const isLowHp = c.alive && hpPct < 30
               return (
-                <div key={id} className={`flex items-center gap-2 rounded-lg px-2 py-2 border ${!c.alive ? 'bg-slate-900 border-red-900 opacity-40' : isLowHp ? 'bg-red-950 border-red-700 animate-pulse' : 'bg-slate-800 border-slate-700'}`}>
+                <div key={id} className={`flex items-center gap-2 px-2 py-2 border ${!c.alive ? 'bg-slate-900 border-red-900 opacity-40' : isLowHp ? 'bg-red-950 border-red-700 animate-pulse' : 'bg-slate-800 border-slate-700'}`}>
                   <CharPortrait charId={id} size={40} isDead={!c.alive} rounded={6} />
                   <div>
                     <div className="text-xs font-black text-white">{def.name}</div>

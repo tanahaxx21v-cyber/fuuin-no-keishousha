@@ -136,7 +136,7 @@ export default function EventScene({ gs, onAdvance, onSkipAll }: Props) {
           {onSkipAll && !isLast && (
             <button
               onClick={e => { e.stopPropagation(); onSkipAll() }}
-              className="text-[10px] font-bold px-2 py-0.5 rounded border border-gray-700 bg-gray-900/80 text-gray-500 hover:text-gray-300 hover:border-gray-500 transition"
+              className="text-[10px] font-bold px-2 py-0.5 border border-gray-700 bg-gray-900/80 text-gray-500 hover:text-gray-300 hover:border-gray-500 transition"
             >
               全スキップ ▶▶
             </button>
@@ -259,7 +259,7 @@ export default function EventScene({ gs, onAdvance, onSkipAll }: Props) {
         {!isNarrator && (
           <div className="ml-3 mb-0 flex">
             <div
-              className="px-4 py-1.5 text-sm font-black rounded-t-xl border-t-2 border-x-2"
+              className="px-4 py-1.5 text-sm font-black border-t-2 border-x-2"
               style={{
                 color: cfg.color,
                 borderColor: cfg.border,
@@ -363,7 +363,7 @@ export default function EventScene({ gs, onAdvance, onSkipAll }: Props) {
         {/* 報酬プレビュー（最終コマのみ）*/}
         {isLast && isTypingDone && ev.reward && (
           <div
-            className="mt-2 px-4 py-2.5 rounded-xl border-2 text-center"
+            className="mt-2 px-4 py-2.5 border-2 text-center"
             style={{
               background: '#1c0a00',
               borderColor: '#92400e',

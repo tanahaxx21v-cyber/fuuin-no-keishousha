@@ -32,10 +32,10 @@ export default function AlbumScreen({ gs, onClose }: Props) {
     <div className="p-3 max-w-lg mx-auto flex flex-col gap-3">
 
       {/* Header */}
-      <div className="bg-[#0c0c24] border-2 border-amber-700 rounded-xl p-4 flex items-center gap-3">
+      <div className="bg-[#0c0c24] border-2 border-amber-700 p-4 flex items-center gap-3">
         <button
           onClick={onClose}
-          className="text-xs font-bold text-gray-400 hover:text-white bg-slate-800 hover:bg-slate-700 border border-slate-600 px-3 py-1.5 rounded-lg transition"
+          className="text-xs font-bold text-gray-400 hover:text-white bg-slate-800 hover:bg-slate-700 border border-slate-600 px-3 py-1.5 transition"
         >
           ← もどる
         </button>
@@ -46,28 +46,28 @@ export default function AlbumScreen({ gs, onClose }: Props) {
       </div>
 
       {/* 旅の統計 */}
-      <div className="bg-[#0c0c24] border-2 border-indigo-700 rounded-xl p-4">
+      <div className="bg-[#0c0c24] border-2 border-indigo-700 p-4">
         <div className="text-xs font-black text-indigo-400 mb-3 tracking-widest">— 旅の記録 —</div>
         <div className="grid grid-cols-2 gap-3">
-          <div className="bg-slate-900 rounded-lg p-2 text-center">
+          <div className="bg-slate-900 p-2 text-center">
             <div className="text-[10px] text-gray-500 font-bold">経過日数</div>
             <div className="text-xl font-black text-amber-300">{elapsedDays}<span className="text-xs text-gray-600">/{totalDays}日</span></div>
-            <div className="w-full h-1.5 bg-gray-800 rounded-full mt-1 overflow-hidden">
-              <div className="h-full bg-amber-600 rounded-full" style={{ width: `${Math.min(100, (elapsedDays / totalDays) * 100)}%` }} />
+            <div className="w-full h-1.5 bg-gray-800 mt-1 overflow-hidden">
+              <div className="h-full bg-amber-600" style={{ width: `${Math.min(100, (elapsedDays / totalDays) * 100)}%` }} />
             </div>
           </div>
-          <div className="bg-slate-900 rounded-lg p-2 text-center">
+          <div className="bg-slate-900 p-2 text-center">
             <div className="text-[10px] text-gray-500 font-bold">訪問拠点</div>
             <div className="text-xl font-black text-cyan-300">{gs.visitedLocs.length}<span className="text-xs text-gray-600">/21</span></div>
-            <div className="w-full h-1.5 bg-gray-800 rounded-full mt-1 overflow-hidden">
-              <div className="h-full bg-cyan-700 rounded-full" style={{ width: `${Math.min(100, (gs.visitedLocs.length / 21) * 100)}%` }} />
+            <div className="w-full h-1.5 bg-gray-800 mt-1 overflow-hidden">
+              <div className="h-full bg-cyan-700" style={{ width: `${Math.min(100, (gs.visitedLocs.length / 21) * 100)}%` }} />
             </div>
           </div>
-          <div className="bg-slate-900 rounded-lg p-2 text-center">
+          <div className="bg-slate-900 p-2 text-center">
             <div className="text-[10px] text-gray-500 font-bold">体験イベント</div>
             <div className="text-xl font-black text-purple-300">{gs.completedEvents.length}<span className="text-xs text-gray-600">件</span></div>
           </div>
-          <div className="bg-slate-900 rounded-lg p-2 text-center">
+          <div className="bg-slate-900 p-2 text-center">
             <div className="text-[10px] text-gray-500 font-bold">所持金</div>
             <div className="text-xl font-black text-yellow-300">{gs.gold}<span className="text-xs text-gray-600">G</span></div>
           </div>
@@ -75,7 +75,7 @@ export default function AlbumScreen({ gs, onClose }: Props) {
       </div>
 
       {/* 封印石 */}
-      <div className="bg-[#0c0c24] border-2 border-amber-700 rounded-xl p-3">
+      <div className="bg-[#0c0c24] border-2 border-amber-700 p-3">
         <div className="text-xs font-black text-amber-500 mb-2 tracking-widest">— 封印石 {gs.sealStones.length}/3 —</div>
         <div className="flex gap-3 justify-around">
           {[
@@ -87,7 +87,7 @@ export default function AlbumScreen({ gs, onClose }: Props) {
             return (
               <div key={s.id} className="flex flex-col items-center gap-1">
                 <div
-                  className={`w-12 h-12 rounded-full border-2 flex items-center justify-center text-2xl transition-all ${has ? '' : 'grayscale opacity-30'}`}
+                  className={`w-12 h-12 border-2 flex items-center justify-center text-2xl transition-all ${has ? '' : 'grayscale opacity-30'}`}
                   style={has ? { borderColor: s.border, boxShadow: `0 0 16px ${s.glow}`, animation: 'pulse 2s ease-in-out infinite' } : { borderColor: '#374151', backgroundColor: '#111827' }}
                 >{s.icon}</div>
                 <div className={`text-[9px] font-bold ${has ? 'text-amber-300' : 'text-gray-600'}`}>{has ? '✅ ' : '✗ '}{s.name}</div>
@@ -98,13 +98,13 @@ export default function AlbumScreen({ gs, onClose }: Props) {
       </div>
 
       {/* ボス討伐 */}
-      <div className="bg-[#0c0c24] border-2 border-red-900 rounded-xl p-3">
+      <div className="bg-[#0c0c24] border-2 border-red-900 p-3">
         <div className="text-xs font-black text-red-400 mb-2 tracking-widest">— ボス討伐 {gs.defeatedBosses.length}/6 —</div>
         <div className="grid grid-cols-2 gap-1.5">
           {BOSS_INFO.map(b => {
             const defeated = gs.defeatedBosses.includes(b.id)
             return (
-              <div key={b.id} className={`flex items-center gap-2 rounded-lg px-2 py-1.5 border ${
+              <div key={b.id} className={`flex items-center gap-2 px-2 py-1.5 border ${
                 defeated ? 'bg-amber-950/40 border-amber-700/60' : 'bg-gray-900/50 border-gray-800 opacity-50'
               }`}>
                 <span className="text-base">{b.emoji}</span>
@@ -121,14 +121,14 @@ export default function AlbumScreen({ gs, onClose }: Props) {
 
       {/* 仲間 */}
       {joinedCompanions.length > 0 && (
-        <div className="bg-[#0c0c24] border-2 border-indigo-700 rounded-xl p-3">
+        <div className="bg-[#0c0c24] border-2 border-indigo-700 p-3">
           <div className="text-xs font-black text-indigo-400 mb-2 tracking-widest">— 仲間たち —</div>
           <div className="flex flex-col gap-1.5">
             {aliveCompanions.map(c => {
               const def = COMPANIONS[c.id]
               const hpPct = c.hp / c.maxHp * 100
               return (
-                <div key={c.id} className="flex items-center gap-2 bg-slate-900 rounded-lg px-2 py-1.5">
+                <div key={c.id} className="flex items-center gap-2 bg-slate-900 px-2 py-1.5">
                   <span className="text-lg">{def?.emoji}</span>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-1.5">
@@ -148,7 +148,7 @@ export default function AlbumScreen({ gs, onClose }: Props) {
             {deadCompanions.map(c => {
               const def = COMPANIONS[c.id]
               return (
-                <div key={c.id} className="flex items-center gap-2 bg-red-950/20 border border-red-900/40 rounded-lg px-2 py-1.5 opacity-60">
+                <div key={c.id} className="flex items-center gap-2 bg-red-950/20 border border-red-900/40 px-2 py-1.5 opacity-60">
                   <span className="text-lg grayscale">{def?.emoji}</span>
                   <span className="text-xs text-gray-600 line-through font-bold">{def?.name} Lv{c.level}</span>
                   <span className="text-[9px] text-red-700 ml-auto">💀 永眠</span>
@@ -160,11 +160,11 @@ export default function AlbumScreen({ gs, onClose }: Props) {
       )}
 
       {/* 実績 */}
-      <div className="bg-[#0c0c24] border-2 border-amber-800 rounded-xl p-3">
+      <div className="bg-[#0c0c24] border-2 border-amber-800 p-3">
         <div className="text-xs font-black text-amber-500 mb-2 tracking-widest">— 実績 {unlockedAchs.length}/{ACHIEVEMENT_DEFS.length} —</div>
         <div className="flex flex-col gap-1.5">
           {unlockedAchs.map(a => (
-            <div key={a.id} className="flex items-center gap-2 bg-amber-950/30 border border-amber-700/50 rounded-lg px-2 py-1.5">
+            <div key={a.id} className="flex items-center gap-2 bg-amber-950/30 border border-amber-700/50 px-2 py-1.5">
               <span className="text-base">{a.icon}</span>
               <div className="flex-1 min-w-0">
                 <div className="text-xs font-black text-amber-200">{a.title}</div>
@@ -174,7 +174,7 @@ export default function AlbumScreen({ gs, onClose }: Props) {
             </div>
           ))}
           {lockedAchs.map(a => (
-            <div key={a.id} className="flex items-center gap-2 bg-gray-900/30 border border-gray-800 rounded-lg px-2 py-1.5 opacity-50">
+            <div key={a.id} className="flex items-center gap-2 bg-gray-900/30 border border-gray-800 px-2 py-1.5 opacity-50">
               <span className="text-base grayscale">{a.icon}</span>
               <div className="flex-1 min-w-0">
                 <div className="text-xs font-black text-gray-600">{a.title}</div>

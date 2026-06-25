@@ -176,7 +176,7 @@ export default function WinScreen({ gs, onRestart }: Props) {
             <p className="text-gray-400 text-sm mb-5">残り{gs.daysLeft}日で封印の継承者となった</p>
 
             {/* クリアランク */}
-            <div className="bg-gray-900 border border-gray-700 rounded-xl p-4 mb-3 flex items-center gap-4">
+            <div className="bg-gray-900 border border-gray-700 p-4 mb-3 flex items-center gap-4">
               <div className="text-center shrink-0">
                 <div className={`text-5xl font-black ${rank.color}`} style={{ textShadow: '0 0 20px currentColor' }}>{rank.rank}</div>
                 <div className="text-xs text-gray-500 mt-0.5">{rank.label}</div>
@@ -198,7 +198,7 @@ export default function WinScreen({ gs, onRestart }: Props) {
               </div>
             </div>
 
-            <div className="bg-gray-900 border border-gray-700 rounded-xl p-4 mb-4 text-left">
+            <div className="bg-gray-900 border border-gray-700 p-4 mb-4 text-left">
               <div className="text-xs text-gray-400 mb-3 uppercase tracking-wider">クリア記録</div>
               <div className="grid grid-cols-2 gap-3 text-sm">
                 <div><span className="text-gray-400">最終レベル: </span><span className="text-white font-bold">Lv{gs.playerLevel}</span></div>
@@ -214,12 +214,12 @@ export default function WinScreen({ gs, onRestart }: Props) {
 
             <div className="flex justify-center gap-3 mb-4">
               {['🔥 炎', '⚡ 嵐', '🌑 闇'].map(s => (
-                <div key={s} className="text-sm text-yellow-300 bg-yellow-900/30 border border-yellow-800 px-3 py-1 rounded-full">✅ {s}の封印石</div>
+                <div key={s} className="text-sm text-yellow-300 bg-yellow-900/30 border border-yellow-800 px-3 py-1">✅ {s}の封印石</div>
               ))}
             </div>
 
             {joinedCompanions.length > 0 && (
-              <div className="bg-gray-900 border border-gray-700 rounded-xl p-3 mb-3 text-left">
+              <div className="bg-gray-900 border border-gray-700 p-3 mb-3 text-left">
                 <div className="text-xs text-green-400 mb-2">共に戦った仲間 ({joinedCompanions.length}人)</div>
                 <div className="flex flex-col gap-1.5">
                   {joinedCompanions.map(c => {
@@ -238,14 +238,14 @@ export default function WinScreen({ gs, onRestart }: Props) {
               </div>
             )}
             {deadCompanions.length > 0 && (
-              <div className="bg-gray-900/50 border border-red-900/60 rounded-xl p-3 mb-3 text-left">
+              <div className="bg-gray-900/50 border border-red-900/60 p-3 mb-3 text-left">
                 <div className="text-xs text-red-400 mb-2">冒険で命を落とした仲間 ({deadCompanions.length}人)</div>
                 <div className="flex flex-col gap-2">
                   {deadCompanions.map(c => {
                     const def = COMPANIONS[c.id]
                     const memorial = COMPANION_MEMORIAL[c.id]
                     return (
-                      <div key={c.id} className="bg-red-950/20 border border-red-900/40 rounded-lg px-3 py-2">
+                      <div key={c.id} className="bg-red-950/20 border border-red-900/40 px-3 py-2">
                         <div className="text-sm text-gray-500 line-through font-bold mb-0.5">
                           {def.emoji} {def.name} <span className="text-gray-600">Lv{c.level}</span>
                         </div>
@@ -278,11 +278,11 @@ export default function WinScreen({ gs, onRestart }: Props) {
               const unlocked = ACHIEVEMENT_DEFS.filter(a => a.check(gs))
               if (unlocked.length === 0) return null
               return (
-                <div className="bg-amber-950/60 border-2 border-amber-700 rounded-xl p-3 mb-3 text-left">
+                <div className="bg-amber-950/60 border-2 border-amber-700 p-3 mb-3 text-left">
                   <div className="text-xs font-black text-amber-500 mb-2 tracking-widest">— 実績解除 {unlocked.length}/{ACHIEVEMENT_DEFS.length} —</div>
                   <div className="flex flex-wrap gap-1.5">
                     {unlocked.map((a, i) => (
-                      <div key={i} className="flex items-center gap-1 bg-amber-900/40 border border-amber-700/50 rounded-lg px-2 py-1">
+                      <div key={i} className="flex items-center gap-1 bg-amber-900/40 border border-amber-700/50 px-2 py-1">
                         <span>{a.icon}</span>
                         <span className="text-xs font-bold text-amber-200">{a.title}</span>
                       </div>
@@ -295,13 +295,13 @@ export default function WinScreen({ gs, onRestart }: Props) {
             <div className="flex gap-3 mt-4">
               <button
                 onClick={() => setPage(p => p - 1)}
-                className="flex-1 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-xl transition text-sm"
+                className="flex-1 py-2 bg-gray-700 hover:bg-gray-600 text-white transition text-sm"
               >
                 ← 戻る
               </button>
               <button
                 onClick={onRestart}
-                className="flex-1 py-3 bg-yellow-600 hover:bg-yellow-500 text-white font-bold rounded-xl transition"
+                className="flex-1 py-3 bg-yellow-600 hover:bg-yellow-500 text-white font-bold transition"
               >
                 もう一度プレイ
               </button>
@@ -312,7 +312,7 @@ export default function WinScreen({ gs, onRestart }: Props) {
           (() => {
             const ep = EPILOGUE_PAGES[page]
             return (
-              <div className={`bg-gradient-to-b ${ep.bg} rounded-2xl p-6 border border-gray-800 shadow-2xl`}>
+              <div className={`bg-gradient-to-b ${ep.bg} p-6 border border-gray-800 shadow-2xl`}>
                 <div className="text-xs text-gray-500 mb-2 tracking-wider uppercase">エピローグ {page + 1} / {EPILOGUE_PAGES.length}</div>
                 <h2 className={`text-xl font-bold ${ep.accent} mb-4`}>{ep.title}</h2>
 
@@ -336,7 +336,7 @@ export default function WinScreen({ gs, onRestart }: Props) {
                       // 未加入仲間: 存在は匂わせるが詳細は出さない
                       if (!wasRecruited) {
                         return (
-                          <div key={ch.name} className="bg-black/20 border border-gray-800/60 rounded-xl p-4 opacity-50">
+                          <div key={ch.name} className="bg-black/20 border border-gray-800/60 p-4 opacity-50">
                             <div className="flex items-center gap-2">
                               <span className="text-xl grayscale opacity-40">{ch.emoji}</span>
                               <span className="text-gray-600 font-semibold text-sm">{ch.name}</span>
@@ -348,7 +348,7 @@ export default function WinScreen({ gs, onRestart }: Props) {
 
                       const dead = isCompanionDead(ch.name)
                       return (
-                        <div key={ch.name} className={`bg-black/30 border rounded-xl p-4 ${dead ? 'border-red-900/60' : 'border-gray-700'}`}>
+                        <div key={ch.name} className={`bg-black/30 border p-4 ${dead ? 'border-red-900/60' : 'border-gray-700'}`}>
                           <div className="flex items-center gap-2 mb-2">
                             <span className={`text-xl ${dead ? 'grayscale opacity-60' : ''}`}>{ch.emoji}</span>
                             <span className={`${dead ? 'text-gray-500' : ep.accent} font-semibold text-sm`}>{ch.name}</span>
@@ -378,14 +378,14 @@ export default function WinScreen({ gs, onRestart }: Props) {
                   {page > 0 && (
                     <button
                       onClick={() => setPage(p => p - 1)}
-                      className="px-5 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-xl transition text-sm"
+                      className="px-5 py-2 bg-gray-700 hover:bg-gray-600 text-white transition text-sm"
                     >
                       ← 戻る
                     </button>
                   )}
                   <button
                     onClick={() => setPage(p => p + 1)}
-                    className="flex-1 py-2 bg-indigo-700 hover:bg-indigo-600 text-white font-semibold rounded-xl transition text-sm"
+                    className="flex-1 py-2 bg-indigo-700 hover:bg-indigo-600 text-white font-semibold transition text-sm"
                   >
                     {page === EPILOGUE_PAGES.length - 1 ? '📊 クリア記録を見る' : '次へ →'}
                   </button>

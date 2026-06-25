@@ -32,7 +32,7 @@ export default function StatusBar({ gs, onSave, isMuted, onToggleMute, onReturnT
       <div className="flex items-center gap-2 flex-wrap max-w-4xl mx-auto">
 
         {/* Days */}
-        <div className={`flex items-center gap-1 border-2 rounded px-2 py-0.5 font-black text-sm ${
+        <div className={`flex items-center gap-1 border-2 px-2 py-0.5 font-black text-sm ${
           daysUrgent
             ? 'border-red-500 bg-red-950 text-red-400 animate-pulse'
             : daysWarn
@@ -44,7 +44,7 @@ export default function StatusBar({ gs, onSave, isMuted, onToggleMute, onReturnT
         </div>
 
         {/* Name / Level / EXP */}
-        <div className="flex items-center gap-1 bg-slate-900 border-2 border-slate-700 rounded px-2 py-0.5">
+        <div className="flex items-center gap-1 bg-slate-900 border-2 border-slate-700 px-2 py-0.5">
           <span className="text-xs font-bold text-slate-200">{gs.playerName}</span>
           <span className="text-slate-600">·</span>
           <span className="text-xs text-slate-400">Lv</span>
@@ -90,7 +90,7 @@ export default function StatusBar({ gs, onSave, isMuted, onToggleMute, onReturnT
         </div>
 
         {/* Gold */}
-        <div className="flex items-center gap-1 bg-amber-950 border-2 border-amber-800 rounded px-2 py-0.5">
+        <div className="flex items-center gap-1 bg-amber-950 border-2 border-amber-800 px-2 py-0.5">
           <span className="text-xs">💰</span>
           <span className="text-sm font-black text-amber-300">{gs.gold}</span>
           <span className="text-xs text-amber-700">G</span>
@@ -102,7 +102,7 @@ export default function StatusBar({ gs, onSave, isMuted, onToggleMute, onReturnT
             {gs.playerStatus.map(ef => (
               <div
                 key={ef.id}
-                className="text-xs px-1.5 py-0.5 rounded border font-black"
+                className="text-xs px-1.5 py-0.5 border font-black"
                 style={
                   ef.id === 'poison'
                     ? { background: '#1a0a2e', borderColor: '#7c3aed', color: '#c084fc' }
@@ -129,7 +129,7 @@ export default function StatusBar({ gs, onSave, isMuted, onToggleMute, onReturnT
             return (
               <div
                 key={stone}
-                className={`w-6 h-6 rounded-full border-2 flex items-center justify-center text-xs transition-all duration-500 ${
+                className={`w-6 h-6 border-2 flex items-center justify-center text-xs transition-all duration-500 ${
                   has ? 'border-amber-500 bg-amber-950' : 'border-gray-700 bg-gray-900 opacity-30 grayscale'
                 }`}
                 style={has ? { boxShadow: `0 0 8px ${glow}`, animation: 'pulse 2s ease-in-out infinite' } : {}}
@@ -178,7 +178,7 @@ export default function StatusBar({ gs, onSave, isMuted, onToggleMute, onReturnT
           <button
             onClick={onToggleBattleSpeed}
             title={battleSpeed === 'fast' ? '通常速度に切り替え' : '高速バトルに切り替え'}
-            className={`text-xs border-2 px-2 py-1 rounded font-bold transition ${
+            className={`text-xs border-2 px-2 py-1 font-bold transition ${
               battleSpeed === 'fast'
                 ? 'bg-yellow-950 border-yellow-600 text-yellow-300'
                 : 'bg-slate-900 hover:bg-slate-800 border-slate-700 text-slate-300'
@@ -192,7 +192,7 @@ export default function StatusBar({ gs, onSave, isMuted, onToggleMute, onReturnT
           <button
             onClick={onToggleAutoBattle}
             title={autoBattle ? 'オートバトルOFF' : 'オートバトルON（プレイヤーが自動で攻撃）'}
-            className={`text-xs border-2 px-2 py-1 rounded font-bold transition ${
+            className={`text-xs border-2 px-2 py-1 font-bold transition ${
               autoBattle
                 ? 'bg-green-950 border-green-600 text-green-300 animate-pulse'
                 : 'bg-slate-900 hover:bg-slate-800 border-slate-700 text-slate-300'
@@ -207,7 +207,7 @@ export default function StatusBar({ gs, onSave, isMuted, onToggleMute, onReturnT
           <button
             onClick={onToggleMute}
             title={isMuted ? '音楽ON' : '音楽OFF'}
-            className="text-xs bg-slate-900 hover:bg-slate-800 border-2 border-slate-700 px-2 py-1 rounded font-bold text-slate-300 transition"
+            className="text-xs bg-slate-900 hover:bg-slate-800 border-2 border-slate-700 px-2 py-1 font-bold text-slate-300 transition"
           >
             {isMuted ? '🔇' : '🔊'}
           </button>
@@ -217,7 +217,7 @@ export default function StatusBar({ gs, onSave, isMuted, onToggleMute, onReturnT
         {onSave && (
           <button
             onClick={onSave}
-            className="text-xs bg-slate-900 hover:bg-slate-800 border-2 border-slate-700 px-2 py-1 rounded font-bold text-slate-300 transition"
+            className="text-xs bg-slate-900 hover:bg-slate-800 border-2 border-slate-700 px-2 py-1 font-bold text-slate-300 transition"
           >
             💾
           </button>
@@ -227,7 +227,7 @@ export default function StatusBar({ gs, onSave, isMuted, onToggleMute, onReturnT
         {onReturnToTitle && (
           <button
             onClick={() => setConfirmReturn(true)}
-            className="text-xs bg-slate-900 hover:bg-red-950 border-2 border-slate-700 hover:border-red-700 px-2 py-1 rounded font-bold text-slate-400 hover:text-red-300 transition"
+            className="text-xs bg-slate-900 hover:bg-red-950 border-2 border-slate-700 hover:border-red-700 px-2 py-1 font-bold text-slate-400 hover:text-red-300 transition"
             title="タイトルに戻る"
           >
             🏠
@@ -238,7 +238,7 @@ export default function StatusBar({ gs, onSave, isMuted, onToggleMute, onReturnT
       {/* Confirm return to title overlay */}
       {confirmReturn && (
         <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/70">
-          <div className="bg-[#0c0c24] border-2 border-red-700 rounded-2xl p-6 text-center shadow-2xl max-w-xs w-full mx-4">
+          <div className="bg-[#0c0c24] border-2 border-red-700 p-6 text-center shadow-2xl max-w-xs w-full mx-4">
             <div className="text-3xl mb-3">🏠</div>
             <div className="text-base font-black text-white mb-1">タイトルに戻る</div>
             <div className="text-xs text-gray-400 mb-4">セーブデータは保持されます。<br/>現在の進行状況を保存してから戻りますか？</div>
@@ -249,7 +249,7 @@ export default function StatusBar({ gs, onSave, isMuted, onToggleMute, onReturnT
                   setConfirmReturn(false)
                   onReturnToTitle?.()
                 }}
-                className="px-4 py-2 bg-indigo-900 hover:bg-indigo-800 border-2 border-indigo-600 text-white font-black rounded-xl text-sm transition active:scale-95"
+                className="px-4 py-2 bg-indigo-900 hover:bg-indigo-800 border-2 border-indigo-600 text-white font-black text-sm transition active:scale-95"
               >
                 💾 保存して戻る
               </button>
@@ -258,7 +258,7 @@ export default function StatusBar({ gs, onSave, isMuted, onToggleMute, onReturnT
                   setConfirmReturn(false)
                   onReturnToTitle?.()
                 }}
-                className="px-4 py-2 bg-red-950 hover:bg-red-900 border-2 border-red-700 text-red-300 font-black rounded-xl text-sm transition active:scale-95"
+                className="px-4 py-2 bg-red-950 hover:bg-red-900 border-2 border-red-700 text-red-300 font-black text-sm transition active:scale-95"
               >
                 保存せず戻る
               </button>
