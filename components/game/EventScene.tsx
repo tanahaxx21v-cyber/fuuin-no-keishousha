@@ -213,7 +213,6 @@ export default function EventScene({ gs, onAdvance, onSkipAll }: Props) {
                 opacity: 0.22,
                 filter: 'grayscale(60%) sepia(30%)',
                 animation: 'pulse 4s ease-in-out infinite',
-                textShadow: '0 0 20px rgba(100,80,160,0.5)',
               }}>📜</div>
               <div style={{
                 fontSize: 10,
@@ -232,7 +231,7 @@ export default function EventScene({ gs, onAdvance, onSkipAll }: Props) {
             className="relative z-10"
             style={{
               marginBottom: -8,
-              filter: `drop-shadow(0 0 28px ${cfg.glow}55) drop-shadow(0 8px 16px rgba(0,0,0,0.8))`,
+              filter: 'drop-shadow(0 8px 16px rgba(0,0,0,0.8))',
               opacity: portraitVisible ? 1 : 0,
               transform: portraitVisible ? 'translateY(0) scale(1)' : 'translateY(8px) scale(0.97)',
               transition: 'opacity 0.12s ease, transform 0.12s ease, filter 0.3s',
@@ -264,7 +263,6 @@ export default function EventScene({ gs, onAdvance, onSkipAll }: Props) {
                 color: cfg.color,
                 borderColor: cfg.border,
                 background: cfg.nameBg,
-                boxShadow: `0 -6px 16px ${cfg.glow}18`,
               }}
             >
               {cfg.emoji} {displayName}
@@ -276,10 +274,9 @@ export default function EventScene({ gs, onAdvance, onSkipAll }: Props) {
         <div
           className="overflow-hidden border-2"
           style={{
-            borderRadius: isNarrator ? 12 : '4px 12px 12px 12px',
+            borderRadius: 0,
             background: 'rgba(2,4,14,0.97)',
             borderColor: isNarrator ? '#1f2937' : cfg.border,
-            boxShadow: `0 0 40px ${cfg.glow}20, inset 0 1px 0 ${cfg.glow}12`,
           }}
         >
           {/* セリフ本文 */}
@@ -367,7 +364,6 @@ export default function EventScene({ gs, onAdvance, onSkipAll }: Props) {
             style={{
               background: '#1c0a00',
               borderColor: '#92400e',
-              boxShadow: '0 0 20px rgba(245,158,11,0.15)',
               animation: 'pulse 2s ease-in-out infinite',
             }}
           >

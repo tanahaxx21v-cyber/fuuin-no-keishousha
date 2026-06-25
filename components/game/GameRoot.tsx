@@ -516,14 +516,14 @@ export default function GameRoot() {
         return (
           <div
             className="fixed inset-0 z-[55] flex items-center justify-center pointer-events-none"
-            style={{ background: `radial-gradient(ellipse at center, ${cfg.glow} 0%, rgba(0,0,0,0.7) 60%)` }}
+            style={{ background: 'rgba(0,0,0,0.82)' }}
           >
             <div
               className="text-center border-2 px-10 py-8"
-              style={{ background: cfg.bg, borderColor: cfg.border, boxShadow: `0 0 60px ${cfg.glow}` }}
+              style={{ background: cfg.bg, borderColor: cfg.border }}
             >
-              <div style={{ fontSize: 72, lineHeight: 1, filter: `drop-shadow(0 0 20px ${cfg.color})` }}>{cfg.icon}</div>
-              <div className="text-2xl font-black mt-3" style={{ color: cfg.color, textShadow: `0 0 20px ${cfg.color}` }}>
+              <div style={{ fontSize: 48, lineHeight: 1 }}>{cfg.icon}</div>
+              <div className="text-xl font-black mt-3" style={{ color: cfg.color }}>
                 封印石を入手！
               </div>
               <div className="text-base font-bold text-white mt-1">{cfg.name}</div>
@@ -537,7 +537,7 @@ export default function GameRoot() {
       {achievementToast && (
         <div
           className="fixed top-4 left-1/2 -translate-x-1/2 z-[60] flex items-center gap-3 px-5 py-3 border-2 shadow-2xl"
-          style={{ background: '#1c1208', borderColor: '#d97706', boxShadow: '0 0 30px rgba(217,119,6,0.5)', minWidth: 260, maxWidth: 340 }}
+          style={{ background: '#1c1208', borderColor: '#d97706', minWidth: 260, maxWidth: 340 }}
         >
           <span style={{ fontSize: 28 }}>{achievementToast.icon}</span>
           <div className="flex-1 min-w-0">
@@ -562,8 +562,7 @@ export default function GameRoot() {
         const isSuccess = /^(💰|🎁|✨|🎉|💪|⭐|💎|🏆)/.test(msg)
         const isWarn = /^(⚠️|☠️|💀)/.test(msg)
         if (isJoin) return (
-          <div className="fixed top-20 left-1/2 -translate-x-1/2 z-40 bg-purple-950 border-2 border-purple-400 px-5 py-3 text-sm font-black shadow-2xl max-w-sm text-center"
-            style={{ boxShadow: '0 0 30px rgba(168,85,247,0.4)' }}>
+          <div className="fixed top-20 left-1/2 -translate-x-1/2 z-40 bg-purple-950 border-2 border-purple-400 px-5 py-3 text-sm font-black max-w-sm text-center">
             <div className="text-purple-200">{msg}</div>
           </div>
         )

@@ -69,7 +69,6 @@ export function CharPortrait({ charId, size, isActive = false, isDead = false, r
           : '2px solid rgba(255,255,255,0.15)',
         opacity: isDead ? 0.35 : 1,
         filter: isDead ? 'grayscale(80%)' : 'none',
-        boxShadow: isActive ? '0 0 8px 2px rgba(255,215,0,0.5)' : 'none',
         backgroundImage: `url('/fuuin-no-keishousha/images/characters.jpg')`,
         backgroundSize: `${CHAR_COLS * 100}% auto`,
         backgroundPosition: `${bgPosX} ${bgPosY}`,

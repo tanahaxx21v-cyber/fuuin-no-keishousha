@@ -275,9 +275,9 @@ export default function WorldMap({ gs, onTravel, onEnterLocation, getAvailableCo
                 title={loc.name}
                 style={{
                   width: size, height: size,
-                  borderRadius: shape === 'final' ? '6px' : isCastle ? '8px' : isDungeon ? '4px' : '50%',
+                  borderRadius: 0,
                   backgroundColor: bg, border: `${isCurrent ? 3 : 2}px solid ${border}`,
-                  boxShadow: glow, cursor: canTravel ? 'pointer' : 'default',
+                  cursor: canTravel ? 'pointer' : 'default',
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
                   fontSize: shape === 'final' ? 20 : isCastle ? 18 : isDungeon ? 15 : 13,
                   transition: 'all 0.15s', padding: 0, position: 'relative',
@@ -286,7 +286,7 @@ export default function WorldMap({ gs, onTravel, onEnterLocation, getAvailableCo
               >
                 {cfg?.icon ?? '📍'}
                 {isVisited && !isCurrent && !isBossDefeated && (
-                  <span style={{ position:'absolute', top:-4, right:-4, fontSize:8, background:'#204820', border:'1px solid #40a040', borderRadius:'50%', width:10, height:10, display:'flex', alignItems:'center', justifyContent:'center', color:'#60c060', fontWeight:'bold' }}>✓</span>
+                  <span style={{ position:'absolute', top:-4, right:-4, fontSize:8, background:'#204820', border:'1px solid #40a040', borderRadius:0, width:10, height:10, display:'flex', alignItems:'center', justifyContent:'center', color:'#60c060', fontWeight:'bold' }}>✓</span>
                 )}
                 {isBossDefeated && !isCurrent && (
                   <span style={{ position:'absolute', top:-5, right:-5, fontSize:9 }}>👑</span>

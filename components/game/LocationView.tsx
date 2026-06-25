@@ -360,15 +360,12 @@ export default function LocationView({
               <div className="absolute inset-0 pointer-events-none" style={{
                 background: `radial-gradient(ellipse 80% 60% at 50% 100%, ${glow}22 0%, transparent 65%)`,
               }} />
-              <div className="absolute bottom-0 left-0 right-0" style={{
-                height: 1,
-                background: `linear-gradient(to right, transparent, ${glow}60, transparent)`,
-              }} />
+              <div className="absolute bottom-0 left-0 right-0" style={{ height: 1, background: '#1a1a2e' }} />
               <div
                 className="relative z-10"
                 style={{
                   marginBottom: -8,
-                  filter: `drop-shadow(0 0 32px ${glow}60) drop-shadow(0 10px 20px rgba(0,0,0,0.9))`,
+                  filter: 'drop-shadow(0 4px 8px rgba(0,0,0,0.7))',
                 }}
               >
                 {hasCharPortrait(pendingJoin.id)
@@ -387,14 +384,14 @@ export default function LocationView({
               {/* 名前タブ */}
               <div className="ml-3 mb-0 flex">
                 <div className="px-4 py-1.5 text-sm font-black border-t-2 border-x-2"
-                  style={{ color: glow, borderColor: glow, background: '#0a0a1a', boxShadow: `0 -6px 16px ${glow}20` }}>
+                  style={{ color: glow, borderColor: glow, background: '#0a0a1a' }}>
                   {pendingJoin.emoji} {pendingJoin.name} — {pendingJoin.cls}
                 </div>
               </div>
 
               {/* メインボックス */}
               <div className="overflow-hidden border-2"
-                style={{ background: 'rgba(2,4,14,0.97)', borderColor: glow, boxShadow: `0 0 40px ${glow}20` }}>
+                style={{ background: 'rgba(2,4,14,0.97)', borderColor: glow }}>
 
                 {/* 加入セリフ */}
                 <div className="px-5 py-4">
@@ -436,7 +433,7 @@ export default function LocationView({
                       onClick={() => onJoinCompanion(gs.pendingCompanionJoin!)}
                       disabled={joinedCount >= 3}
                       className="flex-1 py-3 font-black text-white transition active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed border-2"
-                      style={{ background: `${glow}33`, borderColor: glow, boxShadow: `0 0 16px ${glow}30` }}
+                      style={{ background: `${glow}33`, borderColor: glow }}
                     >
                       ✅ 仲間にする
                     </button>
@@ -477,7 +474,7 @@ export default function LocationView({
               )}
             </div>
             <div className="px-4 py-3 flex items-center gap-4">
-              <div className="text-4xl" style={{ filter: 'drop-shadow(0 0 8px rgba(255,50,50,0.6))' }}>
+              <div className="text-4xl">
                 {boss.emoji}
               </div>
               <div className="flex-1 min-w-0">

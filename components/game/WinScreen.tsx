@@ -18,7 +18,6 @@ const EPILOGUE_PAGES = [
       '……ただし、その後の世界はというと。',
       'まあ、相変わらずの騒がしさだった。',
     ],
-    bg: 'from-yellow-950 to-gray-950',
     accent: 'text-yellow-300',
   },
   {
@@ -37,7 +36,6 @@ const EPILOGUE_PAGES = [
         text: '「俺、実はあの旅のキーパーソンだったんだよね」が口癖になり、酒場でだいたい5分で嫌われる。ただし腕前は本物で、今やルミナ最速の弓使いと呼ばれている。本人は「最強って言って」とよく訂正を求める。',
       },
     ],
-    bg: 'from-indigo-950 to-gray-950',
     accent: 'text-indigo-300',
   },
   {
@@ -56,7 +54,6 @@ const EPILOGUE_PAGES = [
         text: '見習い剣士の称号を返上するよう周囲に言われ続けているが、「いや、まだまだ修行中ですから」と断り続けている。現在Lv30相当の実力で、それを知らない盗賊が何人も病院送りになった。',
       },
     ],
-    bg: 'from-orange-950 to-gray-950',
     accent: 'text-orange-300',
   },
   {
@@ -75,7 +72,6 @@ const EPILOGUE_PAGES = [
         text: '魔王軍から正式に脱退届を出そうとしたが、組織自体がとっくに解散していた。拍子抜けしつつ、魔法雑貨屋を開業。魔族仕込みの魔法は強力すぎてたまに店舗が爆発する。近所からの苦情は週3件で安定している。',
       },
     ],
-    bg: 'from-purple-950 to-gray-950',
     accent: 'text-purple-300',
   },
   {
@@ -94,7 +90,6 @@ const EPILOGUE_PAGES = [
         text: '古代神殿に戻ったところ、聖地として開放された神殿に毎日観光客が押し寄せるようになっていた。「ここは神聖な場所です」と入口で300日以上伝え続けているが、一向に伝わっていない。隣に土産物屋が建った日は3日間ため息をついた。',
       },
     ],
-    bg: 'from-green-950 to-gray-950',
     accent: 'text-green-300',
   },
   {
@@ -113,7 +108,6 @@ const EPILOGUE_PAGES = [
       '本人は「それとこれとは別の話だ」と笑う。',
       '英雄とは、なにかを成し遂げた者ではなく、なにかを続けられる者のことを言うのかもしれない。',
     ],
-    bg: 'from-slate-950 to-gray-950',
     accent: 'text-slate-300',
   },
 ]
@@ -180,7 +174,7 @@ export default function WinScreen({ gs, onRestart }: Props) {
             {/* クリアランク */}
             <div className="bg-gray-900 border border-gray-700 p-4 mb-3 flex items-center gap-4">
               <div className="text-center shrink-0">
-                <div className={`text-5xl font-black ${rank.color}`} style={{ textShadow: '0 0 20px currentColor' }}>{rank.rank}</div>
+                <div className={`text-4xl font-black ${rank.color}`}>{rank.rank}</div>
                 <div className="text-xs text-gray-500 mt-0.5">{rank.label}</div>
               </div>
               <div className="flex-1 text-left">

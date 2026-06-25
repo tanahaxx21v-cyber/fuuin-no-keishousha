@@ -830,9 +830,7 @@ export default function BattleScene({ gs, onAttack, onSkill, onItem, onFlee, onC
             ? b.isBoss ? 'bg-amber-950 border-amber-400' : 'bg-amber-950 border-amber-600'
             : 'bg-red-950 border-red-700'
         }`}
-          style={b.phase === 'victory' && b.isBoss
-            ? { boxShadow: '0 0 40px rgba(251,191,36,0.3)' }
-            : {}}
+          style={{}}
         >
           {/* ボス勝利ヘッダー */}
           {b.phase === 'victory' && b.isBoss && (
@@ -843,7 +841,7 @@ export default function BattleScene({ gs, onAttack, onSkill, onItem, onFlee, onC
 
           <div className="p-5 text-center">
             <div className={`font-black mb-2 ${b.phase === 'victory' ? 'text-4xl' : 'text-3xl text-red-400'}`}
-              style={b.phase === 'victory' ? { textShadow: '0 0 20px rgba(251,191,36,0.5)' } : {}}>
+              style={{}}>
               {b.phase === 'victory' ? '🎉 VICTORY！' : '💀 DEFEAT...'}
             </div>
 
@@ -887,8 +885,7 @@ export default function BattleScene({ gs, onAttack, onSkill, onItem, onFlee, onC
                 })()}
                 {/* 封印石 */}
                 {b.sealStoneFound && (
-                  <div className="bg-amber-900/50 border-2 border-amber-400 px-4 py-2 text-amber-200 font-black animate-pulse"
-                    style={{ boxShadow: '0 0 20px rgba(251,191,36,0.3)' }}>
+                  <div className="bg-amber-900/50 border-2 border-amber-400 px-4 py-2 text-amber-200 font-black animate-pulse">
                     💎 封印石を入手！
                   </div>
                 )}

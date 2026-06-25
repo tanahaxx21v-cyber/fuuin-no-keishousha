@@ -132,7 +132,7 @@ export default function StatusBar({ gs, onSave, isMuted, onToggleMute, onReturnT
                 className={`w-6 h-6 border-2 flex items-center justify-center text-xs transition-all duration-500 ${
                   has ? 'border-amber-500 bg-amber-950' : 'border-gray-700 bg-gray-900 opacity-30 grayscale'
                 }`}
-                style={has ? { boxShadow: `0 0 8px ${glow}`, animation: 'pulse 2s ease-in-out infinite' } : {}}
+                style={has ? { animation: 'pulse 2s ease-in-out infinite' } : {}}
                 title={has ? `${stone === 'fire' ? '炎' : stone === 'storm' ? '嵐' : '闇'}の封印石（取得済み）` : '未取得'}
               >
                 {stone === 'fire' ? '🔥' : stone === 'storm' ? '⚡' : '🌑'}

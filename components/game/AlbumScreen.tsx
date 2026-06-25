@@ -88,7 +88,7 @@ export default function AlbumScreen({ gs, onClose }: Props) {
               <div key={s.id} className="flex flex-col items-center gap-1">
                 <div
                   className={`w-12 h-12 border-2 flex items-center justify-center text-2xl transition-all ${has ? '' : 'grayscale opacity-30'}`}
-                  style={has ? { borderColor: s.border, boxShadow: `0 0 16px ${s.glow}`, animation: 'pulse 2s ease-in-out infinite' } : { borderColor: '#374151', backgroundColor: '#111827' }}
+                  style={has ? { borderColor: s.border, animation: 'pulse 2s ease-in-out infinite' } : { borderColor: '#374151', backgroundColor: '#111827' }}
                 >{s.icon}</div>
                 <div className={`text-[9px] font-bold ${has ? 'text-amber-300' : 'text-gray-600'}`}>{has ? '✅ ' : '✗ '}{s.name}</div>
               </div>
