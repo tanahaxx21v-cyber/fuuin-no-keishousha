@@ -715,7 +715,7 @@ export function battleUseItem(state: GameState, itemId: string, targetUid: strin
     b.logs.push({ text: `✨ ${target.name}のMPが${healed}回復！`, type: 'heal' })
   } else if (item.effect === 'heal_both') {
     const healedHp = Math.min(item.power, target.maxHp - target.hp)
-    const healedMp = Math.min(40, target.maxMp - target.mp)
+    const healedMp = Math.min(item.power, target.maxMp - target.mp)
     target.hp += healedHp
     target.mp += healedMp
     b.logs.push({ text: `🌿 ${target.name}のHP+${healedHp}、MP+${healedMp}回復！`, type: 'heal' })
@@ -1408,9 +1408,9 @@ export function useItemOutOfBattle(state: GameState, itemId: string, targetId: '
       s.message = `✨ ${item.name}を使った。MP +${healed}`
     } else if (item.effect === 'heal_both') {
       const hp = Math.min(item.power, s.playerMaxHp - s.playerHp)
-      const mp = Math.min(40, s.playerMaxMp - s.playerMp)
+      const mp = Math.min(item.power, s.playerMaxMp - s.playerMp)
       s.playerHp = Math.min(s.playerMaxHp, s.playerHp + item.power)
-      s.playerMp = Math.min(s.playerMaxMp, s.playerMp + 40)
+      s.playerMp = Math.min(s.playerMaxMp, s.playerMp + item.power)
       s.message = `🌿 ${item.name}を使った。HP +${hp}・MP +${mp}`
     } else if (item.effect === 'cure_status') {
       const hadStatus = s.playerStatus.length > 0
@@ -1433,9 +1433,10 @@ export function useItemOutOfBattle(state: GameState, itemId: string, targetId: '
       s.message = `✨ ${def.name}に${item.name}を使った。MP +${healed}`
     } else if (item.effect === 'heal_both') {
       const hp = Math.min(item.power, c.maxHp - c.hp)
+      const mp = Math.min(item.power, c.maxMp - c.mp)
       c.hp = Math.min(c.maxHp, c.hp + item.power)
-      c.mp = Math.min(c.maxMp, c.mp + 40)
-      s.message = `🌿 ${def.name}に${item.name}を使った。HP +${hp}`
+      c.mp = Math.min(c.maxMp, c.mp + item.power)
+      s.message = `🌿 ${def.name}に${item.name}を使った。HP +${hp}・MP +${mp}`
     } else if (item.effect === 'cure_status') {
       const hadStatus = c.statusEffects.length > 0
       c.statusEffects = []
@@ -1655,9 +1656,9 @@ export function wander(state: GameState): GameState {
     const ex = s.inventory.find(i => i.itemId === found.itemId)
     if (ex) ex.qty += 1
     else s.inventory.push({ itemId: found.itemId, qty: 1 })
-    const itemNames: Record<string, string> = { potion: 'ポーション', ether: 'エーテル', antidote: '毒消し' }
+    const foundItem = ITEMS[found.itemId]
     const place = WANDER_ITEM_PLACES[locType] ?? 'どこかに'
-    s.message = `🎁 ${place}${itemNames[found.itemId]}を見つけた！`
+    s.message = `🎁 ${place}${foundItem?.emoji ?? ''}${foundItem?.name ?? found.itemId}を見つけた！`
   } else if (roll < 0.78) {
     const heal = Math.floor(s.playerMaxHp * 0.15)
     s.playerHp = Math.min(s.playerMaxHp, s.playerHp + heal)

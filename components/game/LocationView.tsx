@@ -123,9 +123,6 @@ export default function LocationView({
     if (isFirstVisit) setShowArrival(true)
   }, [gs.currentLocId])
 
-  const companion = loc.companionId ? COMPANIONS[loc.companionId] : undefined
-  const companionState = companion ? gs.companions[companion.id] : undefined
-  const showCompanionJoin = companion && companionState && !companionState.joined
   const pendingJoin = gs.pendingCompanionJoin ? COMPANIONS[gs.pendingCompanionJoin] : undefined
 
   const bossDefeated = loc.bossId ? gs.defeatedBosses.includes(loc.bossId) : false

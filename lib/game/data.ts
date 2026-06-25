@@ -287,6 +287,7 @@ export const ENEMIES: Record<string, EnemyDef> = {
       { id: 'gnaw', name: 'かじる', desc: '鋭い歯で噛みつく。', mpCost: 0, target: 'enemy_one', effect: 'damage', power: 1.2 },
     ],
     exp: 10, gold: 6,
+    dropItemId: 'potion', dropChance: 0.15,
   },
   kinobokku: {
     id: 'kinobokku', name: 'キノボック', emoji: '🍄',
@@ -297,6 +298,7 @@ export const ENEMIES: Record<string, EnemyDef> = {
       { id: 'spore_shower', name: 'ほうしまき', desc: '胞子を全体にまき散らす。', mpCost: 10, target: 'enemy_all', effect: 'damage', power: 1.0 },
     ],
     exp: 18, gold: 12,
+    dropItemId: 'antidote', dropChance: 0.25,
   },
   donguraa: {
     id: 'donguraa', name: 'ドングラー', emoji: '🌰',
@@ -306,6 +308,7 @@ export const ENEMIES: Record<string, EnemyDef> = {
       { id: 'acorn_guard', name: 'ぼうぎょ', desc: '帽子をかぶり防御力を上げる。', mpCost: 8, target: 'self', effect: 'def_up', power: 1 },
     ],
     exp: 25, gold: 18,
+    dropItemId: 'potion', dropChance: 0.18,
   },
   hari_wolf: {
     id: 'hari_wolf', name: 'ハリオオカミ', emoji: '🐺',
@@ -316,6 +319,7 @@ export const ENEMIES: Record<string, EnemyDef> = {
       { id: 'bite_hw', name: 'かみつく', desc: '強力な顎で噛みつく。', mpCost: 6, target: 'enemy_one', effect: 'damage', power: 1.8 },
     ],
     exp: 32, gold: 24,
+    dropItemId: 'hi_potion', dropChance: 0.15,
   },
   mori_doll: {
     id: 'mori_doll', name: '森人形', emoji: '🪆',
@@ -325,6 +329,7 @@ export const ENEMIES: Record<string, EnemyDef> = {
       { id: 'eerie_stare', name: 'みつめる', desc: '不気味な視線で攻撃力を下げる。', mpCost: 6, target: 'enemy_one', effect: 'debuff_atk', power: 1 },
     ],
     exp: 38, gold: 30,
+    dropItemId: 'panacea', dropChance: 0.12,
   },
   forest_king: {
     id: 'forest_king', name: '森王モルガ', emoji: '🦌',
@@ -346,6 +351,7 @@ export const ENEMIES: Record<string, EnemyDef> = {
       { id: 'taiatar_g', name: 'たいあたり', desc: '体当たりで押しつぶす。', mpCost: 0, target: 'enemy_one', effect: 'damage', power: 1.1 },
     ],
     exp: 14, gold: 9,
+    dropItemId: 'potion', dropChance: 0.18,
   },
   tsuru_hammer: {
     id: 'tsuru_hammer', name: 'ツルハンマー', emoji: '⛏️',
@@ -355,6 +361,7 @@ export const ENEMIES: Record<string, EnemyDef> = {
       { id: 'hori_okoshi', name: 'ほりおこし', desc: '掘り起こしてスタン状態にする。', mpCost: 8, target: 'enemy_one', effect: 'stun', power: 1.0 },
     ],
     exp: 17, gold: 11,
+    dropItemId: 'ether', dropChance: 0.20,
   },
   kabemimi: {
     id: 'kabemimi', name: 'カベミミ', emoji: '🦇',
@@ -364,6 +371,7 @@ export const ENEMIES: Record<string, EnemyDef> = {
       { id: 'choushu', name: 'チョウシュ', desc: '壁に耳を当て弱点を察知。攻撃力を下げる。', mpCost: 7, target: 'enemy_one', effect: 'debuff_atk', power: 1 },
     ],
     exp: 20, gold: 14,
+    dropItemId: 'potion', dropChance: 0.20,
   },
   ganseki_bou: {
     id: 'ganseki_bou', name: 'ガンセキ坊', emoji: '🗿',
@@ -373,6 +381,7 @@ export const ENEMIES: Record<string, EnemyDef> = {
       { id: 'katamaru', name: 'かたまる', desc: '石のように固まり防御力を上げる。', mpCost: 8, target: 'self', effect: 'def_up', power: 1 },
     ],
     exp: 27, gold: 19,
+    dropItemId: 'hi_potion', dropChance: 0.15,
   },
   // ===== 砂漠エリア（砂漠遺跡）=====
   sabotenu: {
@@ -383,6 +392,7 @@ export const ENEMIES: Record<string, EnemyDef> = {
       { id: 'saboten_kick', name: 'サボテンキック', desc: 'とげだらけの足で蹴る。', mpCost: 0, target: 'enemy_one', effect: 'damage', power: 1.3 },
     ],
     exp: 22, gold: 16,
+    dropItemId: 'antidote', dropChance: 0.30,
   },
   sunabukuro: {
     id: 'sunabukuro', name: 'スナブクロ', emoji: '🎒',
@@ -392,6 +402,7 @@ export const ENEMIES: Record<string, EnemyDef> = {
       { id: 'omoi_crush', name: 'おもいつぶし', desc: '重い砂袋で叩きつける。', mpCost: 0, target: 'enemy_one', effect: 'damage', power: 1.5 },
     ],
     exp: 24, gold: 18,
+    dropItemId: 'potion', dropChance: 0.18,
   },
   hibikamen: {
     id: 'hibikamen', name: 'ヒビカメン', emoji: '🗺️',
@@ -401,6 +412,7 @@ export const ENEMIES: Record<string, EnemyDef> = {
       { id: 'inishie_honoo', name: 'いにしえのほのお', desc: '古代の炎を放つ。', mpCost: 8, target: 'enemy_one', effect: 'damage', power: 1.6 },
     ],
     exp: 26, gold: 20,
+    dropItemId: 'ether', dropChance: 0.20,
   },
   mizunomin: {
     id: 'mizunomin', name: 'ミズノミン', emoji: '🫙',
@@ -410,6 +422,7 @@ export const ENEMIES: Record<string, EnemyDef> = {
       { id: 'uruoi', name: 'うるおい', desc: '自分を水で潤し防御力を上げる。', mpCost: 8, target: 'self', effect: 'def_up', power: 1 },
     ],
     exp: 20, gold: 14,
+    dropItemId: 'potion', dropChance: 0.20,
   },
   // ===== 魔王軍 一般兵（砂漠遺跡 後半）=====
   tsugihagi_hei: {
@@ -420,6 +433,7 @@ export const ENEMIES: Record<string, EnemyDef> = {
       { id: 'gamushara', name: 'がむしゃら', desc: '我武者羅に攻撃し自身の攻撃力を上げる。', mpCost: 8, target: 'self', effect: 'atk_up', power: 1 },
     ],
     exp: 42, gold: 34,
+    dropItemId: 'hi_potion', dropChance: 0.20,
   },
   baketsu_hei: {
     id: 'baketsu_hei', name: 'バケツ兵', emoji: '🪣',
@@ -429,6 +443,7 @@ export const ENEMIES: Record<string, EnemyDef> = {
       { id: 'jourou_maki', name: 'じょうろまき', desc: 'じょうろで水をかけスタンさせる。', mpCost: 8, target: 'enemy_one', effect: 'stun', power: 1.0 },
     ],
     exp: 44, gold: 36,
+    dropItemId: 'hi_potion', dropChance: 0.15,
   },
   memo_hei: {
     id: 'memo_hei', name: 'メモ兵', emoji: '📝',
@@ -438,6 +453,7 @@ export const ENEMIES: Record<string, EnemyDef> = {
       { id: 'jouhou_koukou', name: 'じょうほうこうかん', desc: '弱点情報を共有し攻撃力を下げる。', mpCost: 8, target: 'enemy_one', effect: 'debuff_atk', power: 1 },
     ],
     exp: 40, gold: 32,
+    dropItemId: 'ether', dropChance: 0.20,
   },
   // ===== 魔王軍 幹部（砂漠遺跡 深部）=====
   sansec_general: {
@@ -481,6 +497,7 @@ export const ENEMIES: Record<string, EnemyDef> = {
       { id: 'shita_uchi', name: 'したうち', desc: '長い舌でぺちんと叩く。', mpCost: 0, target: 'enemy_one', effect: 'damage', power: 1.3 },
     ],
     exp: 14, gold: 9,
+    dropItemId: 'potion', dropChance: 0.18,
   },
   yadotsubo: {
     id: 'yadotsubo', name: 'ヤドツボ', emoji: '🫙',
@@ -490,6 +507,7 @@ export const ENEMIES: Record<string, EnemyDef> = {
       { id: 'hasami_kudaki', name: 'ハサミくだき', desc: '大きなハサミで強力に挟む。', mpCost: 0, target: 'enemy_one', effect: 'damage', power: 1.5 },
     ],
     exp: 19, gold: 14,
+    dropItemId: 'antidote', dropChance: 0.20,
   },
   mokumokumo: {
     id: 'mokumokumo', name: 'モクモクモ', emoji: '🌊',
@@ -499,6 +517,7 @@ export const ENEMIES: Record<string, EnemyDef> = {
       { id: 'doku_no_moku', name: 'どくのもく', desc: '毒を帯びた藻でダメージを与える。', mpCost: 6, target: 'enemy_one', effect: 'poison', power: 1.0 },
     ],
     exp: 21, gold: 15,
+    dropItemId: 'antidote', dropChance: 0.25,
   },
   kuchipaku: {
     id: 'kuchipaku', name: 'クチパク', emoji: '🐡',
@@ -508,6 +527,7 @@ export const ENEMIES: Record<string, EnemyDef> = {
       { id: 'hageshii_nagare', name: 'はげしいながれ', desc: '激流を起こして全体を攻撃する。', mpCost: 8, target: 'enemy_all', effect: 'damage', power: 0.9 },
     ],
     exp: 23, gold: 17,
+    dropItemId: 'antidote', dropChance: 0.22,
   },
   // ===== ボス =====
   bandit_king: {
@@ -548,6 +568,7 @@ export const ENEMIES: Record<string, EnemyDef> = {
       { id: 'fuji_kome', name: 'ふうじこめ', desc: '遺跡の力で1体を封じスタンさせる。', mpCost: 8, target: 'enemy_one', effect: 'stun', power: 1.0 },
     ],
     exp: 90, gold: 70, isBoss: false,
+    dropItemId: 'mega_potion', dropChance: 0.50,
   },
   tidal_king: {
     id: 'tidal_king', name: '潮王ネブラ', emoji: '🐳',

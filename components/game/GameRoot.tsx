@@ -155,7 +155,14 @@ export default function GameRoot() {
   }
 
   const handleEventAdvance = () => {
-    update(s => advanceEvent(s))
+    update(s => {
+      const next = advanceEvent(s)
+      if (next.phase === 'location' && !next.pendingBranch && !next.pendingCompanionJoin) {
+        const eventId = checkLocationEvent(next)
+        if (eventId) return startEvent(next, eventId)
+      }
+      return next
+    })
   }
 
   const handleSkipAllEvent = () => {
@@ -164,14 +171,22 @@ export default function GameRoot() {
 
   const handleChooseBranch = (idx: number) => {
     const opt = gs.pendingBranch?.options[idx]
+    const checkAndChain = (s: GameState) => {
+      const next = chooseBranch(s, idx)
+      if (next.phase === 'location' && !next.pendingBranch && !next.pendingCompanionJoin) {
+        const eventId = checkLocationEvent(next)
+        if (eventId) return startEvent(next, eventId)
+      }
+      return next
+    }
     if (opt?.winChance !== undefined) {
       setDiceRolling(true)
       setTimeout(() => {
         setDiceRolling(false)
-        update(s => chooseBranch(s, idx))
+        update(s => checkAndChain(s))
       }, 1500)
     } else {
-      update(s => chooseBranch(s, idx))
+      update(s => checkAndChain(s))
     }
   }
 

@@ -687,7 +687,8 @@ export default function BattleScene({ gs, onAttack, onSkill, onItem, onFlee, onC
                   disabled: availableItems.length === 0,
                 },
                 {
-                  label: 'にげる', icon: '💨',
+                  label: b.isBoss ? 'にげる' : '逃走60%',
+                  icon: '💨',
                   bg: b.isBoss
                     ? 'bg-gray-900 border-gray-700 opacity-40 cursor-not-allowed'
                     : 'bg-[#1a1a2a] hover:bg-[#252540] border-[#505070]',
