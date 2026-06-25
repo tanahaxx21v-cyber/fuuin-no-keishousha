@@ -209,10 +209,9 @@ export default function EventScene({ gs, onAdvance, onSkipAll }: Props) {
             className="relative z-10"
             style={{
               marginBottom: -8,
-              filter: 'drop-shadow(0 8px 16px rgba(0,0,0,0.8))',
               opacity: portraitVisible ? 1 : 0,
               transform: portraitVisible ? 'translateY(0) scale(1)' : 'translateY(8px) scale(0.97)',
-              transition: 'opacity 0.12s ease, transform 0.12s ease, filter 0.3s',
+              transition: 'opacity 0.12s ease, transform 0.12s ease',
             }}
           >
             {hasPortrait ? (
@@ -265,7 +264,6 @@ export default function EventScene({ gs, onAdvance, onSkipAll }: Props) {
                 fontSize: 15,
                 color: isNarrator ? '#9ca3af' : '#f1f5f9',
                 fontStyle: isNarrator ? 'italic' : 'normal',
-                textShadow: '0 1px 4px rgba(0,0,0,0.95)',
               }}
             >
               {isNarrator && (
@@ -283,7 +281,7 @@ export default function EventScene({ gs, onAdvance, onSkipAll }: Props) {
                     marginLeft: 2,
                     verticalAlign: 'text-bottom',
                     animation: 'pulse 0.8s ease-in-out infinite',
-                    borderRadius: 1,
+                    borderRadius: 0,
                   }}
                 />
               )}

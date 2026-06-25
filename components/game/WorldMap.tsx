@@ -186,10 +186,10 @@ export default function WorldMap({ gs, onTravel, onEnterLocation, getAvailableCo
           `,
         }} />
         <div className="absolute inset-0 pointer-events-none" style={{ zIndex: 1 }}>
-          <span style={{ position:'absolute', left:'7%',  top:'19%', fontSize:9, color:'rgba(100,180,100,0.3)', fontWeight:'bold', transform:'rotate(-10deg)' }}>森林地帯</span>
-          <span style={{ position:'absolute', left:'35%', top:'2%',  fontSize:9, color:'rgba(150,120,80,0.3)',  fontWeight:'bold' }}>山岳地帯</span>
-          <span style={{ position:'absolute', left:'76%', top:'47%', fontSize:9, color:'rgba(200,160,60,0.3)',  fontWeight:'bold', transform:'rotate(5deg)' }}>砂漠地帯</span>
-          <span style={{ position:'absolute', left:'30%', top:'88%', fontSize:9, color:'rgba(60,130,200,0.3)',  fontWeight:'bold' }}>沿岸・海域</span>
+          <span style={{ position:'absolute', left:'7%',  top:'19%', fontSize:9, color:'#2a4a2a', fontWeight:'bold', transform:'rotate(-10deg)' }}>森林地帯</span>
+          <span style={{ position:'absolute', left:'35%', top:'2%',  fontSize:9, color:'#3d3220',  fontWeight:'bold' }}>山岳地帯</span>
+          <span style={{ position:'absolute', left:'76%', top:'47%', fontSize:9, color:'#4a3c0f',  fontWeight:'bold', transform:'rotate(5deg)' }}>砂漠地帯</span>
+          <span style={{ position:'absolute', left:'30%', top:'88%', fontSize:9, color:'#0d2d47',  fontWeight:'bold' }}>沿岸・海域</span>
         </div>
 
         {/* 接続線 — 全ルートを明示・アクティブルート強調 */}
@@ -207,30 +207,30 @@ export default function WorldMap({ gs, onTravel, onEnterLocation, getAvailableCo
               <g key={`${a}-${b}`}>
                 {/* 影 */}
                 <line x1={`${from.x}%`} y1={`${from.y}%`} x2={`${to.x}%`} y2={`${to.y}%`}
-                  stroke="rgba(0,0,0,0.8)" strokeWidth={8} />
+                  stroke="#000000" strokeWidth={8} />
                 {/* 道の外縁 */}
                 <line x1={`${from.x}%`} y1={`${from.y}%`} x2={`${to.x}%`} y2={`${to.y}%`}
-                  stroke="rgba(200,150,30,0.9)" strokeWidth={5} />
+                  stroke="#c89618" strokeWidth={5} />
                 {/* 中心の明るいライン */}
                 <line x1={`${from.x}%`} y1={`${from.y}%`} x2={`${to.x}%`} y2={`${to.y}%`}
-                  stroke="rgba(255,225,100,1)" strokeWidth={2.5} />
+                  stroke="#ffe164" strokeWidth={2.5} />
               </g>
             )
             if (bothVisited) return (
               <g key={`${a}-${b}`}>
                 <line x1={`${from.x}%`} y1={`${from.y}%`} x2={`${to.x}%`} y2={`${to.y}%`}
-                  stroke="rgba(0,0,0,0.5)" strokeWidth={4} />
+                  stroke="#000000" strokeWidth={4} />
                 <line x1={`${from.x}%`} y1={`${from.y}%`} x2={`${to.x}%`} y2={`${to.y}%`}
-                  stroke="rgba(120,100,50,0.7)" strokeWidth={2.5} />
+                  stroke="#5a4b24" strokeWidth={2.5} />
               </g>
             )
             // 未訪問ルート（片方以上が未訪問）
             return (
               <g key={`${a}-${b}`}>
                 <line x1={`${from.x}%`} y1={`${from.y}%`} x2={`${to.x}%`} y2={`${to.y}%`}
-                  stroke="rgba(0,0,0,0.35)" strokeWidth={3} />
+                  stroke="#000000" strokeWidth={3} />
                 <line x1={`${from.x}%`} y1={`${from.y}%`} x2={`${to.x}%`} y2={`${to.y}%`}
-                  stroke="rgba(90,75,35,0.45)" strokeWidth={1.8} />
+                  stroke="#3d3318" strokeWidth={1.8} />
               </g>
             )
           })}

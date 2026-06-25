@@ -814,7 +814,7 @@ export default function BattleScene({ gs, onAttack, onSkill, onItem, onFlee, onC
             ? b.isBoss ? 'bg-amber-950 border-amber-400' : 'bg-amber-950 border-amber-600'
             : 'bg-red-950 border-red-700'
         }`}
-          style={{}}
+         
         >
           {/* ボス勝利ヘッダー */}
           {b.phase === 'victory' && b.isBoss && (
@@ -825,7 +825,7 @@ export default function BattleScene({ gs, onAttack, onSkill, onItem, onFlee, onC
 
           <div className="p-5 text-center">
             <div className={`font-black mb-2 ${b.phase === 'victory' ? 'text-3xl' : 'text-2xl text-red-400'}`}
-              style={{}}>
+             >
               {b.phase === 'victory' ? '🎉 VICTORY！' : '💀 DEFEAT...'}
             </div>
 

@@ -181,10 +181,6 @@ export default function LocationView({
   }
 
   // 初訪問オーバーレイ表示パラメータ
-  const arrivalBg =
-    loc.type === 'dungeon' ? 'from-red-950/95 via-[#07071a]/95 to-[#07071a]/95'
-    : loc.type === 'town'  ? 'from-indigo-950/95 via-[#07071a]/95 to-[#07071a]/95'
-    : 'from-slate-900/95 via-[#07071a]/95 to-[#07071a]/95'
   const arrivalBorder =
     loc.type === 'dungeon' ? 'border-orange-600'
     : loc.type === 'town'  ? 'border-indigo-500'
@@ -205,7 +201,7 @@ export default function LocationView({
             style={{ background: '#07071a', animation: 'fadeIn 0.3s ease' }}
           >
             {/* ヘッダー */}
-            <div className={`border-b ${arrivalBorder} px-4 py-2 flex items-center gap-2`} style={{ background: 'rgba(255,255,255,0.04)' }}>
+            <div className={`border-b ${arrivalBorder} px-4 py-2 flex items-center gap-2`} style={{ background: '#0d0d1a' }}>
               <span className="text-xs font-black text-gray-500 tracking-widest uppercase">{typeLabel}</span>
               <span className="ml-auto text-[10px] text-indigo-500 font-black">✦ 初めての訪問 ✦</span>
             </div>
@@ -297,7 +293,7 @@ export default function LocationView({
 
       {/* Header */}
       <div className={`border-2 ${typeBorder}`} style={{ background: '#08080e' }}>
-        <div className="flex items-center gap-3 px-3 py-2.5" style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
+        <div className="flex items-center gap-3 px-3 py-2.5" style={{ borderBottom: '1px solid #1a1a2e' }}>
           <button
             onClick={onBackToMap}
             className="text-xs font-bold text-gray-600 hover:text-gray-300 transition px-2 py-1 border border-[#2a2a40] hover:border-gray-500 shrink-0"
@@ -362,7 +358,6 @@ export default function LocationView({
                 className="relative z-10"
                 style={{
                   marginBottom: -8,
-                  filter: 'drop-shadow(0 4px 8px rgba(0,0,0,0.7))',
                 }}
               >
                 {hasCharPortrait(pendingJoin.id)
@@ -392,7 +387,7 @@ export default function LocationView({
 
                 {/* 加入セリフ */}
                 <div className="px-5 py-4">
-                  <p className="text-sm text-gray-100 font-bold leading-relaxed" style={{ textShadow: '0 1px 4px rgba(0,0,0,0.95)' }}>
+                  <p className="text-sm text-gray-100 font-bold leading-relaxed">
                     「{pendingJoin.joinText}」
                   </p>
                 </div>
