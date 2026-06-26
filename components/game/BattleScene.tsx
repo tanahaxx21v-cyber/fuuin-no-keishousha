@@ -95,7 +95,6 @@ function EnemyDisplay({ enemies, isBoss, isTargetingEnemies, onSelectTarget, hit
                       top: '-20px',
                       left: '50%',
                       transform: 'translateX(-50%)',
-                      textShadow: '0 1px 4px rgba(0,0,0,0.9)',
                       animation: 'floatUp 0.9s ease-out forwards',
                       zIndex: 20,
                     }}
@@ -111,7 +110,7 @@ function EnemyDisplay({ enemies, isBoss, isTargetingEnemies, onSelectTarget, hit
               {/* 敵名 + 状態異常のみ（PP4仕様：敵HPは非表示）*/}
               <div style={{ width: isLarge ? 96 : 68 }}>
                 <div className="text-center mt-0.5">
-                  <span className="font-black" style={{ fontSize: 9, color: isBoss ? '#fca5a5' : '#d1d5db', textShadow: '0 1px 3px #000' }}>
+                  <span className="font-black" style={{ fontSize: 9, color: isBoss ? '#fca5a5' : '#d1d5db' }}>
                     {dead ? '---' : e.name}
                   </span>
                 </div>
@@ -475,7 +474,7 @@ export default function BattleScene({ gs, onAttack, onSkill, onItem, onFlee, onC
         {critText && (
           <div className="absolute inset-x-0 top-1/3 z-50 pointer-events-none flex justify-center">
             <div className="text-2xl font-black text-yellow-300 px-3 py-1"
-              style={{ textShadow: '0 2px 0 rgba(0,0,0,0.8)', animation: 'fadeIn 0.1s ease, fadeOut 0.4s ease 0.3s forwards' }}>
+              style={{ animation: 'fadeIn 0.1s ease, fadeOut 0.4s ease 0.3s forwards' }}>
               ✦ CRITICAL! ✦
             </div>
           </div>
@@ -483,7 +482,7 @@ export default function BattleScene({ gs, onAttack, onSkill, onItem, onFlee, onC
         {spellCast && (
           <div className="absolute inset-x-0 top-2/5 z-50 pointer-events-none flex justify-center" style={{ top: '40%' }}>
             <div className="text-xl font-black px-3 py-1"
-              style={{ color: spellCast.color, textShadow: '0 2px 0 rgba(0,0,0,0.9)', animation: 'fadeIn 0.1s ease, fadeOut 0.35s ease 0.25s forwards' }}>
+              style={{ color: spellCast.color, animation: 'fadeIn 0.1s ease, fadeOut 0.35s ease 0.25s forwards' }}>
               {spellCast.label}
             </div>
           </div>
@@ -506,15 +505,11 @@ export default function BattleScene({ gs, onAttack, onSkill, onItem, onFlee, onC
         {/* 雲 (野外通常戦闘 — フラット矩形でGBAピクセル風) */}
         {!b.isBoss && LOCATIONS[gs.currentLocId]?.type !== 'dungeon' && (
           <>
-            <div className="absolute" style={{ top: 8, left: 20, width: 80, height: 10, background: 'rgba(255,255,255,0.55)' }} />
-            <div className="absolute" style={{ top: 4, right: 48, width: 104, height: 10, background: 'rgba(255,255,255,0.45)' }} />
-            <div className="absolute" style={{ top: 16, right: 16, width: 56, height: 8, background: 'rgba(255,255,255,0.35)' }} />
-            <div className="absolute" style={{ top: 28, left: 120, width: 48, height: 8, background: 'rgba(255,255,255,0.28)' }} />
+            <div className="absolute" style={{ top: 8, left: 20, width: 80, height: 10, background: '#c8e4f4' }} />
+            <div className="absolute" style={{ top: 4, right: 48, width: 104, height: 10, background: '#b8daf0' }} />
+            <div className="absolute" style={{ top: 16, right: 16, width: 56, height: 8, background: '#a8d0ec' }} />
+            <div className="absolute" style={{ top: 28, left: 120, width: 48, height: 8, background: '#98c8e8' }} />
           </>
-        )}
-        {/* ボス戦: スキャンラインで緊張感を演出 */}
-        {b.isBoss && (
-          <div className="absolute" style={{ top: 0, left: 0, right: 0, bottom: 0, backgroundImage: 'repeating-linear-gradient(90deg, transparent, transparent 40px, rgba(255,0,0,0.015) 40px, rgba(255,0,0,0.015) 41px)', pointerEvents: 'none' }} />
         )}
 
         {/* 左エリア: プレイヤー + 仲間スプライト */}
@@ -533,7 +528,7 @@ export default function BattleScene({ gs, onAttack, onSkill, onItem, onFlee, onC
               {/* プレイヤーフローティングダメージ数字 */}
               {floatingNums.filter(f => f.uid === playerUnit.uid).map(f => (
                 <span key={f.id} className="absolute font-black pointer-events-none"
-                  style={{ color: f.color, fontSize: 16, top: '-20px', left: '50%', transform: 'translateX(-50%)', textShadow: '0 1px 4px rgba(0,0,0,0.9)', animation: 'floatUp 0.9s ease-out forwards', zIndex: 20 }}>
+                  style={{ color: f.color, fontSize: 16, top: '-20px', left: '50%', transform: 'translateX(-50%)', animation: 'floatUp 0.9s ease-out forwards', zIndex: 20 }}>
                   {f.val}
                 </span>
               ))}
@@ -562,7 +557,7 @@ export default function BattleScene({ gs, onAttack, onSkill, onItem, onFlee, onC
                   )}
                   {myFloats.map(f => (
                     <span key={f.id} className="absolute font-black pointer-events-none"
-                      style={{ color: f.color, fontSize: 13, top: '-18px', left: '50%', transform: 'translateX(-50%)', textShadow: '0 1px 4px rgba(0,0,0,0.9)', animation: 'floatUp 0.9s ease-out forwards', zIndex: 20 }}>
+                      style={{ color: f.color, fontSize: 13, top: '-18px', left: '50%', transform: 'translateX(-50%)', animation: 'floatUp 0.9s ease-out forwards', zIndex: 20 }}>
                       {f.val}
                     </span>
                   ))}
@@ -570,12 +565,12 @@ export default function BattleScene({ gs, onAttack, onSkill, onItem, onFlee, onC
                 <div className="flex flex-col gap-0.5" style={{ width: 60 }}>
                   <HpBar hp={a.hp} maxHp={a.maxHp} />
                   <div className="flex items-center justify-between gap-0.5">
-                    <span className="text-[9px] text-white font-bold leading-none truncate" style={{ textShadow: '0 1px 3px #000' }}>
+                    <span className="text-[9px] text-white font-bold leading-none truncate">
                       {a.name}
                     </span>
                     {statusIcons.map((ic, i) => <span key={i} style={{ fontSize: 9 }}>{ic}</span>)}
                   </div>
-                  <span className="text-[9px] font-bold leading-none" style={{ color: a.hp / a.maxHp > 0.5 ? '#4ade80' : a.hp / a.maxHp > 0.25 ? '#facc15' : '#ef4444', textShadow: '0 1px 3px #000' }}>
+                  <span className="text-[9px] font-bold leading-none" style={{ color: a.hp / a.maxHp > 0.5 ? '#4ade80' : a.hp / a.maxHp > 0.25 ? '#facc15' : '#ef4444' }}>
                     {a.hp <= 0 ? '---' : `HP ${a.hp}/${a.maxHp}`}
                   </span>
                 </div>
@@ -601,7 +596,7 @@ export default function BattleScene({ gs, onAttack, onSkill, onItem, onFlee, onC
         <div className="mx-2 mt-1 flex gap-1.5">
           {allies.filter(a => a.hp > 0).map(a => (
             <button key={a.uid} onClick={() => handleSelectTarget(a)}
-              className="flex-1 flex items-center gap-2 bg-green-900 border-2 border-green-500 p-2 hover:bg-green-800 active:scale-95 transition">
+              className="flex-1 flex items-center gap-2 bg-green-900 border-2 border-green-500 p-2 hover:bg-green-800 transition">
               <CharPortrait charId={a.companionId ?? (a.isPlayer ? 'player' : 'gares')} size={40} />
               <div className="flex-1 min-w-0">
                 <span className="text-xs font-black text-white block truncate">{a.name}</span>
@@ -683,7 +678,7 @@ export default function BattleScene({ gs, onAttack, onSkill, onItem, onFlee, onC
                   key={btn.label}
                   onClick={btn.action}
                   disabled={btn.disabled}
-                  className={`flex items-center gap-2.5 px-4 py-3 text-left transition active:scale-95 hover:bg-[#0d1848] ${
+                  className={`flex items-center gap-2.5 px-4 py-3 text-left transition hover:bg-[#0d1848] ${
                     i % 2 === 0 ? 'border-r border-[#1a2860]' : ''
                   } ${i < 2 ? 'border-b border-[#1a2860]' : ''}`}
                 >
@@ -723,7 +718,7 @@ export default function BattleScene({ gs, onAttack, onSkill, onItem, onFlee, onC
                     <button key={skill.id} disabled={!ok} onClick={() => handleSkillSelect(skill)}
                       className={`text-left px-3 py-2.5 border-b border-[#1a2860] last:border-b-0 transition flex items-center gap-2 ${
                         ok
-                          ? 'hover:bg-[#0d1848] text-white active:scale-95'
+                          ? 'hover:bg-[#0d1848] text-white'
                           : 'text-gray-600 cursor-not-allowed'
                       }`}>
                       <span className="text-xs font-black w-3 shrink-0" style={{ color: ok ? '#818cf8' : 'transparent' }}>▶</span>
@@ -767,7 +762,7 @@ export default function BattleScene({ gs, onAttack, onSkill, onItem, onFlee, onC
                           setMode('target_item')
                         }
                       }}
-                      className="text-left px-3 py-2.5 border-b border-[#1a2860] last:border-b-0 flex items-center gap-2 hover:bg-[#0d1848] transition active:scale-95 text-white">
+                      className="text-left px-3 py-2.5 border-b border-[#1a2860] last:border-b-0 flex items-center gap-2 hover:bg-[#0d1848] transition text-white">
                       <span className="text-xs font-black text-green-400 w-3">▶</span>
                       <span className="font-black text-sm flex-1">{item.emoji} {item.name}</span>
                       <span className="text-xs text-gray-500">×{qty}</span>
@@ -781,7 +776,7 @@ export default function BattleScene({ gs, onAttack, onSkill, onItem, onFlee, onC
           {isPlayerTurn && mode === 'select' && !playerUnit.statusEffects.some(e => e.id === 'stun') && (
             <button
               onClick={handleAutoAction}
-              className="w-full mt-1 py-1.5 border-t border-[#1a2860] text-xs font-black text-slate-500 hover:text-slate-300 hover:bg-[#0d1040] active:scale-95 transition tracking-wider"
+              className="w-full mt-1 py-1.5 border-t border-[#1a2860] text-xs font-black text-slate-500 hover:text-slate-300 hover:bg-[#0d1040] transition tracking-wider"
               style={{ background: '#08102a' }}
             >
               ⚡ オート（AI最適行動）
@@ -901,7 +896,7 @@ export default function BattleScene({ gs, onAttack, onSkill, onItem, onFlee, onC
 
             <button
               onClick={onClose}
-              className={`px-10 py-3 font-black border-2 transition active:scale-95 text-lg ${
+              className={`px-10 py-3 font-black border-2 transition text-lg ${
                 b.phase === 'victory'
                   ? b.isBoss
                     ? 'bg-amber-600 hover:bg-amber-500 border-amber-300 text-white'

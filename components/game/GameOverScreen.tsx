@@ -175,7 +175,7 @@ export default function GameOverScreen({ gs, onRestart }: Props) {
 
         <button
           onClick={onRestart}
-          className="w-full py-4 bg-slate-800 hover:bg-slate-700 border-2 border-slate-600 text-white font-black text-xl transition active:scale-95"
+          className="w-full py-4 bg-slate-800 hover:bg-slate-700 border-2 border-slate-600 text-white font-black text-xl transition"
         >
           タイトルへ戻る
         </button>

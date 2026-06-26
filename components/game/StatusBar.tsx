@@ -247,7 +247,7 @@ export default function StatusBar({ gs, onSave, isMuted, onToggleMute, onReturnT
                   setConfirmReturn(false)
                   onReturnToTitle?.()
                 }}
-                className="px-4 py-2 bg-indigo-900 hover:bg-indigo-800 border-2 border-indigo-600 text-white font-black text-sm transition active:scale-95"
+                className="px-4 py-2 bg-indigo-900 hover:bg-indigo-800 border-2 border-indigo-600 text-white font-black text-sm transition"
               >
                 💾 保存して戻る
               </button>
@@ -256,7 +256,7 @@ export default function StatusBar({ gs, onSave, isMuted, onToggleMute, onReturnT
                   setConfirmReturn(false)
                   onReturnToTitle?.()
                 }}
-                className="px-4 py-2 bg-red-950 hover:bg-red-900 border-2 border-red-700 text-red-300 font-black text-sm transition active:scale-95"
+                className="px-4 py-2 bg-red-950 hover:bg-red-900 border-2 border-red-700 text-red-300 font-black text-sm transition"
               >
                 保存せず戻る
               </button>

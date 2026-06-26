@@ -61,7 +61,7 @@ export default function TitleScreen({ onStart, onContinue, onDeleteSave, hasSave
           {hasSave && onContinue && (
             <button
               onClick={onContinue}
-              className="w-full px-4 py-3 text-left flex items-center gap-3 bg-[#0d0d28] border border-[#2d2d60] hover:bg-[#111130] transition active:scale-95 mb-3"
+              className="w-full px-4 py-3 text-left flex items-center gap-3 bg-[#0d0d28] border border-[#2d2d60] hover:bg-[#111130] transition mb-3"
             >
               <span className="text-indigo-400 font-black text-sm">▶</span>
               <span className="font-black text-base text-white tracking-wider">コンティニュー</span>
@@ -94,7 +94,7 @@ export default function TitleScreen({ onStart, onContinue, onDeleteSave, hasSave
 
               <button
                 onClick={() => { if (hasSave && onDeleteSave) onDeleteSave(); onStart(selected) }}
-                className="w-full py-3 px-4 bg-[#3d1f00] hover:bg-[#4d2a00] border border-[#92400e] text-white font-black text-base tracking-wider transition active:scale-95 mb-1"
+                className="w-full py-3 px-4 bg-[#3d1f00] hover:bg-[#4d2a00] border border-[#92400e] text-white font-black text-base tracking-wider transition mb-1"
               >
                 ⚔ {hasSave ? '新規ゲーム開始' : 'ゲームスタート'}
               </button>

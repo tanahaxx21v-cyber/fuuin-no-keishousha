@@ -129,14 +129,14 @@ export default function ShopView({ gs, onBuy, onClose }: Props) {
                   <button
                     onClick={() => onBuy(itemId)}
                     disabled={!canBuy}
-                    className={`px-2.5 py-1.5 text-xs font-black border transition active:scale-95 ${
+                    className={`px-2.5 py-1.5 text-xs font-black border transition ${
                       canBuy ? 'bg-green-900 hover:bg-green-800 border-green-700 text-white' : 'bg-gray-900 border-gray-800 text-gray-600 cursor-not-allowed'
                     }`}
                   >×1</button>
                   <button
                     onClick={() => { onBuy(itemId); onBuy(itemId); onBuy(itemId) }}
                     disabled={gs.gold < currentPrice * 3}
-                    className={`px-2 py-1.5 text-xs font-black border transition active:scale-95 ${
+                    className={`px-2 py-1.5 text-xs font-black border transition ${
                       gs.gold >= currentPrice * 3 ? 'bg-blue-900 hover:bg-blue-800 border-blue-700 text-white' : 'bg-gray-900 border-gray-800 text-gray-600 cursor-not-allowed'
                     }`}
                   >×3</button>

@@ -274,13 +274,13 @@ export default function LocationView({
               <div className="flex gap-2">
                 <button
                   onClick={() => { setShowBossConfirm(false); onFightBoss() }}
-                  className="flex-1 py-2.5 bg-red-800 hover:bg-red-700 border-2 border-red-500 text-white font-black transition active:scale-95 text-sm"
+                  className="flex-1 py-2.5 bg-red-800 hover:bg-red-700 border-2 border-red-500 text-white font-black transition text-sm"
                 >
                   ⚔️ 挑む！
                 </button>
                 <button
                   onClick={() => setShowBossConfirm(false)}
-                  className="flex-1 py-2.5 bg-slate-800 hover:bg-slate-700 border-2 border-slate-600 text-gray-300 font-black transition active:scale-95 text-sm"
+                  className="flex-1 py-2.5 bg-slate-800 hover:bg-slate-700 border-2 border-slate-600 text-gray-300 font-black transition text-sm"
                 >
                   引き返す
                 </button>
@@ -424,14 +424,14 @@ export default function LocationView({
                     <button
                       onClick={() => onJoinCompanion(gs.pendingCompanionJoin!)}
                       disabled={joinedCount >= 3}
-                      className="flex-1 py-3 font-black text-white transition active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed border-2"
+                      className="flex-1 py-3 font-black text-white transition disabled:opacity-40 disabled:cursor-not-allowed border-2"
                       style={{ background: '#0a0a1a', borderColor: glow }}
                     >
                       ✅ 仲間にする
                     </button>
                     <button
                       onClick={onSkipCompanion}
-                      className={`px-5 py-3 border-2 font-bold transition active:scale-95 ${
+                      className={`px-5 py-3 border-2 font-bold transition ${
                         isOneTimeCompanion(pendingJoin.id)
                           ? 'bg-red-950 hover:bg-red-900 border-red-700 text-red-300'
                           : 'bg-slate-800 hover:bg-slate-700 border-slate-600 text-gray-300'
@@ -512,7 +512,7 @@ export default function LocationView({
             return (
               <button
                 onClick={onOpenPartyManage}
-                className="w-full px-3 py-2.5 text-left flex items-center border-b border-[#2d2000] hover:bg-[#0d0a00] transition active:scale-95"
+                className="w-full px-3 py-2.5 text-left flex items-center border-b border-[#2d2000] hover:bg-[#0d0a00] transition"
               >
                 <span className="w-4 text-xs font-black shrink-0" style={{ color: notInParty ? '#c084fc' : '#d97706' }}>▶</span>
                 <span className="font-black text-sm flex-1" style={{ color: notInParty ? '#e9d5ff' : '#fef3c7' }}>パーティ編成</span>
@@ -531,7 +531,7 @@ export default function LocationView({
               <button
                 onClick={onInn}
                 disabled={!canAfford}
-                className="w-full px-3 py-2.5 text-left flex items-center border-b border-[#2d2000] hover:bg-[#0d0a00] transition active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed"
+                className="w-full px-3 py-2.5 text-left flex items-center border-b border-[#2d2000] hover:bg-[#0d0a00] transition disabled:opacity-40 disabled:cursor-not-allowed"
               >
                 <span className="w-4 text-xs font-black text-amber-700 shrink-0">{canAfford ? '▶' : '×'}</span>
                 <span className={`font-black text-sm flex-1 ${canAfford ? 'text-amber-100' : 'text-gray-600'}`}>宿屋で休む</span>
@@ -546,7 +546,7 @@ export default function LocationView({
           {loc.shopItems && (
             <button
               onClick={onOpenShop}
-              className="w-full px-3 py-2.5 text-left flex items-center border-b border-[#2d2000] hover:bg-[#0d0a00] transition active:scale-95"
+              className="w-full px-3 py-2.5 text-left flex items-center border-b border-[#2d2000] hover:bg-[#0d0a00] transition"
             >
               <span className="w-4 text-xs font-black text-amber-700 shrink-0">▶</span>
               <span className="font-black text-sm text-amber-100 flex-1">ショップ</span>
@@ -571,7 +571,7 @@ export default function LocationView({
               })()}
               <button
                 onClick={onEnterDungeon}
-                className="w-full px-3 py-2.5 text-left flex items-center border-b border-[#2d2000] hover:bg-[#0d0a00] transition active:scale-95"
+                className="w-full px-3 py-2.5 text-left flex items-center border-b border-[#2d2000] hover:bg-[#0d0a00] transition"
               >
                 <span className="w-4 text-xs font-black text-red-700 shrink-0">▶</span>
                 <span className="font-black text-sm text-red-200 flex-1">ダンジョン探索</span>
@@ -579,7 +579,7 @@ export default function LocationView({
               </button>
               <button
                 onClick={() => setShowBossConfirm(true)}
-                className="w-full px-3 py-2.5 text-left flex items-center border-b border-[#2d2000] hover:bg-[#1a0000] transition active:scale-95"
+                className="w-full px-3 py-2.5 text-left flex items-center border-b border-[#2d2000] hover:bg-[#1a0000] transition"
               >
                 <span className="w-4 text-xs font-black text-red-500 shrink-0">▶</span>
                 <span className="font-black text-sm text-red-300 flex-1">ボスに挑む！</span>
@@ -596,7 +596,7 @@ export default function LocationView({
               </div>
               <button
                 onClick={onEnterDungeon}
-                className="w-full px-3 py-2.5 text-left flex items-center border-b border-[#2d2000] hover:bg-[#0d0a00] transition active:scale-95"
+                className="w-full px-3 py-2.5 text-left flex items-center border-b border-[#2d2000] hover:bg-[#0d0a00] transition"
               >
                 <span className="w-4 text-xs font-black text-gray-600 shrink-0">▶</span>
                 <span className="font-black text-sm text-gray-400 flex-1">再探索（EXP稼ぎ）</span>
@@ -607,7 +607,7 @@ export default function LocationView({
           {(loc.type === 'town' || loc.type === 'relay' || loc.type === 'castle') && onWander && (
             <button
               onClick={onWander}
-              className="w-full px-3 py-2.5 text-left flex items-center border-b border-[#2d2000] hover:bg-[#0d0a00] transition active:scale-95"
+              className="w-full px-3 py-2.5 text-left flex items-center border-b border-[#2d2000] hover:bg-[#0d0a00] transition"
             >
               <span className="w-4 text-xs font-black text-amber-700 shrink-0">▶</span>
               <span className="font-black text-sm text-amber-100 flex-1">うろつく</span>
@@ -621,7 +621,7 @@ export default function LocationView({
               <button
                 onClick={onCampRest}
                 disabled={!healable}
-                className="w-full px-3 py-2.5 text-left flex items-center border-b border-[#2d2000] hover:bg-[#0d0a00] transition active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed"
+                className="w-full px-3 py-2.5 text-left flex items-center border-b border-[#2d2000] hover:bg-[#0d0a00] transition disabled:opacity-40 disabled:cursor-not-allowed"
               >
                 <span className="w-4 text-xs font-black shrink-0" style={{ color: healable ? '#2dd4bf' : '#374151' }}>{healable ? '▶' : '×'}</span>
                 <span className={`font-black text-sm flex-1 ${healable ? 'text-teal-100' : 'text-gray-600'}`}>野営して休む</span>
@@ -636,7 +636,7 @@ export default function LocationView({
           {onOpenAlbum && (
             <button
               onClick={onOpenAlbum}
-              className="w-full px-3 py-2.5 text-left flex items-center border-b border-[#2d2000] hover:bg-[#0d0a00] transition active:scale-95"
+              className="w-full px-3 py-2.5 text-left flex items-center border-b border-[#2d2000] hover:bg-[#0d0a00] transition"
             >
               <span className="w-4 text-xs font-black text-amber-900 shrink-0">▶</span>
               <span className="font-black text-sm text-gray-500 flex-1">冒険記録</span>
@@ -654,7 +654,7 @@ export default function LocationView({
             ) : (
               <button
                 onClick={() => setShowBossConfirm(true)}
-                className="w-full px-3 py-3 text-left flex items-center border-b border-[#2d2000] hover:bg-[#1a0000] transition active:scale-95"
+                className="w-full px-3 py-3 text-left flex items-center border-b border-[#2d2000] hover:bg-[#1a0000] transition"
               >
                 <span className="w-4 text-xs font-black text-red-400 shrink-0">▶</span>
                 <span className="font-black text-sm text-red-300 flex-1">終末記録体アーカイブに挑む！</span>
@@ -716,7 +716,7 @@ export default function LocationView({
                     {/* プレイヤー */}
                     <button
                       onClick={() => { onUseItem(selectedItemId, 'player'); setSelectedItemId(null); setItemPanelOpen(false) }}
-                      className="flex items-center gap-2 bg-indigo-950 border border-indigo-700 px-3 py-2 text-xs font-bold text-white hover:bg-indigo-900 transition active:scale-95"
+                      className="flex items-center gap-2 bg-indigo-950 border border-indigo-700 px-3 py-2 text-xs font-bold text-white hover:bg-indigo-900 transition"
                     >
                       <span>🧑</span>
                       <div>
@@ -732,7 +732,7 @@ export default function LocationView({
                         <button
                           key={id}
                           onClick={() => { onUseItem(selectedItemId, id); setSelectedItemId(null); setItemPanelOpen(false) }}
-                          className="flex items-center gap-2 bg-slate-900 border border-slate-600 px-3 py-2 text-xs font-bold text-white hover:bg-slate-800 transition active:scale-95"
+                          className="flex items-center gap-2 bg-slate-900 border border-slate-600 px-3 py-2 text-xs font-bold text-white hover:bg-slate-800 transition"
                         >
                           <CharPortrait charId={id} size={32} rounded={0} />
                           <div>

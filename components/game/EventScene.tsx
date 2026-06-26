@@ -186,12 +186,7 @@ export default function EventScene({ gs, onAdvance, onSkipAll }: Props) {
             </div>
             {/* 中央スクロール */}
             <div className="relative flex flex-col items-center justify-center pb-20 gap-2" style={{ zIndex: 5 }}>
-              <div style={{
-                fontSize: 56,
-                opacity: 0.22,
-                filter: 'grayscale(60%) sepia(30%)',
-                animation: 'pulse 4s ease-in-out infinite',
-              }}>📜</div>
+              <div style={{ fontSize: 56 }}>📜</div>
               <div style={{
                 fontSize: 10,
                 color: '#5a5070',

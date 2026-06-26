@@ -105,7 +105,7 @@ export default function PartyManage({ gs, onSetParty, onClose }: Props) {
                 <div key={def.id} className="relative">
                   <button
                     onClick={() => toggle(def.id)}
-                    className={`w-full flex items-center gap-3 border-2 p-3 text-left transition-all active:scale-95 ${
+                    className={`w-full flex items-center gap-3 border-2 p-3 text-left transition-all ${
                       inDraft
                         ? 'border-amber-500 bg-[#0a0500]'
                         : draft.length >= 3
@@ -213,7 +213,7 @@ export default function PartyManage({ gs, onSetParty, onClose }: Props) {
       <button
         onClick={handleConfirm}
         disabled={draft.length === 0}
-        className={`w-full py-4 border-2 text-white font-black text-lg transition active:scale-95 ${
+        className={`w-full py-4 border-2 text-white font-black text-lg transition ${
           draft.length === 0
             ? 'bg-slate-900 border-slate-700 text-gray-600 cursor-not-allowed opacity-50'
             : 'bg-indigo-800 hover:bg-indigo-700 border-indigo-500'

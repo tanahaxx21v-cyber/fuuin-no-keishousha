@@ -496,7 +496,7 @@ export default function GameRoot() {
               )}
               <button
                 onClick={handleDismissLevelUp}
-                className="px-8 py-2.5 bg-amber-700 hover:bg-amber-600 border-2 border-amber-500 text-white font-black transition active:scale-95 w-full"
+                className="px-8 py-2.5 bg-amber-700 hover:bg-amber-600 border-2 border-amber-500 text-white font-black transition w-full"
               >
                 確認 ▶
               </button>
@@ -673,7 +673,7 @@ export default function GameRoot() {
                       key={i}
                       onClick={() => handleChooseBranch(i)}
                       disabled={cantAfford}
-                      className="w-full py-3 px-4 bg-indigo-900 hover:bg-indigo-800 border-2 border-indigo-500 text-white font-black transition active:scale-95 text-sm text-left disabled:opacity-40 disabled:cursor-not-allowed"
+                      className="w-full py-3 px-4 bg-indigo-900 hover:bg-indigo-800 border-2 border-indigo-500 text-white font-black transition text-sm text-left disabled:opacity-40 disabled:cursor-not-allowed"
                     >
                       <div>▶ {opt.label}</div>
                       {opt.cost !== undefined && (
@@ -725,7 +725,7 @@ function NamingScreen({ onConfirm }: { onConfirm: (name: string) => void }) {
           />
           <button
             onClick={() => onConfirm((name.trim() || 'レオン'))}
-            className="w-full py-3 bg-indigo-900 hover:bg-indigo-800 border border-indigo-700 text-white font-black transition text-base active:scale-95"
+            className="w-full py-3 bg-indigo-900 hover:bg-indigo-800 border border-indigo-700 text-white font-black transition text-base"
           >
             この名前で冒険へ ▶
           </button>
@@ -825,14 +825,14 @@ function PrologueScreen({ onDone, playerName, daysLeft }: { onDone: () => void; 
             {isTypingDone && (page < pages.length - 1 ? (
               <button
                 onClick={e => { e.stopPropagation(); setPage(p => p + 1) }}
-                className="px-6 py-2 bg-indigo-900 hover:bg-indigo-800 border border-indigo-700 text-white font-black transition active:scale-95 text-sm"
+                className="px-6 py-2 bg-indigo-900 hover:bg-indigo-800 border border-indigo-700 text-white font-black transition text-sm"
               >
                 次へ ▶
               </button>
             ) : (
               <button
                 onClick={e => { e.stopPropagation(); onDone() }}
-                className="px-6 py-2 bg-amber-800 hover:bg-amber-700 border border-amber-600 text-white font-black transition active:scale-95 text-sm"
+                className="px-6 py-2 bg-amber-800 hover:bg-amber-700 border border-amber-600 text-white font-black transition text-sm"
               >
                 旅に出る ⚔️
               </button>
