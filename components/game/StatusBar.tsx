@@ -71,7 +71,7 @@ export default function StatusBar({ gs, onSave, isMuted, onToggleMute, onReturnT
             />
           </div>
           <span className={`text-xs font-bold ${hpPct <= 25 ? 'text-red-400 font-black' : 'text-white'}`}>
-            {gs.playerHp}<span className="text-gray-600 font-normal">/{gs.playerMaxHp}</span>
+            {gs.playerHp}<span className="text-gray-600 font-bold">/{gs.playerMaxHp}</span>
           </span>
         </div>
 
@@ -85,7 +85,7 @@ export default function StatusBar({ gs, onSave, isMuted, onToggleMute, onReturnT
             />
           </div>
           <span className="text-xs font-bold text-white">
-            {gs.playerMp}<span className="text-gray-600 font-normal">/{gs.playerMaxMp}</span>
+            {gs.playerMp}<span className="text-gray-600 font-bold">/{gs.playerMaxMp}</span>
           </span>
         </div>
 

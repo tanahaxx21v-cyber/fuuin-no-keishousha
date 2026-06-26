@@ -649,7 +649,7 @@ export default function GameRoot() {
         {diceRolling && (
           <div className="fixed inset-0 z-[70] flex items-center justify-center" style={{ background: '#0a0a12' }}>
             <div className="text-center">
-              <div className="text-2xl mb-3" style={{ animation: "diceSpin 0.35s linear infinite" }}>🎲</div>
+              <div className="text-2xl mb-3">🎲</div>
               <div className="text-xl font-black text-yellow-300">運命を決める…</div>
             </div>
           </div>

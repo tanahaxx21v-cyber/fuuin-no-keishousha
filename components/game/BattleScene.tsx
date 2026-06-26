@@ -74,15 +74,9 @@ function EnemyDisplay({ enemies, isBoss, isTargetingEnemies, onSelectTarget, hit
                 style={{
                   background: isHit ? 'rgba(239,68,68,0.35)' : isHeal ? 'rgba(74,222,128,0.25)' : 'transparent',
                   borderRadius: 0,
-                  transition: 'background 0.1s',
                 }}
               >
-                <span style={{
-                  fontSize, lineHeight: 1,
-                  transform: isHit ? 'translateX(-3px)' : 'none',
-                  transition: 'transform 0.08s',
-                  display: 'block',
-                }}>{emoji}</span>
+                <span style={{ fontSize, lineHeight: 1, display: 'block' }}>{emoji}</span>
                 {/* フローティングダメージ/ヒール数字 */}
                 {myFloats.map(f => (
                   <span
@@ -384,9 +378,7 @@ export default function BattleScene({ gs, onAttack, onSkill, onItem, onFlee, onC
         return (
           <div className="fixed inset-0 z-[90] flex items-center justify-center pointer-events-none">
             <div className="bg-[#0a0a10] absolute inset-0" />
-            <div className="relative z-10 border-2 border-gray-700 bg-[#0a0a20] max-w-xs mx-4"
-              style={{ animation: 'fadeIn 0.4s ease' }}
-            >
+            <div className="relative z-10 border-2 border-gray-700 bg-[#0a0a20] max-w-xs mx-4">
               <div className="border-b border-gray-700 px-4 py-2 flex items-center gap-2" style={{ background: '#0a0a0e' }}>
                 <span className="text-xs font-black text-gray-600 tracking-widest">— FALLEN HERO —</span>
                 <span className="ml-auto text-xs text-red-500 font-black">💀 永眠</span>
