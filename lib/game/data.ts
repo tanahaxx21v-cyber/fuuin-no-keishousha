@@ -861,6 +861,7 @@ export const EVENTS: GameEvent[] = [
       { speaker: 'narrator', speakerName: '老賢者', text: '「急げよ、勇者。残り日数が尽きれば、魔王の封印は解かれる。日数が足りなければ全てが終わりだ。」' },
       { speaker: 'player', speakerName: 'レオン', text: '……わかった。まずガルドを目指す。必ず三つ揃えて魔王を倒す！' },
       { speaker: 'narrator', speakerName: '老賢者', text: '「……一つだけ肝に銘じよ。仲間がHPゼロで倒れた場合——その者は戦線から永久に離脱する。回復もアイテムも、もう使えない。」' },
+      { speaker: 'narrator', speakerName: '老賢者', text: '「もう一つ。旅が長引くほど、この大陸の物価は上がる。ショップのアイテムも宿屋の値段も、日数と共に高くなる。早めに揃えておけ。」' },
       { speaker: 'narrator', speakerName: '', text: 'いざ、旅を始めよう。マップ画面の拠点をタップして移動できる。仲間の命は一つ。残り日数を意識して動け。' },
     ],
     reward: { exp: 20, message: '✨ 旅の目的を理解した！' },

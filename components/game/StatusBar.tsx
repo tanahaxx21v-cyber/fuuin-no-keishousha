@@ -24,6 +24,7 @@ export default function StatusBar({ gs, onSave, isMuted, onToggleMute, onReturnT
   const expPct = Math.min(100, (gs.playerExp / expToNext) * 100)
   const daysUrgent = gs.daysLeft <= 20
   const daysWarn = gs.daysLeft <= 40
+  const daysEncounterUp = gs.daysLeft <= 30
   const totalDays = getDifficultyMultiplier(gs.difficulty).days
   const currentDay = totalDays - gs.daysLeft + 1
 
@@ -41,13 +42,14 @@ export default function StatusBar({ gs, onSave, isMuted, onToggleMute, onReturnT
         }`}>
           <span className="text-[9px] text-gray-600 font-bold mr-0.5">{currentDay}日目</span>
           ⏰ <span className="text-lg font-black">{gs.daysLeft}</span>日
+          {daysEncounterUp && <span className="text-[9px] font-black text-red-400 ml-0.5">⚔↑</span>}
         </div>
 
         {/* Name / Level / EXP */}
-        <div className="flex items-center gap-1 bg-slate-900 border-2 border-slate-700 px-2 py-0.5">
-          <span className="text-xs font-bold text-slate-200">{gs.playerName}</span>
-          <span className="text-slate-600">·</span>
-          <span className="text-xs text-slate-400">Lv</span>
+        <div className="flex items-center gap-1 bg-[#0c0c24] border-2 border-[#2a2a4a] px-2 py-0.5">
+          <span className="text-xs font-bold text-gray-200">{gs.playerName}</span>
+          <span className="text-[#2a2a4a]">·</span>
+          <span className="text-xs text-[#8888aa]">Lv</span>
           <span className="text-sm font-black text-white">{gs.playerLevel}</span>
           <div className="w-12 h-2 bg-gray-900 border border-gray-700 overflow-hidden ml-1" title={`EXP ${gs.playerExp}/${expToNext}`}>
             <div
