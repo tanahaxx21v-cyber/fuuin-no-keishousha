@@ -181,7 +181,7 @@ export default function StatusBar({ gs, onSave, isMuted, onToggleMute, onReturnT
             className={`text-xs border-2 px-2 py-1 font-bold ${
               battleSpeed === 'fast'
                 ? 'bg-yellow-950 border-yellow-600 text-yellow-300'
-                : 'bg-slate-900 hover:bg-slate-800 border-slate-700 text-slate-300'
+                : 'bg-[#0c0c24] hover:bg-[#111130] border-[#2a2a4a] text-[#8888aa]'
             }`}
           >
             {battleSpeed === 'fast' ? '⚡速' : '▶速'}
@@ -195,7 +195,7 @@ export default function StatusBar({ gs, onSave, isMuted, onToggleMute, onReturnT
             className={`text-xs border-2 px-2 py-1 font-bold ${
               autoBattle
                 ? 'bg-green-950 border-green-600 text-green-300'
-                : 'bg-slate-900 hover:bg-slate-800 border-slate-700 text-slate-300'
+                : 'bg-[#0c0c24] hover:bg-[#111130] border-[#2a2a4a] text-[#8888aa]'
             }`}
           >
             {autoBattle ? '🤖AUTO' : '🤖'}
@@ -207,7 +207,7 @@ export default function StatusBar({ gs, onSave, isMuted, onToggleMute, onReturnT
           <button
             onClick={onToggleMute}
             title={isMuted ? '音楽ON' : '音楽OFF'}
-            className="text-xs bg-slate-900 hover:bg-slate-800 border-2 border-slate-700 px-2 py-1 font-bold text-slate-300"
+            className="text-xs bg-[#0c0c24] hover:bg-[#111130] border-2 border-[#2a2a4a] px-2 py-1 font-bold text-[#8888aa]"
           >
             {isMuted ? '🔇' : '🔊'}
           </button>
@@ -217,7 +217,7 @@ export default function StatusBar({ gs, onSave, isMuted, onToggleMute, onReturnT
         {onSave && (
           <button
             onClick={onSave}
-            className="text-xs bg-slate-900 hover:bg-slate-800 border-2 border-slate-700 px-2 py-1 font-bold text-slate-300"
+            className="text-xs bg-[#0c0c24] hover:bg-[#111130] border-2 border-[#2a2a4a] px-2 py-1 font-bold text-[#8888aa]"
           >
             💾
           </button>
@@ -227,7 +227,7 @@ export default function StatusBar({ gs, onSave, isMuted, onToggleMute, onReturnT
         {onReturnToTitle && (
           <button
             onClick={() => setConfirmReturn(true)}
-            className="text-xs bg-slate-900 hover:bg-red-950 border-2 border-slate-700 hover:border-red-700 px-2 py-1 font-bold text-slate-400 hover:text-red-300"
+            className="text-xs bg-[#0c0c24] hover:bg-red-950 border-2 border-[#2a2a4a] hover:border-red-700 px-2 py-1 font-bold text-[#6666aa] hover:text-red-300"
             title="タイトルに戻る"
           >
             🏠
