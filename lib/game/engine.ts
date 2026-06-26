@@ -330,10 +330,10 @@ export function joinCompanion(state: GameState, companionId: CompanionId): GameS
     s.companions[companionId].inParty = true
     s.party.push(companionId)
     const def = COMPANIONS[companionId]
-    s.message = `✅ ${def.name}が仲間になった！「パーティ編成」でメンバーを組み替えよう。`
+    s.message = `${def.emoji} ${def.name}が仲間に加わった！`
   } else {
     const def = COMPANIONS[companionId]
-    s.message = `✅ ${def.name}が仲間になった！「パーティ編成」で出撃メンバーを選ぼう。`
+    s.message = `${def.emoji} ${def.name}が仲間に加わった！（パーティ編成でメンバーを追加しよう）`
   }
   s.pendingCompanionJoin = undefined
   return s
@@ -488,7 +488,18 @@ export function restAtInn(state: GameState): GameState {
       c.statusEffects = []
     }
   }
-  s.message = INN_FLAVOR_TEXTS[Math.floor(Math.random() * INN_FLAVOR_TEXTS.length)]
+  const aliveNames = s.party.map(id => COMPANIONS[id as CompanionId]?.name).filter(Boolean)
+  if (aliveNames.length > 0 && Math.random() < 0.4) {
+    const partnered = [
+      `🌙 ${aliveNames.join('と')}と食卓を囲んだ。笑える話もあった。`,
+      `🌙 ${aliveNames[0]}が先に寝た。静かな夜だった。`,
+      `🌙 ${aliveNames.join('・')}と夜の空を見上げた。星が多かった。`,
+      `🌙 ${aliveNames[0]}に「明日も頼む」と言われた。`,
+    ]
+    s.message = partnered[Math.floor(Math.random() * partnered.length)]
+  } else {
+    s.message = INN_FLAVOR_TEXTS[Math.floor(Math.random() * INN_FLAVOR_TEXTS.length)]
+  }
   if (s.daysLeft <= 0) {
     s.daysLeft = 0
     s.phase = 'gameover'
@@ -644,6 +655,15 @@ function buildTurnQueue(units: BattleUnit[]): string[] {
 
 // ===== BATTLE ACTIONS =====
 
+const ATTACK_VERBS_ALLY = ['が斬りかかった', 'の一閃', 'が踏み込んだ', 'が剣を振り下ろした', 'が鋭く突いた', 'が渾身を込めた', 'の鋭い連撃']
+const ATTACK_VERBS_ENEMY = ['が爪を振るった', 'の猛攻', 'が牙をむいた', 'が体当たりした', 'が叩きつけた', 'の強烈な一撃', 'が荒々しく迫った']
+
+function pickAttackText(attacker: BattleUnit, target: BattleUnit, dmg: number): string {
+  const verbs = attacker.isAlly ? ATTACK_VERBS_ALLY : ATTACK_VERBS_ENEMY
+  const v = verbs[Math.floor(Math.random() * verbs.length)]
+  return `⚔️ ${attacker.name}${v}！${target.name}に${dmg}ダメージ！`
+}
+
 export function battleAttack(state: GameState, targetUid: string): GameState {
   if (!state.battle) return state
   const s = deepClone(state)
@@ -657,7 +677,7 @@ export function battleAttack(state: GameState, targetUid: string): GameState {
   b.logs.push({
     text: result.crit
       ? `💥 ${attacker.name}の会心の一撃！${target.name}に${result.dmg}ダメージ！`
-      : `⚔️ ${attacker.name}の攻撃！${target.name}に${result.dmg}ダメージ`,
+      : pickAttackText(attacker, target, result.dmg),
     type: result.crit ? 'critical' : 'damage',
   })
   if (died) addDeathLog(b, target)
@@ -869,7 +889,7 @@ function processEnemyTurn(state: GameState): GameState {
       ? `💥 ${actor.name}の会心！${target.name}に${boostedDmg}ダメージ！`
       : isBossDying
       ? `🌋 ${actor.name}の渾身の一撃！${target.name}に${boostedDmg}ダメージ！`
-      : `⚔️ ${actor.name}の攻撃！${target.name}に${boostedDmg}ダメージ`,
+      : pickAttackText(actor, target, boostedDmg),
     type: result.crit ? 'critical' : 'damage',
   })
   if (diedFromAtk) addDeathLog(b, target)
@@ -950,7 +970,7 @@ function processCompanionTurn(state: GameState): GameState {
   b.logs.push({
     text: result.crit
       ? `💥 ${actor.name}の会心！${target.name}に${result.dmg}ダメージ！`
-      : `⚔️ ${actor.name}の攻撃！${target.name}に${result.dmg}ダメージ`,
+      : pickAttackText(actor, target, result.dmg),
     type: result.crit ? 'critical' : 'damage',
   })
   if (diedFromAtk) addDeathLog(b, target)
@@ -1401,21 +1421,21 @@ export function useItemOutOfBattle(state: GameState, itemId: string, targetId: '
     if (item.effect === 'heal_hp') {
       const healed = Math.min(item.power, s.playerMaxHp - s.playerHp)
       s.playerHp = Math.min(s.playerMaxHp, s.playerHp + item.power)
-      s.message = `🧪 ${item.name}を使った。HP +${healed}`
+      s.message = `🧪 ${item.name}を飲んだ。傷が癒えていく。HP+${healed}`
     } else if (item.effect === 'heal_mp') {
       const healed = Math.min(item.power, s.playerMaxMp - s.playerMp)
       s.playerMp = Math.min(s.playerMaxMp, s.playerMp + item.power)
-      s.message = `✨ ${item.name}を使った。MP +${healed}`
+      s.message = `✨ ${item.name}を使った。魔力が満ちてくる。MP+${healed}`
     } else if (item.effect === 'heal_both') {
       const hp = Math.min(item.power, s.playerMaxHp - s.playerHp)
       const mp = Math.min(item.power, s.playerMaxMp - s.playerMp)
       s.playerHp = Math.min(s.playerMaxHp, s.playerHp + item.power)
       s.playerMp = Math.min(s.playerMaxMp, s.playerMp + item.power)
-      s.message = `🌿 ${item.name}を使った。HP +${hp}・MP +${mp}`
+      s.message = `🌿 ${item.name}を使った。体と魔力が回復した。HP+${hp}・MP+${mp}`
     } else if (item.effect === 'cure_status') {
       const hadStatus = s.playerStatus.length > 0
       s.playerStatus = []
-      s.message = hadStatus ? `🫙 ${item.name}を使った。状態異常が回復した！` : `🫙 ${item.name}を使ったが、状態異常ではなかった。`
+      s.message = hadStatus ? `🫙 ${item.name}を使った。体が軽くなった！` : `🫙 ${item.name}……今は異常がないようだ。`
     } else {
       s.message = `${item.name}を使った。`
     }
@@ -1426,21 +1446,21 @@ export function useItemOutOfBattle(state: GameState, itemId: string, targetId: '
     if (item.effect === 'heal_hp') {
       const healed = Math.min(item.power, c.maxHp - c.hp)
       c.hp = Math.min(c.maxHp, c.hp + item.power)
-      s.message = `🧪 ${def.name}に${item.name}を使った。HP +${healed}`
+      s.message = `🧪 ${def.name}に${item.name}を渡した。HP+${healed}`
     } else if (item.effect === 'heal_mp') {
       const healed = Math.min(item.power, c.maxMp - c.mp)
       c.mp = Math.min(c.maxMp, c.mp + item.power)
-      s.message = `✨ ${def.name}に${item.name}を使った。MP +${healed}`
+      s.message = `✨ ${def.name}に${item.name}を使った。MP+${healed}`
     } else if (item.effect === 'heal_both') {
       const hp = Math.min(item.power, c.maxHp - c.hp)
       const mp = Math.min(item.power, c.maxMp - c.mp)
       c.hp = Math.min(c.maxHp, c.hp + item.power)
       c.mp = Math.min(c.maxMp, c.mp + item.power)
-      s.message = `🌿 ${def.name}に${item.name}を使った。HP +${hp}・MP +${mp}`
+      s.message = `🌿 ${def.name}に${item.name}を。HP+${hp}・MP+${mp}`
     } else if (item.effect === 'cure_status') {
       const hadStatus = c.statusEffects.length > 0
       c.statusEffects = []
-      s.message = hadStatus ? `🫙 ${def.name}の状態異常が回復した！` : `🫙 ${def.name}に${item.name}を使ったが、状態異常ではなかった。`
+      s.message = hadStatus ? `🫙 ${def.name}の状態異常が消えた！` : `🫙 ${def.name}は異常ではなかったようだ。`
     } else {
       s.message = `${item.name}を使った。`
     }
@@ -1536,31 +1556,31 @@ export function campRest(state: GameState): GameState {
 // wanderフレーバーテキスト（場所タイプ別・PP4スタイル）
 const WANDER_GOLD_TEXTS: Record<string, string[]> = {
   town: [
-    '市場の片隅に落ちているのを見つけた',
-    '宿屋のテーブルの下に転がっていた',
-    '路地裏でこぼれたコインを拾った',
-    '露天商の後ろに忘れられていた',
-    '喧嘩の後の現場に転がっていた',
+    '市場の片隅で',
+    '宿屋のテーブルの下で',
+    '路地裏に転がっていた財布から',
+    '露天商の後ろの置き忘れから',
+    '喧嘩跡の路地で',
   ],
   relay: [
-    '草むらの中に隠されていた',
-    '古い石碑の陰に埋めてあった',
-    '木の根元の穴にしまわれていた',
-    '道端に落ちているのを見つけた',
-    '旅人が置き忘れたものを拾った',
+    '草むらの中に隠されていた袋から',
+    '古い石碑の陰で',
+    '木の根元の穴の中で',
+    '道端に落ちていた旅人の荷から',
+    '野営跡に残されていた荷から',
   ],
   dungeon: [
-    '岩の隙間に落ちていた',
-    '以前の冒険者が残した戦利品だ',
-    '崩れた壁の中から出てきた',
-    '怪しい宝箱から漏れていた',
+    '岩の隙間で',
+    '先人の残した荷物の中から',
+    '崩れた壁の向こうで',
+    '宝箱の片隅から',
   ],
   castle: [
-    '廃墟の玉座の下に埋められていた',
-    '古い鎧の隙間に挟まっていた',
-    '崩れた石柱の台座の窪みにあった',
-    '枯れた噴水の底に沈んでいた',
-    '壁の石板の裏に隠されていた',
+    '廃墟の玉座の下で',
+    '古い鎧の隙間から',
+    '崩れた石柱の台座の窪みで',
+    '枯れた噴水の底から',
+    '石板の裏の隠し場所で',
   ],
 }
 
@@ -1607,7 +1627,7 @@ export function wander(state: GameState): GameState {
     s.gold += gold
     const texts = WANDER_GOLD_TEXTS[locType] ?? WANDER_GOLD_TEXTS.relay
     const place = texts[Math.floor(Math.random() * texts.length)]
-    s.message = `💰 ${place} ${gold}G を見つけた！`
+    s.message = `💰 ${place}${gold}G見つけた！`
   } else if (roll < 0.55) {
     const expGain = Math.floor(10 + s.playerLevel * 2.5)
     s.playerExp += expGain
@@ -1642,10 +1662,24 @@ export function wander(state: GameState): GameState {
         leveledUpNames.push(def.name)
       }
     }
-    const trainText = WANDER_TRAIN_TEXTS[Math.floor(Math.random() * WANDER_TRAIN_TEXTS.length)][0]
+    const alivePartyDefs = s.party.map(id => ({ id, def: COMPANIONS[id as CompanionId] })).filter(p => p.def && s.companions[p.id as CompanionId]?.alive)
+    let trainText: string
+    if (alivePartyDefs.length > 0 && Math.random() < 0.5) {
+      const partner = alivePartyDefs[Math.floor(Math.random() * alivePartyDefs.length)].def
+      const partnered = [
+        `${partner.name}と手合わせをした。`,
+        `${partner.name}の指導で技を磨いた。`,
+        `${partner.name}と共に夜明けまで訓練した。`,
+        `${partner.name}に背中を押されながら稽古した。`,
+        `${partner.name}と汗を流した。`,
+      ]
+      trainText = partnered[Math.floor(Math.random() * partnered.length)]
+    } else {
+      trainText = WANDER_TRAIN_TEXTS[Math.floor(Math.random() * WANDER_TRAIN_TEXTS.length)][0]
+    }
     const lvMsg = leveledUpNames.length > 0 ? ` ⭐${leveledUpNames.join('・')}もレベルアップ！` : ''
     const skMsg = learnedSkillMsgs.length > 0 ? ` ✨${learnedSkillMsgs.join(' ')}` : ''
-    s.message = `💪 ${trainText}（EXP +${expGain}）${lvMsg}${skMsg}`
+    s.message = `💪 ${trainText} EXP+${expGain}${lvMsg}${skMsg}`
   } else if (roll < 0.70) {
     const items: Array<{itemId: string; qty: number}> = [
       { itemId: 'potion', qty: 1 },
@@ -1663,7 +1697,7 @@ export function wander(state: GameState): GameState {
     const heal = Math.floor(s.playerMaxHp * 0.15)
     s.playerHp = Math.min(s.playerMaxHp, s.playerHp + heal)
     const restText = WANDER_REST_TEXTS[Math.floor(Math.random() * WANDER_REST_TEXTS.length)]
-    s.message = `✨ ${restText}（HP +${heal}）`
+    s.message = `✨ ${restText} HP+${heal}`
   } else if (roll < 0.87) {
     // 稀に小さな敵エンカウント（中継地のenemy pool使用）
     const pool = loc.travelEnemyPool ?? loc.enemyPool ?? []
@@ -1682,8 +1716,11 @@ export function wander(state: GameState): GameState {
       return startBattle(s, enemyGroup, false)
     }
     const nothingTexts = [
-      '……何も見つからなかった。1日が過ぎた。',
-      '……静かな一日だった。',
+      '……何も見つからなかった。風だけが通り過ぎた。',
+      '……静かな一日だった。それでも旅は続く。',
+      '……何もない一日。でも、生きている。',
+      '……空振りだった。まあ、こんな日もある。',
+      '……手ぶらで戻ってきた。夕日が妙にきれいだった。',
     ]
     s.message = nothingTexts[Math.floor(Math.random() * nothingTexts.length)]
   } else if (roll < 0.93) {

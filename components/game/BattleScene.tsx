@@ -376,24 +376,28 @@ export default function BattleScene({ gs, onAttack, onSkill, onItem, onFlee, onC
         const def = COMPANIONS[deadCompanion.id]
         if (!def) return null
         return (
-          <div className="fixed inset-0 z-[90] flex items-center justify-center pointer-events-none">
-            <div className="bg-[#0a0a10] absolute inset-0" />
-            <div className="relative z-10 border-2 border-gray-700 bg-[#0a0a20] max-w-xs mx-4">
-              <div className="border-b border-gray-700 px-4 py-2 flex items-center gap-2" style={{ background: '#0a0a0e' }}>
-                <span className="text-xs font-black text-gray-600 tracking-widest">— FALLEN HERO —</span>
+          <div
+            className="fixed inset-0 z-[90] flex items-center justify-center cursor-pointer"
+            onClick={() => setDeadCompanion(null)}
+          >
+            <div className="bg-[#0a0a10] absolute inset-0 opacity-90" />
+            <div className="relative z-10 border-2 border-red-900 bg-[#0a0208] max-w-xs mx-4 w-full">
+              <div className="border-b border-red-900 px-4 py-2 flex items-center gap-2" style={{ background: '#120008' }}>
+                <span className="text-xs font-black text-red-800 tracking-widest">— FALLEN HERO —</span>
                 <span className="ml-auto text-xs text-red-500 font-black">💀 永眠</span>
               </div>
               <div className="px-4 py-4">
-                <div className="flex items-center gap-3 mb-3">
-                  <span className="text-2xl grayscale opacity-60">{def.emoji}</span>
+                <div className="flex items-center gap-3 mb-4">
+                  <span className="text-3xl grayscale opacity-50">{def.emoji}</span>
                   <div>
                     <div className="text-base font-black text-gray-400 line-through">{def.name}</div>
-                    <div className="text-xs text-gray-600">{def.cls}</div>
+                    <div className="text-xs text-gray-600 font-bold">{def.cls}</div>
                   </div>
                 </div>
-                <div className="text-sm text-gray-400 leading-snug border-l-2 border-gray-700 pl-3">
+                <div className="text-sm text-gray-300 leading-snug border-l-2 border-red-900 pl-3 mb-4">
                   「{deadCompanion.lastWord}」
                 </div>
+                <div className="text-[10px] text-gray-600 text-center font-bold">— タップして進む —</div>
               </div>
             </div>
           </div>

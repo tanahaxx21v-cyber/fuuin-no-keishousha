@@ -306,7 +306,7 @@ export default function LocationView({
           <div className="text-[10px] font-black tracking-wider shrink-0 text-gray-600">{typeLabel}</div>
         </div>
         <div className="px-4 py-2">
-          <p className="text-xs text-gray-600 leading-snug">{loc.desc}</p>
+          <p className="text-xs text-gray-500 leading-snug">{loc.desc}</p>
         </div>
       </div>
 
@@ -550,7 +550,7 @@ export default function LocationView({
             >
               <span className="w-4 text-xs font-black text-amber-700 shrink-0">▶</span>
               <span className="font-black text-sm text-amber-100 flex-1">ショップ</span>
-              <span className="text-[10px] text-gray-600">アイテム購入</span>
+              <span className="text-[10px] text-gray-600">商品を見る</span>
             </button>
           )}
 
@@ -575,7 +575,7 @@ export default function LocationView({
               >
                 <span className="w-4 text-xs font-black text-red-700 shrink-0">▶</span>
                 <span className="font-black text-sm text-red-200 flex-1">ダンジョン探索</span>
-                <span className="text-[10px] text-gray-600">EXP・Gold獲得</span>
+                <span className="text-[10px] text-gray-600">奥へ踏み込む</span>
               </button>
               <button
                 onClick={() => setShowBossConfirm(true)}
@@ -611,7 +611,7 @@ export default function LocationView({
             >
               <span className="w-4 text-xs font-black text-amber-700 shrink-0">▶</span>
               <span className="font-black text-sm text-amber-100 flex-1">うろつく</span>
-              <span className="text-[10px] text-gray-600">1日消費</span>
+              <span className="text-[10px] text-gray-600">1日過ごす</span>
             </button>
           )}
 
@@ -626,7 +626,7 @@ export default function LocationView({
                 <span className="w-4 text-xs font-black shrink-0" style={{ color: healable ? '#2dd4bf' : '#374151' }}>{healable ? '▶' : '×'}</span>
                 <span className={`font-black text-sm flex-1 ${healable ? 'text-teal-100' : 'text-gray-600'}`}>野営して休む</span>
                 <span className={`text-[10px] ${healable ? 'text-teal-600' : 'text-gray-700'}`}>
-                  {healable ? '無料・日数消費なし' : '満タン'}
+                  {healable ? 'HP/MP回復' : '満タン'}
                 </span>
               </button>
             )
@@ -640,7 +640,7 @@ export default function LocationView({
             >
               <span className="w-4 text-xs font-black text-amber-900 shrink-0">▶</span>
               <span className="font-black text-sm text-gray-500 flex-1">冒険記録</span>
-              <span className="text-[10px] text-gray-700">実績・統計</span>
+              <span className="text-[10px] text-gray-700">旅の足跡</span>
             </button>
           )}
 
@@ -675,7 +675,7 @@ export default function LocationView({
             <span className="text-lg">🎒</span>
             <div className="flex-1">
               <div className="font-black text-sm text-white">アイテムを使う</div>
-              <div className="text-[11px] text-teal-400">HP/MP回復アイテム（戦闘外使用可）</div>
+              <div className="text-[11px] text-teal-400">回復アイテムを今すぐ使う</div>
             </div>
             <span className="text-gray-500 text-sm">{itemPanelOpen ? '▲' : '▼'}</span>
           </button>
