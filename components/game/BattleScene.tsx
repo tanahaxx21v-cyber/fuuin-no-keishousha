@@ -358,7 +358,7 @@ export default function BattleScene({ gs, onAttack, onSkill, onItem, onFlee, onC
               </div>
               {openingLine && (
                 <div className="px-4 py-3 border-b border-red-900">
-                  <p className="text-sm text-gray-300 leading-relaxed border-l-2 border-red-800 pl-3">
+                  <p className="text-sm text-gray-300 leading-snug border-l-2 border-red-800 pl-3">
                     「{openingLine}」
                   </p>
                 </div>
@@ -391,7 +391,7 @@ export default function BattleScene({ gs, onAttack, onSkill, onItem, onFlee, onC
                     <div className="text-xs text-gray-600">{def.cls}</div>
                   </div>
                 </div>
-                <div className="text-sm text-gray-400 leading-relaxed border-l-2 border-gray-700 pl-3">
+                <div className="text-sm text-gray-400 leading-snug border-l-2 border-gray-700 pl-3">
                   「{deadCompanion.lastWord}」
                 </div>
               </div>

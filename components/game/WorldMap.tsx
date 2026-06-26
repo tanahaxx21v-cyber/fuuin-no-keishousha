@@ -368,7 +368,7 @@ export default function WorldMap({ gs, onTravel, onEnterLocation, getAvailableCo
       <div className="bg-[#0c0c24] border-2 border-indigo-700 p-3">
         <div className="text-[10px] font-black text-indigo-400 mb-1.5 tracking-widest">— 現在地 —</div>
         <div className="text-xl font-black text-white mb-1">{currentLoc.emoji} {currentLoc.name}</div>
-        <div className="text-xs text-gray-400 mb-2 leading-relaxed">{currentLoc.desc}</div>
+        <div className="text-xs text-gray-400 mb-2 leading-snug">{currentLoc.desc}</div>
         <div className="flex flex-wrap gap-1 mb-3">
           {currentLoc.hasInn && <span className="text-[10px] font-bold bg-blue-950 border border-blue-700 text-blue-300 px-1.5 py-0.5">🏨 宿屋</span>}
           {currentLoc.shopItems && <span className="text-[10px] font-bold bg-green-950 border border-green-700 text-green-300 px-1.5 py-0.5">🛒 ショップ</span>}

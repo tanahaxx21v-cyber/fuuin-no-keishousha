@@ -211,7 +211,7 @@ export default function LocationView({
             {/* 地名 */}
             <div className="text-2xl font-black text-white mb-2">{loc.name}</div>
             {/* 説明文 */}
-            <div className="text-xs text-gray-500 leading-relaxed mb-3">{loc.desc}</div>
+            <div className="text-xs text-gray-500 leading-snug mb-3">{loc.desc}</div>
             {/* ダンジョン危険度 */}
             {dangerInfo && (
               <div className="inline-flex items-center gap-2 bg-red-950 border border-red-700 px-3 py-1 mb-3">
@@ -306,7 +306,7 @@ export default function LocationView({
           <div className="text-[10px] font-black tracking-wider shrink-0 text-gray-600">{typeLabel}</div>
         </div>
         <div className="px-4 py-2">
-          <p className="text-xs text-gray-600 leading-relaxed">{loc.desc}</p>
+          <p className="text-xs text-gray-600 leading-snug">{loc.desc}</p>
         </div>
       </div>
 
@@ -316,7 +316,7 @@ export default function LocationView({
           <span className="text-2xl shrink-0 mt-0.5">🧑</span>
           <div className="flex-1 min-w-0">
             <div className="text-xs text-gray-500 font-bold mb-0.5">{gs.playerName}（心の声）</div>
-            <div className="text-sm text-gray-300 leading-relaxed">「{soloLine}」</div>
+            <div className="text-sm text-gray-300 leading-snug">「{soloLine}」</div>
           </div>
         </div>
       )}
@@ -331,7 +331,7 @@ export default function LocationView({
             </div>
             <div className="flex-1 min-w-0">
               <div className="text-xs text-gray-500 font-bold mb-0.5">{def.emoji} {def.name}</div>
-              <div className="text-sm text-gray-200 leading-relaxed">「{flavorLine.line}」</div>
+              <div className="text-sm text-gray-200 leading-snug">「{flavorLine.line}」</div>
             </div>
           </div>
         )
@@ -387,7 +387,7 @@ export default function LocationView({
 
                 {/* 加入セリフ */}
                 <div className="px-5 py-4">
-                  <p className="text-sm text-gray-100 font-bold leading-relaxed">
+                  <p className="text-sm text-gray-100 font-bold leading-snug">
                     「{pendingJoin.joinText}」
                   </p>
                 </div>

@@ -248,7 +248,7 @@ export default function EventScene({ gs, onAdvance, onSkipAll }: Props) {
           {/* セリフ本文 */}
           <div className="px-5 py-4" style={{ minHeight: 82 }}>
             <p
-              className="leading-relaxed font-bold"
+              className="leading-snug font-bold"
               style={{
                 fontSize: 15,
                 color: isNarrator ? '#9ca3af' : '#f1f5f9',

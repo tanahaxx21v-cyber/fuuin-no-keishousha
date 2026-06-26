@@ -316,7 +316,7 @@ export default function WinScreen({ gs, onRestart }: Props) {
                 {'lines' in ep && ep.lines && (
                   <div className="space-y-3 mb-6">
                     {ep.lines.map((line, i) => (
-                      <p key={i} className="text-gray-300 leading-relaxed text-sm">{line}</p>
+                      <p key={i} className="text-gray-300 leading-snug text-sm">{line}</p>
                     ))}
                   </div>
                 )}
@@ -350,7 +350,7 @@ export default function WinScreen({ gs, onRestart }: Props) {
                             <span className={`${dead ? 'text-gray-500' : ep.accent} font-bold text-sm`}>{ch.name}</span>
                             {dead && <span className="text-xs text-red-700 font-bold ml-auto">💀 この旅で命を落とした</span>}
                           </div>
-                          <p className={`text-sm leading-relaxed ${dead ? 'text-gray-600' : 'text-gray-300'}`}>{ch.text}</p>
+                          <p className={`text-sm leading-snug ${dead ? 'text-gray-600' : 'text-gray-300'}`}>{ch.text}</p>
                         </div>
                       )
                     })}
@@ -363,7 +363,7 @@ export default function WinScreen({ gs, onRestart }: Props) {
                     {(() => {
                       const extraLines = ep.extra(gs.playerName)
                       return extraLines.map((line, i) => (
-                        <p key={i} className={`text-sm leading-relaxed ${i === 0 ? 'text-gray-200 font-bold' : i === extraLines.length - 1 ? 'text-gray-400' : 'text-gray-300'}`}>{line}</p>
+                        <p key={i} className={`text-sm leading-snug ${i === 0 ? 'text-gray-200 font-bold' : i === extraLines.length - 1 ? 'text-gray-400' : 'text-gray-300'}`}>{line}</p>
                       ))
                     })()}
                   </div>
