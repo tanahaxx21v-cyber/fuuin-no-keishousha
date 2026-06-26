@@ -66,13 +66,12 @@ function EnemyDisplay({ enemies, isBoss, isTargetingEnemies, onSelectTarget, hit
               <button
                 onClick={() => isTargetingEnemies && !dead && onSelectTarget(e)}
                 disabled={!isTargetingEnemies || dead}
-                className={`relative flex items-center justify-center transition-transform ${
+                className={`relative flex items-center justify-center ${
                   isTargetingEnemies && !dead
                     ? 'cursor-pointer'
                     : 'cursor-default'
                 }`}
                 style={{
-                  filter: 'none',
                   background: isHit ? 'rgba(239,68,68,0.35)' : isHeal ? 'rgba(74,222,128,0.25)' : 'transparent',
                   borderRadius: 0,
                   transition: 'background 0.1s',

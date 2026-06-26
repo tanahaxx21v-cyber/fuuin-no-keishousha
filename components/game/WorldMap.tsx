@@ -269,9 +269,9 @@ export default function WorldMap({ gs, onTravel, onEnterLocation, getAvailableCo
                   cursor: canTravel ? 'pointer' : 'default',
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
                   fontSize: shape === 'final' ? 20 : isCastle ? 18 : isDungeon ? 15 : 13,
-                  transition: 'all 0.15s', padding: 0, position: 'relative',
+                  padding: 0, position: 'relative',
                 }}
-                className={canTravel ? 'hover:scale-110' : ''}
+                className=""
               >
                 {cfg?.icon ?? '📍'}
                 {isVisited && !isCurrent && !isBossDefeated && (
