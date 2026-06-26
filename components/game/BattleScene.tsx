@@ -620,7 +620,7 @@ export default function BattleScene({ gs, onAttack, onSkill, onItem, onFlee, onC
             <>
               <div className="text-sm font-black leading-snug" style={{ color: logColor(latestLog.type) }}>▶ {latestLog.text}</div>
               {b.logs.slice(-5, -1).reverse().map((log, i) => (
-                <div key={i} className="text-xs leading-snug mt-0.5 ml-3" style={{ color: logColor(log.type), opacity: Math.max(0.35, 0.65 - i * 0.1) }}>{log.text}</div>
+                <div key={i} className="text-xs leading-snug mt-0.5 ml-3" style={{ color: '#4b5563' }}>{log.text}</div>
               ))}
             </>
           ) : (

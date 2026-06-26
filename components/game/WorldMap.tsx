@@ -252,12 +252,12 @@ export default function WorldMap({ gs, onTravel, onEnterLocation, getAvailableCo
           const size = shape === 'final' ? 42 : isCurrent ? 40 : isCastle ? 36 : isDungeon ? 30 : 26
           const bg     = isCurrent ? '#7a5010' : canTravel ? '#1a3a60' : cfg?.color ?? '#1e1e1e'
           const border = isCurrent ? '#ffd000' : canTravel ? '#60c0ff' : isLocked ? '#303030' : cfg?.border ?? '#505050'
-          const opacity = isLocked ? 0.15 : (!isVisited && !canTravel && !isCurrent) ? 0.2 : 1
+          const dimCls = isLocked ? 'opacity-10 grayscale' : (!isVisited && !canTravel && !isCurrent) ? 'opacity-20 grayscale' : ''
           const lo = LABEL_OFFSET[locId] ?? {}
           const days = loc.travelDays[gs.currentLocId] ?? (canTravel ? currentLoc.travelDays[locId] : undefined)
 
           return (
-            <div key={locId} style={{ position:'absolute', left:`${pos.x}%`, top:`${pos.y}%`, transform:'translate(-50%,-50%)', zIndex: isCurrent ? 25 : canTravel ? 18 : 10, opacity }}>
+            <div key={locId} className={dimCls} style={{ position:'absolute', left:`${pos.x}%`, top:`${pos.y}%`, transform:'translate(-50%,-50%)', zIndex: isCurrent ? 25 : canTravel ? 18 : 10 }}>
               <button
                 disabled={!canTravel}
                 onClick={() => canTravel && onTravel(locId)}

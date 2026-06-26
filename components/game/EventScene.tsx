@@ -269,8 +269,6 @@ export default function EventScene({ gs, onAdvance, onSkipAll }: Props) {
                     background: cfg.glow,
                     marginLeft: 2,
                     verticalAlign: 'text-bottom',
-                    animation: 'pulse 0.8s ease-in-out infinite',
-                    borderRadius: 0,
                   }}
                 />
               )}
@@ -305,7 +303,6 @@ export default function EventScene({ gs, onAdvance, onSkipAll }: Props) {
               className="text-xs font-black"
               style={{
                 color: !isTypingDone ? '#374151' : isLast ? cfg.glow : '#6b7280',
-                animation: isTypingDone && isLast ? 'pulse 1.5s ease-in-out infinite' : 'none',
               }}
             >
               {!isTypingDone

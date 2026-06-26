@@ -456,7 +456,7 @@ export default function LocationView({
         return (
           <div className="bg-[#100808] border-2 border-red-900 overflow-hidden">
             <div className="flex items-center gap-2 px-4 py-2 border-b border-red-900" style={{ background: '#150000' }}>
-              <span className="text-red-400 text-sm font-black animate-pulse">⚠</span>
+              <span className="text-red-400 text-sm font-black">⚠</span>
               <span className="text-xs font-black text-red-400 tracking-widest">— 危険区域 —</span>
               {danger && (
                 <span className="ml-auto text-xs font-black px-2 py-0.5 border border-red-800"
