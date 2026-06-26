@@ -169,18 +169,14 @@ export default function EventScene({ gs, onAdvance, onSkipAll }: Props) {
         {/* ナレーター表示 */}
         {isNarrator && (
           <>
-            {/* 星のパーティクル */}
+            {/* 星ドット（静的・PP4ピクセルスタイル）*/}
             <div className="absolute inset-0 pointer-events-none">
-              {Array.from({ length: 20 }, (_, i) => (
-                <div key={i} className="absolute bg-white"
-                  style={{
-                    left: `${(i * 11 + 5) % 100}%`,
-                    top: `${(i * 17 + 3) % 100}%`,
-                    width: (i % 3) + 1,
-                    height: (i % 3) + 1,
-                    opacity: 0.15 + (i % 4) * 0.05,
-                    animation: `pulse ${2 + (i % 3)}s ease-in-out ${(i * 0.2) % 2}s infinite`,
-                  }}
+              {([
+                [8,12],[22,35],[45,8],[67,55],[83,20],[15,70],[55,40],[90,75],
+                [30,85],[72,15],[48,62],[10,48],[88,38],[36,22],[60,80],
+              ] as [number,number][]).map(([l,t], i) => (
+                <div key={i} className="absolute bg-[#3a3460]"
+                  style={{ left: `${l}%`, top: `${t}%`, width: 2, height: 2 }}
                 />
               ))}
             </div>
