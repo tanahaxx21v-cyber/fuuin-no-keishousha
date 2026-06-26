@@ -57,6 +57,7 @@ export function CharPortrait({ charId, size, isActive = false, isDead = false, r
 
   return (
     <div
+      className={isDead ? 'opacity-30' : ''}
       style={{
         width: size,
         height: size,
@@ -67,7 +68,6 @@ export function CharPortrait({ charId, size, isActive = false, isDead = false, r
           : isDead
           ? '2px solid #7a2020'
           : '1px solid #2a2a3a',
-        opacity: isDead ? 0.35 : 1,
         filter: isDead ? 'grayscale(80%)' : 'none',
         backgroundImage: `url('/fuuin-no-keishousha/images/characters.jpg')`,
         backgroundSize: `${CHAR_COLS * 100}% auto`,
