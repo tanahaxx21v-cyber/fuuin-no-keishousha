@@ -35,7 +35,7 @@ export default function AlbumScreen({ gs, onClose }: Props) {
       <div className="bg-[#0c0c24] border-2 border-amber-700 p-4 flex items-center gap-3">
         <button
           onClick={onClose}
-          className="text-xs font-bold text-gray-400 hover:text-white bg-slate-800 hover:bg-slate-700 border border-slate-600 px-3 py-1.5"
+          className="text-xs font-bold text-gray-400 hover:text-white bg-[#111130] hover:bg-[#1a1a38] border border-[#3a3a5a] px-3 py-1.5"
         >
           ← もどる
         </button>
@@ -49,25 +49,25 @@ export default function AlbumScreen({ gs, onClose }: Props) {
       <div className="bg-[#0c0c24] border-2 border-indigo-700 p-4">
         <div className="text-xs font-black text-indigo-400 mb-3 tracking-widest">— 旅の記録 —</div>
         <div className="grid grid-cols-2 gap-3">
-          <div className="bg-slate-900 p-2 text-center">
+          <div className="bg-[#0c0c24] p-2 text-center">
             <div className="text-[10px] text-gray-500 font-bold">経過日数</div>
             <div className="text-xl font-black text-amber-300">{elapsedDays}<span className="text-xs text-gray-600">/{totalDays}日</span></div>
             <div className="w-full h-1.5 bg-gray-800 mt-1 overflow-hidden">
               <div className="h-full bg-amber-600" style={{ width: `${Math.min(100, (elapsedDays / totalDays) * 100)}%` }} />
             </div>
           </div>
-          <div className="bg-slate-900 p-2 text-center">
+          <div className="bg-[#0c0c24] p-2 text-center">
             <div className="text-[10px] text-gray-500 font-bold">訪問拠点</div>
             <div className="text-xl font-black text-cyan-300">{gs.visitedLocs.length}<span className="text-xs text-gray-600">/21</span></div>
             <div className="w-full h-1.5 bg-gray-800 mt-1 overflow-hidden">
               <div className="h-full bg-cyan-700" style={{ width: `${Math.min(100, (gs.visitedLocs.length / 21) * 100)}%` }} />
             </div>
           </div>
-          <div className="bg-slate-900 p-2 text-center">
+          <div className="bg-[#0c0c24] p-2 text-center">
             <div className="text-[10px] text-gray-500 font-bold">体験イベント</div>
             <div className="text-xl font-black text-purple-300">{gs.completedEvents.length}<span className="text-xs text-gray-600">件</span></div>
           </div>
-          <div className="bg-slate-900 p-2 text-center">
+          <div className="bg-[#0c0c24] p-2 text-center">
             <div className="text-[10px] text-gray-500 font-bold">所持金</div>
             <div className="text-xl font-black text-yellow-300">{gs.gold}<span className="text-xs text-gray-600">G</span></div>
           </div>
@@ -128,7 +128,7 @@ export default function AlbumScreen({ gs, onClose }: Props) {
               const def = COMPANIONS[c.id]
               const hpPct = c.hp / c.maxHp * 100
               return (
-                <div key={c.id} className="flex items-center gap-2 bg-slate-900 px-2 py-1.5">
+                <div key={c.id} className="flex items-center gap-2 bg-[#0c0c24] px-2 py-1.5">
                   <span className="text-lg">{def?.emoji}</span>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-1.5">

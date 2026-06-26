@@ -108,7 +108,7 @@ const EPILOGUE_PAGES = [
       '本人は「それとこれとは別の話だ」と笑う。',
       '英雄とは、なにかを成し遂げた者ではなく、なにかを続けられる者のことを言うのかもしれない。',
     ],
-    accent: 'text-slate-300',
+    accent: 'text-[#aaaacc]',
   },
 ]
 

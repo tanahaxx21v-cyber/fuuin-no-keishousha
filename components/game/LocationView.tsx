@@ -131,7 +131,7 @@ export default function LocationView({
 
   const totalDays = getDifficultyMultiplier(gs.difficulty).days
   const typeLabel = loc.type === 'town' ? '🏘️ 町' : loc.type === 'dungeon' ? '⚔️ ダンジョン' : loc.type === 'relay' ? '🛖 中継地' : '🏯 城'
-  const typeBorder = loc.type === 'town' ? 'border-indigo-700' : loc.type === 'dungeon' ? 'border-orange-800' : loc.type === 'relay' ? 'border-slate-600' : 'border-red-800'
+  const typeBorder = loc.type === 'town' ? 'border-indigo-700' : loc.type === 'dungeon' ? 'border-orange-800' : loc.type === 'relay' ? 'border-[#3a3a5a]' : 'border-red-800'
 
   // 仲間フレーバーセリフ（決定論的：訪問回数×仲間インデックスで選択）
   const aliveParty = gs.party.filter(id => gs.companions[id]?.alive)
@@ -184,7 +184,7 @@ export default function LocationView({
   const arrivalBorder =
     loc.type === 'dungeon' ? 'border-orange-600'
     : loc.type === 'town'  ? 'border-indigo-500'
-    : 'border-slate-500'
+    : 'border-[#4a4a6a]'
   const dangerInfo = loc.bossId ? DUNGEON_DANGER[loc.bossId] : null
 
   return (
@@ -245,8 +245,8 @@ export default function LocationView({
                 <span className="text-sm font-black text-red-200">{boss.name}</span>
               </div>
               <div className="p-4">
-              <div className="bg-[#0a0a0a] border border-slate-700 p-3 mb-3 text-left">
-                <div className="text-[10px] font-black text-slate-400 mb-2 tracking-widest">現在のパーティ状態</div>
+              <div className="bg-[#0a0a0a] border border-[#2a2a4a] p-3 mb-3 text-left">
+                <div className="text-[10px] font-black text-[#8888aa] mb-2 tracking-widest">現在のパーティ状態</div>
                 {allUnits.map((u, i) => {
                   const pct = u.hp / u.maxHp * 100
                   const fill = pct > 50 ? '#4ade80' : pct > 25 ? '#facc15' : '#ef4444'
@@ -280,7 +280,7 @@ export default function LocationView({
                 </button>
                 <button
                   onClick={() => setShowBossConfirm(false)}
-                  className="flex-1 py-2.5 bg-slate-800 hover:bg-slate-700 border-2 border-slate-600 text-gray-300 font-black text-sm"
+                  className="flex-1 py-2.5 bg-[#111130] hover:bg-[#1a1a38] border-2 border-[#3a3a5a] text-gray-300 font-black text-sm"
                 >
                   引き返す
                 </button>
@@ -312,7 +312,7 @@ export default function LocationView({
 
       {/* プレイヤー独白（仲間なし時）*/}
       {soloLine && (
-        <div className="bg-[#0c0c24] border border-slate-700 px-4 py-2.5 flex items-start gap-3">
+        <div className="bg-[#0c0c24] border border-[#2a2a4a] px-4 py-2.5 flex items-start gap-3">
           <span className="text-2xl shrink-0 mt-0.5">🧑</span>
           <div className="flex-1 min-w-0">
             <div className="text-xs text-gray-500 font-bold mb-0.5">{gs.playerName}（心の声）</div>
@@ -325,8 +325,8 @@ export default function LocationView({
       {flavorLine && (() => {
         const def = COMPANIONS[flavorLine.speakerId]
         return (
-          <div className="bg-[#0c0c24] border border-slate-700 px-4 py-2.5 flex items-start gap-3">
-            <div className="shrink-0 overflow-hidden border border-slate-600 mt-0.5">
+          <div className="bg-[#0c0c24] border border-[#2a2a4a] px-4 py-2.5 flex items-start gap-3">
+            <div className="shrink-0 overflow-hidden border border-[#3a3a5a] mt-0.5">
               <CharPortrait charId={flavorLine.speakerId} size={36} rounded={0} />
             </div>
             <div className="flex-1 min-w-0">
@@ -394,7 +394,7 @@ export default function LocationView({
 
                 {/* ステータス */}
                 <div className="px-4 pb-3">
-                  <div className="grid grid-cols-4 gap-1.5 bg-slate-900 px-3 py-2.5 border border-slate-700 mb-3">
+                  <div className="grid grid-cols-4 gap-1.5 bg-[#0c0c24] px-3 py-2.5 border border-[#2a2a4a] mb-3">
                     {[
                       { label: 'HP', value: cs.maxHp, color: '#4ade80' },
                       { label: 'ATK', value: cs.atk, color: '#f87171' },
@@ -434,7 +434,7 @@ export default function LocationView({
                       className={`px-5 py-3 border-2 font-bold ${
                         isOneTimeCompanion(pendingJoin.id)
                           ? 'bg-red-950 hover:bg-red-900 border-red-700 text-red-300'
-                          : 'bg-slate-800 hover:bg-slate-700 border-slate-600 text-gray-300'
+                          : 'bg-[#111130] hover:bg-[#1a1a38] border-[#3a3a5a] text-gray-300'
                       }`}
                     >
                       {isOneTimeCompanion(pendingJoin.id) ? '断る（永久）' : '断る'}
@@ -693,7 +693,7 @@ export default function LocationView({
                       className={`flex items-center gap-1.5 px-3 py-1.5 border-2 text-xs font-bold ${
                         selectedItemId === slot.itemId
                           ? 'border-teal-400 bg-teal-950 text-white'
-                          : 'border-slate-600 bg-slate-900 text-gray-300 hover:border-teal-700'
+                          : 'border-[#3a3a5a] bg-[#0c0c24] text-gray-300 hover:border-teal-700'
                       }`}
                     >
                       <span className="text-xl">{item.emoji}</span>
@@ -732,7 +732,7 @@ export default function LocationView({
                         <button
                           key={id}
                           onClick={() => { onUseItem(selectedItemId, id); setSelectedItemId(null); setItemPanelOpen(false) }}
-                          className="flex items-center gap-2 bg-slate-900 border border-slate-600 px-3 py-2 text-xs font-bold text-white hover:bg-slate-800"
+                          className="flex items-center gap-2 bg-[#0c0c24] border border-[#3a3a5a] px-3 py-2 text-xs font-bold text-white hover:bg-[#111130]"
                         >
                           <CharPortrait charId={id} size={32} rounded={0} />
                           <div>
@@ -752,8 +752,8 @@ export default function LocationView({
 
       {/* Party status */}
       {gs.party.length > 0 && (
-        <div className="bg-[#0c0c24] border-2 border-slate-700 p-3">
-          <div className="text-xs font-black text-slate-400 mb-2 tracking-widest">— 現在のパーティ —</div>
+        <div className="bg-[#0c0c24] border-2 border-[#2a2a4a] p-3">
+          <div className="text-xs font-black text-[#8888aa] mb-2 tracking-widest">— 現在のパーティ —</div>
           {gs.party.some(id => gs.companions[id].alive && gs.companions[id].hp < gs.companions[id].maxHp * 0.3) && (
             <div className="text-xs text-yellow-400 font-bold mb-2">⚠️ HPが危険な仲間がいます。宿屋で回復を！</div>
           )}
@@ -765,7 +765,7 @@ export default function LocationView({
               const hpPct = (c.hp / c.maxHp) * 100
               const isLowHp = c.alive && hpPct < 30
               return (
-                <div key={id} className={`flex items-center gap-2 px-2 py-2 border ${!c.alive ? 'bg-slate-900 border-red-900 opacity-40' : isLowHp ? 'bg-red-950 border-red-700 animate-pulse' : 'bg-slate-800 border-slate-700'}`}>
+                <div key={id} className={`flex items-center gap-2 px-2 py-2 border ${!c.alive ? 'bg-[#0c0c24] border-red-900 opacity-40' : isLowHp ? 'bg-red-950 border-red-700 animate-pulse' : 'bg-[#111130] border-[#2a2a4a]'}`}>
                   <CharPortrait charId={id} size={40} isDead={!c.alive} rounded={0} />
                   <div>
                     <div className="text-xs font-black text-white">{def.name}</div>

@@ -42,7 +42,7 @@ export default function ShopView({ gs, onBuy, onClose }: Props) {
         <div className="flex items-center gap-3 mb-3">
           <button
             onClick={onClose}
-            className="text-xs font-bold text-gray-400 hover:text-white bg-slate-800 hover:bg-slate-700 border border-slate-600 px-3 py-1.5"
+            className="text-xs font-bold text-gray-400 hover:text-white bg-[#111130] hover:bg-[#1a1a38] border border-[#3a3a5a] px-3 py-1.5"
           >
             ← もどる
           </button>

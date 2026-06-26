@@ -41,7 +41,7 @@ export default function PartyManage({ gs, onSetParty, onClose }: Props) {
       <div className="bg-[#0c0c24] border-2 border-indigo-700 p-4 flex items-center gap-3">
         <button
           onClick={onClose}
-          className="text-xs font-bold text-gray-400 hover:text-white bg-slate-800 hover:bg-slate-700 border border-slate-600 px-3 py-1.5"
+          className="text-xs font-bold text-gray-400 hover:text-white bg-[#111130] hover:bg-[#1a1a38] border border-[#3a3a5a] px-3 py-1.5"
         >
           ← もどる
         </button>
@@ -60,7 +60,7 @@ export default function PartyManage({ gs, onSetParty, onClose }: Props) {
             const memberId = draft[i]
             const def = memberId ? COMPANIONS[memberId] : null
             return (
-              <div key={i} className={`flex-1 border-2 flex flex-col items-center justify-center gap-1 py-1.5 ${def ? 'border-amber-600 bg-amber-950' : 'border-slate-700 bg-slate-900'}`} style={{ minHeight: 68 }}>
+              <div key={i} className={`flex-1 border-2 flex flex-col items-center justify-center gap-1 py-1.5 ${def ? 'border-amber-600 bg-amber-950' : 'border-[#2a2a4a] bg-[#0c0c24]'}`} style={{ minHeight: 68 }}>
                 {def ? (
                   <>
                     <div className="overflow-hidden border border-amber-700">
@@ -69,7 +69,7 @@ export default function PartyManage({ gs, onSetParty, onClose }: Props) {
                     <div className="text-[10px] font-black text-white">{def.name}</div>
                   </>
                 ) : (
-                  <div className="text-xs text-slate-600 font-bold">空き</div>
+                  <div className="text-xs text-[#444466] font-bold">空き</div>
                 )}
               </div>
             )
@@ -109,11 +109,11 @@ export default function PartyManage({ gs, onSetParty, onClose }: Props) {
                       inDraft
                         ? 'border-amber-500 bg-[#0a0500]'
                         : draft.length >= 3
-                        ? 'border-slate-700 bg-slate-900 opacity-50 cursor-not-allowed'
-                        : 'border-slate-700 bg-slate-900 hover:border-indigo-600 hover:bg-indigo-950'
+                        ? 'border-[#2a2a4a] bg-[#0c0c24] opacity-50 cursor-not-allowed'
+                        : 'border-[#2a2a4a] bg-[#0c0c24] hover:border-indigo-600 hover:bg-indigo-950'
                     }`}
                   >
-                    <div className="shrink-0 overflow-hidden border border-slate-600">
+                    <div className="shrink-0 overflow-hidden border border-[#3a3a5a]">
                       <CharPortrait charId={def.id} size={48} rounded={0} />
                     </div>
                     <div className="flex-1 min-w-0">
@@ -132,7 +132,7 @@ export default function PartyManage({ gs, onSetParty, onClose }: Props) {
                       <div className="text-xs text-gray-600 mt-0.5 font-bold">ATK {c.atk} · DEF {c.def} · SPD {c.spd}</div>
                     </div>
                     <div className={`w-6 h-6 border-2 flex items-center justify-center shrink-0 font-black ${
-                      inDraft ? 'border-amber-400 bg-amber-500 text-black text-xs' : 'border-slate-600 bg-slate-900'
+                      inDraft ? 'border-amber-400 bg-amber-500 text-black text-xs' : 'border-[#3a3a5a] bg-[#0c0c24]'
                     }`}>
                       {inDraft ? slotNum : ''}
                     </div>
@@ -146,10 +146,10 @@ export default function PartyManage({ gs, onSetParty, onClose }: Props) {
                   </button>
                   {/* スキル詳細パネル */}
                   {detailId === def.id && (
-                    <div className="mt-1 bg-slate-900 border border-indigo-700 px-3 py-2">
+                    <div className="mt-1 bg-[#0c0c24] border border-indigo-700 px-3 py-2">
                       <div className="text-[10px] text-indigo-400 font-black mb-1.5">✨ {def.name}のスキル</div>
                       {[...def.skills, ...c.learnedSkills].map(sk => (
-                        <div key={sk.id} className="flex justify-between items-start text-xs py-0.5 border-b border-slate-800 last:border-0">
+                        <div key={sk.id} className="flex justify-between items-start text-xs py-0.5 border-b border-[#1a1a2e] last:border-0">
                           <div>
                             <span className="font-black text-white">{sk.name}</span>
                             <span className="text-gray-500 ml-2">{sk.desc}</span>
@@ -181,8 +181,8 @@ export default function PartyManage({ gs, onSetParty, onClose }: Props) {
           return sum + (c ? c.hp / c.maxHp : 0)
         }, 0) / draft.length
         return (
-          <div className="bg-[#0c0c24] border-2 border-slate-700 p-3">
-            <div className="text-xs font-black text-slate-400 mb-2 tracking-widest">— パーティ合計ステータス —</div>
+          <div className="bg-[#0c0c24] border-2 border-[#2a2a4a] p-3">
+            <div className="text-xs font-black text-[#8888aa] mb-2 tracking-widest">— パーティ合計ステータス —</div>
             <div className="grid grid-cols-4 gap-2 text-center">
               <div>
                 <div className="text-[10px] text-gray-500 font-bold">ATK合計</div>
@@ -215,7 +215,7 @@ export default function PartyManage({ gs, onSetParty, onClose }: Props) {
         disabled={draft.length === 0}
         className={`w-full py-4 border-2 text-white font-black text-lg ${
           draft.length === 0
-            ? 'bg-slate-900 border-slate-700 text-gray-600 cursor-not-allowed opacity-50'
+            ? 'bg-[#0c0c24] border-[#2a2a4a] text-gray-600 cursor-not-allowed opacity-50'
             : 'bg-indigo-800 hover:bg-indigo-700 border-indigo-500'
         }`}
       >
