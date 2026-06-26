@@ -41,7 +41,7 @@ export default function PartyManage({ gs, onSetParty, onClose }: Props) {
       <div className="bg-[#0c0c24] border-2 border-indigo-700 p-4 flex items-center gap-3">
         <button
           onClick={onClose}
-          className="text-xs font-bold text-gray-400 hover:text-white bg-slate-800 hover:bg-slate-700 border border-slate-600 px-3 py-1.5 transition"
+          className="text-xs font-bold text-gray-400 hover:text-white bg-slate-800 hover:bg-slate-700 border border-slate-600 px-3 py-1.5"
         >
           ← もどる
         </button>
@@ -60,7 +60,7 @@ export default function PartyManage({ gs, onSetParty, onClose }: Props) {
             const memberId = draft[i]
             const def = memberId ? COMPANIONS[memberId] : null
             return (
-              <div key={i} className={`flex-1 border-2 flex flex-col items-center justify-center gap-1 py-1.5 transition ${def ? 'border-amber-600 bg-amber-950' : 'border-slate-700 bg-slate-900'}`} style={{ minHeight: 68 }}>
+              <div key={i} className={`flex-1 border-2 flex flex-col items-center justify-center gap-1 py-1.5 ${def ? 'border-amber-600 bg-amber-950' : 'border-slate-700 bg-slate-900'}`} style={{ minHeight: 68 }}>
                 {def ? (
                   <>
                     <div className="overflow-hidden border border-amber-700">
@@ -105,7 +105,7 @@ export default function PartyManage({ gs, onSetParty, onClose }: Props) {
                 <div key={def.id} className="relative">
                   <button
                     onClick={() => toggle(def.id)}
-                    className={`w-full flex items-center gap-3 border-2 p-3 text-left transition-all ${
+                    className={`w-full flex items-center gap-3 border-2 p-3 text-left ${
                       inDraft
                         ? 'border-amber-500 bg-[#0a0500]'
                         : draft.length >= 3
@@ -131,7 +131,7 @@ export default function PartyManage({ gs, onSetParty, onClose }: Props) {
                       </div>
                       <div className="text-xs text-gray-600 mt-0.5 font-bold">ATK {c.atk} · DEF {c.def} · SPD {c.spd}</div>
                     </div>
-                    <div className={`w-6 h-6 border-2 flex items-center justify-center shrink-0 font-black transition ${
+                    <div className={`w-6 h-6 border-2 flex items-center justify-center shrink-0 font-black ${
                       inDraft ? 'border-amber-400 bg-amber-500 text-black text-xs' : 'border-slate-600 bg-slate-900'
                     }`}>
                       {inDraft ? slotNum : ''}
@@ -213,7 +213,7 @@ export default function PartyManage({ gs, onSetParty, onClose }: Props) {
       <button
         onClick={handleConfirm}
         disabled={draft.length === 0}
-        className={`w-full py-4 border-2 text-white font-black text-lg transition ${
+        className={`w-full py-4 border-2 text-white font-black text-lg ${
           draft.length === 0
             ? 'bg-slate-900 border-slate-700 text-gray-600 cursor-not-allowed opacity-50'
             : 'bg-indigo-800 hover:bg-indigo-700 border-indigo-500'

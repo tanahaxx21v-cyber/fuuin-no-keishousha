@@ -35,7 +35,7 @@ export default function AlbumScreen({ gs, onClose }: Props) {
       <div className="bg-[#0c0c24] border-2 border-amber-700 p-4 flex items-center gap-3">
         <button
           onClick={onClose}
-          className="text-xs font-bold text-gray-400 hover:text-white bg-slate-800 hover:bg-slate-700 border border-slate-600 px-3 py-1.5 transition"
+          className="text-xs font-bold text-gray-400 hover:text-white bg-slate-800 hover:bg-slate-700 border border-slate-600 px-3 py-1.5"
         >
           ← もどる
         </button>

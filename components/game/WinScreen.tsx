@@ -291,13 +291,13 @@ export default function WinScreen({ gs, onRestart }: Props) {
             <div className="flex gap-3 mt-4">
               <button
                 onClick={() => setPage(p => p - 1)}
-                className="flex-1 py-2 bg-gray-700 hover:bg-gray-600 text-white transition text-sm"
+                className="flex-1 py-2 bg-gray-700 hover:bg-gray-600 text-white text-sm"
               >
                 ← 戻る
               </button>
               <button
                 onClick={onRestart}
-                className="flex-1 py-3 bg-yellow-600 hover:bg-yellow-500 text-white font-bold transition"
+                className="flex-1 py-3 bg-yellow-600 hover:bg-yellow-500 text-white font-bold"
               >
                 もう一度プレイ
               </button>
@@ -374,14 +374,14 @@ export default function WinScreen({ gs, onRestart }: Props) {
                   {page > 0 && (
                     <button
                       onClick={() => setPage(p => p - 1)}
-                      className="px-5 py-2 bg-gray-700 hover:bg-gray-600 text-white transition text-sm"
+                      className="px-5 py-2 bg-gray-700 hover:bg-gray-600 text-white text-sm"
                     >
                       ← 戻る
                     </button>
                   )}
                   <button
                     onClick={() => setPage(p => p + 1)}
-                    className="flex-1 py-2 bg-indigo-700 hover:bg-indigo-600 text-white font-bold transition text-sm"
+                    className="flex-1 py-2 bg-indigo-700 hover:bg-indigo-600 text-white font-bold text-sm"
                   >
                     {page === EPILOGUE_PAGES.length - 1 ? '📊 クリア記録を見る' : '次へ →'}
                   </button>

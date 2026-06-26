@@ -61,7 +61,7 @@ export default function TitleScreen({ onStart, onContinue, onDeleteSave, hasSave
           {hasSave && onContinue && (
             <button
               onClick={onContinue}
-              className="w-full px-4 py-3 text-left flex items-center gap-3 bg-[#0d0d28] border border-[#2d2d60] hover:bg-[#111130] transition mb-3"
+              className="w-full px-4 py-3 text-left flex items-center gap-3 bg-[#0d0d28] border border-[#2d2d60] hover:bg-[#111130] mb-3"
             >
               <span className="text-indigo-400 font-black text-sm">▶</span>
               <span className="font-black text-base text-white tracking-wider">コンティニュー</span>
@@ -79,7 +79,7 @@ export default function TitleScreen({ onStart, onContinue, onDeleteSave, hasSave
                   <button
                     key={d.id}
                     onClick={() => setSelected(d.id)}
-                    className="w-full px-4 py-3 text-left flex items-center gap-3 hover:bg-[#0d0d28] transition border-b border-[#1a1a38] last:border-b-0"
+                    className="w-full px-4 py-3 text-left flex items-center gap-3 hover:bg-[#0d0d28] border-b border-[#1a1a38] last:border-b-0"
                   >
                     <span className="w-3 text-xs font-black" style={{ color: selected === d.id ? '#818cf8' : 'transparent' }}>▶</span>
                     <span className="font-black text-sm" style={{ color: selected === d.id ? '#ffffff' : '#6b7280' }}>
@@ -94,7 +94,7 @@ export default function TitleScreen({ onStart, onContinue, onDeleteSave, hasSave
 
               <button
                 onClick={() => { if (hasSave && onDeleteSave) onDeleteSave(); onStart(selected) }}
-                className="w-full py-3 px-4 bg-[#3d1f00] hover:bg-[#4d2a00] border border-[#92400e] text-white font-black text-base tracking-wider transition mb-1"
+                className="w-full py-3 px-4 bg-[#3d1f00] hover:bg-[#4d2a00] border border-[#92400e] text-white font-black text-base tracking-wider mb-1"
               >
                 ⚔ {hasSave ? '新規ゲーム開始' : 'ゲームスタート'}
               </button>
@@ -105,7 +105,7 @@ export default function TitleScreen({ onStart, onContinue, onDeleteSave, hasSave
           {hasSave && (
             <button
               onClick={() => setShowNewGame(v => !v)}
-              className="mt-1 w-full text-[10px] text-gray-800 hover:text-gray-600 transition text-center py-1.5"
+              className="mt-1 w-full text-[10px] text-gray-800 hover:text-gray-600 text-center py-1.5"
             >
               {showNewGame ? '▲ 新規ゲームを隠す' : '▼ 最初から始める（セーブ上書き）'}
             </button>

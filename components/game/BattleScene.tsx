@@ -62,7 +62,7 @@ function EnemyDisplay({ enemies, isBoss, isTargetingEnemies, onSelectTarget, hit
           const myFloats = floatingNums.filter(f => f.uid === e.uid)
 
           return (
-            <div key={e.uid} className={`flex flex-col items-center gap-0.5 transition-opacity ${dead ? 'opacity-15' : ''}`}>
+            <div key={e.uid} className={`flex flex-col items-center gap-0.5 ${dead ? 'opacity-15' : ''}`}>
               <button
                 onClick={() => isTargetingEnemies && !dead && onSelectTarget(e)}
                 disabled={!isTargetingEnemies || dead}
@@ -595,7 +595,7 @@ export default function BattleScene({ gs, onAttack, onSkill, onItem, onFlee, onC
         <div className="mx-2 mt-1 flex gap-1.5">
           {allies.filter(a => a.hp > 0).map(a => (
             <button key={a.uid} onClick={() => handleSelectTarget(a)}
-              className="flex-1 flex items-center gap-2 bg-green-900 border-2 border-green-500 p-2 hover:bg-green-800 transition">
+              className="flex-1 flex items-center gap-2 bg-green-900 border-2 border-green-500 p-2 hover:bg-green-800">
               <CharPortrait charId={a.companionId ?? (a.isPlayer ? 'player' : 'gares')} size={40} />
               <div className="flex-1 min-w-0">
                 <span className="text-xs font-black text-white block truncate">{a.name}</span>
@@ -677,7 +677,7 @@ export default function BattleScene({ gs, onAttack, onSkill, onItem, onFlee, onC
                   key={btn.label}
                   onClick={btn.action}
                   disabled={btn.disabled}
-                  className={`flex items-center gap-2.5 px-4 py-3 text-left transition hover:bg-[#0d1848] ${
+                  className={`flex items-center gap-2.5 px-4 py-3 text-left hover:bg-[#0d1848] ${
                     i % 2 === 0 ? 'border-r border-[#1a2860]' : ''
                   } ${i < 2 ? 'border-b border-[#1a2860]' : ''}`}
                 >
@@ -692,7 +692,7 @@ export default function BattleScene({ gs, onAttack, onSkill, onItem, onFlee, onC
             <div className="border border-[#1a2860]" style={{ background: '#08102a' }}>
               <div className="flex items-center justify-between px-3 py-2 border-b border-[#1a2860]">
                 <span className="text-xs font-black text-indigo-400 tracking-wider">スキルを選択</span>
-                <button onClick={cancelTarget} className="text-xs text-gray-500 hover:text-gray-300 transition px-2">← もどる</button>
+                <button onClick={cancelTarget} className="text-xs text-gray-500 hover:text-gray-300 px-2">← もどる</button>
               </div>
               <div className="flex flex-col gap-1.5 max-h-40 overflow-y-auto">
                 {(playerUnit?.skills ?? []).map(skill => {
@@ -715,7 +715,7 @@ export default function BattleScene({ gs, onAttack, onSkill, onItem, onFlee, onC
                   })()
                   return (
                     <button key={skill.id} disabled={!ok} onClick={() => handleSkillSelect(skill)}
-                      className={`text-left px-3 py-2.5 border-b border-[#1a2860] last:border-b-0 transition flex items-center gap-2 ${
+                      className={`text-left px-3 py-2.5 border-b border-[#1a2860] last:border-b-0 flex items-center gap-2 ${
                         ok
                           ? 'hover:bg-[#0d1848] text-white'
                           : 'text-gray-600 cursor-not-allowed'
@@ -747,7 +747,7 @@ export default function BattleScene({ gs, onAttack, onSkill, onItem, onFlee, onC
             <div className="border border-[#1a2860] overflow-hidden" style={{ background: '#08102a' }}>
               <div className="flex items-center justify-between px-3 py-2 border-b border-[#1a2860]">
                 <span className="text-xs font-black text-green-500 tracking-wider">どうぐを選択</span>
-                <button onClick={cancelTarget} className="text-xs text-gray-500 hover:text-gray-300 transition px-2">← もどる</button>
+                <button onClick={cancelTarget} className="text-xs text-gray-500 hover:text-gray-300 px-2">← もどる</button>
               </div>
               <div className="flex flex-col max-h-36 overflow-y-auto">
                 {availableItems.map(({ itemId, qty }) => {
@@ -761,7 +761,7 @@ export default function BattleScene({ gs, onAttack, onSkill, onItem, onFlee, onC
                           setMode('target_item')
                         }
                       }}
-                      className="text-left px-3 py-2.5 border-b border-[#1a2860] last:border-b-0 flex items-center gap-2 hover:bg-[#0d1848] transition text-white">
+                      className="text-left px-3 py-2.5 border-b border-[#1a2860] last:border-b-0 flex items-center gap-2 hover:bg-[#0d1848] text-white">
                       <span className="text-xs font-black text-green-400 w-3">▶</span>
                       <span className="font-black text-sm flex-1">{item.emoji} {item.name}</span>
                       <span className="text-xs text-gray-500">×{qty}</span>
@@ -775,7 +775,7 @@ export default function BattleScene({ gs, onAttack, onSkill, onItem, onFlee, onC
           {isPlayerTurn && mode === 'select' && !playerUnit.statusEffects.some(e => e.id === 'stun') && (
             <button
               onClick={handleAutoAction}
-              className="w-full mt-1 py-1.5 border-t border-[#1a2860] text-xs font-black text-slate-500 hover:text-slate-300 hover:bg-[#0d1040] transition tracking-wider"
+              className="w-full mt-1 py-1.5 border-t border-[#1a2860] text-xs font-black text-slate-500 hover:text-slate-300 hover:bg-[#0d1040] tracking-wider"
               style={{ background: '#08102a' }}
             >
               ⚡ オート（AI最適行動）
@@ -895,7 +895,7 @@ export default function BattleScene({ gs, onAttack, onSkill, onItem, onFlee, onC
 
             <button
               onClick={onClose}
-              className={`px-10 py-3 font-black border-2 transition text-lg ${
+              className={`px-10 py-3 font-black border-2 text-lg ${
                 b.phase === 'victory'
                   ? b.isBoss
                     ? 'bg-amber-600 hover:bg-amber-500 border-amber-300 text-white'

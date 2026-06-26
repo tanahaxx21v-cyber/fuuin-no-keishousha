@@ -176,7 +176,7 @@ export default function StatusBar({ gs, onSave, isMuted, onToggleMute, onReturnT
           <button
             onClick={onToggleBattleSpeed}
             title={battleSpeed === 'fast' ? '通常速度に切り替え' : '高速バトルに切り替え'}
-            className={`text-xs border-2 px-2 py-1 font-bold transition ${
+            className={`text-xs border-2 px-2 py-1 font-bold ${
               battleSpeed === 'fast'
                 ? 'bg-yellow-950 border-yellow-600 text-yellow-300'
                 : 'bg-slate-900 hover:bg-slate-800 border-slate-700 text-slate-300'
@@ -190,7 +190,7 @@ export default function StatusBar({ gs, onSave, isMuted, onToggleMute, onReturnT
           <button
             onClick={onToggleAutoBattle}
             title={autoBattle ? 'オートバトルOFF' : 'オートバトルON（プレイヤーが自動で攻撃）'}
-            className={`text-xs border-2 px-2 py-1 font-bold transition ${
+            className={`text-xs border-2 px-2 py-1 font-bold ${
               autoBattle
                 ? 'bg-green-950 border-green-600 text-green-300 animate-pulse'
                 : 'bg-slate-900 hover:bg-slate-800 border-slate-700 text-slate-300'
@@ -205,7 +205,7 @@ export default function StatusBar({ gs, onSave, isMuted, onToggleMute, onReturnT
           <button
             onClick={onToggleMute}
             title={isMuted ? '音楽ON' : '音楽OFF'}
-            className="text-xs bg-slate-900 hover:bg-slate-800 border-2 border-slate-700 px-2 py-1 font-bold text-slate-300 transition"
+            className="text-xs bg-slate-900 hover:bg-slate-800 border-2 border-slate-700 px-2 py-1 font-bold text-slate-300"
           >
             {isMuted ? '🔇' : '🔊'}
           </button>
@@ -215,7 +215,7 @@ export default function StatusBar({ gs, onSave, isMuted, onToggleMute, onReturnT
         {onSave && (
           <button
             onClick={onSave}
-            className="text-xs bg-slate-900 hover:bg-slate-800 border-2 border-slate-700 px-2 py-1 font-bold text-slate-300 transition"
+            className="text-xs bg-slate-900 hover:bg-slate-800 border-2 border-slate-700 px-2 py-1 font-bold text-slate-300"
           >
             💾
           </button>
@@ -225,7 +225,7 @@ export default function StatusBar({ gs, onSave, isMuted, onToggleMute, onReturnT
         {onReturnToTitle && (
           <button
             onClick={() => setConfirmReturn(true)}
-            className="text-xs bg-slate-900 hover:bg-red-950 border-2 border-slate-700 hover:border-red-700 px-2 py-1 font-bold text-slate-400 hover:text-red-300 transition"
+            className="text-xs bg-slate-900 hover:bg-red-950 border-2 border-slate-700 hover:border-red-700 px-2 py-1 font-bold text-slate-400 hover:text-red-300"
             title="タイトルに戻る"
           >
             🏠
@@ -247,7 +247,7 @@ export default function StatusBar({ gs, onSave, isMuted, onToggleMute, onReturnT
                   setConfirmReturn(false)
                   onReturnToTitle?.()
                 }}
-                className="px-4 py-2 bg-indigo-900 hover:bg-indigo-800 border-2 border-indigo-600 text-white font-black text-sm transition"
+                className="px-4 py-2 bg-indigo-900 hover:bg-indigo-800 border-2 border-indigo-600 text-white font-black text-sm"
               >
                 💾 保存して戻る
               </button>
@@ -256,14 +256,14 @@ export default function StatusBar({ gs, onSave, isMuted, onToggleMute, onReturnT
                   setConfirmReturn(false)
                   onReturnToTitle?.()
                 }}
-                className="px-4 py-2 bg-red-950 hover:bg-red-900 border-2 border-red-700 text-red-300 font-black text-sm transition"
+                className="px-4 py-2 bg-red-950 hover:bg-red-900 border-2 border-red-700 text-red-300 font-black text-sm"
               >
                 保存せず戻る
               </button>
             </div>
             <button
               onClick={() => setConfirmReturn(false)}
-              className="mt-3 text-xs text-gray-500 hover:text-gray-300 transition"
+              className="mt-3 text-xs text-gray-500 hover:text-gray-300"
             >
               キャンセル
             </button>

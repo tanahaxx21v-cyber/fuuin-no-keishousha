@@ -42,7 +42,7 @@ export default function ShopView({ gs, onBuy, onClose }: Props) {
         <div className="flex items-center gap-3 mb-3">
           <button
             onClick={onClose}
-            className="text-xs font-bold text-gray-400 hover:text-white bg-slate-800 hover:bg-slate-700 border border-slate-600 px-3 py-1.5 transition"
+            className="text-xs font-bold text-gray-400 hover:text-white bg-slate-800 hover:bg-slate-700 border border-slate-600 px-3 py-1.5"
           >
             ← もどる
           </button>
@@ -129,14 +129,14 @@ export default function ShopView({ gs, onBuy, onClose }: Props) {
                   <button
                     onClick={() => onBuy(itemId)}
                     disabled={!canBuy}
-                    className={`px-2.5 py-1.5 text-xs font-black border transition ${
+                    className={`px-2.5 py-1.5 text-xs font-black border ${
                       canBuy ? 'bg-green-900 hover:bg-green-800 border-green-700 text-white' : 'bg-gray-900 border-gray-800 text-gray-600 cursor-not-allowed'
                     }`}
                   >×1</button>
                   <button
                     onClick={() => { onBuy(itemId); onBuy(itemId); onBuy(itemId) }}
                     disabled={gs.gold < currentPrice * 3}
-                    className={`px-2 py-1.5 text-xs font-black border transition ${
+                    className={`px-2 py-1.5 text-xs font-black border ${
                       gs.gold >= currentPrice * 3 ? 'bg-blue-900 hover:bg-blue-800 border-blue-700 text-white' : 'bg-gray-900 border-gray-800 text-gray-600 cursor-not-allowed'
                     }`}
                   >×3</button>

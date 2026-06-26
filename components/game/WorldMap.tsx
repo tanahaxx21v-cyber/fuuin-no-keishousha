@@ -375,7 +375,7 @@ export default function WorldMap({ gs, onTravel, onEnterLocation, getAvailableCo
           {currentLoc.sealStone && !gs.sealStones.includes(currentLoc.sealStone) && <span className="text-[10px] font-bold bg-amber-950 border border-amber-700 text-amber-300 px-1.5 py-0.5">💎 封印石あり</span>}
           {currentLoc.companionId && !gs.companions[currentLoc.companionId].joined && <span className="text-[10px] font-bold bg-purple-950 border border-purple-700 text-purple-300 px-1.5 py-0.5">👤 仲間が待っている</span>}
         </div>
-        <button onClick={onEnterLocation} className="w-full py-2.5 bg-indigo-800 hover:bg-indigo-700 border-2 border-indigo-500 text-white font-black transition text-sm">
+        <button onClick={onEnterLocation} className="w-full py-2.5 bg-indigo-800 hover:bg-indigo-700 border-2 border-indigo-500 text-white font-black text-sm">
           {currentLoc.name}を探索 ▶
         </button>
       </div>

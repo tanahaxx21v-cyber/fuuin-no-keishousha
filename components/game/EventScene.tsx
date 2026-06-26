@@ -136,7 +136,7 @@ export default function EventScene({ gs, onAdvance, onSkipAll }: Props) {
           {onSkipAll && !isLast && (
             <button
               onClick={e => { e.stopPropagation(); onSkipAll() }}
-              className="text-[10px] font-bold px-2 py-0.5 border border-gray-700 bg-gray-900 text-gray-500 hover:text-gray-300 hover:border-gray-500 transition"
+              className="text-[10px] font-bold px-2 py-0.5 border border-gray-700 bg-gray-900 text-gray-500 hover:text-gray-300 hover:border-gray-500"
             >
               全スキップ ▶▶
             </button>
@@ -205,8 +205,6 @@ export default function EventScene({ gs, onAdvance, onSkipAll }: Props) {
             style={{
               marginBottom: -8,
               opacity: portraitVisible ? 1 : 0,
-              transform: portraitVisible ? 'translateY(0) scale(1)' : 'translateY(8px) scale(0.97)',
-              transition: 'opacity 0.12s ease, transform 0.12s ease',
             }}
           >
             {hasPortrait ? (
