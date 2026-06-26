@@ -612,7 +612,27 @@ export function startBattle(state: GameState, enemyIds: string[], isBoss: boolea
     openingLog.push({ text: `${ENEMIES[bossId]?.emoji ?? '👹'} ${bossName}が立ちはだかった！`, type: 'system' })
     openingLog.push({ text: `${BOSS_OPENING_LINES[bossId]}`, type: 'system' })
   } else {
-    openingLog.push({ text: '⚔️ 敵が現れた！', type: 'system' })
+    const DUNGEON_ENCOUNTER_TEXTS: Partial<Record<string, string[]>> = {
+      ruined_mine: ['坑道の暗闇から唸り声が響く！', '崩れた坑道の向こうに影が見えた！', '鉱山の奥から足音が近づいてくる！'],
+      storm_peak: ['嵐の中、雷光が迸る！敵だ！', '峠の霧の中から敵が飛び出してきた！', '稲妻と共に敵が現れた！'],
+      forest_depths: ['木々の間から敵が飛び出してきた！', '深い森の静寂を破り、敵が現れた！', '森の守護者たちが立ちはだかった！'],
+      ancient_temple: ['神殿の石床に響く足音。敵だ！', '古代の守護者たちが目覚めた！', '神殿の奥から禍々しい気配が迫る！'],
+      lighthouse: ['灯台の岩場から怪しい影が！', '潮の音に紛れて敵が迫ってきた！', '海霧の中から敵が現れた！'],
+      desert_ruins: ['砂漠の廃墟に蠢く影！', '遺跡の石畳を踏みにじる敵だ！', '廃墟の闇から敵が湧いて出た！'],
+    }
+    const locTexts = DUNGEON_ENCOUNTER_TEXTS[s.currentLocId]
+    const visitCount = s.locVisitCounts?.[s.currentLocId] ?? 1
+    let text: string
+    if (locTexts) {
+      text = locTexts[Math.floor(Math.random() * locTexts.length)]
+    } else if (visitCount >= 5) {
+      text = '⚔️ また来た。敵も慣れてきたか。'
+    } else if (visitCount >= 3) {
+      text = '⚔️ 勝手知ったる場所だ。敵が現れた！'
+    } else {
+      text = '⚔️ 敵が現れた！'
+    }
+    openingLog.push({ text, type: 'system' })
   }
 
   const battle: BattleState = {
@@ -1808,7 +1828,7 @@ function calcDamage(attacker: BattleUnit, target: BattleUnit): { dmg: number; cr
   const atkMod = attacker.statusEffects.find(e => e.id === 'atk_up') ? 1.5
     : attacker.statusEffects.find(e => e.id === 'atk_down') ? 0.65 : 1
   const defMod = target.statusEffects.find(e => e.id === 'def_up') ? 0.6 : 1
-  const base = Math.max(1, (attacker.atk * atkMod) - (target.def * defMod / 2))
+  const base = Math.max(1, (attacker.atk * atkMod) - (target.def * defMod / 1.5))
   const variance = base * 0.2 * (Math.random() * 2 - 1)
   const crit = Math.random() < 0.1
   const dmg = Math.max(1, Math.floor((base + variance) * (crit ? 1.5 : 1)))
@@ -1871,7 +1891,7 @@ function applySkillEffect(battle: BattleState, actor: BattleUnit, target: Battle
         : actor.statusEffects.find(e => e.id === 'atk_down') ? 0.65 : 1
       const defMod = target.statusEffects.find(e => e.id === 'def_up') ? 0.6 : 1
       const sealBonus = skill.effect === 'boss_bonus' ? 1.5 : 1.0
-      const base = Math.max(1, (actor.atk * atkMod * skill.power * sealBonus) - (target.def * defMod / 2))
+      const base = Math.max(1, (actor.atk * atkMod * skill.power * sealBonus) - (target.def * defMod / 1.5))
       const dmg = Math.max(1, Math.floor(base * (0.9 + Math.random() * 0.2)))
       const died = applyDamage(target, dmg)
       battle.logs.push({ text: `💥 ${target.name}に${dmg}ダメージ！`, type: 'damage' })

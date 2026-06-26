@@ -359,7 +359,7 @@ export default function BattleScene({ gs, onAttack, onSkill, onItem, onFlee, onC
               {openingLine && (
                 <div className="px-4 py-3 border-b border-red-900">
                   <p className="text-sm text-gray-300 leading-snug border-l-2 border-red-800 pl-3">
-                    「{openingLine}」
+                    {openingLine}
                   </p>
                 </div>
               )}
@@ -384,7 +384,7 @@ export default function BattleScene({ gs, onAttack, onSkill, onItem, onFlee, onC
             <div className="relative z-10 border-2 border-red-900 bg-[#0a0208] max-w-xs mx-4 w-full">
               <div className="border-b border-red-900 px-4 py-2 flex items-center gap-2" style={{ background: '#120008' }}>
                 <span className="text-xs font-black text-red-800 tracking-widest">— FALLEN HERO —</span>
-                <span className="ml-auto text-xs text-red-500 font-black">💀 永眠</span>
+                <span className="ml-auto text-xs text-red-500 font-black">💀 永眠・復活不可</span>
               </div>
               <div className="px-4 py-4">
                 <div className="flex items-center gap-3 mb-4">
@@ -690,7 +690,7 @@ export default function BattleScene({ gs, onAttack, onSkill, onItem, onFlee, onC
                 <span className="text-xs font-black text-indigo-400 tracking-wider">スキルを選択</span>
                 <button onClick={cancelTarget} className="text-xs text-gray-500 hover:text-gray-300 px-2">← もどる</button>
               </div>
-              <div className="flex flex-col gap-1.5 max-h-40 overflow-y-auto">
+              <div className="flex flex-col gap-1.5 max-h-56 overflow-y-auto">
                 {(playerUnit?.skills ?? []).map(skill => {
                   const ok = (playerUnit?.mp ?? 0) >= skill.mpCost
                   const targetLabel = skill.target === 'enemy_all' ? '全敵' : skill.target === 'ally_all' ? '全味方' : skill.target === 'self' ? '自分' : '1体'
@@ -745,7 +745,7 @@ export default function BattleScene({ gs, onAttack, onSkill, onItem, onFlee, onC
                 <span className="text-xs font-black text-green-500 tracking-wider">どうぐを選択</span>
                 <button onClick={cancelTarget} className="text-xs text-gray-500 hover:text-gray-300 px-2">← もどる</button>
               </div>
-              <div className="flex flex-col max-h-36 overflow-y-auto">
+              <div className="flex flex-col max-h-48 overflow-y-auto">
                 {availableItems.map(({ itemId, qty }) => {
                   const item = ITEMS[itemId]
                   if (!item) return null

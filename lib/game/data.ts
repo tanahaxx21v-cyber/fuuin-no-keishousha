@@ -859,9 +859,10 @@ export const EVENTS: GameEvent[] = [
       { speaker: 'narrator', speakerName: '老賢者', text: '「北の廃鉱山に炎の石、北東の竜の峠に嵐の石、南の古代神殿に闇の石がある。仲間を集め、力をつけて挑め。」' },
       { speaker: 'narrator', speakerName: '老賢者', text: '「まずは西の東関所を経由してガルドの町へ。廃鉱山はガルドから北に続く。仲間はここアルセリアや各地の町で出会えるぞ。」' },
       { speaker: 'player', speakerName: 'レオン', text: '……わかった。まずガルドを目指す。必ず三つ揃えて魔王を倒す！' },
-      { speaker: 'narrator', speakerName: '', text: 'いざ、旅を始めよう。マップ画面の拠点をタップして移動できる。仲間との絆がこの旅を支える。' },
+      { speaker: 'narrator', speakerName: '老賢者', text: '「……一つだけ肝に銘じよ。共に戦った仲間がHPを失い倒れた場合——その者は二度と立ち上がらない。永遠にな。」' },
+      { speaker: 'narrator', speakerName: '', text: 'いざ、旅を始めよう。マップ画面の拠点をタップして移動できる。仲間の命は一つだ。大切にしろ。' },
     ],
-    reward: { exp: 20, message: '✨ 旅の目的を確認した！（EXP +20）' },
+    reward: { exp: 20, message: '✨ 旅の目的を理解した！' },
   },
 
   // ===== 仲間・初対面イベント（isMeetingEvent: true — 加入前に発生）=====
