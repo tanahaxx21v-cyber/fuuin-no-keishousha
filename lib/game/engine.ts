@@ -257,8 +257,9 @@ export function travel(state: GameState, destId: LocationId): GameState {
     }
     const flavorMsgs = TRAVEL_FLAVOR[destId] ?? []
 
-    if (roll < 0.28) {
-      // 28%: 敵エンカウント
+    const encounterChance = s.daysLeft <= 30 ? 0.38 : s.daysLeft <= 60 ? 0.32 : 0.28
+    if (roll < encounterChance) {
+      // 28〜38%: 敵エンカウント（残り日数が少ないほど敵が増える）
       const pool = destLoc.travelEnemyPool ?? []
       if (pool.length > 0) {
         const enemyId = pool[Math.floor(Math.random() * pool.length)]

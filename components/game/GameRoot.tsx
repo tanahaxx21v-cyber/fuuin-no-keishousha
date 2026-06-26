@@ -457,7 +457,7 @@ export default function GameRoot() {
         const newLvSkill = [5,10,15,20,25].includes(gs.playerLevel)
         const lastSkill = newLvSkill && gs.playerSkills.length > 0 ? gs.playerSkills[gs.playerSkills.length - 1] : null
         const lvFlavor = gs.playerLevel >= 25 ? 'もはや人の域を超えた。魔王を打ち倒す力がある。'
-          : gs.playerLevel >= 20 ? '戦いが、レオンを別の何かに変えていく。'
+          : gs.playerLevel >= 20 ? `戦いが、${gs.playerName}を別の何かに変えていく。`
           : gs.playerLevel >= 15 ? 'もう以前の自分ではない。仲間が信じてくれている。'
           : gs.playerLevel >= 10 ? '傷を乗り越えた数だけ、確かに強くなった。'
           : gs.playerLevel >= 5 ? '旅の疲れが、いつの間にか力に変わっていた。'
