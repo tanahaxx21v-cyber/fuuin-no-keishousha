@@ -432,7 +432,7 @@ export default function BattleScene({ gs, onAttack, onSkill, onItem, onFlee, onC
           <span className={`text-xs font-bold px-2 py-0.5 border ${
             isPlayerTurn
               ? 'border-green-600 bg-green-950 text-green-300'
-              : 'border-slate-700 bg-slate-950 text-slate-400'
+              : 'border-[#2a2a4a] bg-[#07071a] text-[#8888aa]'
           }`}>
             {isPlayerTurn ? '▶ あなたのターン' : `⏳ ${currentActor?.name ?? ''}のターン`}
           </span>
@@ -451,7 +451,7 @@ export default function BattleScene({ gs, onAttack, onSkill, onItem, onFlee, onC
           {playerUnit.statusEffects.length > 0 && (
             <div className="flex gap-1 flex-wrap">
               {playerUnit.statusEffects.map(e => (
-                <span key={e.id} className="text-[9px] bg-slate-900 border border-slate-700 px-1 leading-tight" style={{ color: e.id === 'poison' ? '#f87171' : e.id === 'stun' ? '#fde047' : e.id === 'atk_down' ? '#fca5a5' : '#86efac' }}>
+                <span key={e.id} className="text-[9px] bg-[#0c0c24] border border-[#2a2a4a] px-1 leading-tight" style={{ color: e.id === 'poison' ? '#f87171' : e.id === 'stun' ? '#fde047' : e.id === 'atk_down' ? '#fca5a5' : '#86efac' }}>
                   {statusIcon(e.id)}{e.turnsLeft}
                 </span>
               ))}
@@ -771,7 +771,7 @@ export default function BattleScene({ gs, onAttack, onSkill, onItem, onFlee, onC
           {isPlayerTurn && mode === 'select' && !playerUnit.statusEffects.some(e => e.id === 'stun') && (
             <button
               onClick={handleAutoAction}
-              className="w-full mt-1 py-1.5 border-t border-[#1a2860] text-xs font-black text-slate-500 hover:text-slate-300 hover:bg-[#0d1040] tracking-wider"
+              className="w-full mt-1 py-1.5 border-t border-[#1a2860] text-xs font-black text-[#6666aa] hover:text-gray-300 hover:bg-[#0d1040] tracking-wider"
               style={{ background: '#08102a' }}
             >
               ⚡ オート（AI最適行動）
@@ -871,7 +871,7 @@ export default function BattleScene({ gs, onAttack, onSkill, onItem, onFlee, onC
                 {(() => {
                   const companionLog = b.logs.slice().reverse().find(l => l.type === 'system' && /「.+」/.test(l.text) && !l.text.startsWith('👹'))
                   if (companionLog) return (
-                    <div className="text-xs text-gray-300 bg-slate-900 border border-slate-700 px-3 py-1.5">{companionLog.text}</div>
+                    <div className="text-xs text-gray-300 bg-[#0c0c24] border border-[#2a2a4a] px-3 py-1.5">{companionLog.text}</div>
                   )
                   const alive = allies.filter(a => !a.isPlayer && a.hp > 0)
                   if (alive.length === 0) return null

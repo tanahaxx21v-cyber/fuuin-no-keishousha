@@ -456,6 +456,12 @@ export default function GameRoot() {
       {gs.levelUpPending && (() => {
         const newLvSkill = [5,10,15,20,25].includes(gs.playerLevel)
         const lastSkill = newLvSkill && gs.playerSkills.length > 0 ? gs.playerSkills[gs.playerSkills.length - 1] : null
+        const lvFlavor = gs.playerLevel >= 25 ? 'もはや人の域を超えた。魔王を打ち倒す力がある。'
+          : gs.playerLevel >= 20 ? '戦いが、レオンを別の何かに変えていく。'
+          : gs.playerLevel >= 15 ? 'もう以前の自分ではない。仲間が信じてくれている。'
+          : gs.playerLevel >= 10 ? '傷を乗り越えた数だけ、確かに強くなった。'
+          : gs.playerLevel >= 5 ? '旅の疲れが、いつの間にか力に変わっていた。'
+          : '小さな一歩。だが確実に、前に進んでいる。'
         return (
           <div className="fixed inset-0 z-50 flex items-center justify-center" style={{ background: '#08080f' }}>
             <div className="bg-[#0c0c24] border-2 border-amber-500 max-w-sm w-full mx-4">
@@ -467,17 +473,19 @@ export default function GameRoot() {
                 </div>
               </div>
               <div className="px-4 py-3">
+              <div className="text-[11px] text-amber-200 font-bold mb-2.5 leading-snug border-l-2 border-amber-700 pl-2">{lvFlavor}</div>
               <div className="grid grid-cols-5 gap-1.5 mb-3">
                 {[
-                  { label: 'HP', val: '+12', color: '#4ade80' },
-                  { label: 'MP', val: '+5', color: '#60a5fa' },
-                  { label: 'ATK', val: '+2', color: '#f87171' },
-                  { label: 'DEF', val: '+2', color: '#93c5fd' },
-                  { label: 'SPD', val: '+1', color: '#fbbf24' },
+                  { label: 'HP', val: '+12', cur: gs.playerMaxHp, color: '#4ade80' },
+                  { label: 'MP', val: '+5', cur: gs.playerMaxMp, color: '#60a5fa' },
+                  { label: 'ATK', val: '+2', cur: gs.playerAtk, color: '#f87171' },
+                  { label: 'DEF', val: '+2', cur: gs.playerDef, color: '#93c5fd' },
+                  { label: 'SPD', val: '+1', cur: gs.playerSpd, color: '#fbbf24' },
                 ].map(s => (
-                  <div key={s.label} className="bg-slate-900 border border-slate-700 py-2 text-center">
+                  <div key={s.label} className="bg-[#0c0c24] border border-[#2a2a4a] py-2 text-center">
                     <div className="text-[10px] text-gray-500 font-bold">{s.label}</div>
                     <div className="text-sm font-black" style={{ color: s.color }}>{s.val}</div>
+                    <div className="text-[9px] text-gray-600 font-bold">{s.cur}</div>
                   </div>
                 ))}
               </div>
@@ -498,7 +506,7 @@ export default function GameRoot() {
                 onClick={handleDismissLevelUp}
                 className="px-8 py-2.5 bg-amber-700 hover:bg-amber-600 border-2 border-amber-500 text-white font-black w-full"
               >
-                確認 ▶
+                先へ進む ▶
               </button>
               </div>
             </div>
