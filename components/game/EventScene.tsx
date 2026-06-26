@@ -26,6 +26,9 @@ const SPEAKER_DISPLAY: Record<string, string> = {
   mira: 'ミラ', zeno: 'ゼノ',
 }
 
+const resolveText = (text: string, playerName: string) =>
+  text.replace(/\{playerName\}/g, playerName)
+
 function getSpeakerConfig(speaker: string): SpeakerCfg {
   const configs: Record<string, SpeakerCfg> = {
     player:   { emoji: '⚔️', color: '#fcd34d', border: '#d97706', glow: '#f59e0b', nameBg: '#451a03' },
@@ -78,7 +81,7 @@ export default function EventScene({ gs, onAdvance, onSkipAll }: Props) {
     if (timerRef.current) clearInterval(timerRef.current)
 
     let idx = 0
-    const fullText = line.text
+    const fullText = resolveText(line.text, gs.playerName)
     timerRef.current = setInterval(() => {
       idx++
       if (idx >= fullText.length) {
@@ -98,7 +101,7 @@ export default function EventScene({ gs, onAdvance, onSkipAll }: Props) {
     if (!isTypingDone && line?.text) {
       // 全文を即時表示
       if (timerRef.current) clearInterval(timerRef.current)
-      setDisplayedText(line.text)
+      setDisplayedText(resolveText(line.text, gs.playerName))
       setIsTypingDone(true)
     } else {
       onAdvance()
