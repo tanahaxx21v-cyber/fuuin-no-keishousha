@@ -192,7 +192,7 @@ export default function StatusBar({ gs, onSave, isMuted, onToggleMute, onReturnT
             title={autoBattle ? 'オートバトルOFF' : 'オートバトルON（プレイヤーが自動で攻撃）'}
             className={`text-xs border-2 px-2 py-1 font-bold ${
               autoBattle
-                ? 'bg-green-950 border-green-600 text-green-300 animate-pulse'
+                ? 'bg-green-950 border-green-600 text-green-300'
                 : 'bg-slate-900 hover:bg-slate-800 border-slate-700 text-slate-300'
             }`}
           >

@@ -103,7 +103,7 @@ function EnemyDisplay({ enemies, isBoss, isTargetingEnemies, onSelectTarget, hit
                   <span className="absolute -top-4 left-1/2 -translate-x-1/2 text-yellow-300 font-black text-lg">▼</span>
                 )}
                 {isBoss && !dead && (
-                  <span className="absolute -top-2 -right-2 text-xs font-black text-red-400 animate-pulse">💀</span>
+                  <span className="absolute -top-2 -right-2 text-xs font-black text-red-400">💀</span>
                 )}
               </button>
               {/* 敵名 + 状態異常のみ（PP4仕様：敵HPは非表示）*/}
@@ -354,7 +354,7 @@ export default function BattleScene({ gs, onAttack, onSkill, onItem, onFlee, onC
               <div className="border-b border-red-900 px-4 py-2 flex items-center gap-3" style={{ background: '#150000' }}>
                 <span className="text-2xl">{boss.emoji}</span>
                 <div>
-                  <div className="text-xs font-black text-red-600 tracking-widest animate-pulse">⚠ BOSS BATTLE</div>
+                  <div className="text-xs font-black text-red-600 tracking-widest">⚠ BOSS BATTLE</div>
                   <div className="text-base font-black text-white">{boss.name}</div>
                 </div>
                 <div className="ml-auto text-right">
@@ -370,7 +370,7 @@ export default function BattleScene({ gs, onAttack, onSkill, onItem, onFlee, onC
                 </div>
               )}
               <div className="px-4 py-2 text-center">
-                <div className="text-[10px] text-gray-700 animate-pulse">タップして戦闘開始 ▶</div>
+                <div className="text-[10px] text-gray-700">▶ タップして戦闘開始</div>
               </div>
             </div>
           </div>
@@ -627,13 +627,13 @@ export default function BattleScene({ gs, onAttack, onSkill, onItem, onFlee, onC
             <div className="text-sm text-gray-600">…</div>
           )}
           {isPlayerTurn && mode === 'select' && !playerUnit.statusEffects.some(e => e.id === 'stun') && (
-            <div className="text-xs text-yellow-300 mt-1 font-bold animate-pulse">▼ コマンドを選択</div>
+            <div className="text-xs text-yellow-300 mt-1 font-bold">▼ コマンドを選択</div>
           )}
           {isPlayerTurn && playerUnit.statusEffects.some(e => e.id === 'stun') && (
-            <div className="text-xs text-yellow-600 mt-1 font-bold animate-pulse">💫 スタン中 — 自動スキップ待機中...</div>
+            <div className="text-xs text-yellow-600 mt-1 font-bold">💫 スタン中 — 自動スキップ待機中...</div>
           )}
           {!isPlayerTurn && !isOver && (
-            <div className="text-xs text-blue-400 mt-1 animate-pulse">
+            <div className="text-xs text-blue-400 mt-1">
               {currentActor ? `${currentActor.name} のターン...` : '処理中...'}
             </div>
           )}
@@ -784,7 +784,7 @@ export default function BattleScene({ gs, onAttack, onSkill, onItem, onFlee, onC
 
           {(mode === 'target_attack' || mode === 'target_skill') && pendingSkill?.target !== 'ally_one' && (
             <div className="flex flex-col items-center gap-1.5 mt-1">
-              <div className="text-xs font-black text-yellow-400 animate-pulse tracking-wide">
+              <div className="text-xs font-black text-yellow-400 tracking-wide">
                 {mode === 'target_attack' ? '⚔️ 攻撃する敵をタップ' : `✨ ${pendingSkill?.name} — 対象をタップ`}
               </div>
               <button onClick={cancelTarget} className="text-xs text-gray-400 hover:text-white border border-gray-700 px-4 py-1.5 w-full">
@@ -813,7 +813,7 @@ export default function BattleScene({ gs, onAttack, onSkill, onItem, onFlee, onC
           {/* ボス勝利ヘッダー */}
           {b.phase === 'victory' && b.isBoss && (
             <div className="bg-amber-950 border-b border-amber-700 px-4 py-2 text-center">
-              <div className="text-xs font-black text-amber-300 tracking-widest animate-pulse">👑 BOSS DEFEATED 👑</div>
+              <div className="text-xs font-black text-amber-300 tracking-widest">👑 BOSS DEFEATED 👑</div>
             </div>
           )}
 
@@ -846,7 +846,7 @@ export default function BattleScene({ gs, onAttack, onSkill, onItem, onFlee, onC
                         <span className="text-[10px] text-purple-400 font-bold">Lv{gs.playerLevel}</span>
                       </div>
                       {isClose && (
-                        <span className="text-[10px] text-yellow-400 font-black animate-pulse">あと{remaining}EXP でレベルアップ！</span>
+                        <span className="text-[10px] text-yellow-400 font-black">あと{remaining}EXP でレベルアップ！</span>
                       )}
                     </div>
                   )
@@ -863,7 +863,7 @@ export default function BattleScene({ gs, onAttack, onSkill, onItem, onFlee, onC
                 })()}
                 {/* 封印石 */}
                 {b.sealStoneFound && (
-                  <div className="bg-amber-900 border-2 border-amber-400 px-4 py-2 text-amber-200 font-black animate-pulse">
+                  <div className="bg-amber-900 border-2 border-amber-400 px-4 py-2 text-amber-200 font-black">
                     💎 封印石を入手！
                   </div>
                 )}

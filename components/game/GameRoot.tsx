@@ -650,7 +650,7 @@ export default function GameRoot() {
           <div className="fixed inset-0 z-[70] flex items-center justify-center" style={{ background: '#0a0a12' }}>
             <div className="text-center">
               <div className="text-2xl mb-3" style={{ animation: "diceSpin 0.35s linear infinite" }}>🎲</div>
-              <div className="text-xl font-black text-yellow-300 animate-pulse">運命を決める…</div>
+              <div className="text-xl font-black text-yellow-300">運命を決める…</div>
             </div>
           </div>
         )}
@@ -838,7 +838,7 @@ function PrologueScreen({ onDone, playerName, daysLeft }: { onDone: () => void; 
               </button>
             ))}
             {!isTypingDone && (
-              <div className="text-xs text-gray-600 font-bold animate-pulse">タップでスキップ</div>
+              <div className="text-xs text-gray-600 font-bold">タップでスキップ</div>
             )}
           </div>
         </div>

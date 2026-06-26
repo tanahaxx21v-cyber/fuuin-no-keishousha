@@ -223,7 +223,7 @@ export default function LocationView({
               </div>
             )}
             {/* 閉じるヒント */}
-            <div className="text-[10px] text-gray-700 animate-pulse">タップして続ける ▶</div>
+            <div className="text-[10px] text-gray-700">▶ タップして続ける</div>
             </div>
           </div>
         </div>

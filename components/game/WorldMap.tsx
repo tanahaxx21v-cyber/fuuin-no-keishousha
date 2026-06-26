@@ -350,7 +350,7 @@ export default function WorldMap({ gs, onTravel, onEnterLocation, getAvailableCo
           ].filter(Boolean)
           guide = { icon: '💎', text: `封印石を集めよう！ あと${remainStones}個`, sub: targets.join(' / '), color: 'border-amber-700 bg-amber-950 text-amber-200' }
         } else {
-          guide = { icon: '⚡', text: '全ての封印石が揃った！', sub: '砂漠遺跡へ向かい、終末記録体アーカイブを倒せ！', color: 'border-red-700 bg-red-950 text-red-200 animate-pulse' }
+          guide = { icon: '⚡', text: '全ての封印石が揃った！', sub: '砂漠遺跡へ向かい、終末記録体アーカイブを倒せ！', color: 'border-red-700 bg-red-950 text-red-200' }
         }
 
         return guide ? (

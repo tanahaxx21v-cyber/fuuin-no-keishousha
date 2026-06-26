@@ -103,7 +103,7 @@ export default function ShopView({ gs, onBuy, onClose }: Props) {
                       <span className="font-black text-sm text-white">{item.name}</span>
                       {owned > 0 && <span className="text-[9px] text-blue-400 font-bold">×{owned}</span>}
                       {isRecommended && canBuy && (
-                        <span className="text-[8px] font-black px-1 border border-yellow-600 text-yellow-400 animate-pulse">おすすめ</span>
+                        <span className="text-[8px] font-black px-1 border border-yellow-600 text-yellow-400 ">おすすめ</span>
                       )}
                     </div>
                     <div className="text-[9px] text-gray-500 mt-0.5 truncate">{item.desc}</div>
