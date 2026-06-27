@@ -1271,6 +1271,24 @@ function applyBattleRewards(state: GameState): GameState {
     }
   }
 
+  // ===== 宝箱発見（ダンジョン探索の勝利時のみ）=====
+  if (!b.isBoss && b.dungeonMode) {
+    const chestChance = b.dungeonMode === 'aggressive' ? 0.35 : 0.18
+    if (Math.random() < chestChance) {
+      const tier = b.dungeonMode === 'aggressive'
+        ? ['hi_potion', 'panacea', 'ether']
+        : ['potion', 'ether', 'antidote']
+      const itemId = tier[Math.floor(Math.random() * tier.length)]
+      const item = ITEMS[itemId]
+      if (item) {
+        const ex = s.inventory.find(i => i.itemId === itemId)
+        if (ex) ex.qty += 1
+        else s.inventory.push({ itemId, qty: 1 })
+        b.logs.push({ text: `📦 奥に宝箱を発見！${item.emoji}${item.name}を入手した！`, type: 'system' })
+      }
+    }
+  }
+
   return s
 }
 
@@ -1352,6 +1370,8 @@ export function closeBattle(state: GameState): GameState {
 
   const defeated = s.battle.phase === 'defeat'
   const isFinal = s.battle.isFinalBoss && s.battle.phase === 'victory'
+  const dungeonMode = s.battle.dungeonMode
+
   syncBattleToState(s)
   s.battle = undefined
 
@@ -1889,10 +1909,13 @@ export function enterDungeon(state: GameState, mode: 'careful' | 'aggressive' = 
   }
 
   const result = startBattle(s, enemies, false)
-  // 積極探索時はbattle報酬を1.5倍に
-  if (mode === 'aggressive' && result.battle) {
-    result.battle.rewardExp = Math.floor(result.battle.rewardExp * 1.5)
-    result.battle.rewardGold = Math.floor(result.battle.rewardGold * 1.5)
+  if (result.battle) {
+    result.battle.dungeonMode = mode
+    if (mode === 'aggressive') {
+      // 積極探索時はbattle報酬を1.5倍に
+      result.battle.rewardExp = Math.floor(result.battle.rewardExp * 1.5)
+      result.battle.rewardGold = Math.floor(result.battle.rewardGold * 1.5)
+    }
   }
   return result
 }

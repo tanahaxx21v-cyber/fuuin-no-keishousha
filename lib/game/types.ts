@@ -266,6 +266,7 @@ export interface BattleState {
   turn: number
   bossRaged?: boolean
   companionOrders: Record<string, CompanionOrder>
+  dungeonMode?: 'careful' | 'aggressive'
 }
 
 export interface GameState {
