@@ -224,7 +224,7 @@ export default function EventScene({ gs, onAdvance, onSkipAll }: Props) {
       <div className="relative z-20 px-3 pb-4 shrink-0">
 
         {/* スピーカー名タブ */}
-        {!isNarrator && (
+        {(!isNarrator || line.speakerName) && (
           <div className="ml-3 mb-0 flex">
             <div
               className="px-4 py-1.5 text-sm font-black border-t-2 border-x-2"

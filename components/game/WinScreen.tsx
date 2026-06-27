@@ -146,7 +146,6 @@ export default function WinScreen({ gs, onRestart }: Props) {
   const [page, setPage] = useState(0)
   const joinedCompanions = Object.values(gs.companions).filter(c => c.joined && c.alive)
   const deadCompanions = Object.values(gs.companions).filter(c => c.joined && !c.alive)
-  const hasZeno = gs.companions.zeno?.joined
   const rank = getClearRank(gs.daysLeft)
 
   const isCompanionDead = (name: string) => {

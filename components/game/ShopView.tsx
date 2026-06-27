@@ -114,7 +114,7 @@ export default function ShopView({ gs, onBuy, onClose }: Props) {
                       <div className="text-[9px] text-blue-400 font-bold">MP +{Math.min(item.power, gs.playerMaxMp - gs.playerMp)}</div>
                     )}
                     {item.effect === 'heal_both' && (
-                      <div className="text-[9px] text-purple-400 font-bold">HP+{Math.min(item.power, gs.playerMaxHp - gs.playerHp)} / MP+{Math.min(40, gs.playerMaxMp - gs.playerMp)}</div>
+                      <div className="text-[9px] text-purple-400 font-bold">HP+{Math.min(item.power, gs.playerMaxHp - gs.playerHp)} / MP+{Math.min(item.power, gs.playerMaxMp - gs.playerMp)}</div>
                     )}
                   </div>
                 </div>
