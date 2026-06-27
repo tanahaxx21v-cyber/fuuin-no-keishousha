@@ -1102,9 +1102,9 @@ function advanceTurn(state: GameState): GameState {
   const playerUnit = b.units.find(u => u.isPlayer)
 
   // プレイヤー死亡はゲームオーバー（JRPGスタンダード：主人公が倒れたら全滅扱い）
+  // addDeathLogが既に「倒れた！」を記録済みなので追加ログは不要
   if (playerUnit && playerUnit.hp <= 0) {
     b.phase = 'defeat'
-    b.logs.push({ text: `💀 ${playerUnit.name}は倒れた... 旅はここで終わった。`, type: 'death' })
     return s
   }
 
@@ -1794,11 +1794,11 @@ export function wander(state: GameState, mode: 'gold' | 'train' | 'explore' = 'e
     const skMsg = learnedSkillMsgs.length > 0 ? ` ✨${learnedSkillMsgs.join(' ')}` : ''
     s.message = `💪 ${trainText} EXP+${expGain}${lvMsg}${skMsg}`
   } else if (roll < thresholds[2]) {
-    const items: Array<{itemId: string; qty: number}> = [
-      { itemId: 'potion', qty: 1 },
-      { itemId: 'ether', qty: 1 },
-      { itemId: 'antidote', qty: 1 },
-    ]
+    const wanderDropTable =
+      s.playerLevel >= 15 ? ['hi_potion', 'ether', 'panacea', 'antidote']
+      : s.playerLevel >= 8  ? ['hi_potion', 'ether', 'potion', 'antidote']
+      : ['potion', 'ether', 'antidote']
+    const items: Array<{itemId: string; qty: number}> = wanderDropTable.map(id => ({ itemId: id, qty: 1 }))
     const found = items[Math.floor(Math.random() * items.length)]
     const ex = s.inventory.find(i => i.itemId === found.itemId)
     if (ex) ex.qty += 1
@@ -1865,7 +1865,12 @@ export function wander(state: GameState, mode: 'gold' | 'train' | 'explore' = 'e
       '📜「強い仲間は早く集めろ。旅の後半に頼れる仲間がいるかどうかで結末が変わる」',
       '📜「宿屋の値段は旅が長引くほど上がる。回復アイテムを今のうちに買い溜めておけ」',
       '📜「残り日数が30日を切ると、道中の敵が増えると旅人が言っていた……」',
+      '📜「砂漠遺跡への道は封印石が揃わないと開かないと聞いた。急ぐな、石を集めろ」',
+      '📜「スキルを使い過ぎるとMPが尽きる。エーテルは常に持ち歩いておくといい」',
       alivePartyIds.length === 0 ? '📜「一人旅は危険だ。仲間を集めた方がいい……どこかに助けを求められる人物がいるはず」' : null,
+      alivePartyIds.length >= 3 ? '📜「3人の仲間がいるのか……頼もしいな。パーティの編成を常に見直すといい」' : null,
+      s.playerLevel >= 15 ? '📜「Lv15を超えると、ボスも本気を出してくる。回復アイテムは惜しまずに使え」' : null,
+      s.defeatedBosses.length >= 3 ? '📜「もう3体も倒したのか……あとは砂漠遺跡だ。最後の戦いに備えろ」' : null,
     ].filter(Boolean) as string[]
     const allHints = [...sealHints, ...generalHints]
     const hint = allHints[Math.floor(Math.random() * allHints.length)]

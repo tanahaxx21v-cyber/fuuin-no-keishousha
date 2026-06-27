@@ -599,7 +599,7 @@ export const ITEMS: Record<string, ItemDef> = {
   hi_potion:   { id: 'hi_potion',   name: 'ハイポーション', emoji: '💊', desc: 'HPを120回復する。',            effect: 'heal_hp',    power: 120,  price: 250 },
   mega_potion: { id: 'mega_potion', name: 'メガポーション', emoji: '🧴', desc: 'HPを200回復する。',            effect: 'heal_hp',    power: 200,  price: 500 },
   ether:       { id: 'ether',       name: 'エーテル',       emoji: '✨', desc: 'MPを30回復する。',             effect: 'heal_mp',    power: 30,   price: 120 },
-  panacea:     { id: 'panacea',     name: '万能薬',         emoji: '🌿', desc: 'HP100・MP40回復する。',        effect: 'heal_both',  power: 100,  price: 300 },
+  panacea:     { id: 'panacea',     name: '万能薬',         emoji: '🌿', desc: 'HP・MPをそれぞれ100回復する。', effect: 'heal_both',  power: 100,  price: 300 },
   elixir:      { id: 'elixir',      name: 'エリクサー',     emoji: '💫', desc: 'HPとMPを完全回復する。',       effect: 'heal_both',  power: 9999, price: 1200 },
   antidote:    { id: 'antidote',    name: '毒消し',         emoji: '🫙', desc: '毒・スタン状態を回復する。',   effect: 'cure_status', power: 0,   price: 80  },
 }

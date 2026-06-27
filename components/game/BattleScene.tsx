@@ -908,9 +908,17 @@ export default function BattleScene({ gs, onAttack, onSkill, onItem, onFlee, onC
                     💎 封印石を入手！
                   </div>
                 )}
+                {/* アイテムドロップ・宝箱 */}
+                {b.logs.filter(l => l.type === 'system' && (l.text.includes('落とした') || l.text.includes('宝箱'))).map((l, i) => (
+                  <div key={i} className="text-green-300 font-bold text-xs bg-green-950 border border-green-800 px-2 py-1">{l.text}</div>
+                ))}
                 {/* レベルアップ */}
                 {b.logs.filter(l => l.type === 'system' && l.text.includes('レベルアップ')).map((l, i) => (
                   <div key={i} className="text-yellow-300 font-black text-sm">⭐ {l.text.replace('⭐ ', '')}</div>
+                ))}
+                {/* スキル習得 */}
+                {b.logs.filter(l => l.type === 'system' && l.text.includes('習得')).map((l, i) => (
+                  <div key={i} className="text-purple-300 font-black text-xs bg-purple-950 border border-purple-700 px-2 py-1">{l.text}</div>
                 ))}
                 {/* 仲間の勝利セリフ（バトルログから取得） */}
                 {(() => {
