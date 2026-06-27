@@ -1853,8 +1853,25 @@ export function wander(state: GameState, mode: 'gold' | 'train' | 'explore' = 'e
     } else {
       s.message = `🧙 謎の行商人に出会ったが、手持ちが${pick.deal}G足りなかった。次の機会に……`
     }
+  } else if (mode === 'explore') {
+    // 探索モードの「特別発見」——情報収集・隠し発見
+    const sealHints: string[] = []
+    if (!s.sealStones.includes('fire'))  sealHints.push('🔥「廃鉱山の深部に炎の封印石があると聞いた。鉱王グラドルを倒すことだ」')
+    if (!s.sealStones.includes('storm')) sealHints.push('⚡「竜の峠に棲む嵐竜を倒せば、嵐の封印石が手に入るはずだ」')
+    if (!s.sealStones.includes('dark'))  sealHints.push('🌑「古代神殿の奥に闇の封印石が眠ると聞いた。森王が守っているらしい」')
+    const alivePartyIds = s.party.filter(id => s.companions[id]?.alive)
+    const generalHints = [
+      '📜「ダンジョンの宝箱——深く潜るほど良いものが出る。積極的に探るのも手だぞ」',
+      '📜「強い仲間は早く集めろ。旅の後半に頼れる仲間がいるかどうかで結末が変わる」',
+      '📜「宿屋の値段は旅が長引くほど上がる。回復アイテムを今のうちに買い溜めておけ」',
+      '📜「残り日数が30日を切ると、道中の敵が増えると旅人が言っていた……」',
+      alivePartyIds.length === 0 ? '📜「一人旅は危険だ。仲間を集めた方がいい……どこかに助けを求められる人物がいるはず」' : null,
+    ].filter(Boolean) as string[]
+    const allHints = [...sealHints, ...generalHints]
+    const hint = allHints[Math.floor(Math.random() * allHints.length)]
+    s.message = `🗣 旅人から話を聞いた：${hint}`
   } else {
-    // 危険を察知して回避（仲間からの警告）
+    // 危険を察知して回避（仲間からの警告）—— gold/trainモード
     const alivePartyIds = s.party.filter(id => s.companions[id]?.alive)
     const warnerNames: Record<string, string> = {
       gares: 'ガレス', liz: 'リズ', noa: 'ノア', vais: 'ヴァイス',
