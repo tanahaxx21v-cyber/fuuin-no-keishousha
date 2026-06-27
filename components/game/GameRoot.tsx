@@ -53,6 +53,8 @@ function loadGame(): GameState | null {
     if (!parsed.playerSkills) parsed.playerSkills = []
     if (!parsed.defeatedBosses) parsed.defeatedBosses = []
     if (!parsed.party) parsed.party = []
+    // 旧セーブデータ互換: 死亡仲間をpartyから除外
+    if (parsed.companions) parsed.party = parsed.party.filter((id: string) => (parsed.companions as Record<string, { alive?: boolean }>)[id]?.alive)
     if (!parsed.inventory) parsed.inventory = []
     if (!parsed.sealStones) parsed.sealStones = []
     if (!parsed.achievements) parsed.achievements = []
