@@ -878,7 +878,7 @@ function processEnemyTurn(state: GameState): GameState {
     },
   }
   if (actor.isBoss && Math.random() < 0.3) {
-    const bossId = b.units.find(u => u.uid === actor.uid)?.uid.replace('enemy_0_', '') ?? ''
+    const bossId = actor.uid.replace('enemy_0_', '')
     const taunts = BOSS_TAUNTS[bossId] ?? BOSS_TAUNTS.archive
     const phase = isBossDying ? taunts.dying : isRaging ? taunts.raging : taunts.normal
     const taunt = phase[Math.floor(Math.random() * phase.length)]

@@ -922,7 +922,7 @@ export default function BattleScene({ gs, onAttack, onSkill, onItem, onFlee, onC
                 ))}
                 {/* 仲間の勝利セリフ（バトルログから取得） */}
                 {(() => {
-                  const companionLog = b.logs.slice().reverse().find(l => l.type === 'system' && /「.+」/.test(l.text) && !l.text.startsWith('👹'))
+                  const companionLog = b.logs.slice().reverse().find(l => l.type === 'system' && /「.+」/.test(l.text) && !l.text.startsWith('👹') && !l.text.includes('習得') && !l.text.includes('レベルアップ'))
                   if (companionLog) return (
                     <div className="text-xs text-gray-300 bg-[#0c0c24] border border-[#2a2a4a] px-3 py-1.5">{companionLog.text}</div>
                   )
