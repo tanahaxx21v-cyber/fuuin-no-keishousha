@@ -886,7 +886,7 @@ export const EVENTS: GameEvent[] = [
   {
     id: 'meet_liz', title: 'リズとの出会い',
     isMeetingEvent: true,
-    condition: { atLoc: 'alseria', blockIfEventCompleted: ['meet_liz', 'alseria_tutorial'] },
+    condition: { atLoc: 'alseria', blockIfEventCompleted: ['meet_liz'] },
     dialogues: [
       { speaker: 'narrator', speakerName: '', text: 'アルセリアの礼拝堂。夕暮れの光が石畳を染める中、若い神官が傷ついた旅人に手当てをしていた。' },
       { speaker: 'liz', speakerName: 'リズ', text: 'もう大丈夫ですよ。……安心して。' },

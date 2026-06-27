@@ -340,15 +340,6 @@ export default function GameRoot() {
     if (gs.levelUpPending) sfxLevelUp()
   }, [gs.levelUpPending])
 
-  // メッセージを3秒後に自動クリア
-  useEffect(() => {
-    if (!gs.message) return
-    const timer = setTimeout(() => {
-      setGs(prev => ({ ...prev, message: undefined }))
-    }, 3000)
-    return () => clearTimeout(timer)
-  }, [gs.message])
-
   // 封印石取得演出
   useEffect(() => {
     const prev = prevSealStonesRef.current

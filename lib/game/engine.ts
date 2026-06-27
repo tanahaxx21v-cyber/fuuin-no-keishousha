@@ -997,8 +997,7 @@ function processCompanionTurn(state: GameState): GameState {
       for (const tgt of healTargets) applySkillEffect(b, actor, tgt, healSkill)
       return advanceTurn(s)
     }
-    // 回復スキルがなければ通常攻撃
-    b.logs.push({ text: `${actor.name}：回復スキルがない……通常攻撃に切り替えた！`, type: 'system' })
+    // 回復スキルがなければAI任せに切り替え（フォールスルー）
   }
 
   // 指示なし: 以下は従来のAI
