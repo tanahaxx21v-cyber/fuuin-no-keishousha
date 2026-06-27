@@ -8,6 +8,7 @@ import {
   battleSkill, battleUseItem, battleFlee, closeBattle,
   processNonPlayerTurn, processPlayerStun, checkLocationEvent, startEvent, advanceEvent, skipToEventEnd,
   chooseBranch, wander, campRest, useItemOutOfBattle, setParty, getAvailableConnections,
+  setCompanionOrder,
 } from '@/lib/game/engine'
 import { LOCATIONS, ITEMS } from '@/lib/game/data'
 import {
@@ -222,9 +223,13 @@ export default function GameRoot() {
     })
   }
 
-  const handleWander = () => {
-    update(s => wander(s))
+  const handleWander = (mode: 'gold' | 'train' | 'explore') => {
+    update(s => wander(s, mode))
   }
+
+  const handleSetCompanionOrder = useCallback((uid: string, order: import('@/lib/game/types').CompanionOrder) => {
+    update(s => setCompanionOrder(s, uid, order))
+  }, [])
 
   const handleCampRest = () => {
     update(s => campRest(s))
@@ -258,8 +263,8 @@ export default function GameRoot() {
     update(s => skipCompanion(s))
   }
 
-  const handleEnterDungeon = () => {
-    update(s => enterDungeon(s))
+  const handleEnterDungeon = (mode: 'careful' | 'aggressive' = 'careful') => {
+    update(s => enterDungeon(s, mode))
   }
 
   const handleFightBoss = () => {
@@ -637,6 +642,7 @@ export default function GameRoot() {
             onItem={handleBattleItem}
             onFlee={handleBattleFlee}
             onClose={handleCloseBattle}
+            onSetCompanionOrder={handleSetCompanionOrder}
           />
         )}
         {gs.phase === 'shop' && (

@@ -12,6 +12,7 @@ interface Props {
   onItem: (itemId: string, targetUid: string) => void
   onFlee: () => void
   onClose: () => void
+  onSetCompanionOrder?: (companionUid: string, order: import('@/lib/game/types').CompanionOrder) => void
 }
 
 type ActionMode = 'select' | 'skill' | 'item' | 'target_attack' | 'target_skill' | 'target_item'
@@ -159,7 +160,7 @@ function HpBar({ hp, maxHp, color = 'green' }: { hp: number; maxHp: number; colo
   )
 }
 
-export default function BattleScene({ gs, onAttack, onSkill, onItem, onFlee, onClose }: Props) {
+export default function BattleScene({ gs, onAttack, onSkill, onItem, onFlee, onClose, onSetCompanionOrder }: Props) {
   const b = gs.battle!
   const [mode, setMode] = useState<ActionMode>('select')
   const [pendingSkill, setPendingSkill] = useState<Skill | null>(null)
@@ -767,6 +768,42 @@ export default function BattleScene({ gs, onAttack, onSkill, onItem, onFlee, onC
               </div>
             </div>
           )}
+
+          {isPlayerTurn && mode === 'select' && !playerUnit.statusEffects.some(e => e.id === 'stun') && onSetCompanionOrder && (() => {
+            const aliveCompanions = allies.filter(u => !u.isPlayer && u.hp > 0)
+            if (aliveCompanions.length === 0) return null
+            return (
+              <div className="mt-1 border-t border-[#1a2860]" style={{ background: '#060b1a' }}>
+                <div className="text-[9px] font-black text-[#6666aa] px-2 pt-1.5 tracking-widest">— 仲間への指示 —</div>
+                {aliveCompanions.map(c => {
+                  const currentOrder = b.companionOrders?.[c.uid] ?? null
+                  const hasHeal = c.skills.some(sk => (sk.target === 'ally_one' || sk.target === 'ally_all') && sk.effect === 'heal' && c.mp >= sk.mpCost)
+                  const hasSkill = c.skills.some(sk => (sk.target === 'enemy_one' || sk.target === 'enemy_all') && c.mp >= sk.mpCost)
+                  return (
+                    <div key={c.uid} className="flex items-center gap-1 px-2 py-1 border-b border-[#0d1040]">
+                      <span className="text-sm shrink-0">{c.emoji}</span>
+                      <span className="text-[10px] font-black text-gray-400 flex-1 truncate">{c.name}</span>
+                      {(['attack', 'skill', 'heal'] as const).map(ord => {
+                        if (ord === 'heal' && !hasHeal) return null
+                        if (ord === 'skill' && !hasSkill) return null
+                        const label = ord === 'attack' ? '⚔攻' : ord === 'skill' ? '✨技' : '💚回'
+                        const active = currentOrder === ord
+                        return (
+                          <button
+                            key={ord}
+                            onClick={() => onSetCompanionOrder(c.uid, active ? null : ord)}
+                            className={`text-[9px] font-black px-1.5 py-0.5 border ${active ? 'bg-amber-800 border-amber-500 text-amber-200' : 'bg-[#0c0c24] border-[#2a2a4a] text-[#8888aa] hover:border-indigo-600 hover:text-white'}`}
+                          >
+                            {label}
+                          </button>
+                        )
+                      })}
+                    </div>
+                  )
+                })}
+              </div>
+            )
+          })()}
 
           {isPlayerTurn && mode === 'select' && !playerUnit.statusEffects.some(e => e.id === 'stun') && (
             <button

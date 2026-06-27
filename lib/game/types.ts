@@ -250,6 +250,8 @@ export interface BattleLog {
   type: 'normal' | 'damage' | 'heal' | 'critical' | 'status' | 'death' | 'system'
 }
 
+export type CompanionOrder = 'attack' | 'skill' | 'heal' | null
+
 export interface BattleState {
   units: BattleUnit[]
   phase: BattleActionPhase
@@ -262,7 +264,8 @@ export interface BattleState {
   isBoss: boolean
   isFinalBoss: boolean
   turn: number
-  bossRaged?: boolean  // ボスHP50%以下で激怒フェーズ突入済みフラグ
+  bossRaged?: boolean
+  companionOrders: Record<string, CompanionOrder>
 }
 
 export interface GameState {

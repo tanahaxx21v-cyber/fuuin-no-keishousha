@@ -21,11 +21,11 @@ interface Props {
   onBackToMap: () => void
   onInn: () => void
   onOpenShop: () => void
-  onEnterDungeon: () => void
+  onEnterDungeon: (mode: 'careful' | 'aggressive') => void
   onFightBoss: () => void
   onJoinCompanion: (id: CompanionId) => void
   onSkipCompanion: () => void
-  onWander?: () => void
+  onWander?: (mode: 'gold' | 'train' | 'explore') => void
   onCampRest?: () => void
   onOpenPartyManage?: () => void
   onUseItem?: (itemId: string, targetId: 'player' | CompanionId) => void
@@ -569,14 +569,25 @@ export default function LocationView({
                   </div>
                 ) : null
               })()}
-              <button
-                onClick={onEnterDungeon}
-                className="w-full px-3 py-2.5 text-left flex items-center border-b border-[#2d2000] hover:bg-[#0d0a00]"
-              >
-                <span className="w-4 text-xs font-black text-red-700 shrink-0">▶</span>
-                <span className="font-black text-sm text-red-200 flex-1">ダンジョン探索</span>
-                <span className="text-[10px] text-gray-600">奥へ踏み込む</span>
-              </button>
+              <div className="border-b border-[#2d2000] px-3 pt-2 pb-1">
+                <div className="text-[9px] font-black text-red-900 mb-1.5 tracking-widest">— ダンジョン探索（1日消費）—</div>
+                <div className="grid grid-cols-2 gap-1.5 mb-1">
+                  <button
+                    onClick={() => onEnterDungeon('careful')}
+                    className="py-2.5 text-center border border-blue-900 bg-[#07071a] hover:bg-blue-950 text-blue-200"
+                  >
+                    <div className="text-xs font-black">🛡 慎重に</div>
+                    <div className="text-[9px] font-bold text-blue-400 mt-0.5">敵1体・安全</div>
+                  </button>
+                  <button
+                    onClick={() => onEnterDungeon('aggressive')}
+                    className="py-2.5 text-center border border-red-800 bg-[#07071a] hover:bg-red-950 text-red-200"
+                  >
+                    <div className="text-xs font-black">⚔ 積極的に</div>
+                    <div className="text-[9px] font-bold text-red-400 mt-0.5">敵複数・EXP+50%</div>
+                  </button>
+                </div>
+              </div>
               <button
                 onClick={() => setShowBossConfirm(true)}
                 className="w-full px-3 py-2.5 text-left flex items-center border-b border-[#2d2000] hover:bg-[#1a0000]"
@@ -589,30 +600,54 @@ export default function LocationView({
           )}
 
           {loc.type === 'dungeon' && bossDefeated && (
-            <>
-              <div className="flex gap-2 text-sm">
-                <span className="text-green-400 font-black">✅ ボス討伐済み</span>
-                {sealObtained && <span className="text-amber-300 font-black">💎 封印石入手済み</span>}
+            <div className="border-b border-[#2d2000] px-3 pt-2 pb-2">
+              <div className="flex gap-2 mb-1.5">
+                <span className="text-green-400 font-black text-xs">✅ ボス討伐済み</span>
+                {sealObtained && <span className="text-amber-300 font-black text-xs">💎 封印石入手済み</span>}
               </div>
-              <button
-                onClick={onEnterDungeon}
-                className="w-full px-3 py-2.5 text-left flex items-center border-b border-[#2d2000] hover:bg-[#0d0a00]"
-              >
-                <span className="w-4 text-xs font-black text-gray-600 shrink-0">▶</span>
-                <span className="font-black text-sm text-gray-400 flex-1">再探索（EXP稼ぎ）</span>
-              </button>
-            </>
+              <div className="text-[9px] font-black text-gray-700 mb-1.5 tracking-widest">— 再探索（EXP稼ぎ）—</div>
+              <div className="grid grid-cols-2 gap-1.5">
+                <button
+                  onClick={() => onEnterDungeon('careful')}
+                  className="py-2 text-center border border-[#2a2a4a] bg-[#07071a] hover:bg-[#111130] text-[#8888aa]"
+                >
+                  <div className="text-xs font-black">🛡 慎重</div>
+                  <div className="text-[9px] font-bold opacity-70 mt-0.5">敵1体</div>
+                </button>
+                <button
+                  onClick={() => onEnterDungeon('aggressive')}
+                  className="py-2 text-center border border-red-900 bg-[#07071a] hover:bg-red-950 text-red-400"
+                >
+                  <div className="text-xs font-black">⚔ 積極</div>
+                  <div className="text-[9px] font-bold opacity-70 mt-0.5">EXP+50%</div>
+                </button>
+              </div>
+            </div>
           )}
 
           {(loc.type === 'town' || loc.type === 'relay' || loc.type === 'castle') && onWander && (
-            <button
-              onClick={onWander}
-              className="w-full px-3 py-2.5 text-left flex items-center border-b border-[#2d2000] hover:bg-[#0d0a00]"
-            >
-              <span className="w-4 text-xs font-black text-amber-700 shrink-0">▶</span>
-              <span className="font-black text-sm text-amber-100 flex-1">うろつく</span>
-              <span className="text-[10px] text-gray-600">1日過ごす</span>
-            </button>
+            <div className="border-b border-[#2d2000]">
+              <div className="px-3 pt-2 pb-1 flex items-center gap-1">
+                <span className="w-4 text-xs font-black text-amber-700 shrink-0">▶</span>
+                <span className="font-black text-sm text-amber-100 flex-1">今日の行動（1日消費）</span>
+              </div>
+              <div className="grid grid-cols-3 gap-1 px-3 pb-2.5">
+                {([
+                  { mode: 'gold', label: '💰 稼ぐ', desc: 'Gold重視', color: 'border-amber-700 text-amber-200 hover:bg-amber-950' },
+                  { mode: 'train', label: '💪 鍛錬', desc: 'EXP重視', color: 'border-red-800 text-red-200 hover:bg-red-950' },
+                  { mode: 'explore', label: '🔍 探索', desc: '何か見つかるかも', color: 'border-teal-800 text-teal-200 hover:bg-teal-950' },
+                ] as const).map(({ mode, label, desc, color }) => (
+                  <button
+                    key={mode}
+                    onClick={() => onWander(mode)}
+                    className={`py-2 text-center border ${color} bg-[#07071a] text-xs font-black`}
+                  >
+                    <div>{label}</div>
+                    <div className="text-[9px] font-bold opacity-70 mt-0.5">{desc}</div>
+                  </button>
+                ))}
+              </div>
+            </div>
           )}
 
           {(loc.type === 'relay' || loc.type === 'castle') && onCampRest && (() => {

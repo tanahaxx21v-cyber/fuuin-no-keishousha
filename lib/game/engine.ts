@@ -648,6 +648,7 @@ export function startBattle(state: GameState, enemyIds: string[], isBoss: boolea
     isBoss,
     isFinalBoss: isBoss && enemyIds[0] === 'archive',
     turn: 1,
+    companionOrders: {},
   }
 
   s.battle = battle
@@ -683,6 +684,13 @@ function pickAttackText(attacker: BattleUnit, target: BattleUnit, dmg: number): 
   const verbs = attacker.isAlly ? ATTACK_VERBS_ALLY : ATTACK_VERBS_ENEMY
   const v = verbs[Math.floor(Math.random() * verbs.length)]
   return `⚔️ ${attacker.name}${v}！${target.name}に${dmg}ダメージ！`
+}
+
+export function setCompanionOrder(state: GameState, companionUid: string, order: import('./types').CompanionOrder): GameState {
+  if (!state.battle) return state
+  const s = deepClone(state)
+  s.battle!.companionOrders[companionUid] = order
+  return s
 }
 
 export function battleAttack(state: GameState, targetUid: string): GameState {
@@ -941,12 +949,64 @@ function processCompanionTurn(state: GameState): GameState {
 
   const aliveAllies = b.units.filter(u => u.isAlly && u.hp > 0)
 
+  // プレイヤーからの指示を確認（attack/skill/heal）
+  const order = b.companionOrders[actor.uid] ?? null
+  // 指示を消費（次のターンには引き継がない）
+  delete b.companionOrders[actor.uid]
+
+  if (order === 'attack') {
+    // 指示: 攻撃 → 最も弱った敵を必ず攻撃
+    const target = [...aliveEnemies].sort((a, b2) => a.hp - b2.hp)[0]
+    const { dmg } = calcDamage(actor, target)
+    const died = applyDamage(target, dmg)
+    b.logs.push({ text: `⚔️ ${actor.name}が攻撃！${target.name}に${dmg}ダメージ！`, type: 'damage' })
+    if (died) addDeathLog(b, target)
+    return advanceTurn(s)
+  }
+
+  if (order === 'skill') {
+    // 指示: スキル → 使える攻撃スキルを優先使用
+    const offSkills = actor.skills.filter(sk =>
+      (sk.target === 'enemy_one' || sk.target === 'enemy_all') && actor.mp >= sk.mpCost
+    )
+    if (offSkills.length > 0) {
+      const skill = offSkills[0]
+      actor.mp -= skill.mpCost
+      b.logs.push({ text: `✨ ${actor.name}が「${skill.name}」を使った！`, type: 'status' })
+      const targets = skill.target === 'enemy_all' ? aliveEnemies : [aliveEnemies[Math.floor(Math.random() * aliveEnemies.length)]]
+      for (const tgt of targets) applySkillEffect(b, actor, tgt, skill)
+      return advanceTurn(s)
+    }
+    // スキルがなければ通常攻撃
+    const target = aliveEnemies[Math.floor(Math.random() * aliveEnemies.length)]
+    const { dmg } = calcDamage(actor, target)
+    applyDamage(target, dmg)
+    b.logs.push({ text: `⚔️ ${actor.name}（スキルなし）が攻撃！${target.name}に${dmg}ダメージ！`, type: 'damage' })
+    return advanceTurn(s)
+  }
+
+  if (order === 'heal') {
+    // 指示: 回復 → 最も瀕死の味方を回復
+    const healSkill = actor.skills.find(sk =>
+      (sk.target === 'ally_one' || sk.target === 'ally_all') && sk.effect === 'heal' && actor.mp >= sk.mpCost
+    )
+    if (healSkill) {
+      actor.mp -= healSkill.mpCost
+      b.logs.push({ text: `💚 ${actor.name}が「${healSkill.name}」を使った！`, type: 'heal' })
+      const healTargets = healSkill.target === 'ally_all' ? aliveAllies : [[...aliveAllies].sort((a, b2) => a.hp / a.maxHp - b2.hp / b2.maxHp)[0]]
+      for (const tgt of healTargets) applySkillEffect(b, actor, tgt, healSkill)
+      return advanceTurn(s)
+    }
+    // 回復スキルがなければ通常攻撃
+    b.logs.push({ text: `${actor.name}：回復スキルがない……通常攻撃に切り替えた！`, type: 'system' })
+  }
+
+  // 指示なし: 以下は従来のAI
   // Use healing skill if any ally is below 30% HP
   const lowHpAllies = aliveAllies.filter(u => u.hp < u.maxHp * 0.3)
   const lowHpAlly = [...lowHpAllies].sort((a, b) => a.hp - b.hp)[0]
   const healAllSkill = actor.skills.find(sk => sk.target === 'ally_all' && sk.effect === 'heal' && actor.mp >= sk.mpCost)
   const healOneSkill = actor.skills.find(sk => sk.target === 'ally_one' && sk.effect === 'heal' && actor.mp >= sk.mpCost)
-  // ally_all heal when multiple allies are low, ally_one heal when just one is low
   if (lowHpAllies.length >= 2 && healAllSkill) {
     actor.mp -= healAllSkill.mpCost
     b.logs.push({ text: `💚 ${actor.name}は「${healAllSkill.name}」を使った！`, type: 'heal' })
@@ -1629,7 +1689,7 @@ const WANDER_REST_TEXTS: string[] = [
   '仲間と他愛もない話をしながら一休みした。',
 ]
 
-export function wander(state: GameState): GameState {
+export function wander(state: GameState, mode: 'gold' | 'train' | 'explore' = 'explore'): GameState {
   const s = deepClone(state)
   s.daysLeft -= 1
   if (s.daysLeft <= 0) {
@@ -1641,15 +1701,25 @@ export function wander(state: GameState): GameState {
   const loc = LOCATIONS[s.currentLocId]
   const locType = loc?.type ?? 'relay'
 
+  // モード別確率分岐
+  // gold:    Gold55% / EXP10% / アイテム15% / 回復5% / 敵9% / 行商6%
+  // train:   EXP55% / Gold10% / アイテム15% / 回復8% / 敵9% / 行商3%
+  // explore: Gold35% / EXP20% / アイテム20% / 回復8% / 敵9% / 行商6% / 危険7%
+  const thresholds = mode === 'gold'
+    ? [0.55, 0.65, 0.80, 0.85, 0.94, 1.00, 1.00]
+    : mode === 'train'
+    ? [0.10, 0.65, 0.80, 0.88, 0.97, 1.00, 1.00]
+    : [0.35, 0.55, 0.75, 0.83, 0.92, 0.98, 1.00]
+
   const roll = Math.random()
-  if (roll < 0.35) {
+  if (roll < thresholds[0]) {
     const goldBase = Math.floor(15 + s.playerLevel * 3)
     const gold = Math.floor(Math.random() * goldBase) + goldBase
     s.gold += gold
     const texts = WANDER_GOLD_TEXTS[locType] ?? WANDER_GOLD_TEXTS.relay
     const place = texts[Math.floor(Math.random() * texts.length)]
     s.message = `💰 ${place}${gold}G見つけた！`
-  } else if (roll < 0.55) {
+  } else if (roll < thresholds[1]) {
     const expGain = Math.floor(10 + s.playerLevel * 2.5)
     s.playerExp += expGain
     while (s.playerExp >= getExpToNext(s.playerLevel) && s.playerLevel < 30) {
@@ -1701,7 +1771,7 @@ export function wander(state: GameState): GameState {
     const lvMsg = leveledUpNames.length > 0 ? ` ⭐${leveledUpNames.join('・')}もレベルアップ！` : ''
     const skMsg = learnedSkillMsgs.length > 0 ? ` ✨${learnedSkillMsgs.join(' ')}` : ''
     s.message = `💪 ${trainText} EXP+${expGain}${lvMsg}${skMsg}`
-  } else if (roll < 0.70) {
+  } else if (roll < thresholds[2]) {
     const items: Array<{itemId: string; qty: number}> = [
       { itemId: 'potion', qty: 1 },
       { itemId: 'ether', qty: 1 },
@@ -1714,12 +1784,12 @@ export function wander(state: GameState): GameState {
     const foundItem = ITEMS[found.itemId]
     const place = WANDER_ITEM_PLACES[locType] ?? 'どこかに'
     s.message = `🎁 ${place}${foundItem?.emoji ?? ''}${foundItem?.name ?? found.itemId}を見つけた！`
-  } else if (roll < 0.78) {
+  } else if (roll < thresholds[3]) {
     const heal = Math.floor(s.playerMaxHp * 0.15)
     s.playerHp = Math.min(s.playerMaxHp, s.playerHp + heal)
     const restText = WANDER_REST_TEXTS[Math.floor(Math.random() * WANDER_REST_TEXTS.length)]
     s.message = `✨ ${restText} HP+${heal}`
-  } else if (roll < 0.87) {
+  } else if (roll < thresholds[4]) {
     // 稀に小さな敵エンカウント（中継地のenemy pool使用）
     const pool = loc.travelEnemyPool ?? loc.enemyPool ?? []
     if (pool.length > 0) {
@@ -1744,7 +1814,7 @@ export function wander(state: GameState): GameState {
       '……手ぶらで戻ってきた。夕日が妙にきれいだった。',
     ]
     s.message = nothingTexts[Math.floor(Math.random() * nothingTexts.length)]
-  } else if (roll < 0.93) {
+  } else if (roll < thresholds[5]) {
     // 謎の行商人（高額アイテムを格安で売る）
     const discountItems = [
       { itemId: 'hi_potion', name: 'ハイポーション', normalPrice: 250, deal: 60 },
@@ -1785,7 +1855,7 @@ export function wander(state: GameState): GameState {
 
 // ===== DUNGEON =====
 
-export function enterDungeon(state: GameState): GameState {
+export function enterDungeon(state: GameState, mode: 'careful' | 'aggressive' = 'careful'): GameState {
   const s = deepClone(state)
   const loc = LOCATIONS[s.currentLocId]
   if (!loc.enemyPool || !loc.bossId) return s
@@ -1799,15 +1869,30 @@ export function enterDungeon(state: GameState): GameState {
   }
 
   const pool = loc.enemyPool
-  // 序盤（Lv7未満）は最大2体、中盤以降は最大3体（バランス調整）
-  const maxCount = s.playerLevel < 7 ? 2 : 3
-  const count = Math.floor(Math.random() * maxCount) + 1
-  const enemies: string[] = []
-  for (let i = 0; i < count; i++) {
-    enemies.push(pool[Math.floor(Math.random() * pool.length)])
+  let enemies: string[]
+
+  if (mode === 'careful') {
+    // 慎重: 常に1体のみ
+    enemies = [pool[Math.floor(Math.random() * pool.length)]]
+  } else {
+    // 積極: 2〜3体、EXP/Gold+50%ボーナスはbattle報酬倍率で後処理
+    const maxCount = s.playerLevel < 7 ? 2 : 3
+    const count = Math.min(maxCount, 2 + Math.floor(Math.random() * 2))
+    enemies = []
+    for (let i = 0; i < count; i++) {
+      enemies.push(pool[Math.floor(Math.random() * pool.length)])
+    }
+    // 積極探索フラグをメッセージに反映（battle開始前）
+    s.message = `⚡ 深部まで踏み込んだ！敵が${count}体現れた！（EXP・Gold増加）`
   }
 
-  return startBattle(s, enemies, false)
+  const result = startBattle(s, enemies, false)
+  // 積極探索時はbattle報酬を1.5倍に
+  if (mode === 'aggressive' && result.battle) {
+    result.battle.rewardExp = Math.floor(result.battle.rewardExp * 1.5)
+    result.battle.rewardGold = Math.floor(result.battle.rewardGold * 1.5)
+  }
+  return result
 }
 
 export function fightBoss(state: GameState): GameState {
