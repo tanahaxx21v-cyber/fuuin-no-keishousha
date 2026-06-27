@@ -980,8 +980,9 @@ function processCompanionTurn(state: GameState): GameState {
     // スキルがなければ通常攻撃
     const target = aliveEnemies[Math.floor(Math.random() * aliveEnemies.length)]
     const { dmg } = calcDamage(actor, target)
-    applyDamage(target, dmg)
+    const died = applyDamage(target, dmg)
     b.logs.push({ text: `⚔️ ${actor.name}（スキルなし）が攻撃！${target.name}に${dmg}ダメージ！`, type: 'damage' })
+    if (died) addDeathLog(b, target)
     return advanceTurn(s)
   }
 
