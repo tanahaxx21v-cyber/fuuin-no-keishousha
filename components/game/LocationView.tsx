@@ -127,7 +127,7 @@ export default function LocationView({
 
   const bossDefeated = loc.bossId ? gs.defeatedBosses.includes(loc.bossId) : false
   const sealObtained = loc.sealStone ? gs.sealStones.includes(loc.sealStone) : false
-  const joinedCount = Object.values(gs.companions).filter(c => c.joined).length
+  const joinedCount = Object.values(gs.companions).filter(c => c.joined && c.alive).length
 
   const totalDays = getDifficultyMultiplier(gs.difficulty).days
   const typeLabel = loc.type === 'town' ? '🏘️ 町' : loc.type === 'dungeon' ? '⚔️ ダンジョン' : loc.type === 'relay' ? '🛖 中継地' : '🏯 城'

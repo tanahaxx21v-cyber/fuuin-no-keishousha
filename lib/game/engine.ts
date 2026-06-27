@@ -121,7 +121,7 @@ function isLocationUnlocked(s: GameState, locId: LocationId): boolean {
 const COMPANION_IDS = new Set(['gares','liz','noa','cecil','bram','finn','vais','logan','iris','sig','elk','mira','zeno'])
 
 export function checkLocationEvent(state: GameState): string | null {
-  const joinedIds: string[] = Object.values(state.companions).filter(c => c.joined).map(c => c.id as string)
+  const joinedIds: string[] = Object.values(state.companions).filter(c => c.joined && c.alive).map(c => c.id as string)
   for (const ev of EVENTS) {
     if (state.completedEvents.includes(ev.id)) continue
     const cond = ev.condition
@@ -152,7 +152,7 @@ export function checkLocationEvent(state: GameState): string | null {
 }
 
 export function hasAvailableEventAt(state: GameState, locId: string): boolean {
-  const joinedIds = Object.values(state.companions).filter(c => c.joined).map(c => c.id as string)
+  const joinedIds = Object.values(state.companions).filter(c => c.joined && c.alive).map(c => c.id as string)
   for (const ev of EVENTS) {
     if (state.completedEvents.includes(ev.id)) continue
     const cond = ev.condition
@@ -318,8 +318,8 @@ export function travel(state: GameState, destId: LocationId): GameState {
 
 export function joinCompanion(state: GameState, companionId: CompanionId): GameState {
   const s = deepClone(state)
-  // 仲間は合計3人まで（パーティ枠ではなく加入済み総数）
-  const joinedCount = Object.values(s.companions).filter(c => c.joined).length
+  // 生存中の仲間は同時に3人まで（死亡した仲間の枠は解放される）
+  const joinedCount = Object.values(s.companions).filter(c => c.joined && c.alive).length
   if (joinedCount >= 3) {
     s.message = '仲間はすでに3人います。これ以上は仲間にできません。'
     s.pendingCompanionJoin = undefined
