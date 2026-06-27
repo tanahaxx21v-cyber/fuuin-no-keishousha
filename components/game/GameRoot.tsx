@@ -198,7 +198,14 @@ export default function GameRoot() {
   }
 
   const handleInn = () => {
-    update(s => restAtInn(s))
+    update(s => {
+      const rested = restAtInn(s)
+      if (rested.phase === 'location') {
+        const eventId = checkLocationEvent(rested)
+        if (eventId) return startEvent(rested, eventId)
+      }
+      return rested
+    })
   }
 
   const handleBuyItem = (itemId: string) => {
@@ -226,7 +233,14 @@ export default function GameRoot() {
   }
 
   const handleWander = (mode: 'gold' | 'train' | 'explore') => {
-    update(s => wander(s, mode))
+    update(s => {
+      const wandered = wander(s, mode)
+      if (wandered.phase === 'location') {
+        const eventId = checkLocationEvent(wandered)
+        if (eventId) return startEvent(wandered, eventId)
+      }
+      return wandered
+    })
   }
 
   const handleSetCompanionOrder = useCallback((uid: string, order: import('@/lib/game/types').CompanionOrder) => {

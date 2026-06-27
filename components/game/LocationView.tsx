@@ -559,7 +559,7 @@ export default function LocationView({
                 <span className={`font-black text-sm flex-1 ${canAfford ? 'text-amber-100' : 'text-gray-600'}`}>宿屋で休む</span>
                 <span className={`text-[10px] ${canAfford ? 'text-blue-400' : 'text-red-600'}`}>
                   {innPrice}G / 1日
-                  {!isFullHp && canAfford && ` | HP+${hpMissing > 0 ? hpMissing : ''}${mpMissing > 0 ? ` MP+${mpMissing}` : ''}`}
+                  {!isFullHp && canAfford && ` | ${[hpMissing > 0 ? `HP+${hpMissing}` : '', mpMissing > 0 ? `MP+${mpMissing}` : ''].filter(Boolean).join(' ')}`}
                 </span>
               </button>
             )

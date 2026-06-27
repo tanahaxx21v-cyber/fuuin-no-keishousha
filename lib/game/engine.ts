@@ -1372,6 +1372,11 @@ export function closeBattle(state: GameState): GameState {
   const isFinal = s.battle.isFinalBoss && s.battle.phase === 'victory'
   const dungeonMode = s.battle.dungeonMode
 
+  // このバトル開始前に生存していた仲間を記録（新たに死亡した仲間だけを告知するため）
+  const aliveBeforeBattle = new Set(
+    (Object.keys(s.companions) as CompanionId[]).filter(id => s.companions[id].joined && s.companions[id].alive)
+  )
+
   syncBattleToState(s)
   s.battle = undefined
 
@@ -1386,7 +1391,8 @@ export function closeBattle(state: GameState): GameState {
       // PP4スタイル: 仲間は戦闘終了後HP/MP全回復。主人公だけHPが削れる緊張感。
       c.hp = c.maxHp
       c.mp = c.maxMp
-    } else if (c.joined && !c.alive) {
+    } else if (c.joined && !c.alive && aliveBeforeBattle.has(id)) {
+      // このバトルで初めて死亡した仲間だけを告知（前のバトルで死んだ仲間を再告知しない）
       newlyDeadIds.push(id)
       newlyDeadNames.push(COMPANIONS[id]?.name ?? id)
     }
