@@ -125,17 +125,21 @@ export default function StatusBar({ gs, onSave, isMuted, onToggleMute, onReturnT
 
         {/* Seal stones */}
         <div className="flex items-center gap-1">
-          {(['fire', 'storm', 'dark'] as const).map(stone => {
-            const has = gs.sealStones.includes(stone)
+          {([
+            { id: 'fire',  emoji: '🔥', name: '炎',   hint: '廃鉱山の鉱王を倒せ' },
+            { id: 'storm', emoji: '⚡', name: '嵐',   hint: '竜の峠の嵐竜を倒せ' },
+            { id: 'dark',  emoji: '🌑', name: '闇',   hint: '古代神殿の森王を倒せ' },
+          ] as const).map(stone => {
+            const has = gs.sealStones.includes(stone.id)
             return (
               <div
-                key={stone}
+                key={stone.id}
                 className={`w-6 h-6 border-2 flex items-center justify-center text-xs ${
                   has ? 'border-amber-500 bg-amber-950' : 'border-gray-700 bg-gray-900 opacity-30 grayscale'
                 }`}
-                title={has ? `${stone === 'fire' ? '炎' : stone === 'storm' ? '嵐' : '闇'}の封印石（取得済み）` : '未取得'}
+                title={has ? `${stone.name}の封印石（取得済み）` : `${stone.name}の封印石 — ${stone.hint}`}
               >
-                {stone === 'fire' ? '🔥' : stone === 'storm' ? '⚡' : '🌑'}
+                {stone.emoji}
               </div>
             )
           })}

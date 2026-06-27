@@ -7,13 +7,13 @@ import { isOneTimeCompanion } from '@/lib/game/engine'
 import { CharPortrait, CharPortraitLarge, hasCharPortrait } from './CharPortrait'
 
 // ダンジョン危険度マッピング（ボスの強さから判定）
-const DUNGEON_DANGER: Record<string, { rank: string; color: string; label: string }> = {
-  bandit_king:  { rank: '★★☆☆☆', color: '#fb923c', label: '中級' },
-  tidal_king:   { rank: '★★★☆☆', color: '#f97316', label: '上級' },
-  mine_king:    { rank: '★★★☆☆', color: '#f97316', label: '上級' },
-  storm_dragon: { rank: '★★★★☆', color: '#ef4444', label: '危険' },
-  forest_king:  { rank: '★★★★☆', color: '#ef4444', label: '危険' },
-  archive:      { rank: '★★★★★', color: '#dc2626', label: '最終決戦' },
+const DUNGEON_DANGER: Record<string, { rank: string; color: string; label: string; recommendedLevel: number }> = {
+  bandit_king:  { rank: '★★☆☆☆', color: '#fb923c', label: '中級',    recommendedLevel: 5  },
+  tidal_king:   { rank: '★★★☆☆', color: '#f97316', label: '上級',    recommendedLevel: 8  },
+  mine_king:    { rank: '★★★☆☆', color: '#f97316', label: '上級',    recommendedLevel: 8  },
+  storm_dragon: { rank: '★★★★☆', color: '#ef4444', label: '危険',    recommendedLevel: 12 },
+  forest_king:  { rank: '★★★★☆', color: '#ef4444', label: '危険',    recommendedLevel: 12 },
+  archive:      { rank: '★★★★★', color: '#dc2626', label: '最終決戦', recommendedLevel: 16 },
 }
 
 interface Props {
@@ -261,6 +261,20 @@ export default function LocationView({
                   )
                 })}
               </div>
+              {(() => {
+                const bossId = loc.bossId!
+                const bossD = DUNGEON_DANGER[bossId]
+                if (!bossD?.recommendedLevel) return null
+                const underLevel = gs.playerLevel < bossD.recommendedLevel
+                return (
+                  <div className={`px-3 py-2 text-xs font-black mb-3 border ${underLevel ? 'bg-red-950 border-red-700 text-red-300' : 'bg-green-950 border-green-800 text-green-300'}`}>
+                    {underLevel
+                      ? `⚠️ 推奨Lv.${bossD.recommendedLevel}（現在Lv.${gs.playerLevel}）— レベルが低すぎます`
+                      : `✅ 推奨Lv.${bossD.recommendedLevel}（現在Lv.${gs.playerLevel}）— 挑戦可能な強さです`
+                    }
+                  </div>
+                )
+              })()}
               {isLowHp && (
                 <div className="bg-yellow-950 border border-yellow-700 px-3 py-2 text-xs text-yellow-300 font-bold mb-3">
                   ⚠️ HP平均 {Math.round(avgHpPct * 100)}%。宿屋での回復を推奨します。
@@ -472,13 +486,21 @@ export default function LocationView({
                 {danger && (
                   <div className="text-xs mt-0.5" style={{ color: danger.color }}>{danger.rank}</div>
                 )}
-                <div className="flex gap-3 mt-1.5">
+                <div className="flex gap-3 mt-1.5 flex-wrap">
                   <span className="text-[11px] text-orange-300 font-bold">ATK {boss.atk}</span>
                   <span className="text-[11px] text-blue-300 font-bold">DEF {boss.def}</span>
                   {loc.sealStone && !sealObtained && (
                     <span className="text-[11px] text-amber-400 font-bold">💎 封印石あり</span>
                   )}
                 </div>
+                {danger?.recommendedLevel && (() => {
+                  const underLevel = gs.playerLevel < danger.recommendedLevel
+                  return (
+                    <div className={`mt-1.5 text-[11px] font-black ${underLevel ? 'text-red-400' : 'text-green-400'}`}>
+                      {underLevel ? '⚠️' : '✅'} 推奨Lv.{danger.recommendedLevel}（現在Lv.{gs.playerLevel}）
+                    </div>
+                  )
+                })()}
               </div>
             </div>
           </div>

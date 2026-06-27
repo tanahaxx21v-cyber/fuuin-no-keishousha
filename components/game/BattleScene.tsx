@@ -777,8 +777,10 @@ export default function BattleScene({ gs, onAttack, onSkill, onItem, onFlee, onC
                 <div className="text-[9px] font-black text-[#6666aa] px-2 pt-1.5 tracking-widest">— 仲間への指示 —</div>
                 {aliveCompanions.map(c => {
                   const currentOrder = b.companionOrders?.[c.uid] ?? null
-                  const hasHeal = c.skills.some(sk => (sk.target === 'ally_one' || sk.target === 'ally_all') && sk.effect === 'heal' && c.mp >= sk.mpCost)
-                  const hasSkill = c.skills.some(sk => (sk.target === 'enemy_one' || sk.target === 'enemy_all') && c.mp >= sk.mpCost)
+                  const healSkills = c.skills.filter(sk => (sk.target === 'ally_one' || sk.target === 'ally_all') && sk.effect === 'heal' && c.mp >= sk.mpCost)
+                  const atkSkills = c.skills.filter(sk => (sk.target === 'enemy_one' || sk.target === 'enemy_all') && c.mp >= sk.mpCost)
+                  const hasHeal = healSkills.length > 0
+                  const hasSkill = atkSkills.length > 0
                   return (
                     <div key={c.uid} className="flex items-center gap-1 px-2 py-1 border-b border-[#0d1040]">
                       <span className="text-sm shrink-0">{c.emoji}</span>
@@ -788,9 +790,15 @@ export default function BattleScene({ gs, onAttack, onSkill, onItem, onFlee, onC
                         if (ord === 'skill' && !hasSkill) return null
                         const label = ord === 'attack' ? '⚔攻' : ord === 'skill' ? '✨技' : '💚回'
                         const active = currentOrder === ord
+                        const tipText = ord === 'attack'
+                          ? `${c.name}に最も弱った敵を攻撃させる`
+                          : ord === 'skill'
+                          ? `使用スキル: ${atkSkills.map(s => s.name).join(' / ')}`
+                          : `使用スキル: ${healSkills.map(s => s.name).join(' / ')}`
                         return (
                           <button
                             key={ord}
+                            title={tipText}
                             onClick={() => onSetCompanionOrder(c.uid, active ? null : ord)}
                             className={`text-[9px] font-black px-1.5 py-0.5 border ${active ? 'bg-amber-800 border-amber-500 text-amber-200' : 'bg-[#0c0c24] border-[#2a2a4a] text-[#8888aa] hover:border-indigo-600 hover:text-white'}`}
                           >

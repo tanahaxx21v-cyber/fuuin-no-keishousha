@@ -1357,7 +1357,8 @@ export function closeBattle(state: GameState): GameState {
 
   // バトル終了時（勝利・敗北問わず）ステータス異常をクリア（JRPGスタンダード）
   s.playerStatus = []
-  const newlyDead: string[] = []
+  const newlyDeadIds: CompanionId[] = []
+  const newlyDeadNames: string[] = []
   for (const id of Object.keys(s.companions) as CompanionId[]) {
     const c = s.companions[id]
     if (c.joined && c.alive) {
@@ -1366,13 +1367,14 @@ export function closeBattle(state: GameState): GameState {
       c.hp = c.maxHp
       c.mp = c.maxMp
     } else if (c.joined && !c.alive) {
-      newlyDead.push(COMPANIONS[id]?.name ?? id)
+      newlyDeadIds.push(id)
+      newlyDeadNames.push(COMPANIONS[id]?.name ?? id)
     }
   }
   // 死亡した仲間をパーティから除外（PP4スタイル: 永続死亡で即使用不可）
   const aliveAfterBattle = s.party.filter(id => s.companions[id]?.alive)
   s.party = aliveAfterBattle
-  if (newlyDead.length > 0) {
+  if (newlyDeadIds.length > 0) {
     // 生き残った仲間の追悼コメントをメッセージに付加（PP4最大の感動シーン）
     let mournerMsg = ''
     if (aliveAfterBattle.length > 0) {
@@ -1382,7 +1384,7 @@ export function closeBattle(state: GameState): GameState {
       const line = lines[Math.floor(Math.random() * lines.length)]
       mournerMsg = `\n${def.emoji}${def.name}「${line}」`
     }
-    s.message = `💀 ${newlyDead.join('・')}が永眠した……二度と戦えない${mournerMsg}`
+    s.message = `💀 ${newlyDeadNames.join('・')}が永眠した……二度と戦えない${mournerMsg}`
   } else if (!defeated && !isFinal) {
     // 勝利後の仲間一言コメント
     const aliveParty = s.party.filter(id => s.companions[id]?.alive)

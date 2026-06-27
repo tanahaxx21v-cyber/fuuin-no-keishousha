@@ -375,6 +375,13 @@ export default function GameRoot() {
     achToastTimerRef.current = setTimeout(() => setAchievementToast(null), 4000)
   }, [gs.companions, gs.defeatedBosses, gs.sealStones, gs.visitedLocs, gs.completedEvents, gs.playerLevel, gs.gold, gs.party])
 
+  // メッセージトーストを4秒後に自動消去
+  useEffect(() => {
+    if (!gs.message) return
+    const timer = setTimeout(() => setGs(prev => ({ ...prev, message: undefined })), 4000)
+    return () => clearTimeout(timer)
+  }, [gs.message])
+
   // バトル中に仲間・敵のターンを自動処理（スタン中プレイヤーも自動スキップ）
   useEffect(() => {
     if (gs.phase !== 'battle' || !gs.battle) return
