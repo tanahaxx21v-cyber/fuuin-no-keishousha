@@ -703,7 +703,7 @@ export const LOCATIONS: Record<LocationId, LocationDef> = {
     travelDays: { alseria: 1, bern: 2, trading_post: 2 },
     companionId: 'gares',
     shopItems: ['potion'],
-    travelEnemyPool: ['bandit', 'goblin'],
+    travelEnemyPool: ['wolf', 'goblin'],
   },
   great_bridge: {
     id: 'great_bridge', name: '大橋', emoji: '🌉',

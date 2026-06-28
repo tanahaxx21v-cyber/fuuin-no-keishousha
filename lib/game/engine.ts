@@ -636,6 +636,11 @@ export function startBattle(state: GameState, enemyIds: string[], isBoss: boolea
     openingLog.push({ text, type: 'system' })
   }
 
+  // Lv1初心者向けスキルヒント（最初の数回の戦闘のみ）
+  if (s.playerLevel <= 1 && !isBoss && s.completedEvents.length <= 1) {
+    openingLog.push({ text: '💡 ヒント: 「スキル」ボタンで強力な技が使える！MP消費で通常の2倍以上のダメージ。', type: 'system' })
+  }
+
   const battle: BattleState = {
     units: allUnits,
     phase: 'select_action',
@@ -784,7 +789,7 @@ export function battleFlee(state: GameState): GameState {
     s.battle!.phase = 'select_action'
     return s
   }
-  const success = Math.random() < 0.6
+  const success = Math.random() < (s.playerLevel <= 4 ? 0.75 : 0.60)
   if (success) {
     syncBattleToState(s)
     s.battle = undefined

@@ -655,9 +655,9 @@ export default function LocationView({
               </div>
               <div className="grid grid-cols-3 gap-1 px-3 pb-2.5">
                 {([
-                  { mode: 'gold', label: '💰 稼ぐ', desc: 'Gold重視', color: 'border-amber-700 text-amber-200 hover:bg-amber-950' },
-                  { mode: 'train', label: '💪 鍛錬', desc: 'EXP重視', color: 'border-red-800 text-red-200 hover:bg-red-950' },
-                  { mode: 'explore', label: '🔍 探索', desc: '何か見つかるかも', color: 'border-teal-800 text-teal-200 hover:bg-teal-950' },
+                  { mode: 'gold', label: '💰 稼ぐ', desc: 'Gold+アイテム重視', color: 'border-amber-700 text-amber-200 hover:bg-amber-950' },
+                  { mode: 'train', label: '💪 鍛錬', desc: 'EXP重視・Lvアップ', color: 'border-red-800 text-red-200 hover:bg-red-950' },
+                  { mode: 'explore', label: '🔍 探索', desc: '情報収集・秘宝発見', color: 'border-teal-800 text-teal-200 hover:bg-teal-950' },
                 ] as const).map(({ mode, label, desc, color }) => (
                   <button
                     key={mode}
@@ -682,9 +682,12 @@ export default function LocationView({
               >
                 <span className="w-4 text-xs font-black shrink-0" style={{ color: healable ? '#2dd4bf' : '#374151' }}>{healable ? '▶' : '×'}</span>
                 <span className={`font-black text-sm flex-1 ${healable ? 'text-teal-100' : 'text-gray-600'}`}>野営して休む</span>
-                <span className={`text-[10px] ${healable ? 'text-teal-600' : 'text-gray-700'}`}>
-                  {healable ? 'HP/MP回復' : '満タン'}
-                </span>
+                <div className="text-right">
+                  {healable && <div className="text-[10px] text-teal-600 font-bold">日数消費なし</div>}
+                  <div className={`text-[10px] ${healable ? 'text-teal-400' : 'text-gray-700'}`}>
+                    {healable ? 'HP30%・MP10%回復' : '満タン'}
+                  </div>
+                </div>
               </button>
             )
           })()}
