@@ -12,7 +12,7 @@ import {
 } from '@/lib/game/engine'
 import { LOCATIONS, ITEMS } from '@/lib/game/data'
 import {
-  playBgm, stopBgm, toggleMute, isMuted,
+  playBgm, stopBgm, toggleMute, isMuted, type BgmType,
   sfxAttack, sfxSkill, sfxHeal, sfxVictory, sfxDefeat, sfxLevelUp, sfxMenuSelect, sfxCoin,
 } from '@/lib/game/audio'
 import TitleScreen from './TitleScreen'
@@ -335,8 +335,12 @@ export default function GameRoot() {
       playBgm('field')
     } else if (gs.phase === 'location' || gs.phase === 'shop') {
       const loc = LOCATIONS[gs.currentLocId]
+      const TOWN_BGM: Partial<Record<string, BgmType>> = {
+        alseria: 'alseria', bern: 'bern', sahal: 'sahal',
+        mirea: 'mirea', elna: 'elna', galdo: 'galdo',
+      }
       if (loc?.type === 'dungeon') playBgm('dungeon')
-      else playBgm('town')
+      else playBgm(TOWN_BGM[gs.currentLocId] ?? 'town')
     } else if (gs.phase === 'battle' && gs.battle) {
       playBgm(gs.battle.isBoss ? 'boss' : 'battle')
     } else if (gs.phase === 'title' || gs.phase === 'prologue') {
