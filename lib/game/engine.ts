@@ -617,9 +617,9 @@ export function startBattle(state: GameState, enemyIds: string[], isBoss: boolea
     openingLog.push({ text: `${BOSS_OPENING_LINES[bossId]}`, type: 'system' })
   } else {
     const DUNGEON_ENCOUNTER_TEXTS: Partial<Record<string, string[]>> = {
-      ruined_mine: ['坑道の暗闇から唸り声が響く！', '崩れた坑道の向こうに影が見えた！', '鉱山の奥から足音が近づいてくる！'],
-      storm_peak: ['嵐の中、雷光が迸る！敵だ！', '峠の霧の中から敵が飛び出してきた！', '稲妻と共に敵が現れた！'],
-      forest_depths: ['木々の間から敵が飛び出してきた！', '深い森の静寂を破り、敵が現れた！', '森の守護者たちが立ちはだかった！'],
+      demon_mine: ['坑道の暗闇から唸り声が響く！', '崩れた坑道の向こうに影が見えた！', '鉱山の奥から足音が近づいてくる！'],
+      dragon_pass: ['嵐の中、雷光が迸る！敵だ！', '峠の霧の中から敵が飛び出してきた！', '稲妻と共に敵が現れた！'],
+      forest_entrance: ['木々の間から敵が飛び出してきた！', '深い森の静寂を破り、敵が現れた！', '森の守護者たちが立ちはだかった！'],
       ancient_temple: ['神殿の石床に響く足音。敵だ！', '古代の守護者たちが目覚めた！', '神殿の奥から禍々しい気配が迫る！'],
       lighthouse: ['灯台の岩場から怪しい影が！', '潮の音に紛れて敵が迫ってきた！', '海霧の中から敵が現れた！'],
       desert_ruins: ['砂漠の廃墟に蠢く影！', '遺跡の石畳を踏みにじる敵だ！', '廃墟の闇から敵が湧いて出た！'],
