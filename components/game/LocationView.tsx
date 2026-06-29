@@ -433,11 +433,14 @@ export default function LocationView({
                     </div>
                   )}
 
-                  {isOneTimeCompanion(pendingJoin.id) && (
-                    <div className="text-xs text-red-400 font-bold mb-2.5 text-center bg-red-950 py-1.5 border border-red-800">
-                      ⚠️ この仲間は一度断ると、二度と加入を申し出ません。
-                    </div>
-                  )}
+                  {(() => {
+                    const isLastChance = isOneTimeCompanion(pendingJoin.id) || !loc.bossId || bossDefeated
+                    return isLastChance ? (
+                      <div className="text-xs text-red-400 font-bold mb-2.5 text-center bg-red-950 py-1.5 border border-red-800">
+                        ⚠️ この仲間は一度断ると、二度と加入を申し出ません。
+                      </div>
+                    ) : null
+                  })()}
 
                   <div className="flex gap-2">
                     <button
@@ -451,12 +454,12 @@ export default function LocationView({
                     <button
                       onClick={onSkipCompanion}
                       className={`px-5 py-3 border-2 font-bold ${
-                        isOneTimeCompanion(pendingJoin.id)
+                        (isOneTimeCompanion(pendingJoin.id) || !loc.bossId || bossDefeated)
                           ? 'bg-red-950 hover:bg-red-900 border-red-700 text-red-300'
                           : 'bg-[#111130] hover:bg-[#1a1a38] border-[#3a3a5a] text-gray-300'
                       }`}
                     >
-                      {isOneTimeCompanion(pendingJoin.id) ? '断る（永久）' : '断る'}
+                      {(isOneTimeCompanion(pendingJoin.id) || !loc.bossId || bossDefeated) ? '断る（永久）' : '断る'}
                     </button>
                   </div>
                 </div>

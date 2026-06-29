@@ -438,9 +438,12 @@ export function skipCompanion(state: GameState): GameState {
     const def = COMPANIONS[skipped]
     const lines = COMPANION_REJECTED_LINES[skipped] ?? ['……そうか。']
     const line = lines[Math.floor(Math.random() * lines.length)]
-    if (ONE_TIME_COMPANIONS.has(skipped)) {
+    const loc = LOCATIONS[s.currentLocId]
+    const noBossOrBossDefeated = !loc?.bossId || s.defeatedBosses.includes(loc.bossId)
+    if (ONE_TIME_COMPANIONS.has(skipped) || noBossOrBossDefeated) {
       s.companions[skipped].refused = true
-      s.message = `${def.emoji}${def.name}「${line}」（この仲間は二度と加入を申し出ない）`
+      const suffix = ONE_TIME_COMPANIONS.has(skipped) ? '（この仲間は二度と加入を申し出ない）' : ''
+      s.message = `${def.emoji}${def.name}「${line}」${suffix}`
     } else {
       s.message = `${def.emoji}${def.name}「${line}」`
     }

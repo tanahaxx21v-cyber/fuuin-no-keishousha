@@ -56,7 +56,7 @@ function getGameOverMessage(gs: GameState): { heading: string; body: string } {
   if (isTimeout) {
     return { heading: '時間が……足りなかった', body: '残り日数ゼロ。魔王の封印を完成させることができなかった。' }
   }
-  if (bossCount >= 3) {
+  if (gs.sealStones.length >= 3) {
     return { heading: '最後の壁を越えられなかった', body: '封印石は全て揃っていた。だが、最後の一戦で力尽きた。' }
   }
   if (gs.daysLeft <= 10) {
