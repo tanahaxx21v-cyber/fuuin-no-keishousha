@@ -822,7 +822,7 @@ export default function LocationView({
       {gs.party.length > 0 && (
         <div className="bg-[#0c0c24] border-2 border-[#2a2a4a] p-3">
           <div className="text-xs font-black text-[#8888aa] mb-2 tracking-widest">— 現在のパーティ —</div>
-          {gs.party.some(id => gs.companions[id].alive && gs.companions[id].hp < gs.companions[id].maxHp * 0.3) && (
+          {gs.party.some(id => gs.companions[id].alive && gs.companions[id].hp < gs.companions[id].maxHp * 0.5) && (
             <div className="text-xs text-yellow-400 font-bold mb-2">⚠️ HPが危険な仲間がいます。宿屋で回復を！</div>
           )}
           <div className="flex flex-wrap gap-2">
