@@ -598,17 +598,24 @@ export default function LocationView({
               })()}
               <div className="border-b border-[#2d2000] px-3 pt-2 pb-1">
                 <div className="text-[9px] font-black text-red-900 mb-1.5 tracking-widest">— ダンジョン探索（1日消費）—</div>
+                {gs.daysLeft <= 1 && (
+                  <div className="text-xs text-red-400 font-bold mb-1.5 bg-red-950 border border-red-800 px-2 py-1">
+                    ⏰ 残り{gs.daysLeft}日 — 探索不可。ボス直接挑戦のみ可能。
+                  </div>
+                )}
                 <div className="grid grid-cols-2 gap-1.5 mb-1">
                   <button
                     onClick={() => onEnterDungeon('careful')}
-                    className="py-2.5 text-center border border-blue-900 bg-[#07071a] hover:bg-blue-950 text-blue-200"
+                    disabled={gs.daysLeft <= 1}
+                    className="py-2.5 text-center border border-blue-900 bg-[#07071a] hover:bg-blue-950 text-blue-200 disabled:opacity-40 disabled:cursor-not-allowed"
                   >
                     <div className="text-xs font-black">🛡 慎重に</div>
                     <div className="text-[9px] font-bold text-blue-400 mt-0.5">敵1体・安全</div>
                   </button>
                   <button
                     onClick={() => onEnterDungeon('aggressive')}
-                    className="py-2.5 text-center border border-red-800 bg-[#07071a] hover:bg-red-950 text-red-200"
+                    disabled={gs.daysLeft <= 1}
+                    className="py-2.5 text-center border border-red-800 bg-[#07071a] hover:bg-red-950 text-red-200 disabled:opacity-40 disabled:cursor-not-allowed"
                   >
                     <div className="text-xs font-black">⚔ 積極的に</div>
                     <div className="text-[9px] font-bold text-red-400 mt-0.5">敵複数・EXP+50%</div>
@@ -636,14 +643,16 @@ export default function LocationView({
               <div className="grid grid-cols-2 gap-1.5">
                 <button
                   onClick={() => onEnterDungeon('careful')}
-                  className="py-2 text-center border border-[#2a2a4a] bg-[#07071a] hover:bg-[#111130] text-[#8888aa]"
+                  disabled={gs.daysLeft <= 1}
+                  className="py-2 text-center border border-[#2a2a4a] bg-[#07071a] hover:bg-[#111130] text-[#8888aa] disabled:opacity-40 disabled:cursor-not-allowed"
                 >
                   <div className="text-xs font-black">🛡 慎重</div>
                   <div className="text-[9px] font-bold opacity-70 mt-0.5">敵1体</div>
                 </button>
                 <button
                   onClick={() => onEnterDungeon('aggressive')}
-                  className="py-2 text-center border border-red-900 bg-[#07071a] hover:bg-red-950 text-red-400"
+                  disabled={gs.daysLeft <= 1}
+                  className="py-2 text-center border border-red-900 bg-[#07071a] hover:bg-red-950 text-red-400 disabled:opacity-40 disabled:cursor-not-allowed"
                 >
                   <div className="text-xs font-black">⚔ 積極</div>
                   <div className="text-[9px] font-bold opacity-70 mt-0.5">EXP+50%</div>
@@ -831,7 +840,7 @@ export default function LocationView({
               const def = COMPANIONS[id]
               if (!c.joined) return null
               const hpPct = (c.hp / c.maxHp) * 100
-              const isLowHp = c.alive && hpPct < 30
+              const isLowHp = c.alive && hpPct < 50
               return (
                 <div key={id} className={`flex items-center gap-2 px-2 py-2 border ${!c.alive ? 'bg-[#0c0c24] border-red-900 opacity-40' : isLowHp ? 'bg-red-950 border-red-700 animate-pulse' : 'bg-[#111130] border-[#2a2a4a]'}`}>
                   <CharPortrait charId={id} size={40} isDead={!c.alive} rounded={0} />
