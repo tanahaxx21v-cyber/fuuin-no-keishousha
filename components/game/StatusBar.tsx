@@ -124,7 +124,8 @@ export default function StatusBar({ gs, onSave, isMuted, onToggleMute, onReturnT
         )}
 
         {/* Seal stones */}
-        <div className="flex items-center gap-1">
+        <div className="flex items-center gap-1" title="封印石（目標: 3つ集めて魔王を封じろ）">
+          <span className="text-[9px] text-gray-700 font-black mr-0.5">🎯</span>
           {([
             { id: 'fire',  emoji: '🔥', name: '炎',   hint: '廃鉱山の鉱王を倒せ' },
             { id: 'storm', emoji: '⚡', name: '嵐',   hint: '竜の峠の嵐竜を倒せ' },
@@ -135,7 +136,7 @@ export default function StatusBar({ gs, onSave, isMuted, onToggleMute, onReturnT
               <div
                 key={stone.id}
                 className={`w-6 h-6 border-2 flex items-center justify-center text-xs ${
-                  has ? 'border-amber-500 bg-amber-950' : 'border-gray-700 bg-gray-900 opacity-30 grayscale'
+                  has ? 'border-amber-500 bg-amber-950' : 'border-indigo-900 bg-[#0c0c24] opacity-55'
                 }`}
                 title={has ? `${stone.name}の封印石（取得済み）` : `${stone.name}の封印石 — ${stone.hint}`}
               >
@@ -143,7 +144,7 @@ export default function StatusBar({ gs, onSave, isMuted, onToggleMute, onReturnT
               </div>
             )
           })}
-          <span className="text-[10px] text-gray-600 font-bold ml-0.5">{gs.sealStones.length}/3</span>
+          <span className={`text-[10px] font-black ml-0.5 ${gs.sealStones.length > 0 ? 'text-amber-500' : 'text-indigo-700'}`}>{gs.sealStones.length}/3</span>
         </div>
 
         {/* Party display (non-clickable) with HP bars */}

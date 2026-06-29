@@ -275,6 +275,11 @@ export default function LocationView({
                   </div>
                 )
               })()}
+              {aliveParty.length === 0 && (
+                <div className="bg-purple-950 border border-purple-700 px-3 py-2 text-xs text-purple-300 font-bold mb-3">
+                  👤 仲間なし！一人でボスに挑もうとしています。アルセリア・各街で仲間を探してから挑戦を推奨。
+                </div>
+              )}
               {isLowHp && (
                 <div className="bg-yellow-950 border border-yellow-700 px-3 py-2 text-xs text-yellow-300 font-bold mb-3">
                   ⚠️ HP平均 {Math.round(avgHpPct * 100)}%。宿屋での回復を推奨します。
@@ -687,6 +692,9 @@ export default function LocationView({
                   <div className={`text-[10px] ${healable ? 'text-teal-400' : 'text-gray-700'}`}>
                     {healable ? 'HP30%・MP10%回復' : '満タン'}
                   </div>
+                  {healable && gs.party.length > 0 && (
+                    <div className="text-[9px] text-teal-700">仲間も同量回復</div>
+                  )}
                 </div>
               </button>
             )
