@@ -428,8 +428,8 @@ export default function GameRoot() {
     const player = b.units.find(u => u.isPlayer)!
     const delay = battleSpeed === 'fast' ? 400 : 900
     const timer = setTimeout(() => {
-      // Priority 1: heal item if HP < 25%
-      if (player.hp / player.maxHp < 0.25) {
+      // Priority 1: heal item if HP < 40%
+      if (player.hp / player.maxHp < 0.40) {
         const found = gs.inventory.find(i => {
           const item = ITEMS[i.itemId]
           return i.qty > 0 && item && ['heal_hp', 'heal_both'].includes(item.effect)
@@ -439,7 +439,7 @@ export default function GameRoot() {
       // Priority 2: attack skill if multiple enemies or HP high
       const totalHpPct = aliveEnemies.reduce((sum, e) => sum + e.hp, 0) / aliveEnemies.reduce((sum, e) => sum + e.maxHp, 0)
       const atkSkill = (player.skills ?? []).find(sk =>
-        (sk.target === 'enemy_one' || sk.target === 'enemy_all') && player.mp >= sk.mpCost * 2
+        (sk.target === 'enemy_one' || sk.target === 'enemy_all') && player.mp >= Math.ceil(sk.mpCost * 1.5)
       )
       if (atkSkill && (aliveEnemies.length >= 2 || totalHpPct > 0.65)) {
         if (atkSkill.target === 'enemy_all') { sfxSkill(); update(s => battleSkill(s, atkSkill)); return }

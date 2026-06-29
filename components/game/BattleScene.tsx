@@ -298,8 +298,8 @@ export default function BattleScene({ gs, onAttack, onSkill, onItem, onFlee, onC
 
   function handleAutoAction() {
     if (!isPlayerTurn) return
-    // Priority 1: heal self if HP < 30%
-    if (playerUnit.hp / playerUnit.maxHp < 0.30) {
+    // Priority 1: heal self if HP < 40%
+    if (playerUnit.hp / playerUnit.maxHp < 0.40) {
       const healItem = availableItems.find(({ itemId }) => {
         const item = ITEMS[itemId]
         return item && ['heal_hp', 'heal_both'].includes(item.effect)
@@ -316,7 +316,7 @@ export default function BattleScene({ gs, onAttack, onSkill, onItem, onFlee, onC
       : 0
     const atkSkill = (playerUnit.skills ?? []).find(sk =>
       (sk.target === 'enemy_one' || sk.target === 'enemy_all') &&
-      playerUnit.mp >= sk.mpCost * 2 // keep at least 1 more use in reserve
+      playerUnit.mp >= Math.ceil(sk.mpCost * 1.5)
     )
     if (atkSkill && (aliveEnemies.length >= 2 || totalEnemyHpPct > 0.60)) {
       if (atkSkill.target === 'enemy_all') { onSkill(atkSkill); return }
@@ -774,7 +774,7 @@ export default function BattleScene({ gs, onAttack, onSkill, onItem, onFlee, onC
             if (aliveCompanions.length === 0) return null
             return (
               <div className="mt-1 border-t border-[#1a2860]" style={{ background: '#060b1a' }}>
-                <div className="text-[9px] font-black text-[#6666aa] px-2 pt-1.5 tracking-widest">— 仲間への指示 —</div>
+                <div className="text-[9px] font-black text-[#6666aa] px-2 pt-1.5 tracking-widest">— 仲間への指示（このターンのみ）—</div>
                 {aliveCompanions.map(c => {
                   const currentOrder = b.companionOrders?.[c.uid] ?? null
                   const healSkills = c.skills.filter(sk => (sk.target === 'ally_one' || sk.target === 'ally_all') && sk.effect === 'heal' && c.mp >= sk.mpCost)

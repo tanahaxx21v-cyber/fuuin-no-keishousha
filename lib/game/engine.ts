@@ -1008,7 +1008,7 @@ function processCompanionTurn(state: GameState): GameState {
 
   // 指示なし: 以下は従来のAI
   // Use healing skill if any ally is below 30% HP
-  const lowHpAllies = aliveAllies.filter(u => u.hp < u.maxHp * 0.3)
+  const lowHpAllies = aliveAllies.filter(u => u.hp < u.maxHp * 0.5)
   const lowHpAlly = [...lowHpAllies].sort((a, b) => a.hp - b.hp)[0]
   const healAllSkill = actor.skills.find(sk => sk.target === 'ally_all' && sk.effect === 'heal' && actor.mp >= sk.mpCost)
   const healOneSkill = actor.skills.find(sk => sk.target === 'ally_one' && sk.effect === 'heal' && actor.mp >= sk.mpCost)
@@ -2091,6 +2091,11 @@ function applySkillEffect(battle: BattleState, actor: BattleUnit, target: Battle
       if (!target.statusEffects.find(e => e.id === 'atk_down')) {
         target.statusEffects.push({ id: 'atk_down', name: 'ATK DOWN', turnsLeft: 3 })
         battle.logs.push({ text: `⬇️ ${target.name}の攻撃力が下がった！`, type: 'status' })
+      }
+      // 挑発スキル使用者自身に防御UP付与
+      if (skill.id === 'provoke' && !actor.statusEffects.find(e => e.id === 'def_up')) {
+        actor.statusEffects.push({ id: 'def_up', name: '防御UP', turnsLeft: 3 })
+        battle.logs.push({ text: `🛡️ ${actor.name}の防御力が上がった！`, type: 'status' })
       }
       break
     }
