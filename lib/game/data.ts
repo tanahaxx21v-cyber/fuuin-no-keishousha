@@ -4815,7 +4815,7 @@ export const EVENTS: GameEvent[] = [
           label: 'ためしに開けてみる（失敗リスクあり）',
           reward: { exp: 10, message: '荷物の中に食料と地図が。どこかの旅人が忘れたらしい。（EXP +10）' },
           winChance: 0.6,
-          loseReward: { exp: 5, message: '⚠️ 荷物を開けた途端、毒ガスが！HP少々ダメージを受けた。（EXP +5）' },
+          loseReward: { exp: 5, message: '⚠️ 荷物を開けた途端、毒ガスが！危うくやられるところだった。（EXP +5）' },
         },
         {
           label: '近くの施設に届ける',
@@ -4869,7 +4869,7 @@ export const EVENTS: GameEvent[] = [
           label: '岩場に降りて確認する（失敗リスクあり）',
           reward: { exp: 35, gold: 80, message: '✨ 生存者を救出！礼として80Gと希少アイテムをもらった。（EXP +35）' },
           winChance: 0.65,
-          loseReward: { exp: 15, message: '⚠️ 岩場で足を滑らせた……生存者はいなかった。少々HP消耗。（EXP +15）' },
+          loseReward: { exp: 15, message: '⚠️ 岩場で足を滑らせた……生存者はいなかった。疲れだけが残った。（EXP +15）' },
         },
         {
           label: '遠くから様子を見るだけにする',
