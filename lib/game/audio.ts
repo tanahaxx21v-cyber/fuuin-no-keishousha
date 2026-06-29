@@ -523,3 +523,10 @@ export function sfxCoin() {
   schedNote(F.E5, t,      0.06, 'square', 0.25)
   schedNote(F.G5, t+0.06, 0.09, 'square', 0.25)
 }
+
+export function sfxTravel() {
+  if (isMuted) return
+  const c = getCtx(); const t = c.currentTime
+  schedNote(F.G4, t,      0.05, 'square', 0.12)
+  schedNote(F.C5, t+0.07, 0.07, 'square', 0.14)
+}

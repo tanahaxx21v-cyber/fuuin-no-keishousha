@@ -13,7 +13,7 @@ import {
 import { LOCATIONS, ITEMS } from '@/lib/game/data'
 import {
   playBgm, stopBgm, toggleMute, isMuted, type BgmType,
-  sfxAttack, sfxSkill, sfxHeal, sfxVictory, sfxDefeat, sfxLevelUp, sfxMenuSelect, sfxCoin,
+  sfxAttack, sfxSkill, sfxHeal, sfxVictory, sfxDefeat, sfxLevelUp, sfxMenuSelect, sfxCoin, sfxTravel,
 } from '@/lib/game/audio'
 import TitleScreen from './TitleScreen'
 import { CharPortrait } from './CharPortrait'
@@ -139,6 +139,7 @@ export default function GameRoot() {
   }
 
   const handleTravel = (destId: LocationId) => {
+    sfxTravel()
     update(s => {
       const traveled = travel(s, destId)
       if (traveled.phase !== 'location') return traveled

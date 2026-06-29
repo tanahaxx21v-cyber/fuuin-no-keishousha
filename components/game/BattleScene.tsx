@@ -589,19 +589,24 @@ export default function BattleScene({ gs, onAttack, onSkill, onItem, onFlee, onC
 
       {/* ===== 味方ターゲット選択（アイテム/回復スキル用）===== */}
       {(mode === 'target_item' || (mode === 'target_skill' && pendingSkill?.target === 'ally_one')) && (
-        <div className="mx-2 mt-1 flex gap-1.5">
-          {allies.filter(a => a.hp > 0).map(a => (
-            <button key={a.uid} onClick={() => handleSelectTarget(a)}
-              className="flex-1 flex items-center gap-2 bg-green-900 border-2 border-green-500 p-2 hover:bg-green-800">
-              <CharPortrait charId={a.companionId ?? (a.isPlayer ? 'player' : 'gares')} size={40} />
-              <div className="flex-1 min-w-0">
-                <span className="text-xs font-black text-white block truncate">{a.name}</span>
-                <div className="w-full mt-0.5"><HpBar hp={a.hp} maxHp={a.maxHp} /></div>
-                <span className="text-[9px] text-green-300">{a.hp}/{a.maxHp}</span>
-              </div>
-            </button>
-          ))}
-          <button onClick={cancelTarget} className="px-3 text-xs text-gray-400 border border-gray-700 shrink-0">← もどる</button>
+        <div className="mx-2 mt-1">
+          <div className="text-xs font-black text-green-400 tracking-wide mb-1">
+            {mode === 'target_item' ? '💊 誰に使う？ — 対象をタップ' : `✨ ${pendingSkill?.name} — 誰に使う？`}
+          </div>
+          <div className="flex gap-1.5">
+            {allies.filter(a => a.hp > 0).map(a => (
+              <button key={a.uid} onClick={() => handleSelectTarget(a)}
+                className="flex-1 flex items-center gap-2 bg-green-900 border-2 border-green-500 p-2 hover:bg-green-800">
+                <CharPortrait charId={a.companionId ?? (a.isPlayer ? 'player' : 'gares')} size={40} />
+                <div className="flex-1 min-w-0">
+                  <span className="text-xs font-black text-white block truncate">{a.name}</span>
+                  <div className="w-full mt-0.5"><HpBar hp={a.hp} maxHp={a.maxHp} /></div>
+                  <span className="text-[9px] text-green-300">{a.hp}/{a.maxHp}</span>
+                </div>
+              </button>
+            ))}
+            <button onClick={cancelTarget} className="px-3 text-xs text-gray-400 border border-gray-700 shrink-0">← もどる</button>
+          </div>
         </div>
       )}
 
