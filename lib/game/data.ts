@@ -4857,8 +4857,8 @@ export const EVENTS: GameEvent[] = [
   },
 
   {
-    id: 'coastal_road_shipwreck', title: '海岸の難破船',
-    condition: { atLoc: 'coastal_road', blockIfEventCompleted: ['coastal_road_shipwreck'], minVisitCount: 2 },
+    id: 'coastal_road_stranded_wreck', title: '海岸の難破船跡',
+    condition: { atLoc: 'coastal_road', blockIfEventCompleted: ['coastal_road_shipwreck', 'coastal_road_stranded_wreck'], minVisitCount: 2 },
     dialogues: [
       { speaker: 'narrator', speakerName: '', text: '沿岸街道を歩いていると、岩場に難破した小舟が打ち上げられているのを見つけた。生存者がいるかもしれない。' },
       { speaker: 'player', speakerName: '', text: '（……急いで確認するか、距離があるし危険かもしれない。）' },
