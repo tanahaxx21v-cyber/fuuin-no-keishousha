@@ -385,7 +385,7 @@ function applyEventReward(s: GameState, reward: { gold?: number; exp?: number; i
       }
     }
   }
-  if (reward.gold) s.gold += reward.gold
+  if (reward.gold) s.gold = Math.max(0, s.gold + reward.gold)
   if (reward.exp) {
     s.playerExp += reward.exp
     while (s.playerExp >= getExpToNext(s.playerLevel) && s.playerLevel < 30) {

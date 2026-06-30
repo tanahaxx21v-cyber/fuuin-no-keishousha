@@ -4790,8 +4790,9 @@ export const EVENTS: GameEvent[] = [
           reward: { exp: 20, message: '✨ 橋番を説得した。老人に感謝され、旅の情報をもらった。（EXP +20）' },
         },
         {
-          label: '老人の通行料を代わりに払う',
-          reward: { exp: 15, message: '✨ 老人の通行料20Gを払った。感謝された。（EXP +15）', gold: -20 },
+          label: '老人の通行料を代わりに払う（20G）',
+          cost: 20,
+          reward: { exp: 15, message: '✨ 老人の通行料20Gを払った。感謝された。（EXP +15）' },
         },
         {
           label: '関わらずに通り過ぎる',
