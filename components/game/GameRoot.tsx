@@ -45,6 +45,7 @@ function loadGame(): GameState | null {
     if (parsed.companions) {
       for (const id of Object.keys(parsed.companions) as (keyof typeof parsed.companions)[]) {
         if (!parsed.companions[id].learnedSkills) parsed.companions[id].learnedSkills = []
+        if (!parsed.companions[id].statusEffects) parsed.companions[id].statusEffects = []
       }
     }
     if (!parsed.completedEvents) parsed.completedEvents = []
