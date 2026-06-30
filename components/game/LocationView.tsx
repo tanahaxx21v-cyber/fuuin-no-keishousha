@@ -454,12 +454,14 @@ export default function LocationView({
                     <button
                       onClick={onSkipCompanion}
                       className={`px-5 py-3 border-2 font-bold ${
-                        (isOneTimeCompanion(pendingJoin.id) || !loc.bossId || bossDefeated)
+                        joinedCount >= 3
+                          ? 'bg-[#111130] hover:bg-[#1a1a38] border-[#3a3a5a] text-gray-300'
+                          : (isOneTimeCompanion(pendingJoin.id) || !loc.bossId || bossDefeated)
                           ? 'bg-red-950 hover:bg-red-900 border-red-700 text-red-300'
                           : 'bg-[#111130] hover:bg-[#1a1a38] border-[#3a3a5a] text-gray-300'
                       }`}
                     >
-                      {(isOneTimeCompanion(pendingJoin.id) || !loc.bossId || bossDefeated) ? '断る（永久）' : '断る'}
+                      {joinedCount >= 3 ? '今は断る' : (isOneTimeCompanion(pendingJoin.id) || !loc.bossId || bossDefeated) ? '断る（永久）' : '断る'}
                     </button>
                   </div>
                 </div>

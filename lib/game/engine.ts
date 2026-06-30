@@ -440,10 +440,20 @@ export function skipCompanion(state: GameState): GameState {
     const line = lines[Math.floor(Math.random() * lines.length)]
     const loc = LOCATIONS[s.currentLocId]
     const noBossOrBossDefeated = !loc?.bossId || s.defeatedBosses.includes(loc.bossId)
-    if (ONE_TIME_COMPANIONS.has(skipped) || noBossOrBossDefeated) {
+    // パーティ満員（生存仲間3人）による解散は永久拒否にしない + 会合イベントを未完了に戻す
+    const joinedAliveCount = Object.values(s.companions).filter(c => c.joined && c.alive).length
+    const partyFull = joinedAliveCount >= 3
+    if (!partyFull && (ONE_TIME_COMPANIONS.has(skipped) || noBossOrBossDefeated)) {
       s.companions[skipped].refused = true
       const suffix = ONE_TIME_COMPANIONS.has(skipped) ? '（この仲間は二度と加入を申し出ない）' : ''
       s.message = `${def.emoji}${def.name}「${line}」${suffix}`
+    } else if (partyFull) {
+      // 満員なので会合イベントを未完了に戻し、後で再発火できるようにする
+      const meetingEventId = EVENTS.find(ev => ev.isMeetingEvent && ev.reward?.pendingJoin === skipped)?.id
+      if (meetingEventId) {
+        s.completedEvents = s.completedEvents.filter(id => id !== meetingEventId)
+      }
+      s.message = `${def.emoji}${def.name}「……また機会があれば声をかけてくれ。」（仲間に空きができたら再び出会えるかもしれない）`
     } else {
       s.message = `${def.emoji}${def.name}「${line}」`
     }
