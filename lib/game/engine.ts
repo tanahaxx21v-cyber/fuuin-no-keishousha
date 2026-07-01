@@ -329,7 +329,14 @@ export function travel(state: GameState, destId: LocationId): GameState {
       if (ev < 0.35) {
         const gold = Math.floor(Math.random() * 40) + 15
         s.gold += gold
-        s.message = `💰 道中で ${gold}G を見つけた！`
+        const TRAVEL_GOLD_MSGS = [
+          `💰 道端に落ちていた革袋に${gold}G入っていた！`,
+          `💰 行き倒れた旅人の傍らに${gold}Gの小袋が残っていた。街に着いたら届けよう……と思ったが自分で使うことにした。`,
+          `💰 道中で${gold}Gを拾った。誰の忘れ物だろうか。`,
+          `💰 木の根元に埋まっていた瓶の中に${gold}G入っていた！`,
+          `💰 前を行く商人が${gold}G落としていった。急いで追いかけて……渡せなかった。まあいいか。`,
+        ]
+        s.message = TRAVEL_GOLD_MSGS[Math.floor(Math.random() * TRAVEL_GOLD_MSGS.length)]
       } else if (ev < 0.65) {
         // レベルに応じてドロップアイテムを決定
         const travelDropTable =
@@ -341,11 +348,23 @@ export function travel(state: GameState, destId: LocationId): GameState {
         const ex = s.inventory.find(i => i.itemId === dropId)
         if (ex) ex.qty += 1
         else s.inventory.push({ itemId: dropId, qty: 1 })
-        s.message = `${dropItem.emoji} 道中で${dropItem.name}を拾った！`
+        const TRAVEL_ITEM_MSGS = [
+          `${dropItem.emoji} 道端の荷物の中に${dropItem.name}が入っていた！`,
+          `${dropItem.emoji} 落ちていた荷袋を開けると${dropItem.name}があった！`,
+          `${dropItem.emoji} 旅人が置いていったのか、${dropItem.name}が道に落ちていた。`,
+          `${dropItem.emoji} 道中で${dropItem.name}を手に入れた！`,
+        ]
+        s.message = TRAVEL_ITEM_MSGS[Math.floor(Math.random() * TRAVEL_ITEM_MSGS.length)]
       } else {
         const heal = Math.floor(s.playerMaxHp * 0.10)
         s.playerHp = Math.min(s.playerMaxHp, s.playerHp + heal)
-        s.message = `✨ 清らかな泉を発見。HP が ${heal} 回復した！`
+        const TRAVEL_HEAL_MSGS = [
+          `✨ 清らかな泉を発見。HP が ${heal} 回復した！`,
+          `✨ 道沿いに薬草が生えていた。齧ってみたらHP+${heal}！`,
+          `✨ 泉のほとりで小休止。傷が少し癒えた。HP+${heal}`,
+          `✨ 木陰に湧き水があった。飲んだらHP+${heal}回復した！`,
+        ]
+        s.message = TRAVEL_HEAL_MSGS[Math.floor(Math.random() * TRAVEL_HEAL_MSGS.length)]
       }
     } else if (flavorMsgs.length > 0 && roll < 0.55) {
       // 15% (if flavor exists): 地形フレーバーメッセージ
