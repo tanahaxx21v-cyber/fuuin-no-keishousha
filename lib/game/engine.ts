@@ -1008,6 +1008,9 @@ export function battleSkill(state: GameState, skill: Skill, targetUid?: string):
     `✨ ${actor.name}は「${skill.name}」を使った！`,
     `✨ ${actor.name}が「${skill.name}」を発動！`,
     `✨ 「${skill.name}」——${actor.name}の力が輝く！`,
+    `✨ ${actor.name}「${skill.name}」——！`,
+    `✨ ${actor.name}の「${skill.name}」が炸裂する！`,
+    `✨ 「${skill.name}」！——${actor.name}が力を解き放った！`,
   ]
   b.logs.push({ text: SKILL_USE_MSGS[Math.floor(Math.random() * SKILL_USE_MSGS.length)], type: 'status' })
 
@@ -1321,7 +1324,8 @@ function processCompanionTurn(state: GameState): GameState {
     )
     if (healSkill) {
       actor.mp -= healSkill.mpCost
-      b.logs.push({ text: `💚 ${actor.name}が「${healSkill.name}」を使った！`, type: 'heal' })
+      const HEAL_MSGS_A = [`💚 ${actor.name}が「${healSkill.name}」を使った！`, `💚 ${actor.name}「${healSkill.name}」——仲間に光が降り注ぐ！`, `💚 ${actor.name}の「${healSkill.name}」が発動！`, `💚 「${healSkill.name}」——${actor.name}の癒しの力！`]
+      b.logs.push({ text: HEAL_MSGS_A[Math.floor(Math.random() * HEAL_MSGS_A.length)], type: 'heal' })
       const healTargets = healSkill.target === 'ally_all' ? aliveAllies : [[...aliveAllies].sort((a, b2) => a.hp / a.maxHp - b2.hp / b2.maxHp)[0]]
       for (const tgt of healTargets) applySkillEffect(b, actor, tgt, healSkill)
       return advanceTurn(s)
@@ -1337,13 +1341,15 @@ function processCompanionTurn(state: GameState): GameState {
   const healOneSkill = actor.skills.find(sk => sk.target === 'ally_one' && sk.effect === 'heal' && actor.mp >= sk.mpCost)
   if (lowHpAllies.length >= 2 && healAllSkill) {
     actor.mp -= healAllSkill.mpCost
-    b.logs.push({ text: `💚 ${actor.name}は「${healAllSkill.name}」を使った！`, type: 'heal' })
+    const HEAL_ALL_MSGS = [`💚 ${actor.name}は「${healAllSkill.name}」を使った！`, `💚 ${actor.name}「${healAllSkill.name}」！全員に癒しが届く！`, `💚 ${actor.name}の「${healAllSkill.name}」——仲間全員を包む光！`, `💚 「${healAllSkill.name}」！${actor.name}の癒しの波動が広がる！`]
+    b.logs.push({ text: HEAL_ALL_MSGS[Math.floor(Math.random() * HEAL_ALL_MSGS.length)], type: 'heal' })
     for (const tgt of aliveAllies) applySkillEffect(b, actor, tgt, healAllSkill)
     return advanceTurn(s)
   }
   if (lowHpAlly && healOneSkill) {
     actor.mp -= healOneSkill.mpCost
-    b.logs.push({ text: `💚 ${actor.name}は「${healOneSkill.name}」を使った！`, type: 'heal' })
+    const HEAL_ONE_MSGS = [`💚 ${actor.name}は「${healOneSkill.name}」を使った！`, `💚 ${actor.name}「${healOneSkill.name}」——${lowHpAlly.name}を癒す！`, `💚 ${actor.name}が${lowHpAlly.name}に「${healOneSkill.name}」！`, `💚 「${healOneSkill.name}」——${lowHpAlly.name}に回復の光が！`]
+    b.logs.push({ text: HEAL_ONE_MSGS[Math.floor(Math.random() * HEAL_ONE_MSGS.length)], type: 'heal' })
     applySkillEffect(b, actor, lowHpAlly, healOneSkill)
     return advanceTurn(s)
   }
