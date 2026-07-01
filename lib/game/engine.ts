@@ -320,7 +320,19 @@ export function travel(state: GameState, destId: LocationId): GameState {
         if (s.playerLevel >= 8 && groupRoll < 0.20) {
           enemyGroup.push(pool[Math.floor(Math.random() * pool.length)])
         }
-        s.message = enemyGroup.length > 1 ? `⚠️ 移動中に敵の群れに遭遇！（${enemyGroup.length}体）` : '⚠️ 移動中に敵に遭遇した！'
+        const TRAVEL_ENCOUNTER_SOLO = [
+          '⚠️ 移動中に敵に遭遇した！', '⚠️ 道中に伏兵がいた！', '⚠️ 旅の途中、突然敵が現れた！',
+          '⚠️ 曲がり角に敵が待ち構えていた！', '⚠️ 草むらから敵が飛び出してきた！',
+          '⚠️ 移動中に視線を感じた……敵だ！', '⚠️ 道を塞ぐように敵が立ちはだかった！',
+        ]
+        const TRAVEL_ENCOUNTER_GROUP = [
+          `⚠️ 移動中に敵の群れに遭遇！（${enemyGroup.length}体）`,
+          `⚠️ 待ち伏せされた！${enemyGroup.length}体の敵が現れた！`,
+          `⚠️ 道中で包囲された……${enemyGroup.length}体だ！`,
+        ]
+        s.message = enemyGroup.length > 1
+          ? TRAVEL_ENCOUNTER_GROUP[Math.floor(Math.random() * TRAVEL_ENCOUNTER_GROUP.length)]
+          : TRAVEL_ENCOUNTER_SOLO[Math.floor(Math.random() * TRAVEL_ENCOUNTER_SOLO.length)]
         return startBattle(s, enemyGroup, false)
       }
     } else if (roll < 0.40) {
@@ -997,12 +1009,24 @@ function processEnemyTurn(state: GameState): GameState {
   // ボス激怒フェーズ判定（HP50%以下で初回突入）
   if (actor.isBoss && !b.bossRaged && actor.hp <= actor.maxHp * 0.5) {
     b.bossRaged = true
-    b.logs.push({ text: `💢 ${actor.name}が激怒した！攻撃が激化する！`, type: 'system' })
+    const RAGE_MSGS = [
+      `💢 ${actor.name}が激怒した！攻撃が激化する！`,
+      `💢 ${actor.name}のHPが半分を切った！怒りで力が増している！`,
+      `💢 ${actor.name}が咆哮した！気迫が変わった……！`,
+      `💢 傷を負った${actor.name}が目の色を変えた！`,
+    ]
+    b.logs.push({ text: RAGE_MSGS[Math.floor(Math.random() * RAGE_MSGS.length)], type: 'system' })
   }
   // ボス瀕死フェーズ（HP30%以下）：さらにATK+30%・スキル率75%
   const isBossDying = actor.isBoss && actor.hp <= actor.maxHp * 0.3
-  if (isBossDying && !b.logs.some(l => l.text.includes('最後の力'))) {
-    b.logs.push({ text: `🔥 ${actor.name}が最後の力を振り絞る！`, type: 'system' })
+  if (isBossDying && !b.logs.some(l => l.text.includes('最後の力') || l.text.includes('限界') || l.text.includes('終わらせる'))) {
+    const DYING_MSGS = [
+      `🔥 ${actor.name}が最後の力を振り絞る！`,
+      `🔥 ${actor.name}は瀕死……だが、まだ諦めない！`,
+      `🔥 ${actor.name}「……ここで終わらせる！」`,
+      `🔥 ${actor.name}の限界が近い——だが、死にかけほど危険だ！`,
+    ]
+    b.logs.push({ text: DYING_MSGS[Math.floor(Math.random() * DYING_MSGS.length)], type: 'system' })
   }
   const isRaging = actor.isBoss && b.bossRaged
   const bossAtkMult = isBossDying ? 1.3 : 1.0
@@ -1260,9 +1284,16 @@ function advanceTurn(state: GameState): GameState {
         eff.turnsLeft -= 1
         if (eff.turnsLeft <= 0) {
           unit.statusEffects = unit.statusEffects.filter(e => e.id !== buffId)
-          if (buffId === 'atk_up') b.logs.push({ text: `${unit.name}のATK UPが切れた`, type: 'status' })
-          else if (buffId === 'def_up') b.logs.push({ text: `${unit.name}のDEF UPが切れた`, type: 'status' })
-          else if (buffId === 'atk_down') b.logs.push({ text: `${unit.name}の攻撃力が戻った`, type: 'status' })
+          if (buffId === 'atk_up') {
+            const msgs = [`${unit.name}の強化が切れた。`, `${unit.name}のATK UPが切れた。`, `${unit.name}の攻撃強化が終わった。`]
+            b.logs.push({ text: msgs[Math.floor(Math.random() * msgs.length)], type: 'status' })
+          } else if (buffId === 'def_up') {
+            const msgs = [`${unit.name}の防御強化が切れた。`, `${unit.name}のDEF UPが切れた。`, `${unit.name}の守りが通常に戻った。`]
+            b.logs.push({ text: msgs[Math.floor(Math.random() * msgs.length)], type: 'status' })
+          } else if (buffId === 'atk_down') {
+            const msgs = [`${unit.name}の弱体化が解けた。`, `${unit.name}の攻撃力が戻った。`, `${unit.name}の状態が回復した。`]
+            b.logs.push({ text: msgs[Math.floor(Math.random() * msgs.length)], type: 'status' })
+          }
         }
       }
     }
