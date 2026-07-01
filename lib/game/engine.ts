@@ -416,7 +416,13 @@ export function joinCompanion(state: GameState, companionId: CompanionId): GameS
   // 生存中の仲間は同時に3人まで（死亡した仲間の枠は解放される）
   const joinedCount = Object.values(s.companions).filter(c => c.joined && c.alive).length
   if (joinedCount >= 3) {
-    s.message = '仲間はすでに3人います。これ以上は仲間にできません。'
+    const FULL_MSGS = [
+      '仲間はすでに3人います。これ以上は仲間にできません。',
+      'パーティが満員だ。誰かを外してからまた来よう。',
+      '今は3人いる。仲間を入れ替えるなら一度解散してから。',
+      'パーティが3人でいっぱいだ。仲間に空きが必要だ。',
+    ]
+    s.message = FULL_MSGS[Math.floor(Math.random() * FULL_MSGS.length)]
     s.pendingCompanionJoin = undefined
     return s
   }
@@ -460,7 +466,13 @@ export function chooseBranch(state: GameState, choiceIndex: number): GameState {
 
   // コスト不足チェック（pendingBranchは維持して再選択できるようにする）
   if (chosen?.cost && s.gold < chosen.cost) {
-    s.message = `所持金が足りない！（${chosen.cost}G必要）`
+    const GOLD_SHORT = [
+      `所持金が足りない！（${chosen.cost}G必要）`,
+      `お金が${chosen.cost - s.gold}G足りない……稼いでからまた来よう。`,
+      `${chosen.cost}G必要だが、今は${s.gold}Gしかない。`,
+      `資金不足——あと${chosen.cost - s.gold}G集めてから選ぼう。`,
+    ]
+    s.message = GOLD_SHORT[Math.floor(Math.random() * GOLD_SHORT.length)]
     return s
   }
   s.pendingBranch = undefined
@@ -1078,7 +1090,13 @@ export function battleFlee(state: GameState): GameState {
   if (!state.battle) return state
   const s = deepClone(state)
   if (s.battle!.isBoss) {
-    s.battle!.logs.push({ text: '❌ ボス戦からは逃げられない！', type: 'system' })
+    const BOSS_NO_FLEE = [
+      '❌ ボス戦からは逃げられない！',
+      '❌ この戦いから逃げる道はない——！',
+      '❌ ボスを前にして、逃げ場などない！',
+      '❌ 背後の扉が……閉まっている！逃げられない！',
+    ]
+    s.battle!.logs.push({ text: BOSS_NO_FLEE[Math.floor(Math.random() * BOSS_NO_FLEE.length)], type: 'system' })
     s.battle!.phase = 'select_action'
     return s
   }
@@ -2120,7 +2138,7 @@ export function useItemOutOfBattle(state: GameState, itemId: string, targetId: '
     }
   } else {
     const c = s.companions[targetId]
-    if (!c || !c.alive) return { ...s, message: 'その仲間は回復できない。' }
+    if (!c || !c.alive) return { ...s, message: pick(['その仲間は回復できない。', 'すでに倒れている仲間には使えない。', 'その仲間に使えるアイテムがない。']) }
     const def = COMPANIONS[targetId]
     if (item.effect === 'heal_hp') {
       const healed = Math.min(item.power, c.maxHp - c.hp)
