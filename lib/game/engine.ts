@@ -1397,8 +1397,8 @@ function advanceTurn(state: GameState): GameState {
     const alreadyWarned = b.logs.some(l => l.text.includes('⚠️') && l.text.includes(playerUnit.name))
     if (!alreadyWarned || Math.random() < 0.25) {
       const DANGER_MSGS = dangerRatio <= 0.1
-        ? [`⚠️ ${playerUnit.name}のHPが危険域！`, `⚠️ もう限界だ……！`, `⚠️ 次の一撃で終わる……！`]
-        : [`⚠️ ${playerUnit.name}のHPが残りわずか！`, `⚠️ まずい、回復が必要だ！`, `⚠️ 瀕死状態……急げ！`]
+        ? [`⚠️ ${playerUnit.name}のHPが危険域！`, `⚠️ もう限界だ……！`, `⚠️ 次の一撃で終わる……！`, `⚠️ ${playerUnit.name}「く……まだ……！」`]
+        : [`⚠️ ${playerUnit.name}のHPが残りわずか！`, `⚠️ まずい、回復が必要だ！`, `⚠️ 瀕死状態……急げ！`, `⚠️ ${playerUnit.name}のHPが赤い！回復アイテムを使え！`]
       b.logs.push({ text: DANGER_MSGS[Math.floor(Math.random() * DANGER_MSGS.length)], type: 'status' })
     }
   }
@@ -2558,9 +2558,12 @@ function applySkillEffect(battle: BattleState, actor: BattleUnit, target: Battle
       const healed = Math.min(skill.power, target.maxHp - target.hp)
       target.hp += healed
       const isFullHeal = target.hp >= target.maxHp
+      const isSelf = actor.uid === target.uid
       const SKILL_HEAL_MSGS = isFullHeal
-        ? [`💚 ${target.name}が完全回復した！`, `💚 ${target.name}のHPが満タンに！`, `💚 ${skill.name}で${target.name}が全回復！`]
-        : [`💚 ${target.name}のHPが${healed}回復！`, `💚 ${skill.name}で${target.name}にHP+${healed}！`, `💚 ${target.name}の傷が癒えた！+${healed}`]
+        ? [`💚 ${target.name}が完全回復した！`, `💚 ${actor.name}の「${skill.name}」で${target.name}が全回復！`, `💚 ${target.name}のHPが満タンに！`]
+        : isSelf
+        ? [`💚 ${actor.name}が自分を癒した。HP+${healed}`, `💚 ${actor.name}「${skill.name}」HP+${healed}！`, `💚 ${actor.name}の傷が癒える。+${healed}`]
+        : [`💚 ${actor.name}が${target.name}のHPを${healed}回復！`, `💚 「${skill.name}」——${target.name}にHP+${healed}！`, `💚 ${target.name}の傷が癒えた！+${healed}`]
       battle.logs.push({ text: SKILL_HEAL_MSGS[Math.floor(Math.random() * SKILL_HEAL_MSGS.length)], type: 'heal' })
       break
     }
