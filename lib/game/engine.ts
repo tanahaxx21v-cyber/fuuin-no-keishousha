@@ -2298,7 +2298,31 @@ export function wander(state: GameState, mode: 'gold' | 'train' | 'explore' = 'e
   } else if (roll < thresholds[3]) {
     const heal = Math.floor(s.playerMaxHp * 0.15)
     s.playerHp = Math.min(s.playerMaxHp, s.playerHp + heal)
-    const restText = WANDER_REST_TEXTS[Math.floor(Math.random() * WANDER_REST_TEXTS.length)]
+    const alivePartyForRest = s.party.filter(id => s.companions[id]?.alive)
+    let restText: string
+    if (alivePartyForRest.length > 0 && Math.random() < 0.45) {
+      const compId = alivePartyForRest[Math.floor(Math.random() * alivePartyForRest.length)] as CompanionId
+      const compName = COMPANIONS[compId]?.name ?? compId
+      const COMPANION_REST_LINES: Record<CompanionId, string[]> = {
+        gares: [`${compName}と並んで焚き火を囲んだ。無口な時間が、妙に心地よかった。`, `${compName}が「少し休め」と言った。素直に従った。`],
+        liz:   [`${compName}が傷に薬草を当ててくれた。「痛くないですか？」優しい声だった。`, `${compName}に促されて横になった。温かい気持ちになった。`],
+        noa:   [`${compName}が「ねえ、少し休もうよ」と引っ張ってきた。甘えることにした。`, `${compName}と他愛もない話をしながら休んだ。いい時間だった。`],
+        cecil: [`${compName}は黙って隣に座っていた。それだけで、十分だった。`, `${compName}が「休憩は効率が良い」と言った。なるほど。`],
+        bram:  [`${compName}が「俺のメシを食え！」と無理やり分けてくれた。悪くなかった。`, `${compName}と相撲を取ったら負けた。でも体は軽くなった。`],
+        finn:  [`${compName}が「先輩、少し休みましょう」と声をかけてきた。従った。`, `${compName}と二人で星を眺めた。静かな時間だった。`],
+        vais:  [`${compName}が「見張りはやっとく。眠れよ」と言った。深く眠れた。`, `${compName}と静かに休んだ。余計なことは言わない奴だ。それでいい。`],
+        logan: [`${compName}は何も言わず、ただそこにいた。それで十分だった。`, `${compName}が隣で目を閉じていた。真似して横になった。`],
+        iris:  [`${compName}が「人間の休息って、こういう感じなんですね」と言った。一緒に笑った。`, `${compName}が肩に寄りかかってきた。起こせなかった。`],
+        sig:   [`${compName}が「宴会の代わり」と言ってリンゴを差し出した。受け取った。`, `${compName}に「たまには息抜きしなよ」と言われた。正しい。`],
+        elk:   [`${compName}が「本能が休めと言ってる」と言った。素直に休んだ。`, `${compName}と日向ぼっこをした。獣人も日光が好きらしい。`],
+        mira:  [`${compName}が「自然の声に耳を澄ませて」と言った。聞いてみた。風の音がした。`, `${compName}の歌声が聞こえた。知らない言葉だったが、心が落ち着いた。`],
+        zeno:  [`${compName}が「……休め」と短く言った。有難かった。`, `${compName}と並んで闇を見つめた。奇妙な仲間意識があった。`],
+      } as Record<CompanionId, string[]>
+      const lines = COMPANION_REST_LINES[compId] ?? [`${compName}と一緒に休んだ。疲れが和らいだ。`]
+      restText = lines[Math.floor(Math.random() * lines.length)]
+    } else {
+      restText = WANDER_REST_TEXTS[Math.floor(Math.random() * WANDER_REST_TEXTS.length)]
+    }
     const healSuffix = s.playerHp >= s.playerMaxHp ? '　体が完全に回復した！' : `　HP+${heal}。`
     s.message = `✨ ${restText}${healSuffix}`
   } else if (roll < thresholds[4]) {
@@ -2331,21 +2355,45 @@ export function wander(state: GameState, mode: 'gold' | 'train' | 'explore' = 'e
         : WANDER_ENCOUNTER_SOLO[Math.floor(Math.random() * WANDER_ENCOUNTER_SOLO.length)]
       return startBattle(s, enemyGroup, false)
     }
-    const nothingTexts = [
-      '……何も見つからなかった。風だけが通り過ぎた。',
-      '……静かな一日だった。それでも旅は続く。',
-      '……何もない一日。でも、生きている。',
-      '……空振りだった。まあ、こんな日もある。',
-      '……手ぶらで戻ってきた。夕日が妙にきれいだった。',
-      '……ぐるっと見てまわったが、特に何もなかった。よくある話だ。',
-      '……迷い込んだ路地の先には、何もなかった。',
-      '……一日中うろついたが、収穫ゼロ。疲れただけだった。',
-      '……近所の住人に声をかけてみた。何も教えてもらえなかった。',
-      '……石ころを蹴っていたら夕方になっていた。明日こそは。',
-      '……風の音しか聞こえなかった。探索は続く。',
-      '……宝が埋まってそうな場所を掘ってみた。土だけだった。',
-    ]
-    s.message = nothingTexts[Math.floor(Math.random() * nothingTexts.length)]
+    const NOTHING_TEXTS: Record<string, string[]> = {
+      town: [
+        '……酒場を覗いてみたが、大した話は出なかった。',
+        '……市場を一周したが、気になるものは何もなかった。',
+        '……住民に話しかけたが、役立つ情報は得られなかった。',
+        '……路地を歩き回ったが、収穫ゼロだった。まあ、こんな日もある。',
+        '……噂を集めようとしたが、世間話ばかりだった。',
+        '……石ころを蹴っていたら夕方になっていた。明日こそは。',
+        '……手ぶらで宿に戻った。夕日だけが妙にきれいだった。',
+      ],
+      relay: [
+        '……草原を歩き回ったが、何も見つからなかった。風だけが通り過ぎた。',
+        '……見晴らしはいいが、何もない一日だった。それでも旅は続く。',
+        '……地平線まで歩いた気がする。何もなかった。',
+        '……風の音しか聞こえなかった。探索は続く。',
+        '……空振りだった。まあ、こんな日もある。',
+        '……一日中うろついたが、収穫ゼロ。疲れただけだった。',
+        '……宝が埋まってそうな場所を掘ってみた。土だけだった。',
+      ],
+      dungeon: [
+        '……奥まで進んでみたが、敵も宝も見当たらなかった。',
+        '……暗い通路を歩き回ったが、何も見つけられなかった。',
+        '……宝箱を探したが、全て空だった。先人に先を越されたか。',
+        '……足音だけが響いて、何も起きなかった。それが一番怖い。',
+        '……壁の隅々まで調べたが、何もなかった。念のため引き返す。',
+        '……気配がすると思ったら、自分の影だった。',
+        '……今日は敵にも宝にも縁がない日だった。',
+      ],
+      castle: [
+        '……廃城の廊下を歩いたが、何も起きなかった。静寂だけがある。',
+        '……部屋を一つずつ開けていったが、全て空だった。',
+        '……ここに来た意味があったのか……何も見つからなかった。',
+        '……石畳に響く足音だけが、生きている証だった。',
+        '……玉座の間まで行ったが、誰もいなかった。それで良かった。',
+        '……廃城を探り歩いたが、今日は収穫なし。',
+      ],
+    }
+    const nothingPool = NOTHING_TEXTS[locType] ?? NOTHING_TEXTS.relay
+    s.message = nothingPool[Math.floor(Math.random() * nothingPool.length)]
   } else if (roll < thresholds[5]) {
     // 謎の行商人（高額アイテムを格安で売る）
     const discountItems = [
