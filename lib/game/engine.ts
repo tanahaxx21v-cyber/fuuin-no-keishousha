@@ -1093,7 +1093,8 @@ export function processPlayerStun(state: GameState): GameState {
   if (!stun) return s
   stun.turnsLeft -= 1
   if (stun.turnsLeft <= 0) player.statusEffects = player.statusEffects.filter(e => e.id !== 'stun')
-  b.logs.push({ text: `💫 ${player.name}はスタンして動けない！`, type: 'status' })
+  const STUN_TEXTS_P = [`💫 ${player.name}はスタンして動けない！`, `💫 ${player.name}は痺れて身動きできない！`, `💫 ${player.name}の体が動かない……スタン！`, `💫 ${player.name}、スタン！ターンを失った！`]
+  b.logs.push({ text: STUN_TEXTS_P[b.turn % STUN_TEXTS_P.length], type: 'status' })
   return advanceTurn(s)
 }
 
@@ -1111,7 +1112,8 @@ function processEnemyTurn(state: GameState): GameState {
   if (stun) {
     stun.turnsLeft -= 1
     if (stun.turnsLeft <= 0) actor.statusEffects = actor.statusEffects.filter(e => e.id !== 'stun')
-    b.logs.push({ text: `💫 ${actor.name}はスタンして動けない！`, type: 'status' })
+    const STUN_SKIP_E = [`💫 ${actor.name}はスタンして動けない！`, `💫 ${actor.name}の体が痺れている……！`, `💫 ${actor.name}、スタン中！動けない！`, `💫 ${actor.name}は身動きが取れない！`]
+    b.logs.push({ text: STUN_SKIP_E[b.turn % STUN_SKIP_E.length], type: 'status' })
     return advanceTurn(s)
   }
 
@@ -1243,7 +1245,8 @@ function processCompanionTurn(state: GameState): GameState {
   if (stun) {
     stun.turnsLeft -= 1
     if (stun.turnsLeft <= 0) actor.statusEffects = actor.statusEffects.filter(e => e.id !== 'stun')
-    b.logs.push({ text: `💫 ${actor.name}はスタンして動けない！`, type: 'status' })
+    const STUN_SKIP_A = [`💫 ${actor.name}はスタンして動けない！`, `💫 ${actor.name}が痺れている！動けない！`, `💫 ${actor.name}、スタン！ターンが無駄になった！`, `💫 ${actor.name}は震えて身動きできない！`]
+    b.logs.push({ text: STUN_SKIP_A[b.turn % STUN_SKIP_A.length], type: 'status' })
     return advanceTurn(s)
   }
 
@@ -2608,7 +2611,13 @@ export function enterDungeon(state: GameState, mode: 'careful' | 'aggressive' = 
       enemies.push(pool[Math.floor(Math.random() * pool.length)])
     }
     // 積極探索フラグをメッセージに反映（battle開始前）
-    s.message = `⚡ 深部まで踏み込んだ！敵が${count}体現れた！（EXP・Gold増加）`
+    const AGG_MSGS = [
+      `⚡ 深部まで踏み込んだ！敵が${count}体現れた！（EXP・Gold増加）`,
+      `⚡ 奥深くへ！複数の敵（${count}体）が待ち構えていた！（報酬増加）`,
+      `⚡ リスクを取って深く潜った！${count}体の敵と激突！`,
+      `⚡ 敵の巣に飛び込んだ！${count}体囲まれた！報酬は二倍だ！`,
+    ]
+    s.message = AGG_MSGS[Math.floor(Math.random() * AGG_MSGS.length)]
   }
 
   const result = startBattle(s, enemies, false)
@@ -2628,7 +2637,13 @@ export function fightBoss(state: GameState): GameState {
   const loc = LOCATIONS[s.currentLocId]
   if (!loc.bossId) return s
   if (s.defeatedBosses.includes(loc.bossId!)) {
-    return { ...s, message: 'ボスは既に倒した。' }
+    const bossName = ENEMIES[loc.bossId!]?.name ?? 'ボス'
+    const ALREADY_DEFEATED = [
+      `${bossName}は既に倒した。`,
+      `${bossName}はもういない。次の目的地へ向かおう。`,
+      `${bossName}は倒済み——あの戦いは忘れられない。`,
+    ]
+    return { ...s, message: ALREADY_DEFEATED[Math.floor(Math.random() * ALREADY_DEFEATED.length)] }
   }
   if (loc.requireAllStones && s.sealStones.length < 3) {
     return { ...s, message: '3つの封印石が全て必要だ。' }
@@ -2672,7 +2687,14 @@ function addDeathLog(b: BattleState, target: BattleUnit, cause = '倒れた') {
     ]
     b.logs.push({ text: ENEMY_DEATH_MSGS[Math.floor(Math.random() * ENEMY_DEATH_MSGS.length)], type: 'death' })
   } else {
-    b.logs.push({ text: `💀 ${target.name}は${cause}！`, type: 'death' })
+    const ALLY_DEATH_MSGS = [
+      `💀 ${target.name}は${cause}！`,
+      `💀 ${target.name}が倒れた……！`,
+      `💀 ${target.name}……！！`,
+      `💀 ${target.name}、力尽きた……！`,
+      `💀 ${target.name}が戦線離脱……！`,
+    ]
+    b.logs.push({ text: ALLY_DEATH_MSGS[Math.floor(Math.random() * ALLY_DEATH_MSGS.length)], type: 'death' })
   }
 
   // 仲間が倒れると生き残り全員が怒り（ATK+15%・2ターン）
