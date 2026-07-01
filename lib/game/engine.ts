@@ -2426,13 +2426,18 @@ function applySkillEffect(battle: BattleState, actor: BattleUnit, target: Battle
     case 'heal': {
       const healed = Math.min(skill.power, target.maxHp - target.hp)
       target.hp += healed
-      battle.logs.push({ text: `💚 ${target.name}のHPが${healed}回復！`, type: 'heal' })
+      const isFullHeal = target.hp >= target.maxHp
+      const SKILL_HEAL_MSGS = isFullHeal
+        ? [`💚 ${target.name}が完全回復した！`, `💚 ${target.name}のHPが満タンに！`, `💚 ${skill.name}で${target.name}が全回復！`]
+        : [`💚 ${target.name}のHPが${healed}回復！`, `💚 ${skill.name}で${target.name}にHP+${healed}！`, `💚 ${target.name}の傷が癒えた！+${healed}`]
+      battle.logs.push({ text: SKILL_HEAL_MSGS[Math.floor(Math.random() * SKILL_HEAL_MSGS.length)], type: 'heal' })
       break
     }
     case 'poison': {
       if (!target.statusEffects.find(e => e.id === 'poison')) {
         target.statusEffects.push({ id: 'poison', name: '毒', turnsLeft: 4 })
-        battle.logs.push({ text: `☠️ ${target.name}は毒状態になった！`, type: 'status' })
+        const POISON_APPLY = [`☠️ ${target.name}は毒状態になった！`, `☠️ ${target.name}に毒が回り始めた！`, `☠️ ${target.name}が毒を受けた……！`]
+        battle.logs.push({ text: POISON_APPLY[Math.floor(Math.random() * POISON_APPLY.length)], type: 'status' })
       }
       const result = calcDamage(actor, target)
       const pdmg = Math.floor(result.dmg * skill.power)
@@ -2444,7 +2449,8 @@ function applySkillEffect(battle: BattleState, actor: BattleUnit, target: Battle
     case 'stun': {
       if (!target.statusEffects.find(e => e.id === 'stun')) {
         target.statusEffects.push({ id: 'stun', name: 'スタン', turnsLeft: 2 })
-        battle.logs.push({ text: `💫 ${target.name}はスタンした！`, type: 'status' })
+        const STUN_APPLY = [`💫 ${target.name}はスタンした！`, `💫 ${target.name}の動きが止まった！`, `💫 ${target.name}が痺れて動けない！`]
+        battle.logs.push({ text: STUN_APPLY[Math.floor(Math.random() * STUN_APPLY.length)], type: 'status' })
       }
       const result = calcDamage(actor, target)
       const sdmg = Math.floor(result.dmg * skill.power)
@@ -2456,14 +2462,16 @@ function applySkillEffect(battle: BattleState, actor: BattleUnit, target: Battle
     case 'atk_up': {
       if (!target.statusEffects.find(e => e.id === 'atk_up')) {
         target.statusEffects.push({ id: 'atk_up', name: '攻撃UP', turnsLeft: 3 })
-        battle.logs.push({ text: `⬆️ ${target.name}の攻撃力が上がった！`, type: 'status' })
+        const ATK_UP_MSGS = [`⬆️ ${target.name}の攻撃力が上がった！`, `⬆️ ${target.name}に力が漲る！`, `⬆️ ${skill.name}で${target.name}が強化された！`]
+        battle.logs.push({ text: ATK_UP_MSGS[Math.floor(Math.random() * ATK_UP_MSGS.length)], type: 'status' })
       }
       break
     }
     case 'def_up': {
       if (!target.statusEffects.find(e => e.id === 'def_up')) {
         target.statusEffects.push({ id: 'def_up', name: '防御UP', turnsLeft: 3 })
-        battle.logs.push({ text: `🛡️ ${target.name}の防御力が上がった！`, type: 'status' })
+        const DEF_UP_MSGS = [`🛡️ ${target.name}の防御力が上がった！`, `🛡️ ${target.name}の守りが固くなった！`, `🛡️ ${skill.name}で${target.name}が防御強化！`]
+        battle.logs.push({ text: DEF_UP_MSGS[Math.floor(Math.random() * DEF_UP_MSGS.length)], type: 'status' })
       }
       break
     }
@@ -2471,12 +2479,14 @@ function applySkillEffect(battle: BattleState, actor: BattleUnit, target: Battle
       target.statusEffects = target.statusEffects.filter(e => e.id !== 'atk_up')
       if (!target.statusEffects.find(e => e.id === 'atk_down')) {
         target.statusEffects.push({ id: 'atk_down', name: 'ATK DOWN', turnsLeft: 3 })
-        battle.logs.push({ text: `⬇️ ${target.name}の攻撃力が下がった！`, type: 'status' })
+        const DEBUFF_MSGS = [`⬇️ ${target.name}の攻撃力が下がった！`, `⬇️ ${target.name}の力が奪われた！`, `⬇️ ${skill.name}で${target.name}が弱体化！`]
+        battle.logs.push({ text: DEBUFF_MSGS[Math.floor(Math.random() * DEBUFF_MSGS.length)], type: 'status' })
       }
       // 挑発スキル使用者自身に防御UP付与
       if (skill.id === 'provoke' && !actor.statusEffects.find(e => e.id === 'def_up')) {
         actor.statusEffects.push({ id: 'def_up', name: '防御UP', turnsLeft: 3 })
-        battle.logs.push({ text: `🛡️ ${actor.name}の防御力が上がった！`, type: 'status' })
+        const PROVOKE_MSGS = [`🛡️ ${actor.name}の防御力が上がった！`, `🛡️ ${actor.name}が全ての攻撃を引きつけた！`, `🛡️ ${actor.name}が盾となり守りを固めた！`]
+        battle.logs.push({ text: PROVOKE_MSGS[Math.floor(Math.random() * PROVOKE_MSGS.length)], type: 'status' })
       }
       break
     }
