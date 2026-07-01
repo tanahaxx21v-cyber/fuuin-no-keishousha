@@ -1676,10 +1676,10 @@ function applyBattleRewards(state: GameState): GameState {
         }
         const DROP_MSGS = [
           `✨ ${enemy.name}が ${dropped.emoji}${dropped.name} を落とした！`,
-          `✨ 倒れた${enemy.name}の傍に${dropped.emoji}${dropped.name}が！`,
-          `✨ ${enemy.name}から${dropped.emoji}${dropped.name}を奪った！`,
-          `✨ ${enemy.name}が${dropped.emoji}${dropped.name}を残した。`,
-          `✨ ラッキー！${enemy.name}から${dropped.emoji}${dropped.name}を入手！`,
+          `✨ ${enemy.name}を倒した！${dropped.emoji}${dropped.name}を落とした！`,
+          `✨ 戦利品——${enemy.name}が${dropped.emoji}${dropped.name}を落とした！`,
+          `✨ ${dropped.emoji}${dropped.name}を落とした！（${enemy.name}から）`,
+          `✨ ラッキー！${enemy.name}が${dropped.emoji}${dropped.name}を落とした！`,
         ]
         b.logs.push({ text: DROP_MSGS[Math.floor(Math.random() * DROP_MSGS.length)], type: 'system' })
       }
@@ -1794,8 +1794,8 @@ function applyBattleRewards(state: GameState): GameState {
           `📦 奥に宝箱を発見！${item.emoji}${item.name}を入手した！`,
           `📦 戦いの後、隅に古い宝箱が。${item.emoji}${item.name}が入っていた！`,
           `📦 宝箱発見！中から${item.emoji}${item.name}が出てきた！`,
-          `📦 埃かぶった箱を開けると……${item.emoji}${item.name}だ！`,
-          `📦 ダンジョンの恵み——${item.emoji}${item.name}を手にした！`,
+          `📦 埃かぶった宝箱を開けると……${item.emoji}${item.name}だ！`,
+          `📦 ダンジョンの宝箱から${item.emoji}${item.name}を手にした！`,
         ]
         b.logs.push({ text: CHEST_MSGS[Math.floor(Math.random() * CHEST_MSGS.length)], type: 'system' })
       }

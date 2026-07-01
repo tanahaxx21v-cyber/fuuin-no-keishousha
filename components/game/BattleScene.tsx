@@ -901,10 +901,13 @@ export default function BattleScene({ gs, onAttack, onSkill, onItem, onFlee, onC
                 {(() => {
                   const hpPct = Math.round(playerUnit.hp / playerUnit.maxHp * 100)
                   const color = hpPct > 60 ? 'text-green-400' : hpPct > 30 ? 'text-yellow-400' : 'text-red-400'
-                  const comment = hpPct >= 90 ? ['ほぼ無傷！完璧な戦いぶりだ。', '傷一つなし。圧倒的だった。'][b.turn % 2]
-                    : hpPct >= 60 ? ['余裕の勝利。まだまだ戦える。', '良い状態で切り抜けた。'][b.turn % 2]
-                    : hpPct >= 30 ? ['ギリギリだった。回復しておこう。', '消耗した……アイテムが必要だ。'][b.turn % 2]
-                    : ['瀕死で生還……あと一撃で終わっていた。', '奇跡だ。絶対に回復しろ。'][b.turn % 2]
+                  const comment = hpPct >= 90
+                    ? ['ほぼ無傷！完璧な戦いぶりだ。', '傷一つなし。圧倒的だった。', '危なげなし——強い。', '満身の力で圧倒した。'][b.turn % 4]
+                    : hpPct >= 60
+                    ? ['余裕の勝利。まだまだ戦える。', '良い状態で切り抜けた。', 'まずまずだ。次に備えよう。', 'まだ余力がある。'][b.turn % 4]
+                    : hpPct >= 30
+                    ? ['ギリギリだった。回復しておこう。', '消耗した……アイテムが必要だ。', '激戦だった。傷を癒せ。', 'あと少し削られたら危なかった。'][b.turn % 4]
+                    : ['瀕死で生還……あと一撃で終わっていた。', '奇跡だ。絶対に回復しろ。', '命がけだった……今すぐ回復を。', 'よく生き残った。今は休め。'][b.turn % 4]
                   return (
                     <div className={`text-xs font-bold ${color}`}>
                       HP残{hpPct}%で生還——{comment}
@@ -947,9 +950,16 @@ export default function BattleScene({ gs, onAttack, onSkill, onItem, onFlee, onC
                   return <div className="text-xs text-gray-400">{line}—— {speaker.name}</div>
                 })()}
                 {/* 死亡した仲間 */}
-                {allies.filter(a => !a.isPlayer && a.hp <= 0).map(a => (
-                  <div key={a.uid} className="text-red-400 font-bold text-xs">💔 {a.name} は力尽きた……</div>
-                ))}
+                {allies.filter(a => !a.isPlayer && a.hp <= 0).map((a, i) => {
+                  const FALLEN_MSGS = [
+                    `💔 ${a.name} は力尽きた……`,
+                    `💔 ${a.name} が倒れた……`,
+                    `💔 ${a.name}……！帰ってこない。`,
+                    `💔 ${a.name} は散った……忘れない。`,
+                    `💔 ${a.name}、安らかに……`,
+                  ]
+                  return <div key={a.uid} className="text-red-400 font-bold text-xs">{FALLEN_MSGS[i % FALLEN_MSGS.length]}</div>
+                })}
               </div>
             )}
 
