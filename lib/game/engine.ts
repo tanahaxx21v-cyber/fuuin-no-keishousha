@@ -931,7 +931,11 @@ export function battleFlee(state: GameState): GameState {
     s.phase = 'location'
     return s
   }
-  s.battle!.logs.push({ text: '💨 逃げられなかった！', type: 'system' })
+  const FLEE_FAIL_MSGS = [
+    '💨 逃げられなかった！', '💨 退路を塞がれた！', '💨 囲まれてしまった！',
+    '💨 逃げようとしたが、間に合わなかった！', '💨 足が遅い……逃げ切れなかった！',
+  ]
+  s.battle!.logs.push({ text: FLEE_FAIL_MSGS[Math.floor(Math.random() * FLEE_FAIL_MSGS.length)], type: 'system' })
   return advanceTurn(s)
 }
 
@@ -1219,7 +1223,13 @@ function advanceTurn(state: GameState): GameState {
     if (poison) {
       const dmg = 8
       unit.hp = Math.max(0, unit.hp - dmg)
-      b.logs.push({ text: `☠️ ${unit.name}は毒で${dmg}ダメージ！`, type: 'damage' })
+      const POISON_MSGS = [
+        `☠️ ${unit.name}は毒で${dmg}ダメージ！`,
+        `☠️ ${unit.name}の体に毒が回る……${dmg}ダメージ。`,
+        `☠️ 毒が${unit.name}を蝕む！${dmg}ダメージ。`,
+        `☠️ ${unit.name}は苦しみながら${dmg}ダメージ。`,
+      ]
+      b.logs.push({ text: POISON_MSGS[Math.floor(Math.random() * POISON_MSGS.length)], type: 'damage' })
       if (unit.hp <= 0) addDeathLog(b, unit, '毒で倒れた')
       poison.turnsLeft -= 1
       if (poison.turnsLeft <= 0) unit.statusEffects = unit.statusEffects.filter(e => e.id !== 'poison')
@@ -1953,6 +1963,11 @@ const WANDER_REST_TEXTS: string[] = [
   '旅の疲れを癒すように、ぼんやりと座っていた。',
   '何もしない時間が、逆に力をくれた。',
   '仲間と他愛もない話をしながら一休みした。',
+  '岩の上に腰を降ろし、遠くを眺めた。何も考えない時間だった。',
+  '木の根元に背を預けて目を閉じた。鳥のさえずりが聞こえた。',
+  '川のそばで足を冷やした。ちょっとした贅沢だ。',
+  '地面に寝転んで雲を眺めた。たまにはこういう日も必要だ。',
+  '昼寝をした。夢は見なかった。でも、気持ちよかった。',
 ]
 
 export function wander(state: GameState, mode: 'gold' | 'train' | 'explore' = 'explore'): GameState {
