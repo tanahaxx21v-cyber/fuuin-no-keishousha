@@ -2601,6 +2601,11 @@ export function wander(state: GameState, mode: 'gold' | 'train' | 'explore' = 'e
       s.defeatedBosses.length === 0 ? '📜「まだ一体もボスを倒してないのか？早く動かないと日数が足りなくなるぞ」' : null,
       s.gold <= 50 ? '📜「所持金が少ないな……早めに金を稼がないと、いざという時に補給できないぞ」' : null,
       s.playerHp <= s.playerMaxHp * 0.5 ? '📜「傷が深そうだ……宿屋で回復してから先を急いだ方がいい」' : null,
+      s.playerMp <= 5 ? '📜「魔力が底をついている。エーテルを使うか、宿屋で休め」' : null,
+      s.inventory.length === 0 ? '📜「アイテムを全く持っていないのか？それは命取りだ。今すぐ補給しろ」' : null,
+      s.sealStones.length === 1 ? '📜「一つ目の封印石を手にしたか……あとは嵐と闇の石だ。急げ」' : null,
+      s.sealStones.length === 2 ? '📜「もう二つか！最後の封印石を手に入れれば、決戦に挑める！」' : null,
+      s.daysLeft <= 40 && s.sealStones.length === 0 ? '📜「まだ封印石が一つもない……今すぐ行動しないと間に合わないぞ！」' : null,
     ].filter(Boolean) as string[]
     const allHints = [...sealHints, ...generalHints]
     const hint = allHints[Math.floor(Math.random() * allHints.length)]
@@ -2658,6 +2663,13 @@ export function enterDungeon(state: GameState, mode: 'careful' | 'aggressive' = 
   if (mode === 'careful') {
     // 慎重: 常に1体のみ
     enemies = [pool[Math.floor(Math.random() * pool.length)]]
+    const CAREFUL_MSGS = [
+      '🔍 慎重にダンジョンを進んだ……敵が現れた！',
+      '🔍 足音を立てずに奥へ……！突然、敵が飛び出してきた！',
+      '🔍 壁伝いに進んでいると、影が動いた——！',
+      '🔍 慎重に進んでいたが、避けられなかった……！',
+    ]
+    s.message = CAREFUL_MSGS[Math.floor(Math.random() * CAREFUL_MSGS.length)]
   } else {
     // 積極: 2〜3体、EXP/Gold+50%ボーナスはbattle報酬倍率で後処理
     const maxCount = s.playerLevel < 7 ? 2 : 3
@@ -2702,7 +2714,13 @@ export function fightBoss(state: GameState): GameState {
     return { ...s, message: ALREADY_DEFEATED[Math.floor(Math.random() * ALREADY_DEFEATED.length)] }
   }
   if (loc.requireAllStones && s.sealStones.length < 3) {
-    return { ...s, message: '3つの封印石が全て必要だ。' }
+    const STONES_NEEDED = [
+      `まだ封印石が${3 - s.sealStones.length}つ足りない。全て揃えてから挑め。`,
+      '3つの封印石が全て必要だ。残りの石を先に集めよ。',
+      '封印石が揃っていない……砂漠遺跡への道は開かない。',
+      '力不足ではない——封印石が足りないのだ。先に石を集めよ。',
+    ]
+    return { ...s, message: STONES_NEEDED[Math.floor(Math.random() * STONES_NEEDED.length)] }
   }
   return startBattle(s, [loc.bossId], true)
 }
