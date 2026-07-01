@@ -102,13 +102,38 @@ export default function WorldMap({ gs, onTravel, onEnterLocation, getAvailableCo
   const daysWarn = gs.daysLeft <= 40
   const totalDays = getDifficultyMultiplier(gs.difficulty).days
   const elapsedPct = Math.round(((totalDays - gs.daysLeft) / totalDays) * 100)
-  const mapMessage = daysUrgent
-    ? '⚠️ 残り日数が少ない！急いで封印石を集めよ！'
-    : gs.sealStones.length === 3
-    ? '✨ 封印石が全て揃った！砂漠遺跡へ急げ！'
-    : gs.sealStones.length === 2 && daysWarn
-    ? '⚡ あと1つ……急がないと間に合わない！'
-    : null
+  const mapMessage = (() => {
+    const d = gs.daysLeft
+    if (daysUrgent) {
+      const URGENT = [
+        `⚠️ 残り${d}日！急いで封印石を集めよ！`,
+        `⚠️ 時間がない！残り${d}日——急げ！`,
+        `⚠️ 残り${d}日。もう迷っている暇はない！`,
+        `⚠️ 魔王の封印が解けるまで、あと${d}日！`,
+      ]
+      return URGENT[d % URGENT.length]
+    }
+    if (gs.sealStones.length === 3) {
+      const SEALS_FULL = [
+        '✨ 封印石が全て揃った！砂漠遺跡へ急げ！',
+        '✨ 三石全部揃えた！いよいよ最終決戦だ！',
+        '✨ 全ての封印石を手にした——魔王よ、待っていろ！',
+      ]
+      return SEALS_FULL[d % SEALS_FULL.length]
+    }
+    if (gs.sealStones.length === 2 && daysWarn) {
+      const HURRY = [
+        '⚡ あと1つ……急がないと間に合わない！',
+        `⚡ 残り${d}日——最後の封印石を掴め！`,
+        '⚡ もう一踏ん張り！最後の石を手に入れろ！',
+      ]
+      return HURRY[d % HURRY.length]
+    }
+    if (gs.sealStones.length === 0 && daysWarn) {
+      return `📜 封印石がまだゼロ……残り${d}日、急いで動け！`
+    }
+    return null
+  })()
 
   // 未取得封印石のガイド情報
   const SEAL_GUIDE = [

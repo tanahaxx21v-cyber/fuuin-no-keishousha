@@ -2482,9 +2482,27 @@ export function wander(state: GameState, mode: 'gold' | 'train' | 'explore' = 'e
   } else if (mode === 'explore') {
     // 探索モードの「特別発見」——情報収集・隠し発見
     const sealHints: string[] = []
-    if (!s.sealStones.includes('fire'))  sealHints.push('🔥「廃鉱山の深部に炎の封印石があると聞いた。鉱王グラドルを倒すことだ」')
-    if (!s.sealStones.includes('storm')) sealHints.push('⚡「竜の峠に棲む嵐竜を倒せば、嵐の封印石が手に入るはずだ」')
-    if (!s.sealStones.includes('dark'))  sealHints.push('🌑「古代神殿の奥に闇の封印石が眠ると聞いた。森王が守っているらしい」')
+    if (!s.sealStones.includes('fire')) {
+      sealHints.push(
+        '🔥「廃鉱山の深部に炎の封印石があると聞いた。鉱王グラドルを倒すことだ」',
+        '🔥「北の廃鉱山……あそこの炎の石を手に入れた勇者はまだいないという。だが君なら——」',
+        '🔥「鉱王グラドルは岩のように固い。正面から行くより、隙を突くといい」',
+      )
+    }
+    if (!s.sealStones.includes('storm')) {
+      sealHints.push(
+        '⚡「竜の峠に棲む嵐竜を倒せば、嵐の封印石が手に入るはずだ」',
+        '⚡「嵐竜ストームレックス——雷を操る化け物だ。炎や水の属性が効くかもしれない」',
+        '⚡「嵐の石は峠の頂上にある。竜を倒すか、それとも死ぬかだ」',
+      )
+    }
+    if (!s.sealStones.includes('dark')) {
+      sealHints.push(
+        '🌑「古代神殿の奥に闇の封印石が眠ると聞いた。森王が守っているらしい」',
+        '🌑「森王モルガ……森の化身だという。自然の力には自然の力で対抗するといい」',
+        '🌑「古代神殿は南西の森の奥。闇の石さえ手に入れれば、いよいよ最終決戦だ」',
+      )
+    }
     const alivePartyIds = s.party.filter(id => s.companions[id]?.alive)
     const generalHints = [
       '📜「ダンジョンの宝箱——深く潜るほど良いものが出る。積極的に探るのも手だぞ」',
@@ -2493,10 +2511,20 @@ export function wander(state: GameState, mode: 'gold' | 'train' | 'explore' = 'e
       '📜「残り日数が30日を切ると、道中の敵が増えると旅人が言っていた……」',
       '📜「砂漠遺跡への道は封印石が揃わないと開かないと聞いた。急ぐな、石を集めろ」',
       '📜「スキルを使い過ぎるとMPが尽きる。エーテルは常に持ち歩いておくといい」',
+      '📜「ボスに挑む前は必ずHPをMAXにしておけ。ボス戦中は回復できないぞ」',
+      '📜「仲間を守りたければ、自分が倒れてはいけない。主人公が落ちたら全滅だ」',
+      '📜「積極的にダンジョンに潜ると、EXPと金が稼げる。レベルを上げてから挑もう」',
+      '📜「仲間のスキルも強力だ。MPを節約しすぎて使わないのは、むしろ損だぞ」',
+      '📜「宝箱の中のものは拾ってもなくならない……ではない。先を越されることもある」',
+      '📜「旅は長い。体力と気力の管理も、戦略の一部だ」',
       alivePartyIds.length === 0 ? '📜「一人旅は危険だ。仲間を集めた方がいい……どこかに助けを求められる人物がいるはず」' : null,
       alivePartyIds.length >= 3 ? '📜「3人の仲間がいるのか……頼もしいな。パーティの編成を常に見直すといい」' : null,
       s.playerLevel >= 15 ? '📜「Lv15を超えると、ボスも本気を出してくる。回復アイテムは惜しまずに使え」' : null,
+      s.playerLevel <= 5 ? '📜「まだ旅が浅い。まずは近くのダンジョンで鍛えろ。無理なボス挑戦は命取りだ」' : null,
       s.defeatedBosses.length >= 3 ? '📜「もう3体も倒したのか……あとは砂漠遺跡だ。最後の戦いに備えろ」' : null,
+      s.defeatedBosses.length === 0 ? '📜「まだ一体もボスを倒してないのか？早く動かないと日数が足りなくなるぞ」' : null,
+      s.gold <= 50 ? '📜「所持金が少ないな……早めに金を稼がないと、いざという時に補給できないぞ」' : null,
+      s.playerHp <= s.playerMaxHp * 0.5 ? '📜「傷が深そうだ……宿屋で回復してから先を急いだ方がいい」' : null,
     ].filter(Boolean) as string[]
     const allHints = [...sealHints, ...generalHints]
     const hint = allHints[Math.floor(Math.random() * allHints.length)]
