@@ -482,6 +482,25 @@ const INN_FLAVOR_TEXTS: string[] = [
   '🌙 窓から星空が見えた。あの光のどこかに、故郷があるのかもしれない。',
   '🌙 明日は良い日になる気がする。根拠はないが、そんな気がする。',
   '🌙 宿の子供が「勇者さんですか？」と聞いてきた。まだ道半ばだよ、と答えた。',
+  '🌙 ベッドに倒れ込んだ。次に気づいたら朝だった。',
+  '🌙 宿の主人の得意料理で腹が満たされた。旅の孤独がすこし遠のく。',
+  '🌙 他の旅人が隣の部屋で話していた。世界はまだ続いている。',
+  '🌙 風呂でようやく傷の痛みを確認した。思ったより深かったが、今夜はもう眠れる。',
+  '🌙 蝋燭の光の下で、次の行程を書き留めた。紙が少なくなってきた。',
+  '🌙 外は雨だった。この宿で夜を越えられてよかった、と素直に思った。',
+  '🌙 宿の猫が足元に寄ってきた。しばらく撫でていた。',
+  '🌙 深夜、一人で起き出して剣の手入れをした。いつもより丁寧に磨いた。',
+  '🌙 柔らかい寝床。戦いの夢も見たが、朝には消えていた。',
+  '🌙 宿屋の二階から、夜の街を眺めた。灯りが少しずつ消えていく。',
+]
+
+const INN_FLAVOR_TEXTS_URGENT: string[] = [
+  '🌙 わずかな休息だ……でも今は少しでも眠らないと。',
+  '🌙 時間がない。それでも今夜の宿には感謝しよう。',
+  '🌙 タイムリミットが近い。だが、焦りが命取りになる。今夜は休む。',
+  '🌙 残り日数が頭から離れない。……眠れるうちに眠れ。',
+  '🌙 布団に入りながら日数を数えた。何度数えても答えは変わらない。',
+  '🌙 明日もある。それだけで十分だ。今夜は休もう。',
 ]
 
 export function restAtInn(state: GameState): GameState {
@@ -503,16 +522,26 @@ export function restAtInn(state: GameState): GameState {
     }
   }
   const aliveNames = s.party.map(id => COMPANIONS[id as CompanionId]?.name).filter(Boolean)
-  if (aliveNames.length > 0 && Math.random() < 0.4) {
-    const partnered = [
+  const isUrgent = s.daysLeft <= 15
+  if (aliveNames.length > 0 && Math.random() < (isUrgent ? 0.3 : 0.45)) {
+    const partnered = isUrgent ? [
+      `🌙 ${aliveNames[0]}と短く話した。「急がないとな」、それだけだった。`,
+      `🌙 ${aliveNames.join('・')}と残り日数を確認した。誰も多くを語らなかった。`,
+      `🌙 ${aliveNames[0]}が「必ず終わらせよう」と言った。頷いて眠りについた。`,
+      `🌙 ${aliveNames[0]}と黙って食事した。言葉より、共にいることが支えだった。`,
+    ] : [
       `🌙 ${aliveNames.join('と')}と食卓を囲んだ。笑える話もあった。`,
       `🌙 ${aliveNames[0]}が先に寝た。静かな夜だった。`,
       `🌙 ${aliveNames.join('・')}と夜の空を見上げた。星が多かった。`,
       `🌙 ${aliveNames[0]}に「明日も頼む」と言われた。`,
+      `🌙 ${aliveNames[0]}が珍しく笑った。この旅でよかった、と少し思った。`,
+      `🌙 ${aliveNames.join('・')}と旅の話をした。まだまだ先は長い。`,
+      `🌙 ${aliveNames[0]}に今日の戦いを振り返ってもらった。頼れる仲間だ。`,
     ]
     s.message = partnered[Math.floor(Math.random() * partnered.length)]
   } else {
-    s.message = INN_FLAVOR_TEXTS[Math.floor(Math.random() * INN_FLAVOR_TEXTS.length)]
+    const pool = isUrgent ? INN_FLAVOR_TEXTS_URGENT : INN_FLAVOR_TEXTS
+    s.message = pool[Math.floor(Math.random() * pool.length)]
   }
   if (s.daysLeft <= 0) {
     s.daysLeft = 0
@@ -686,6 +715,30 @@ export function processNonPlayerTurn(state: GameState): GameState {
   return processEnemyTurn(state)
 }
 
+const COMPANION_SKILL_CRIES: Partial<Record<CompanionId, string[]>> = {
+  gares: ['「騎士の誇りにかけて！」', '「これが俺の全力だ！」', '「覚悟しろ！」'],
+  liz:   ['「光よ、力を貸して！」', '「神の御名のもとに！」', '「みんなを守る！」'],
+  noa:   ['「狙いは外さない！」', '「この一矢に集中して！」', '「全集中……放て！」'],
+  cecil: ['「計算通りよ！」', '「理論値を超えてみせる！」', '「これが私の魔法！」'],
+  bram:  ['「燃えてきたぜ！」', '「この一撃で決めてやる！」', '「本気でいくぞ！」'],
+  finn:  ['「うわー！こんなの使えるの！？」', '「行きます！」', '「先輩、見ててください！」'],
+  vais:  ['「……もらった。」', '「準備はいいか？」', '「やってみるか。」'],
+  logan: ['「……終わりだ。」', '「無駄口はいらん。」', '「これで終わる。」'],
+  iris:  ['「この力を……制御できる！」', '「魔族の血が騒ぐ……」', '「……放つ！」'],
+  sig:   ['「はっはー！これ好きなんだよね！」', '「こっちの方が手っ取り早いぜ」', '「派手にいくか！」'],
+  elk:   ['「ふんッ！槍の神髄を見せてやる！」', '「突くぞ！」', '「獣の力を受けよ！」'],
+  mira:  ['「……静かに、でも確実に。」', '「エルフの技よ」', '「風よ、導いて。」'],
+  zeno:  ['「……面白い」', '「魔族の奥義だ」', '「封印された力を……解く」'],
+}
+
+function pickSkillCry(actor: BattleUnit): string {
+  const cid = actor.companionId as CompanionId | undefined
+  if (!cid) return `「${actor.name}の力を見よ！」`
+  const cries = COMPANION_SKILL_CRIES[cid]
+  if (!cries || cries.length === 0) return ''
+  return cries[Math.floor(Math.random() * cries.length)]
+}
+
 function buildTurnQueue(units: BattleUnit[]): string[] {
   return [...units]
     .filter(u => u.hp > 0)
@@ -695,13 +748,30 @@ function buildTurnQueue(units: BattleUnit[]): string[] {
 
 // ===== BATTLE ACTIONS =====
 
-const ATTACK_VERBS_ALLY = ['が斬りかかった', 'の一閃', 'が踏み込んだ', 'が剣を振り下ろした', 'が鋭く突いた', 'が渾身を込めた', 'の鋭い連撃']
-const ATTACK_VERBS_ENEMY = ['が爪を振るった', 'の猛攻', 'が牙をむいた', 'が体当たりした', 'が叩きつけた', 'の強烈な一撃', 'が荒々しく迫った']
+const ATTACK_VERBS_ALLY = [
+  'が斬りかかった', 'の一閃', 'が踏み込んだ', 'が剣を振り下ろした', 'が鋭く突いた',
+  'が渾身を込めた', 'の鋭い連撃', 'が素早く斬った', 'の大振り', 'が横薙ぎに斬った',
+  'が突進した', 'が飛び込んだ', 'の斬撃', 'が渾身の一撃', 'が回転斬りを放った',
+  'の素早い二連撃', 'が力を溜めて打ち込んだ', 'の鋭い刺突', 'が体重を乗せた一撃',
+  'が踏み切り斬った', 'の抜刀術', 'が間合いを詰めて斬った', 'の電光石火',
+  'が全力で振り抜いた', 'の見切り反撃',
+]
+const ATTACK_VERBS_ENEMY = [
+  'が爪を振るった', 'の猛攻', 'が牙をむいた', 'が体当たりした', 'が叩きつけた',
+  'の強烈な一撃', 'が荒々しく迫った', 'が咬みついた', 'の激突', 'が蹴り上げた',
+  'が薙ぎ払った', 'が突進してきた', 'の強打', 'が尾を打ちつけた', 'が両腕で叩いた',
+  'の猛烈な突撃', 'が大口を開けて噛んだ', 'が素早く引っ掻いた', 'の怒りの一撃',
+  'が踏みにじった', 'の渾身の叩きつけ', 'が叫びながら突進した', 'の鋭い蹴撃',
+  'が吠えながら迫った', 'の力任せの攻撃',
+]
 
 function pickAttackText(attacker: BattleUnit, target: BattleUnit, dmg: number): string {
   const verbs = attacker.isAlly ? ATTACK_VERBS_ALLY : ATTACK_VERBS_ENEMY
   const v = verbs[Math.floor(Math.random() * verbs.length)]
-  return `⚔️ ${attacker.name}${v}！${target.name}に${dmg}ダメージ！`
+  const maxHp = target.maxHp || 1
+  const dmgRatio = dmg / maxHp
+  const suffix = dmgRatio >= 0.25 ? '　大ダメージ！' : dmgRatio <= 0.04 ? '　かすり傷。' : '！'
+  return `⚔️ ${attacker.name}${v}。${target.name}に${dmg}ダメージ${suffix}`
 }
 
 export function setCompanionOrder(state: GameState, companionUid: string, order: import('./types').CompanionOrder): GameState {
@@ -990,7 +1060,8 @@ function processCompanionTurn(state: GameState): GameState {
     if (offSkills.length > 0) {
       const skill = offSkills[0]
       actor.mp -= skill.mpCost
-      b.logs.push({ text: `✨ ${actor.name}が「${skill.name}」を使った！`, type: 'status' })
+      const cry = pickSkillCry(actor)
+      b.logs.push({ text: `✨ ${actor.name}${cry ? `${cry}` : `は「${skill.name}」を使った！`}　→「${skill.name}」！`, type: 'status' })
       const targets = skill.target === 'enemy_all' ? aliveEnemies : [aliveEnemies[Math.floor(Math.random() * aliveEnemies.length)]]
       for (const tgt of targets) applySkillEffect(b, actor, tgt, skill)
       return advanceTurn(s)
@@ -999,7 +1070,7 @@ function processCompanionTurn(state: GameState): GameState {
     const target = aliveEnemies[Math.floor(Math.random() * aliveEnemies.length)]
     const { dmg } = calcDamage(actor, target)
     const died = applyDamage(target, dmg)
-    b.logs.push({ text: `⚔️ ${actor.name}（スキルなし）が攻撃！${target.name}に${dmg}ダメージ！`, type: 'damage' })
+    b.logs.push({ text: `⚔️ ${actor.name}が攻撃！${target.name}に${dmg}ダメージ！`, type: 'damage' })
     if (died) addDeathLog(b, target)
     return advanceTurn(s)
   }
@@ -1043,7 +1114,8 @@ function processCompanionTurn(state: GameState): GameState {
   if (selfBuffSkills.length > 0 && actor.hp > actor.maxHp * 0.5 && Math.random() < 0.25) {
     const skill = selfBuffSkills[Math.floor(Math.random() * selfBuffSkills.length)]
     actor.mp -= skill.mpCost
-    b.logs.push({ text: `✨ ${actor.name}は「${skill.name}」を使った！`, type: 'status' })
+    const cry = pickSkillCry(actor)
+    b.logs.push({ text: `✨ ${actor.name}${cry ? `${cry}` : `は「${skill.name}」を使った！`}　→「${skill.name}」！`, type: 'status' })
     applySkillEffect(b, actor, actor, skill)
     return advanceTurn(s)
   }
@@ -1056,7 +1128,8 @@ function processCompanionTurn(state: GameState): GameState {
   if (useSkill) {
     const skill = offSkills[Math.floor(Math.random() * offSkills.length)]
     actor.mp -= skill.mpCost
-    b.logs.push({ text: `✨ ${actor.name}は「${skill.name}」を使った！`, type: 'status' })
+    const cry = pickSkillCry(actor)
+    b.logs.push({ text: `✨ ${actor.name}${cry ? `${cry}` : `は「${skill.name}」を使った！`}　→「${skill.name}」！`, type: 'status' })
     const targets = skill.target === 'enemy_all' ? aliveEnemies : [aliveEnemies[Math.floor(Math.random() * aliveEnemies.length)]]
     for (const tgt of targets) applySkillEffect(b, actor, tgt, skill)
     return advanceTurn(s)
@@ -1119,6 +1192,18 @@ function advanceTurn(state: GameState): GameState {
   const aliveAllies = b.units.filter(u => u.isAlly && u.hp > 0)
   const playerUnit = b.units.find(u => u.isPlayer)
 
+  // プレイヤー瀕死警告（HP20%以下、まだ生きている場合）
+  if (playerUnit && playerUnit.hp > 0 && playerUnit.hp <= playerUnit.maxHp * 0.2) {
+    const dangerRatio = playerUnit.hp / playerUnit.maxHp
+    const alreadyWarned = b.logs.some(l => l.text.includes('⚠️') && l.text.includes(playerUnit.name))
+    if (!alreadyWarned || Math.random() < 0.25) {
+      const DANGER_MSGS = dangerRatio <= 0.1
+        ? [`⚠️ ${playerUnit.name}のHPが危険域！`, `⚠️ もう限界だ……！`, `⚠️ 次の一撃で終わる……！`]
+        : [`⚠️ ${playerUnit.name}のHPが残りわずか！`, `⚠️ まずい、回復が必要だ！`, `⚠️ 瀕死状態……急げ！`]
+      b.logs.push({ text: DANGER_MSGS[Math.floor(Math.random() * DANGER_MSGS.length)], type: 'status' })
+    }
+  }
+
   // プレイヤー死亡はゲームオーバー（JRPGスタンダード：主人公が倒れたら全滅扱い）
   // addDeathLogが既に「倒れた！」を記録済みなので追加ログは不要
   if (playerUnit && playerUnit.hp <= 0) {
@@ -1128,7 +1213,42 @@ function advanceTurn(state: GameState): GameState {
 
   if (aliveEnemies.length === 0) {
     b.phase = 'victory'
-    b.logs.push({ text: `🎉 勝利！`, type: 'system' })
+    const player = b.units.find(u => u.isPlayer)
+    const playerHpRatio = player ? player.hp / player.maxHp : 1
+    if (b.isBoss && !b.isFinalBoss) {
+      const bossUnit = b.units.find(u => u.isBoss)
+      const bossName = bossUnit?.name ?? 'ボス'
+      const BOSS_VICTORY_MSGS_EASY = [
+        `🏅 ${bossName}を圧倒した！さすがの実力だ！`,
+        `🏅 ${bossName}、討ち取った！想像より強かった……いや、俺たちが強かったのか。`,
+        `🏅 ${bossName}を倒した！これが俺たちの答えだ！`,
+      ]
+      const BOSS_VICTORY_MSGS_CLOSE = [
+        `🏅 ${bossName}を辛くも退けた……！`,
+        `🏅 死力を尽くして${bossName}を倒した……！`,
+        `🏅 ギリギリで${bossName}を撃破……！諦めなくてよかった！`,
+        `🏅 ${bossName}は強かった……だが、俺たちの方が強かった！`,
+      ]
+      const bossPool = playerHpRatio >= 0.4 ? BOSS_VICTORY_MSGS_EASY : BOSS_VICTORY_MSGS_CLOSE
+      b.logs.push({ text: bossPool[Math.floor(Math.random() * bossPool.length)], type: 'system' })
+    } else if (!b.isFinalBoss) {
+      const VICTORY_MSGS_EASY = [
+        '🎉 完勝！傷一つない。', '🎉 危なげない勝利！', '🎉 圧勝だ！',
+        '🎉 余裕の勝利！', '🎉 完璧な戦いだった！', '🎉 一蹴した！',
+      ]
+      const VICTORY_MSGS_NORMAL = [
+        '🎉 勝利！', '🎉 撃破した！', '🎉 討ち取った！',
+        '🎉 勝った！', '🎉 制した！', '🎉 倒した！',
+      ]
+      const VICTORY_MSGS_CLOSE = [
+        '🎉 ギリギリだった……勝利！', '🎉 かろうじて勝った……！', '🎉 死闘の末、勝利！',
+        '🎉 紙一重の勝利……！', '🎉 かつかつで勝利！', '🎉 命からがら、勝った！',
+      ]
+      const victoryPool = playerHpRatio >= 0.7 ? VICTORY_MSGS_EASY
+        : playerHpRatio >= 0.3 ? VICTORY_MSGS_NORMAL
+        : VICTORY_MSGS_CLOSE
+      b.logs.push({ text: victoryPool[Math.floor(Math.random() * victoryPool.length)], type: 'system' })
+    }
     return applyBattleRewards(s)
   }
   if (aliveAllies.length === 0) {
@@ -1367,19 +1487,58 @@ const COMPANION_MOURNING_RESPONSES: Partial<Record<CompanionId, string[]>> = {
 
 // 仲間の戦闘後一言コメント（PP4スタイル）
 const COMPANION_BATTLE_COMMENTS: Partial<Record<CompanionId, string[]>> = {
-  gares: ['よし、全員無事か確認しろ！', '怯むな、まだ戦いは続く！', '傷は後で手当てする、先を急ごう。', '騎士として当然の結果だ。'],
-  liz: ['よかった……皆、怪我はない？', '光よ、感謝します。', '神官として恥じない戦いだったわ。', '次は回復に集中するね！'],
-  noa: ['全弾命中……だね。', '見てよ、一本も無駄にしなかったよ！', '弓は嘘をつかない。', '次はもっと上手く狙えるよ！'],
-  cecil: ['魔法の消費が激しい……でも勝てたわ。', '理論通り！完璧ね。', '次はもっと効率的に行くわ。', 'フッ、この程度かしら。'],
-  bram: ['まだまだ！もっと強い奴はいないのか！', 'この拳に感謝しろよ。', 'いい汗かいたな。', '余裕の勝利だな！'],
-  finn: ['やったー！勝ったよ！', '少し慌てたけど……ちゃんと戦えた！', '先輩、見てましたか？', '次はもっとカッコよく戦います！'],
-  vais: ['はっ、こんなもんか。', '抵抗する前に終わらせてやったのに。', '盗賊時代の方がよほどキツかったぜ。', '楽な仕事だったな。'],
-  logan: ['……問題ない。', '死体に挨拶はいらん。', '弱い。次だ。', '倒れるのが仕事だったな、奴らは。'],
-  iris: ['この力、まだ制御できています。', '魔族の力を使わずに倒せたわ。', '……ありがとう、一緒に戦ってくれて。', '私の魔法、役に立った？'],
-  sig: ['はっはー！余裕余裕！', '勝ち確だと思ってたぜ。', 'いいね、報酬が楽しみだ。', 'また一つ、借りができたね〜。'],
-  elk: ['ふんッ！こんなやつら、俺の槍には届かん。', '獣の勘は正しかった。', '次はもっと速く片付けるぞ。', '群れで来ようと関係ない！'],
-  mira: ['エルフの弓は裏切らないわ。', '静かに、でも確実に。', '風が味方してくれたの。', '悪いけど、手を抜いていたわ。'],
-  zeno: ['……興味深い戦法だった。', '魔族の血が騒いだ。', '……次は私が先に動こう。', '人間と戦うのは……悪くない。'],
+  gares: [
+    'よし、全員無事か確認しろ！', '怯むな、まだ戦いは続く！', '傷は後で手当てする、先を急ごう。', '騎士として当然の結果だ。',
+    'まだ油断するな。次がある。', '怪我はないか？……よし。', 'この調子で行くぞ。', '全員生きてる。それが一番だ。',
+  ],
+  liz: [
+    'よかった……皆、怪我はない？', '光よ、感謝します。', '神官として恥じない戦いだったわ。', '次は回復に集中するね！',
+    'みんな無事でよかった。', 'もう少し余裕があれば回復も間に合うのに……', '神さまが見てくださっているわ。', '怪我はあとでちゃんと見る！',
+  ],
+  noa: [
+    '全弾命中……だね。', '見てよ、一本も無駄にしなかったよ！', '弓は嘘をつかない。', '次はもっと上手く狙えるよ！',
+    '狙いを外したの最後だけ……あれは計算外だった。', '矢が足りなくなりそう。補充しないとね。', '割と楽しかった！', '獲物の動きを読むのが得意なの。',
+  ],
+  cecil: [
+    '魔法の消費が激しい……でも勝てたわ。', '理論通り！完璧ね。', '次はもっと効率的に行くわ。', 'フッ、この程度かしら。',
+    'MPの管理が課題ね。', 'まあ、予想通りの展開だったわ。', '感情的になった瞬間があった。反省。', '研究通りにいかないこともある……',
+  ],
+  bram: [
+    'まだまだ！もっと強い奴はいないのか！', 'この拳に感謝しろよ。', 'いい汗かいたな。', '余裕の勝利だな！',
+    '燃えてきたぜ！', '今のは会心だったぜ！', 'おれの全力を出させてくれ。', 'ちゃんと当たったか心配だったぜ……',
+  ],
+  finn: [
+    'やったー！勝ったよ！', '少し慌てたけど……ちゃんと戦えた！', '先輩、見てましたか？', '次はもっとカッコよく戦います！',
+    'こんな経験、初めてで……すごかった！', '足が震えてる……でも、戦えた！', '僕でも役に立てた！', 'また一緒に戦いたいな！',
+  ],
+  vais: [
+    'はっ、こんなもんか。', '抵抗する前に終わらせてやったのに。', '盗賊時代の方がよほどキツかったぜ。', '楽な仕事だったな。',
+    '……手加減したんだがな。', 'もっと派手に暴れたかったぜ。', '次はもう少し抵抗してくれよ。', 'まあ悪くない。',
+  ],
+  logan: [
+    '……問題ない。', '死体に挨拶はいらん。', '弱い。次だ。', '倒れるのが仕事だったな、奴らは。',
+    '……息が乱れた。まずい。', '……俺の剣が鈍った。', '……奴らは本気じゃなかった。', '……次はもっと手強い。',
+  ],
+  iris: [
+    'この力、まだ制御できています。', '魔族の力を使わずに倒せたわ。', '……ありがとう、一緒に戦ってくれて。', '私の魔法、役に立った？',
+    '魔族の力が……抑えられた。良かった。', '次はもっと上手くできる。', '一緒にいてくれるから強くなれる気がする。', '怖かった、でも逃げなかった。',
+  ],
+  sig: [
+    'はっはー！余裕余裕！', '勝ち確だと思ってたぜ。', 'いいね、報酬が楽しみだ。', 'また一つ、借りができたね〜。',
+    'いやー楽しかった！', 'もうちょっとヒリヒリしてもよかったなぁ。', '生き残ったら勝ちだよね。', 'こういう仕事、嫌いじゃないぜ。',
+  ],
+  elk: [
+    'ふんッ！こんなやつら、俺の槍には届かん。', '獣の勘は正しかった。', '次はもっと速く片付けるぞ。', '群れで来ようと関係ない！',
+    '槍を貸してやろうかと思ったぜ。', '弱い群れには個体の力がない。', '先読みして正解だった。', '俺の穂先に当たったやつは運がなかった。',
+  ],
+  mira: [
+    'エルフの弓は裏切らないわ。', '静かに、でも確実に。', '風が味方してくれたの。', '悪いけど、手を抜いていたわ。',
+    '木の葉が揺れるように射た。感覚通りだったわ。', '弓に感謝。', '最後の一本は少し迷ったの。', '人間と共に戦うのは……悪くない。',
+  ],
+  zeno: [
+    '……興味深い戦法だった。', '魔族の血が騒いだ。', '……次は私が先に動こう。', '人間と戦うのは……悪くない。',
+    '……お前たちは強い。認める。', '魔族の目から見ても、見事だった。', '……次の敵は？', '戦い方は……学ぶことが多い。',
+  ],
 }
 
 export function closeBattle(state: GameState): GameState {
@@ -1718,6 +1877,15 @@ const WANDER_TRAIN_TEXTS: string[][] = [
   ['仲間に手合わせを頼んで体を動かした。'],
   ['夜明けまで基礎練習を繰り返した。'],
   ['過去の戦いを思い出しながら訓練した。'],
+  ['ひたすら走った。足が限界でも止まらなかった。'],
+  ['目を閉じて、剣を一万回振った気がする。'],
+  ['傷が痛むのを押して素振りした。それでいい。'],
+  ['砂袋を相手に蹴りと突きを繰り返した。'],
+  ['橋の欄干を歩いてバランス感覚を鍛えた。'],
+  ['崖の縁で型を演じた。落ちなかった。'],
+  ['川の中を走って下半身を追い込んだ。'],
+  ['石を投げ続けて集中力を磨いた。'],
+  ['暗闇の中で構えを取る練習をした。感覚が研ぎ澄まされる気がした。'],
 ]
 
 const WANDER_ITEM_PLACES: Record<string, string> = {
@@ -1858,6 +2026,13 @@ export function wander(state: GameState, mode: 'gold' | 'train' | 'explore' = 'e
       '……何もない一日。でも、生きている。',
       '……空振りだった。まあ、こんな日もある。',
       '……手ぶらで戻ってきた。夕日が妙にきれいだった。',
+      '……ぐるっと見てまわったが、特に何もなかった。よくある話だ。',
+      '……迷い込んだ路地の先には、何もなかった。',
+      '……一日中うろついたが、収穫ゼロ。疲れただけだった。',
+      '……近所の住人に声をかけてみた。何も教えてもらえなかった。',
+      '……石ころを蹴っていたら夕方になっていた。明日こそは。',
+      '……風の音しか聞こえなかった。探索は続く。',
+      '……宝が埋まってそうな場所を掘ってみた。土だけだった。',
     ]
     s.message = nothingTexts[Math.floor(Math.random() * nothingTexts.length)]
   } else if (roll < thresholds[5]) {
