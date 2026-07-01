@@ -1902,33 +1902,36 @@ export function campRest(state: GameState): GameState {
 // ===== うろつく（町・中継地での探索） =====
 
 // wanderフレーバーテキスト（場所タイプ別・PP4スタイル）
-const WANDER_GOLD_TEXTS: Record<string, string[]> = {
+type WanderGoldEntry = { prefix: string; suffix: string }
+const WANDER_GOLD_TEXTS: Record<string, WanderGoldEntry[]> = {
   town: [
-    '市場の片隅で',
-    '宿屋のテーブルの下で',
-    '路地裏に転がっていた財布から',
-    '露天商の後ろの置き忘れから',
-    '喧嘩跡の路地で',
+    { prefix: '市場の片隅に落ちていた財布の中から', suffix: 'を拾った！' },
+    { prefix: '宿屋のテーブルの下に転がっていた硬貨を集めたら', suffix: 'になった！' },
+    { prefix: '路地裏でぼんやり歩いていたら財布が落ちていた。中には', suffix: '入っていた！' },
+    { prefix: '露天商のおじさんが「お釣り多かった」と追いかけてきた。', suffix: '受け取った！' },
+    { prefix: '喧嘩があったらしい路地を通ったら、誰かのコインが散らばっていた。', suffix: '拾えた！' },
+    { prefix: '酔っ払いが落としていったポーチの中に', suffix: '入っていた！' },
   ],
   relay: [
-    '草むらの中に隠されていた袋から',
-    '古い石碑の陰で',
-    '木の根元の穴の中で',
-    '道端に落ちていた旅人の荷から',
-    '野営跡に残されていた荷から',
+    { prefix: '草むらの中に隠されていた布袋に', suffix: '入っていた！' },
+    { prefix: '古い石碑の陰に誰かが置いていった小袋から', suffix: '見つけた！' },
+    { prefix: '木の根元の穴の中に埋められた袋から', suffix: '掘り出した！' },
+    { prefix: '道端に残された旅人の荷物の中に', suffix: '入っていた。旅費の足しにしよう。' },
+    { prefix: '野営跡に忘れていかれた革袋の中に', suffix: 'あった！' },
+    { prefix: '川辺の石の下に誰かが隠したのか、', suffix: 'が入った袋があった！' },
   ],
   dungeon: [
-    '岩の隙間で',
-    '先人の残した荷物の中から',
-    '崩れた壁の向こうで',
-    '宝箱の片隅から',
+    { prefix: '岩の隙間に詰め込まれた先人の置き土産。', suffix: '入っていた。ありがたく使おう。' },
+    { prefix: '崩れた壁の向こうに古い箱があった。開けたら', suffix: '入っていた！' },
+    { prefix: '宝箱の隅、見逃しそうな小袋に', suffix: '詰まっていた！' },
+    { prefix: '床の石板が浮いていた。下には', suffix: '入った皮袋が！' },
   ],
   castle: [
-    '廃墟の玉座の下で',
-    '古い鎧の隙間から',
-    '崩れた石柱の台座の窪みで',
-    '枯れた噴水の底から',
-    '石板の裏の隠し場所で',
+    { prefix: '廃墟の玉座の下の秘密の穴から', suffix: 'が出てきた！' },
+    { prefix: '古い鎧の内側に縫いつけてあった緊急用の金が', suffix: 'あった！' },
+    { prefix: '崩れた石柱の台座の窪みに残されていた金貨、', suffix: '分になった！' },
+    { prefix: '枯れた噴水の底に沈んでいたコインを全部集めたら', suffix: 'になった！' },
+    { prefix: '石板の裏の隠し場所に', suffix: 'が隠されていた！' },
   ],
 }
 
@@ -1997,9 +2000,9 @@ export function wander(state: GameState, mode: 'gold' | 'train' | 'explore' = 'e
     const goldBase = Math.floor(15 + s.playerLevel * 3)
     const gold = Math.floor(Math.random() * goldBase) + goldBase
     s.gold += gold
-    const texts = WANDER_GOLD_TEXTS[locType] ?? WANDER_GOLD_TEXTS.relay
-    const place = texts[Math.floor(Math.random() * texts.length)]
-    s.message = `💰 ${place}${gold}G見つけた！`
+    const entries = WANDER_GOLD_TEXTS[locType] ?? WANDER_GOLD_TEXTS.relay
+    const entry = entries[Math.floor(Math.random() * entries.length)]
+    s.message = `💰 ${entry.prefix}${gold}G${entry.suffix}`
   } else if (roll < thresholds[1]) {
     const expGain = Math.floor(10 + s.playerLevel * 2.5)
     s.playerExp += expGain
