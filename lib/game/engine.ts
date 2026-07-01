@@ -1305,9 +1305,12 @@ function processCompanionTurn(state: GameState): GameState {
   if (order === 'attack') {
     // 指示: 攻撃 → 最も弱った敵を必ず攻撃
     const target = [...aliveEnemies].sort((a, b2) => a.hp - b2.hp)[0]
-    const { dmg } = calcDamage(actor, target)
-    const died = applyDamage(target, dmg)
-    b.logs.push({ text: `⚔️ ${actor.name}が攻撃！${target.name}に${dmg}ダメージ！`, type: 'damage' })
+    const result = calcDamage(actor, target)
+    const died = applyDamage(target, result.dmg)
+    b.logs.push({
+      text: result.crit ? pickCritText(actor, target, result.dmg) : pickAttackText(actor, target, result.dmg),
+      type: result.crit ? 'critical' : 'damage',
+    })
     if (died) addDeathLog(b, target)
     return advanceTurn(s)
   }
@@ -1328,9 +1331,12 @@ function processCompanionTurn(state: GameState): GameState {
     }
     // スキルがなければ通常攻撃
     const target = aliveEnemies[Math.floor(Math.random() * aliveEnemies.length)]
-    const { dmg } = calcDamage(actor, target)
-    const died = applyDamage(target, dmg)
-    b.logs.push({ text: `⚔️ ${actor.name}が攻撃！${target.name}に${dmg}ダメージ！`, type: 'damage' })
+    const result2 = calcDamage(actor, target)
+    const died = applyDamage(target, result2.dmg)
+    b.logs.push({
+      text: result2.crit ? pickCritText(actor, target, result2.dmg) : pickAttackText(actor, target, result2.dmg),
+      type: result2.crit ? 'critical' : 'damage',
+    })
     if (died) addDeathLog(b, target)
     return advanceTurn(s)
   }
