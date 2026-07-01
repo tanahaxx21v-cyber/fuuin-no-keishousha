@@ -850,11 +850,11 @@ export function startBattle(state: GameState, enemyIds: string[], isBoss: boolea
     if (locTexts) {
       text = locTexts[Math.floor(Math.random() * locTexts.length)]
     } else if (visitCount >= 5) {
-      text = '⚔️ また来た。敵も慣れてきたか。'
+      text = ['⚔️ また来た。敵も慣れてきたか。', '⚔️ 何度目だ……敵もいい加減諦めればいいのに。', '⚔️ ここの敵とはもう顔なじみだ。', '⚔️ また来たぞ。敵よ、覚悟しろ。'][visitCount % 4]
     } else if (visitCount >= 3) {
-      text = '⚔️ 勝手知ったる場所だ。敵が現れた！'
+      text = ['⚔️ 勝手知ったる場所だ。敵が現れた！', '⚔️ 何度も来ているが……まだいるか！', '⚔️ ここの敵の動きは分かってきた。来い！'][visitCount % 3]
     } else {
-      text = '⚔️ 敵が現れた！'
+      text = ['⚔️ 敵が現れた！', '⚔️ 気配を感じた——敵だ！', '⚔️ 突然、敵が現れた！', '⚔️ 物陰から敵が飛び出してきた！'][Math.floor(Math.random() * 4)]
     }
     openingLog.push({ text, type: 'system' })
   }
