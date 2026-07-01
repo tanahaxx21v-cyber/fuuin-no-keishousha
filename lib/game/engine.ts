@@ -450,7 +450,12 @@ export function joinCompanion(state: GameState, companionId: CompanionId): GameS
     s.party.push(companionId)
     s.message = joinLine
   } else {
-    s.message = `${joinLine}（パーティ編成でメンバーを追加しよう）`
+    const PARTY_FULL_SUFFIX = [
+      'パーティ編成でメンバーを追加しよう',
+      '仲間が3人いる。パーティを入れ替えるか、誰かを外してから',
+      'まず誰かをパーティから外そう',
+    ]
+    s.message = `${joinLine}（${PARTY_FULL_SUFFIX[Math.floor(Math.random() * PARTY_FULL_SUFFIX.length)]}）`
   }
   s.pendingCompanionJoin = undefined
   return s
@@ -591,7 +596,12 @@ export function skipCompanion(state: GameState): GameState {
         zeno:  '「……待てる。また来い。」',
       }
       const fullLine = PARTY_FULL_LINES[skipped as CompanionId] ?? '「……また機会があれば声をかけてくれ。」'
-      s.message = `${def.emoji}${def.name}${fullLine}（仲間に空きができたら再び出会える）`
+      const COMEBACK_SUFFIX = [
+        '仲間に空きができたら再び出会える',
+        'パーティに空きができたらまた来よう',
+        '空きができたら必ず会いに来よう',
+      ]
+      s.message = `${def.emoji}${def.name}${fullLine}（${COMEBACK_SUFFIX[Math.floor(Math.random() * COMEBACK_SUFFIX.length)]}）`
     } else {
       s.message = `${def.emoji}${def.name}「${line}」`
     }
@@ -2147,7 +2157,7 @@ export function useItemOutOfBattle(state: GameState, itemId: string, targetId: '
         ? pick([`🫙 ${item.name}を使った。体が軽くなった！`, `🫙 異常が消えた！体が動く！`, `🫙 ${item.name}——状態が回復した！`])
         : pick([`🫙 ${item.name}……今は異常がないようだ。`, `🫙 異常はない。${item.name}を使う必要はなかった。`, `🫙 体の状態は正常だ。${item.name}は温存しよう。`])
     } else {
-      s.message = `${item.name}を使った。`
+      s.message = pick([`${item.name}を使った。`, `${item.name}——効果は……よく分からないが使った。`, `${item.name}を消費した。`])
     }
   } else {
     const c = s.companions[targetId]
@@ -2174,7 +2184,7 @@ export function useItemOutOfBattle(state: GameState, itemId: string, targetId: '
         ? pick([`🫙 ${def.name}の状態異常が消えた！`, `🫙 ${def.name}「楽になった……！」`, `🫙 ${def.name}の異常が回復した！`])
         : pick([`🫙 ${def.name}は異常ではなかったようだ。`, `🫙 ${def.name}に使ったが、異常はなかった。`, `🫙 ${def.name}「大丈夫ですよ？……使わなくてよかったのに」`])
     } else {
-      s.message = `${item.name}を使った。`
+      s.message = pick([`${def.name}に${item.name}を使った。`, `${def.name}に渡した。${item.name}——役に立てばいい。`, `${item.name}を${def.name}に。`])
     }
   }
   return s
