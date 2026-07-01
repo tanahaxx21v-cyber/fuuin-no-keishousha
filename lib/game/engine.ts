@@ -839,19 +839,19 @@ export function processNonPlayerTurn(state: GameState): GameState {
 }
 
 const COMPANION_SKILL_CRIES: Partial<Record<CompanionId, string[]>> = {
-  gares: ['「騎士の誇りにかけて！」', '「これが俺の全力だ！」', '「覚悟しろ！」'],
-  liz:   ['「光よ、力を貸して！」', '「神の御名のもとに！」', '「みんなを守る！」'],
-  noa:   ['「狙いは外さない！」', '「この一矢に集中して！」', '「全集中……放て！」'],
-  cecil: ['「計算通りよ！」', '「理論値を超えてみせる！」', '「これが私の魔法！」'],
-  bram:  ['「燃えてきたぜ！」', '「この一撃で決めてやる！」', '「本気でいくぞ！」'],
-  finn:  ['「うわー！こんなの使えるの！？」', '「行きます！」', '「先輩、見ててください！」'],
-  vais:  ['「……もらった。」', '「準備はいいか？」', '「やってみるか。」'],
-  logan: ['「……終わりだ。」', '「無駄口はいらん。」', '「これで終わる。」'],
-  iris:  ['「この力を……制御できる！」', '「魔族の血が騒ぐ……」', '「……放つ！」'],
-  sig:   ['「はっはー！これ好きなんだよね！」', '「こっちの方が手っ取り早いぜ」', '「派手にいくか！」'],
-  elk:   ['「ふんッ！槍の神髄を見せてやる！」', '「突くぞ！」', '「獣の力を受けよ！」'],
-  mira:  ['「……静かに、でも確実に。」', '「エルフの技よ」', '「風よ、導いて。」'],
-  zeno:  ['「……面白い」', '「魔族の奥義だ」', '「封印された力を……解く」'],
+  gares: ['「騎士の誇りにかけて！」', '「これが俺の全力だ！」', '「覚悟しろ！」', '「騎士の剣はここにある！」', '「突き進む！」'],
+  liz:   ['「光よ、力を貸して！」', '「神の御名のもとに！」', '「みんなを守る！」', '「癒しの光よ！」', '「届いて……！」'],
+  noa:   ['「狙いは外さない！」', '「この一矢に集中して！」', '「全集中……放て！」', '「見えた——！」', '「当たれ当たれ当たれ！」'],
+  cecil: ['「計算通りよ！」', '「理論値を超えてみせる！」', '「これが私の魔法！」', '「式は完成している。あとは放つだけ！」', '「排除します。」'],
+  bram:  ['「燃えてきたぜ！」', '「この一撃で決めてやる！」', '「本気でいくぞ！」', '「どかんといくぜ！」', '「まだまだァ！」'],
+  finn:  ['「うわー！こんなの使えるの！？」', '「行きます！」', '「先輩、見ててください！」', '「覚えたて、だけど！」', '「やああ！」'],
+  vais:  ['「……もらった。」', '「準備はいいか？」', '「やってみるか。」', '「盗賊の技、見せてやろう。」', '「隙ありだ。」'],
+  logan: ['「……終わりだ。」', '「無駄口はいらん。」', '「これで終わる。」', '「……死ね。」', '「仕事をする。」'],
+  iris:  ['「この力を……制御できる！」', '「魔族の血が騒ぐ……」', '「……放つ！」', '「恐くない……もう恐くない！」', '「私の魔法……受けて！」'],
+  sig:   ['「はっはー！これ好きなんだよね！」', '「こっちの方が手っ取り早いぜ」', '「派手にいくか！」', '「勝負は一瞬だよ～！」', '「いっくよ～！」'],
+  elk:   ['「ふんッ！槍の神髄を見せてやる！」', '「突くぞ！」', '「獣の力を受けよ！」', '「猛攻だ！」', '「爪より鋭く！」'],
+  mira:  ['「……静かに、でも確実に。」', '「エルフの技よ」', '「風よ、導いて。」', '「精霊が共にいる。」', '「この矢、外さない。」'],
+  zeno:  ['「……面白い」', '「魔族の奥義だ」', '「封印された力を……解く」', '「試させてもらう。」', '「これが私の全力だ。」'],
 }
 
 function pickSkillCry(actor: BattleUnit): string {
@@ -1169,8 +1169,12 @@ function processEnemyTurn(state: GameState): GameState {
       ? affordableSkills.reduce((best, sk) => sk.power > best.power ? sk : best, affordableSkills[0])
       : affordableSkills[Math.floor(Math.random() * affordableSkills.length)]
     actor.mp -= skill.mpCost
-    const logPrefix = isBossDying ? '🌋' : isRaging ? '💥' : '🔥'
-    b.logs.push({ text: `${logPrefix} ${actor.name}は「${skill.name}」を使った！`, type: 'status' })
+    const ENEMY_SKILL_MSGS = isBossDying
+      ? [`🌋 ${actor.name}「${skill.name}」——最後の力を解放！`, `🌋 ${actor.name}が渾身の「${skill.name}」を放つ！`, `🌋 断末魔と共に「${skill.name}」！`]
+      : isRaging
+      ? [`💥 ${actor.name}が激怒しながら「${skill.name}」を使った！`, `💥 「${skill.name}」——怒りが技に乗る！`, `💥 ${actor.name}「${skill.name}」！力が増している！`]
+      : [`🔥 ${actor.name}は「${skill.name}」を使った！`, `🔥 ${actor.name}が「${skill.name}」を繰り出す！`, `🔥 「${skill.name}」——${actor.name}の一手！`]
+    b.logs.push({ text: ENEMY_SKILL_MSGS[Math.floor(Math.random() * ENEMY_SKILL_MSGS.length)], type: 'status' })
     const targets = skill.target === 'enemy_all'
       ? aliveAllies
       : skill.target === 'self'
@@ -1391,15 +1395,32 @@ function advanceTurn(state: GameState): GameState {
   const aliveAllies = b.units.filter(u => u.isAlly && u.hp > 0)
   const playerUnit = b.units.find(u => u.isPlayer)
 
-  // プレイヤー瀕死警告（HP20%以下、まだ生きている場合）
+  // プレイヤー瀕死警告（HP20%以下）
   if (playerUnit && playerUnit.hp > 0 && playerUnit.hp <= playerUnit.maxHp * 0.2) {
     const dangerRatio = playerUnit.hp / playerUnit.maxHp
     const alreadyWarned = b.logs.some(l => l.text.includes('⚠️') && l.text.includes(playerUnit.name))
     if (!alreadyWarned || Math.random() < 0.25) {
-      const DANGER_MSGS = dangerRatio <= 0.1
-        ? [`⚠️ ${playerUnit.name}のHPが危険域！`, `⚠️ もう限界だ……！`, `⚠️ 次の一撃で終わる……！`, `⚠️ ${playerUnit.name}「く……まだ……！」`]
-        : [`⚠️ ${playerUnit.name}のHPが残りわずか！`, `⚠️ まずい、回復が必要だ！`, `⚠️ 瀕死状態……急げ！`, `⚠️ ${playerUnit.name}のHPが赤い！回復アイテムを使え！`]
-      b.logs.push({ text: DANGER_MSGS[Math.floor(Math.random() * DANGER_MSGS.length)], type: 'status' })
+      // 仲間が生存中なら仲間ボイスも混ぜる
+      const aliveCompanions = b.units.filter(u => u.isAlly && !u.isPlayer && u.hp > 0 && u.companionId)
+      const COMPANION_WARN: Partial<Record<CompanionId, string[]>> = {
+        gares: [`⚠️ ガレス「${playerUnit.name}、下がれ！回復が先だ！」`, `⚠️ ガレス「無茶するな！援護する！」`],
+        liz:   [`⚠️ リズ「${playerUnit.name}さん！今すぐ回復します！」`, `⚠️ リズ「まずいわ……！傷が深い！」`],
+        noa:   [`⚠️ ノア「ちょっと！死にそうじゃん！アイテム使って！」`, `⚠️ ノア「HPが！回復して！」`],
+        bram:  [`⚠️ ブラム「おい！死ぬなよ！」`, `⚠️ ブラム「もったいない死に方すんな！」`],
+        finn:  [`⚠️ フィン「先輩！先輩大丈夫ですか！」`, `⚠️ フィン「やばい……回復してください！」`],
+      }
+      let warnMsg: string
+      const speakerWithLine = aliveCompanions.find(u => COMPANION_WARN[u.companionId as CompanionId])
+      if (speakerWithLine && Math.random() < 0.4) {
+        const lines = COMPANION_WARN[speakerWithLine.companionId as CompanionId]!
+        warnMsg = lines[Math.floor(Math.random() * lines.length)]
+      } else {
+        const DANGER_MSGS = dangerRatio <= 0.1
+          ? [`⚠️ ${playerUnit.name}のHPが危険域！`, `⚠️ もう限界だ……！`, `⚠️ 次の一撃で終わる……！`, `⚠️ ${playerUnit.name}「く……まだ……！」`]
+          : [`⚠️ ${playerUnit.name}のHPが残りわずか！`, `⚠️ まずい、回復が必要だ！`, `⚠️ 瀕死状態……急げ！`, `⚠️ ${playerUnit.name}のHPが赤い！回復アイテムを使え！`]
+        warnMsg = DANGER_MSGS[Math.floor(Math.random() * DANGER_MSGS.length)]
+      }
+      b.logs.push({ text: warnMsg, type: 'status' })
     }
   }
 
@@ -2244,7 +2265,18 @@ export function wander(state: GameState, mode: 'gold' | 'train' | 'explore' = 'e
       ]
       trainText = partnered[Math.floor(Math.random() * partnered.length)]
     } else {
-      trainText = WANDER_TRAIN_TEXTS[Math.floor(Math.random() * WANDER_TRAIN_TEXTS.length)][0]
+      const LOC_TRAIN_TEXTS: Partial<Record<string, string[]>> = {
+        town:    ['道場を見つけて基礎を叩き込んだ。', '路地裏で型を繰り返した。通行人が見ていた。', '市場の端で体を動かした。商人たちが避けて通った。'],
+        relay:   ['野外で素振りを続けた。風が剣を流す。', '自然の地形を使って足腰を鍛えた。', '荒野で発声から始めた。誰もいない。'],
+        dungeon: ['ダンジョンの通路で技を磨いた。実戦に近い緊張感だ。', '薄暗い中で集中力を養った。', '崩れた石壁を相手に斬り込んだ。'],
+        castle:  ['廃城の広間で型を演じた。響く足音が心地よい。', '石畳の上で体捌きを練習した。', '廃城の庭で鍛錬を積んだ。'],
+      }
+      const locTexts = LOC_TRAIN_TEXTS[locType]
+      if (locTexts && Math.random() < 0.4) {
+        trainText = locTexts[Math.floor(Math.random() * locTexts.length)]
+      } else {
+        trainText = WANDER_TRAIN_TEXTS[Math.floor(Math.random() * WANDER_TRAIN_TEXTS.length)][0]
+      }
     }
     const lvMsg = leveledUpNames.length > 0 ? ` ⭐${leveledUpNames.join('・')}もレベルアップ！` : ''
     const skMsg = learnedSkillMsgs.length > 0 ? ` ✨${learnedSkillMsgs.join(' ')}` : ''

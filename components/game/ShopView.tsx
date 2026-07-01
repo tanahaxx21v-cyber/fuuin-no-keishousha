@@ -67,7 +67,13 @@ export default function ShopView({ gs, onBuy, onClose }: Props) {
         return (
           <div className="bg-amber-950 border-2 border-amber-700 px-4 py-2 flex items-center gap-2">
             <span className="text-amber-400 text-xl">📈</span>
-            <div className="text-xs text-amber-300 font-bold">物価上昇中（+{tiers * 10}%）経過日数: {daysSpent}日 — 早めに買おう！</div>
+            <div className="text-xs text-amber-300 font-bold">
+              {tiers >= 4
+                ? `⚠️ 物価が大幅高騰中（+${tiers * 10}%）！残り日数僅か——今すぐ揃えろ！`
+                : tiers >= 2
+                ? `物価上昇中（+${tiers * 10}%）旅が長くなるほど値は上がる。早めに！`
+                : `物価が少し上がってきた（+${tiers * 10}%）。早めの購入が吉。`}
+            </div>
           </div>
         )
       })()}
