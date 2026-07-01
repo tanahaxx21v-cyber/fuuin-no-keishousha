@@ -2128,7 +2128,20 @@ export function wander(state: GameState, mode: 'gold' | 'train' | 'explore' = 'e
       if (s.playerLevel >= 15 && groupRoll < 0.10 && pool.length >= 1) {
         enemyGroup.push(pool[Math.floor(Math.random() * pool.length)])
       }
-      s.message = enemyGroup.length > 1 ? `⚠️ 敵の群れに囲まれた！（${enemyGroup.length}体）` : '⚠️ 怪しい影に気づいた！'
+      const WANDER_ENCOUNTER_SOLO = [
+        '⚠️ 怪しい影に気づいた！', '⚠️ 突然、敵が姿を現した！', '⚠️ 気配を感じた瞬間、敵が飛び出してきた！',
+        '⚠️ 物音がした。……敵だ！', '⚠️ 背後に気配を感じた。振り返ると敵がいた！',
+        '⚠️ 静寂を破るように敵が現れた！', '⚠️ 視界の端に影が動いた……敵だ！',
+      ]
+      const WANDER_ENCOUNTER_GROUP = [
+        `⚠️ 敵の群れに囲まれた！（${enemyGroup.length}体）`,
+        `⚠️ 複数の敵に包囲された！（${enemyGroup.length}体）`,
+        `⚠️ 一体だけではなかった……${enemyGroup.length}体に囲まれた！`,
+        `⚠️ 敵の罠にはまった！${enemyGroup.length}体の敵が現れた！`,
+      ]
+      s.message = enemyGroup.length > 1
+        ? WANDER_ENCOUNTER_GROUP[Math.floor(Math.random() * WANDER_ENCOUNTER_GROUP.length)]
+        : WANDER_ENCOUNTER_SOLO[Math.floor(Math.random() * WANDER_ENCOUNTER_SOLO.length)]
       return startBattle(s, enemyGroup, false)
     }
     const nothingTexts = [
@@ -2154,14 +2167,26 @@ export function wander(state: GameState, mode: 'gold' | 'train' | 'explore' = 'e
       { itemId: 'ether', name: 'エーテル', normalPrice: 120, deal: 35 },
     ]
     const pick = discountItems[Math.floor(Math.random() * discountItems.length)]
+    const MERCHANT_INTROS = [
+      `「通りすがりの者よ……${pick.name}を${pick.deal}Gで特別に売ろう」`,
+      `「今日は気が向いた。${pick.name}を${pick.deal}Gで売ってやろう。おかしな値段だが、本物だ」`,
+      `「……見かけによらず良い品を持っているだろ？${pick.name}、${pick.deal}Gで手放す」`,
+      `「急いでいるのは分かるが……これだけ聞いてくれ。${pick.name}が${pick.deal}Gで手に入るぞ」`,
+    ]
+    const merchantSpeech = MERCHANT_INTROS[Math.floor(Math.random() * MERCHANT_INTROS.length)]
     if (s.gold >= pick.deal) {
       s.gold -= pick.deal
       const ex = s.inventory.find(i => i.itemId === pick.itemId)
       if (ex) ex.qty += 1
       else s.inventory.push({ itemId: pick.itemId, qty: 1 })
-      s.message = `🧙 謎の行商人に出会った。「通りすがりの者よ……${pick.name}を${pick.deal}Gで特別に売ろう」。買った！（通常価格${pick.normalPrice}G）`
+      s.message = `🧙 謎の行商人に出会った。${merchantSpeech}——買った！（通常価格${pick.normalPrice}G）`
     } else {
-      s.message = `🧙 謎の行商人に出会ったが、手持ちが${pick.deal}G足りなかった。次の機会に……`
+      const BROKE_MSGS = [
+        `🧙 謎の行商人に出会ったが、所持金が${pick.deal}G足りなかった。「また会おう……」`,
+        `🧙 謎の行商人が${pick.name}を${pick.deal}Gで売ろうとしたが、金が足りなかった。悔しい。`,
+        `🧙 行商人「${pick.name}が${pick.deal}Gだよ」——懐が寂しかった。次は買える準備をしておこう。`,
+      ]
+      s.message = BROKE_MSGS[Math.floor(Math.random() * BROKE_MSGS.length)]
     }
   } else if (mode === 'explore') {
     // 探索モードの「特別発見」——情報収集・隠し発見
