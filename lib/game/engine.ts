@@ -2668,6 +2668,14 @@ export function wander(state: GameState, mode: 'gold' | 'train' | 'explore' = 'e
       s.sealStones.length === 1 ? '📜「一つ目の封印石を手にしたか……あとは嵐と闇の石だ。急げ」' : null,
       s.sealStones.length === 2 ? '📜「もう二つか！最後の封印石を手に入れれば、決戦に挑める！」' : null,
       s.daysLeft <= 40 && s.sealStones.length === 0 ? '📜「まだ封印石が一つもない……今すぐ行動しないと間に合わないぞ！」' : null,
+      alivePartyIds.length === 1 ? '📜「仲間が一人か……心強いが、もう一人いると安心だ。まだ仲間を探せるぞ」' : null,
+      alivePartyIds.length === 2 ? '📜「二人の仲間がいるか。パーティ枠はまだ一人分ある。余裕があれば増やすといい」' : null,
+      s.gold >= 200 ? '📜「金があるうちに必要なものを揃えておけ。後になって後悔するより早めに投資だ」' : null,
+      s.playerLevel >= 10 && s.playerLevel < 15 ? '📜「Lv10を超えた。そろそろ複数の敵と戦える。積極探索でEXPを稼ごう」' : null,
+      s.playerLevel >= 20 ? '📜「Lv20か。もう並の冒険者ではない。スキルを使いこなしていれば、かなりの難敵でも勝てるはず」' : null,
+      s.inventory.length >= 4 ? '📜「装備が充実しているな。いざという時のために、アイテムは惜しまず使え」' : null,
+      s.defeatedBosses.length === 1 ? '📜「一体倒したか。封印石の残りはあと二つ。次の目標を絞れ」' : null,
+      s.defeatedBosses.length === 2 ? '📜「二体目か！あと一体倒せば、いよいよ砂漠遺跡に向かえる。ここが正念場だ」' : null,
     ].filter(Boolean) as string[]
     const allHints = [...sealHints, ...generalHints]
     const hint = allHints[Math.floor(Math.random() * allHints.length)]
