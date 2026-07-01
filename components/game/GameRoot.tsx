@@ -620,7 +620,7 @@ export default function GameRoot() {
       {gs.message && (() => {
         const msg = gs.message!
         const isJoin = /^✅/.test(msg)
-        const isSuccess = /^(💰|🎁|✨|🎉|💪|⭐|💎|🏆)/.test(msg)
+        const isSuccess = /^(💰|🎁|✨|🎉|💪|⭐|💎|🏆|💨|🧪|🌿|🫙|🏕️)/.test(msg)
         const isWarn = /^(⚠️|☠️|💀)/.test(msg)
         if (isJoin) return (
           <div className="fixed top-20 left-1/2 -translate-x-1/2 z-40 bg-purple-950 border-2 border-purple-400 px-5 py-3 text-sm font-black max-w-sm text-center">
