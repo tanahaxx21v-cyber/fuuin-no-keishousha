@@ -2380,10 +2380,10 @@ const WANDER_REST_TEXTS: string[] = [
 ]
 
 const LOC_REST_TEXTS: Partial<Record<string, string[]>> = {
-  town:    ['人通りを眺めながら広場のベンチで休んだ。', '市場の喧騒から離れた路地で一息ついた。', '路地裏の日陰でしばし休んだ。旅人の特権だ。'],
-  relay:   ['草の上に横になり、空を見上げた。雲がゆっくり流れていた。', '街道脇の切り株に腰かけて、しばらく遠くを見ていた。', '荒野の石に背を預けた。風が涼しかった。'],
-  dungeon: ['暗い通路の壁にもたれ、息を整えた。', '安全な小部屋で仮眠をとった。薄暗くても、今は眠れる。', '篝火の側に座り、少しだけ目を閉じた。'],
-  castle:  ['崩れた石柱に腰かけて一休みした。廃城の沈黙が妙に穏やかだった。', '廃城の窓から外を眺めた。風景だけは美しかった。', '石畳の上に座り、しばし無心になった。'],
+  town:    ['人通りを眺めながら広場のベンチで休んだ。', '市場の喧騒から離れた路地で一息ついた。', '路地裏の日陰でしばし休んだ。旅人の特権だ。', '噴水のそばに腰を下ろし、通行人を眺めながら休んだ。'],
+  relay:   ['草の上に横になり、空を見上げた。雲がゆっくり流れていた。', '街道脇の切り株に腰かけて、しばらく遠くを見ていた。', '荒野の石に背を預けた。風が涼しかった。', '道の脇の木陰で、しばらく目を閉じた。'],
+  dungeon: ['暗い通路の壁にもたれ、息を整えた。', '安全な小部屋で仮眠をとった。薄暗くても、今は眠れる。', '篝火の側に座り、少しだけ目を閉じた。', '明かりを消さずに横になった。暗いより、このほうがいい。'],
+  castle:  ['崩れた石柱に腰かけて一休みした。廃城の沈黙が妙に穏やかだった。', '廃城の窓から外を眺めた。風景だけは美しかった。', '石畳の上に座り、しばし無心になった。', '朽ちた椅子に座った。意外と座り心地がよかった。'],
 }
 
 export function wander(state: GameState, mode: 'gold' | 'train' | 'explore' = 'explore'): GameState {
@@ -2460,6 +2460,8 @@ export function wander(state: GameState, mode: 'gold' | 'train' | 'explore' = 'e
         `${partner.name}と共に夜明けまで訓練した。`,
         `${partner.name}に背中を押されながら稽古した。`,
         `${partner.name}と汗を流した。`,
+        `${partner.name}に打ち込んだ。受けるたびに気づきがある。`,
+        `${partner.name}「ここが甘い」と言われた。悔しいが、的確だった。`,
       ]
       trainText = partnered[Math.floor(Math.random() * partnered.length)]
     } else {
@@ -2553,6 +2555,7 @@ export function wander(state: GameState, mode: 'gold' | 'train' | 'explore' = 'e
         `⚠️ 複数の敵に包囲された！（${enemyGroup.length}体）`,
         `⚠️ 一体だけではなかった……${enemyGroup.length}体に囲まれた！`,
         `⚠️ 敵の罠にはまった！${enemyGroup.length}体の敵が現れた！`,
+        `⚠️ 四方から気配……${enemyGroup.length}体に取り囲まれた！`,
       ]
       s.message = enemyGroup.length > 1
         ? WANDER_ENCOUNTER_GROUP[Math.floor(Math.random() * WANDER_ENCOUNTER_GROUP.length)]
