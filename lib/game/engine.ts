@@ -563,7 +563,23 @@ export function skipCompanion(state: GameState): GameState {
       if (meetingEventId) {
         s.completedEvents = s.completedEvents.filter(id => id !== meetingEventId)
       }
-      s.message = `${def.emoji}${def.name}「……また機会があれば声をかけてくれ。」（仲間に空きができたら再び出会えるかもしれない）`
+      const PARTY_FULL_LINES: Partial<Record<CompanionId, string>> = {
+        gares: '「……パーティが既に一杯か。仲間に空きができたら声をかけてくれ。待っている。」',
+        liz:   '「……今は一杯なのね。また来てくれたら、一緒に行くわ。待ってる。」',
+        noa:   '「え、満員なの？……じゃあ、空いたら絶対呼んでよ！待ってるから！」',
+        cecil: '「……パーティ定員か。合理的に考えれば、また来い。」',
+        bram:  '「満員か！？……仕方ない。空いたら真っ先に来い！」',
+        finn:  '「そっか……仲間が多いんですね。いつでも待ってます！」',
+        vais:  '「……人数オーバーか。まあいい。また縁があれば会おう。」',
+        logan: '「……満員か。必要なら呼べ。」',
+        iris:  '「……もう少し待ちます。また来てくれますよね？」',
+        sig:   '「あ〜惜しい！また来てよ！その時は絶対一緒に行くよ！」',
+        elk:   '「群れが大きすぎるか。空きができたら来い。待ってる。」',
+        mira:  '「……また機会があれば。ここにいます。」',
+        zeno:  '「……待てる。また来い。」',
+      }
+      const fullLine = PARTY_FULL_LINES[skipped as CompanionId] ?? '「……また機会があれば声をかけてくれ。」'
+      s.message = `${def.emoji}${def.name}${fullLine}（仲間に空きができたら再び出会える）`
     } else {
       s.message = `${def.emoji}${def.name}「${line}」`
     }
@@ -1913,7 +1929,14 @@ export function closeBattle(state: GameState): GameState {
       const line = lines[Math.floor(Math.random() * lines.length)]
       mournerMsg = `\n${def.emoji}${def.name}「${line}」`
     }
-    s.message = `💀 ${newlyDeadNames.join('・')}が永眠した……二度と戦えない${mournerMsg}`
+    const PERM_DEATH_MSGS = [
+      `💀 ${newlyDeadNames.join('・')}が永眠した……二度と戦えない`,
+      `💀 ${newlyDeadNames.join('・')}の魂が旅立った……`,
+      `💀 ${newlyDeadNames.join('・')}はもう戻らない……`,
+      `💀 ${newlyDeadNames.join('・')}を失った……この痛みは消えない`,
+      `💀 ${newlyDeadNames.join('・')}が散った……永遠に`,
+    ]
+    s.message = `${PERM_DEATH_MSGS[Math.floor(Math.random() * PERM_DEATH_MSGS.length)]}${mournerMsg}`
   } else if (!defeated && !isFinal) {
     // 勝利後の仲間一言コメント
     const aliveParty = s.party.filter(id => s.companions[id]?.alive)
