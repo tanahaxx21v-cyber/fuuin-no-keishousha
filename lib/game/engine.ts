@@ -1569,7 +1569,18 @@ function applyBattleRewards(state: GameState): GameState {
     s.playerDef += 2
     s.playerSpd += 1
     s.levelUpPending = true
-    b.logs.push({ text: `⭐ ${s.playerName}がLv${s.playerLevel}にレベルアップ！　HP+12 MP+5 ATK+2 DEF+2 SPD+1`, type: 'system' })
+    const LEVEL_UP_MILESTONE: Record<number, string> = {
+      5:  `——Lv5。一人前の戦士の片鱗が見えてきた。`,
+      10: `——Lv10。折り返しを超えた。本物の冒険者だ。`,
+      15: `——Lv15。もはや素人ではない。一流の域に入りつつある。`,
+      20: `——Lv20。強者の風格が滲み出ている。`,
+      25: `——Lv25。伝説の勇者に並ぶ力だ。`,
+      30: `——Lv30！最大レベルに到達！限界突破の力を得た！`,
+    }
+    const levelComment = LEVEL_UP_MILESTONE[s.playerLevel] ?? [
+      '体の奥から力が湧いてくる。', '確かな成長を感じる。', '一段と強くなった気がする。', 'また一歩、前へ進んだ。',
+    ][s.playerLevel % 4]
+    b.logs.push({ text: `⭐ ${s.playerName}がLv${s.playerLevel}にレベルアップ！　HP+12 MP+5 ATK+2 DEF+2 SPD+1　${levelComment}`, type: 'system' })
     // スキル習得チェック
     const newSkill = PLAYER_SKILL_SCHEDULE.find(ps => ps.level === s.playerLevel)
     if (newSkill && !s.playerSkills.some(sk => sk.id === newSkill.skill.id)) {
@@ -1594,7 +1605,13 @@ function applyBattleRewards(state: GameState): GameState {
       c.atk += def.atkGrowth
       c.def += def.defGrowth
       c.spd += def.spdGrowth
-      b.logs.push({ text: `⭐ ${def.name}がLv${c.level}にレベルアップ！`, type: 'system' })
+      const COMP_LV_COMMENTS = [
+        `${def.emoji}${def.name}がLv${c.level}にレベルアップ！`,
+        `⭐ ${def.name}が成長した！Lv${c.level}！`,
+        `⭐ ${def.name}、Lv${c.level}へ！力がみなぎっている！`,
+        `⭐ ${def.name}がLv${c.level}！頼りになる！`,
+      ]
+      b.logs.push({ text: COMP_LV_COMMENTS[c.level % COMP_LV_COMMENTS.length], type: 'system' })
       // 仲間スキル習得チェック
       const newCompSkill = def.learnableSkills?.find(ls => ls.level === c.level)
       if (newCompSkill && !c.learnedSkills.some(sk => sk.id === newCompSkill.skill.id)) {
