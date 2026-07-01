@@ -928,20 +928,35 @@ export function battleUseItem(state: GameState, itemId: string, targetUid: strin
   if (item.effect === 'heal_hp') {
     const healed = Math.min(item.power, target.maxHp - target.hp)
     target.hp += healed
-    b.logs.push({ text: `🧪 ${target.name}のHPが${healed}回復！`, type: 'heal' })
+    const isFullHeal = target.hp >= target.maxHp
+    const HP_HEAL_MSGS = isFullHeal
+      ? [`🧪 ${target.name}のHPが全回復した！`, `🧪 ${target.name}が完全回復！`, `🧪 ${item.name}で${target.name}が満タンに回復！`]
+      : [`🧪 ${target.name}のHPが${healed}回復！`, `🧪 ${item.name}で${target.name}のHPを${healed}回復した！`, `🧪 ${target.name}に使用。HP+${healed}！`]
+    b.logs.push({ text: HP_HEAL_MSGS[Math.floor(Math.random() * HP_HEAL_MSGS.length)], type: 'heal' })
   } else if (item.effect === 'heal_mp') {
     const healed = Math.min(item.power, target.maxMp - target.mp)
     target.mp += healed
-    b.logs.push({ text: `✨ ${target.name}のMPが${healed}回復！`, type: 'heal' })
+    const MP_HEAL_MSGS = [`✨ ${target.name}のMPが${healed}回復！`, `✨ ${item.name}で${target.name}のMPを${healed}回復！`, `✨ ${target.name}のMPが戻ってきた！+${healed}`]
+    b.logs.push({ text: MP_HEAL_MSGS[Math.floor(Math.random() * MP_HEAL_MSGS.length)], type: 'heal' })
   } else if (item.effect === 'heal_both') {
     const healedHp = Math.min(item.power, target.maxHp - target.hp)
     const healedMp = Math.min(item.power, target.maxMp - target.mp)
     target.hp += healedHp
     target.mp += healedMp
-    b.logs.push({ text: `🌿 ${target.name}のHP+${healedHp}、MP+${healedMp}回復！`, type: 'heal' })
+    const BOTH_HEAL_MSGS = [
+      `🌿 ${target.name}のHP+${healedHp}、MP+${healedMp}回復！`,
+      `🌿 ${item.name}で${target.name}が回復！HP+${healedHp} MP+${healedMp}`,
+      `🌿 ${target.name}の傷と魔力が癒えた。HP+${healedHp} MP+${healedMp}`,
+    ]
+    b.logs.push({ text: BOTH_HEAL_MSGS[Math.floor(Math.random() * BOTH_HEAL_MSGS.length)], type: 'heal' })
   } else if (item.effect === 'cure_status') {
     target.statusEffects = []
-    b.logs.push({ text: `🫙 ${target.name}の状態異常が回復！`, type: 'status' })
+    const CURE_MSGS = [
+      `🫙 ${target.name}の状態異常が回復！`,
+      `🫙 ${item.name}で${target.name}の異常が治った！`,
+      `🫙 ${target.name}の毒・スタンが解除された！`,
+    ]
+    b.logs.push({ text: CURE_MSGS[Math.floor(Math.random() * CURE_MSGS.length)], type: 'status' })
   }
 
   return advanceTurn(s)
@@ -1365,7 +1380,8 @@ function advanceTurn(state: GameState): GameState {
   }
   if (aliveAllies.length === 0) {
     b.phase = 'defeat'
-    b.logs.push({ text: `💀 全滅...`, type: 'death' })
+    const WIPE_MSGS = ['💀 全滅...', '💀 誰も立っていない...', '💀 力尽きた...', '💀 全員、倒れた...']
+    b.logs.push({ text: WIPE_MSGS[Math.floor(Math.random() * WIPE_MSGS.length)], type: 'death' })
     return s
   }
 
