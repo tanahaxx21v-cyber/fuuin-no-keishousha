@@ -901,9 +901,13 @@ export default function BattleScene({ gs, onAttack, onSkill, onItem, onFlee, onC
                 {(() => {
                   const hpPct = Math.round(playerUnit.hp / playerUnit.maxHp * 100)
                   const color = hpPct > 60 ? 'text-green-400' : hpPct > 30 ? 'text-yellow-400' : 'text-red-400'
+                  const comment = hpPct >= 90 ? ['ほぼ無傷！完璧な戦いぶりだ。', '傷一つなし。圧倒的だった。'][b.turn % 2]
+                    : hpPct >= 60 ? ['余裕の勝利。まだまだ戦える。', '良い状態で切り抜けた。'][b.turn % 2]
+                    : hpPct >= 30 ? ['ギリギリだった。回復しておこう。', '消耗した……アイテムが必要だ。'][b.turn % 2]
+                    : ['瀕死で生還……あと一撃で終わっていた。', '奇跡だ。絶対に回復しろ。'][b.turn % 2]
                   return (
                     <div className={`text-xs font-bold ${color}`}>
-                      HP残{hpPct}%で生還
+                      HP残{hpPct}%で生還——{comment}
                     </div>
                   )
                 })()}
@@ -934,7 +938,13 @@ export default function BattleScene({ gs, onAttack, onSkill, onItem, onFlee, onC
                   const alive = allies.filter(a => !a.isPlayer && a.hp > 0)
                   if (alive.length === 0) return null
                   const speaker = alive[b.turn % alive.length]
-                  return <div className="text-xs text-gray-400">「次も頼んだぞ。」—— {speaker.name}</div>
+                  const VICTORY_FALLBACK = b.turn >= 10
+                    ? ['「長い戦いだったな。よく耐えた。」', '「ふう……やっと終わったか。」', '「激しかった。でも勝てた。」', '「死ぬかと思ったぞ。」']
+                    : b.turn <= 3
+                    ? ['「あっという間だったな！」', '「楽勝だ！次を探そう！」', '「速攻だ。気持ちいい。」', '「手加減したかな？——嘘だ、全力だ。」']
+                    : ['「次も頼んだぞ。」', '「悪くない戦いだった。」', '「チームワークがいいな。」', '「生き残れた。それが全てだ。」']
+                  const line = VICTORY_FALLBACK[b.turn % VICTORY_FALLBACK.length]
+                  return <div className="text-xs text-gray-400">{line}—— {speaker.name}</div>
                 })()}
                 {/* 死亡した仲間 */}
                 {allies.filter(a => !a.isPlayer && a.hp <= 0).map(a => (
@@ -944,7 +954,13 @@ export default function BattleScene({ gs, onAttack, onSkill, onItem, onFlee, onC
             )}
 
             {b.phase === 'defeat' && (
-              <p className="text-red-300 text-sm mb-3 font-bold">力尽きてしまった……</p>
+              <p className="text-red-300 text-sm mb-3 font-bold">{[
+                '力尽きてしまった……',
+                '……倒れた。立ち上がれない。',
+                '光が……遠くなる……',
+                '……ここまでか。',
+                '誰かの声が……聞こえない……',
+              ][b.turn % 5]}</p>
             )}
 
             <button

@@ -762,21 +762,46 @@ export function startBattle(state: GameState, enemyIds: string[], isBoss: boolea
   const turnQueue = buildTurnQueue(allUnits)
 
   // ボス開幕台詞（PP4スタイル）
-  const BOSS_OPENING_LINES: Record<string, string> = {
-    bandit_king: '「フフ……よくここまで来た。だが、お前たちの旅はここで終わりだ！」',
-    mine_king: '「愚かな侵入者め！この鉱山は俺の王国だ！貴様らの骨で床を飾ってやろう！」',
-    storm_dragon: '「……小さき命よ、嵐に飲まれよ！」',
-    forest_king: '「この森の全ての命が、貴様らを拒絶する！」',
-    tidal_king: '「潮の力に逆らうとは……愚か者め！波に飲まれて消えろ！」',
-    archive: '「記録せよ……この世界の終わりを。全ては記録に刻まれ、消える運命だ！」',
+  const BOSS_OPENING_LINES: Record<string, string[]> = {
+    bandit_king: [
+      '「フフ……よくここまで来た。だが、お前たちの旅はここで終わりだ！」',
+      '「命が惜しければ引き返せ。……だが遅すぎたな！」',
+      '「盗賊王の名を舐めるなよ。骨は残してやる！」',
+    ],
+    mine_king: [
+      '「愚かな侵入者め！この鉱山は俺の王国だ！貴様らの骨で床を飾ってやろう！」',
+      '「ここまで来るとは……思い上がりにも程がある！死ねぇ！」',
+      '「この鉱脈は渡さん！今ここで貴様らを埋めてやる！」',
+    ],
+    storm_dragon: [
+      '「……小さき命よ、嵐に飲まれよ！」',
+      '「哀れな人間よ……嵐の前に膝をつくがいい！」',
+      '「雷霆の怒りを受けるがいい！塵となって消えろ！」',
+    ],
+    forest_king: [
+      '「この森の全ての命が、貴様らを拒絶する！」',
+      '「侵入者よ……森の怒りを受けるがいい！」',
+      '「人の子よ、自然の法を犯した報いを受けるがいい！」',
+    ],
+    tidal_king: [
+      '「潮の力に逆らうとは……愚か者め！波に飲まれて消えろ！」',
+      '「深淵から来た者が……何故ここに！許さぬ、飲み込んでやる！」',
+      '「大海の主に逆らうか……この海域で貴様らの命は終わりだ！」',
+    ],
+    archive: [
+      '「記録せよ……この世界の終わりを。全ては記録に刻まれ、消える運命だ！」',
+      '「……お前たちが来ることは、すでに記録にある。結果も同様だ——消えろ！」',
+      '「永劫の記録体よ……最後の抵抗を記録してやろう。悔いのないよう戦え！」',
+    ],
   }
 
   const bossId = isBoss ? enemyIds[0] : null
   const openingLog: BattleState['logs'][0][] = []
   if (isBoss && bossId && BOSS_OPENING_LINES[bossId]) {
     const bossName = ENEMIES[bossId]?.name ?? ''
+    const bossLines = BOSS_OPENING_LINES[bossId]
     openingLog.push({ text: `${ENEMIES[bossId]?.emoji ?? '👹'} ${bossName}が立ちはだかった！`, type: 'system' })
-    openingLog.push({ text: `${BOSS_OPENING_LINES[bossId]}`, type: 'system' })
+    openingLog.push({ text: bossLines[Math.floor(Math.random() * bossLines.length)], type: 'system' })
   } else {
     const DUNGEON_ENCOUNTER_TEXTS: Partial<Record<string, string[]>> = {
       demon_mine: ['坑道の暗闇から唸り声が響く！', '崩れた坑道の向こうに影が見えた！', '鉱山の奥から足音が近づいてくる！'],
@@ -1633,7 +1658,38 @@ function applyBattleRewards(state: GameState): GameState {
     }
 
     if (b.isFinalBoss) {
-      b.logs.push({ text: `🏆 終末記録体アーカイブを討伐した！ルミナ大陸に平和が戻った！`, type: 'system' })
+      const FINAL_VICTORY_MSGS = [
+        `🏆 終末記録体アーカイブが崩れ落ちた——！ルミナ大陸に平和が戻った！`,
+        `🏆 魔王の意志が……消えていく。封印の継承者として、成し遂げた！`,
+        `🏆 闇が晴れる。アーカイブを討伐した——これで、終わりだ！`,
+        `🏆 百年の呪縛が解き放たれた！ルミナ大陸の空が輝きを取り戻す！`,
+        `🏆 最後の敵が倒れた。……勝った。本当に、勝ったんだ。`,
+      ]
+      b.logs.push({ text: FINAL_VICTORY_MSGS[Math.floor(Math.random() * FINAL_VICTORY_MSGS.length)], type: 'system' })
+      // 仲間の最終コメント（ファイナルボス専用）
+      const alivePartyUnits = b.units.filter(u => u.isAlly && !u.isPlayer && u.hp > 0 && u.companionId)
+      const FINAL_BOSS_COMPANION_LINES: Partial<Record<CompanionId, string>> = {
+        gares: 'ガレス「……成し遂げたな。騎士として、共に戦えたことを誇りに思う。」',
+        liz:   'リズ「神様……ありがとう。みんな、ありがとう……っ！」',
+        noa:   'ノア「やった……やったーー！！本当に倒したんだ！！」',
+        cecil: 'セシル「……理論の外のことが、起きた。信じがたい結末ね。」',
+        bram:  'ブラム「最高だったぞ！これ以上の戦いはないな！！」',
+        finn:  'フィン「先輩……勝ったんですね……っ！」',
+        vais:  'ヴァイス「……珍しい。達成感なんて、久しぶりだ。」',
+        logan: 'ローガン「……終わった。……ようやく。」',
+        iris:  'イリス「魔族が……世界を救う側に立った。これが正しかったんですよね……？」',
+        sig:   'シグ「生きて帰れた！最高の一仕事だったぜ！」',
+        elk:   'エルク「獣の誇りにかけて……俺たちは勝った！」',
+        mira:  'ミラ「大地が……泣いている。嬉し泣きよ、きっと。」',
+        zeno:  'ゼノ「……魔王と人間が共に世界を救った。記録に値する奇跡だ。」',
+      }
+      if (alivePartyUnits.length > 0) {
+        for (const unit of alivePartyUnits) {
+          if (unit.companionId && FINAL_BOSS_COMPANION_LINES[unit.companionId as CompanionId]) {
+            b.logs.push({ text: `${unit.emoji}${FINAL_BOSS_COMPANION_LINES[unit.companionId as CompanionId]}`, type: 'system' })
+          }
+        }
+      }
       return s
     }
 
