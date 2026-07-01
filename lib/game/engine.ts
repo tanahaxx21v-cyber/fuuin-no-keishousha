@@ -2348,7 +2348,19 @@ const WANDER_REST_TEXTS: string[] = [
   '川のそばで足を冷やした。ちょっとした贅沢だ。',
   '地面に寝転んで雲を眺めた。たまにはこういう日も必要だ。',
   '昼寝をした。夢は見なかった。でも、気持ちよかった。',
+  '風の音を聞きながら、ぼうっとしていた。それだけで十分だった。',
+  '腰を下ろして目を閉じた。体の中から疲れが抜けていく感じがした。',
+  '荷物を降ろして深呼吸した。背中が軽くなった。',
+  '足を伸ばしてしばらく動かなかった。この静けさが心地よい。',
+  '水を飲み、少し食べた。それだけで、また歩ける気がした。',
 ]
+
+const LOC_REST_TEXTS: Partial<Record<string, string[]>> = {
+  town:    ['人通りを眺めながら広場のベンチで休んだ。', '市場の喧騒から離れた路地で一息ついた。', '路地裏の日陰でしばし休んだ。旅人の特権だ。'],
+  relay:   ['草の上に横になり、空を見上げた。雲がゆっくり流れていた。', '街道脇の切り株に腰かけて、しばらく遠くを見ていた。', '荒野の石に背を預けた。風が涼しかった。'],
+  dungeon: ['暗い通路の壁にもたれ、息を整えた。', '安全な小部屋で仮眠をとった。薄暗くても、今は眠れる。', '篝火の側に座り、少しだけ目を閉じた。'],
+  castle:  ['崩れた石柱に腰かけて一休みした。廃城の沈黙が妙に穏やかだった。', '廃城の窓から外を眺めた。風景だけは美しかった。', '石畳の上に座り、しばし無心になった。'],
+}
 
 export function wander(state: GameState, mode: 'gold' | 'train' | 'explore' = 'explore'): GameState {
   const s = deepClone(state)
@@ -2484,7 +2496,12 @@ export function wander(state: GameState, mode: 'gold' | 'train' | 'explore' = 'e
       const lines = COMPANION_REST_LINES[compId] ?? [`${compName}と一緒に休んだ。疲れが和らいだ。`]
       restText = lines[Math.floor(Math.random() * lines.length)]
     } else {
-      restText = WANDER_REST_TEXTS[Math.floor(Math.random() * WANDER_REST_TEXTS.length)]
+      const locRestTexts = LOC_REST_TEXTS[locType]
+      if (locRestTexts && Math.random() < 0.4) {
+        restText = locRestTexts[Math.floor(Math.random() * locRestTexts.length)]
+      } else {
+        restText = WANDER_REST_TEXTS[Math.floor(Math.random() * WANDER_REST_TEXTS.length)]
+      }
     }
     const healSuffix = s.playerHp >= s.playerMaxHp ? '　体が完全に回復した！' : `　HP+${heal}。`
     s.message = `✨ ${restText}${healSuffix}`
