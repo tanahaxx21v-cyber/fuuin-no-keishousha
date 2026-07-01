@@ -481,12 +481,40 @@ export default function GameRoot() {
       {gs.levelUpPending && (() => {
         const newLvSkill = [5,10,15,20,25].includes(gs.playerLevel)
         const lastSkill = newLvSkill && gs.playerSkills.length > 0 ? gs.playerSkills[gs.playerSkills.length - 1] : null
-        const lvFlavor = gs.playerLevel >= 25 ? 'もはや人の域を超えた。魔王を打ち倒す力がある。'
-          : gs.playerLevel >= 20 ? `戦いが、${gs.playerName}を別の何かに変えていく。`
-          : gs.playerLevel >= 15 ? 'もう以前の自分ではない。仲間が信じてくれている。'
-          : gs.playerLevel >= 10 ? '傷を乗り越えた数だけ、確かに強くなった。'
-          : gs.playerLevel >= 5 ? '旅の疲れが、いつの間にか力に変わっていた。'
-          : '小さな一歩。だが確実に、前に進んでいる。'
+        const LV_FLAVOR_POOLS: Array<[number, string[]]> = [
+          [25, [
+            'もはや人の域を超えた。魔王を打ち倒す力がある。',
+            `数え切れない戦いを経て、${gs.playerName}は伝説の域に達しつつある。`,
+            '全てを賭けて戦い続けた先に、この強さがある。',
+          ]],
+          [20, [
+            `戦いが、${gs.playerName}を別の何かに変えていく。`,
+            '限界など、超え続ければ消える。そのことを今、体で知っている。',
+            `もはや${gs.playerName}の剣は、かつてとは別物だ。`,
+          ]],
+          [15, [
+            'もう以前の自分ではない。仲間が信じてくれている。',
+            '旅の果てで、本物の力が芽生えてきた気がする。',
+            'ここまで来られたのは、諦めなかったからだ。',
+          ]],
+          [10, [
+            '傷を乗り越えた数だけ、確かに強くなった。',
+            '何度も倒れて、それでも立ち上がった。その積み重ねが今だ。',
+            '仲間がいるから、ここまで来られた。',
+          ]],
+          [5, [
+            '旅の疲れが、いつの間にか力に変わっていた。',
+            '最初に比べれば、ずっと遠くまで来た。',
+            '経験が身についてきた。確かな手ごたえを感じる。',
+          ]],
+          [0, [
+            '小さな一歩。だが確実に、前に進んでいる。',
+            '旅はまだ始まったばかりだ。この力を積み上げていこう。',
+            '成長は、ゆっくりと、だが確実に訪れる。',
+          ]],
+        ]
+        const flavorPool = LV_FLAVOR_POOLS.find(([min]) => gs.playerLevel >= min)?.[1] ?? LV_FLAVOR_POOLS[LV_FLAVOR_POOLS.length - 1][1]
+        const lvFlavor = flavorPool[gs.playerLevel % flavorPool.length]
         return (
           <div className="fixed inset-0 z-50 flex items-center justify-center" style={{ background: '#08080f' }}>
             <div className="bg-[#0c0c24] border-2 border-amber-500 max-w-sm w-full mx-4">
