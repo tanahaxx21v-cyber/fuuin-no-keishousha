@@ -421,15 +421,30 @@ export function joinCompanion(state: GameState, companionId: CompanionId): GameS
     return s
   }
   s.companions[companionId].joined = true
+  const def = COMPANIONS[companionId]
+  const JOIN_LINES: Partial<Record<CompanionId, string>> = {
+    gares: `${def.emoji} ガレス「分かった。この剣、お前たちのために使おう。」`,
+    liz:   `${def.emoji} リズ「神の導きを信じます。一緒に行かせてください！」`,
+    noa:   `${def.emoji} ノア「やった！一緒に行くね！絶対役に立つから！」`,
+    cecil: `${def.emoji} セシル「……一つ条件がある。私の研究の邪魔をしないこと。」`,
+    bram:  `${def.emoji} ブラム「フン、退屈だったんだ。ちょうどいい。」`,
+    finn:  `${def.emoji} フィン「本当に良いんですか……！精一杯頑張ります！」`,
+    vais:  `${def.emoji} ヴァイス「……後悔させないでくれよ。」`,
+    logan: `${def.emoji} ローガン「……命の保証はしないが、剣の保証はする。」`,
+    iris:  `${def.emoji} イリス「私の力が……役に立てるなら。」`,
+    sig:   `${def.emoji} シグ「よーし！利害一致ってやつだね！」`,
+    elk:   `${def.emoji} エルク「群れに加わる。それだけだ。」`,
+    mira:  `${def.emoji} ミラ「……共に行くわ。精霊も許してくれるでしょう。」`,
+    zeno:  `${def.emoji} ゼノ「……面白い。付き合ってやろう。」`,
+  }
+  const joinLine = JOIN_LINES[companionId] ?? `${def.emoji} ${def.name}が仲間に加わった！`
   // Auto-add to party if space available
   if (s.party.length < 3) {
     s.companions[companionId].inParty = true
     s.party.push(companionId)
-    const def = COMPANIONS[companionId]
-    s.message = `${def.emoji} ${def.name}が仲間に加わった！`
+    s.message = joinLine
   } else {
-    const def = COMPANIONS[companionId]
-    s.message = `${def.emoji} ${def.name}が仲間に加わった！（パーティ編成でメンバーを追加しよう）`
+    s.message = `${joinLine}（パーティ編成でメンバーを追加しよう）`
   }
   s.pendingCompanionJoin = undefined
   return s
@@ -1389,9 +1404,16 @@ function advanceTurn(state: GameState): GameState {
   }
 
   // プレイヤー死亡はゲームオーバー（JRPGスタンダード：主人公が倒れたら全滅扱い）
-  // addDeathLogが既に「倒れた！」を記録済みなので追加ログは不要
   if (playerUnit && playerUnit.hp <= 0) {
     b.phase = 'defeat'
+    const PLAYER_DEATH_MSGS = [
+      '💀 主人公が倒れた……。旅が、ここで終わる。',
+      '💀 光が……消えていく……。',
+      '💀 仲間の声が……遠くなる……。',
+      '💀 立ち上がれない……。もう……。',
+      '💀 ここまで……だったか……。',
+    ]
+    b.logs.push({ text: PLAYER_DEATH_MSGS[Math.floor(Math.random() * PLAYER_DEATH_MSGS.length)], type: 'death' })
     return s
   }
 
@@ -1437,7 +1459,11 @@ function advanceTurn(state: GameState): GameState {
   }
   if (aliveAllies.length === 0) {
     b.phase = 'defeat'
-    const WIPE_MSGS = ['💀 全滅...', '💀 誰も立っていない...', '💀 力尽きた...', '💀 全員、倒れた...']
+    const WIPE_MSGS = [
+      '💀 全滅...', '💀 誰も立っていない...', '💀 力尽きた...', '💀 全員、倒れた...',
+      '💀 立っている者は、もういない...', '💀 戦場に、静寂が戻った...',
+      '💀 最後の一人が倒れた...', '💀 ここで、旅が途絶えた...',
+    ]
     b.logs.push({ text: WIPE_MSGS[Math.floor(Math.random() * WIPE_MSGS.length)], type: 'death' })
     return s
   }
@@ -1555,7 +1581,25 @@ function applyBattleRewards(state: GameState): GameState {
   // ===== 封印石入手 =====
   if (b.sealStoneFound && !s.sealStones.includes(b.sealStoneFound)) {
     s.sealStones.push(b.sealStoneFound)
-    b.logs.push({ text: `💎 ${sealStoneName(b.sealStoneFound)}を手に入れた！`, type: 'system' })
+    const SEAL_OBTAIN_MSGS: Record<string, string[]> = {
+      fire:  [
+        `🔥 炎の封印石が手の中で輝いた！これが最初の鍵だ！`,
+        `🔥 熱い……炎の封印石を手に入れた！魔王封印への道が開く！`,
+        `🔥 炎の封印石——確かに手に入れた！`,
+      ],
+      storm: [
+        `⚡ 嵐の封印石が空気を震わせた！二つ目の鍵だ！`,
+        `⚡ 嵐の封印石を手にした瞬間、全身に電流が走った！`,
+        `⚡ 嵐の封印石——あと一つだ！`,
+      ],
+      dark:  [
+        `🌑 闇の封印石……これで三石が揃う！魔王よ、待っていろ！`,
+        `🌑 闇の封印石を手に入れた！ついに……ついに全て揃った！`,
+        `🌑 三つ目の封印石——これで終わりにできる！`,
+      ],
+    }
+    const stoneMsgs = SEAL_OBTAIN_MSGS[b.sealStoneFound] ?? [`💎 ${sealStoneName(b.sealStoneFound)}を手に入れた！`]
+    b.logs.push({ text: stoneMsgs[Math.floor(Math.random() * stoneMsgs.length)], type: 'system' })
   }
 
   // ===== ボス撃破 =====
@@ -1888,25 +1932,30 @@ export function useItemOutOfBattle(state: GameState, itemId: string, targetId: '
   slot.qty -= 1
   if (slot.qty === 0) s.inventory = s.inventory.filter(i => i.itemId !== itemId)
 
+  const pick = <T>(arr: T[]) => arr[Math.floor(Math.random() * arr.length)]
   if (targetId === 'player') {
     if (item.effect === 'heal_hp') {
       const healed = Math.min(item.power, s.playerMaxHp - s.playerHp)
       s.playerHp = Math.min(s.playerMaxHp, s.playerHp + item.power)
-      s.message = `🧪 ${item.name}を飲んだ。傷が癒えていく。HP+${healed}`
+      s.message = healed === 0
+        ? `🧪 ${item.name}を飲んだ。もう傷はない。`
+        : pick([`🧪 ${item.name}を飲んだ。傷が癒えていく。HP+${healed}`, `🧪 薬液が体に染み渡る。HP+${healed}！`, `🧪 ${item.name}——苦い。でも効く。HP+${healed}`])
     } else if (item.effect === 'heal_mp') {
       const healed = Math.min(item.power, s.playerMaxMp - s.playerMp)
       s.playerMp = Math.min(s.playerMaxMp, s.playerMp + item.power)
-      s.message = `✨ ${item.name}を使った。魔力が満ちてくる。MP+${healed}`
+      s.message = pick([`✨ ${item.name}を使った。魔力が満ちてくる。MP+${healed}`, `✨ 魔力が戻ってくる……！MP+${healed}`, `✨ ${item.name}——魔力が回復した。MP+${healed}`])
     } else if (item.effect === 'heal_both') {
       const hp = Math.min(item.power, s.playerMaxHp - s.playerHp)
       const mp = Math.min(item.power, s.playerMaxMp - s.playerMp)
       s.playerHp = Math.min(s.playerMaxHp, s.playerHp + item.power)
       s.playerMp = Math.min(s.playerMaxMp, s.playerMp + item.power)
-      s.message = `🌿 ${item.name}を使った。体と魔力が回復した。HP+${hp}・MP+${mp}`
+      s.message = pick([`🌿 ${item.name}を使った。体と魔力が回復した。HP+${hp}・MP+${mp}`, `🌿 傷も魔力も癒えた。HP+${hp} MP+${mp}`, `🌿 万能薬の効き目は確かだ。HP+${hp} MP+${mp}`])
     } else if (item.effect === 'cure_status') {
       const hadStatus = s.playerStatus.length > 0
       s.playerStatus = []
-      s.message = hadStatus ? `🫙 ${item.name}を使った。体が軽くなった！` : `🫙 ${item.name}……今は異常がないようだ。`
+      s.message = hadStatus
+        ? pick([`🫙 ${item.name}を使った。体が軽くなった！`, `🫙 異常が消えた！体が動く！`, `🫙 ${item.name}——状態が回復した！`])
+        : `🫙 ${item.name}……今は異常がないようだ。`
     } else {
       s.message = `${item.name}を使った。`
     }
@@ -1917,21 +1966,23 @@ export function useItemOutOfBattle(state: GameState, itemId: string, targetId: '
     if (item.effect === 'heal_hp') {
       const healed = Math.min(item.power, c.maxHp - c.hp)
       c.hp = Math.min(c.maxHp, c.hp + item.power)
-      s.message = `🧪 ${def.name}に${item.name}を渡した。HP+${healed}`
+      s.message = pick([`🧪 ${def.name}に${item.name}を渡した。HP+${healed}`, `🧪 ${def.name}が${item.name}を飲んだ。HP+${healed}！`, `🧪 ${def.name}に使用。HP+${healed}回復。`])
     } else if (item.effect === 'heal_mp') {
       const healed = Math.min(item.power, c.maxMp - c.mp)
       c.mp = Math.min(c.maxMp, c.mp + item.power)
-      s.message = `✨ ${def.name}に${item.name}を使った。MP+${healed}`
+      s.message = pick([`✨ ${def.name}に${item.name}を使った。MP+${healed}`, `✨ ${def.name}の魔力が回復！MP+${healed}`, `✨ ${def.name}「ありがとう」MP+${healed}`])
     } else if (item.effect === 'heal_both') {
       const hp = Math.min(item.power, c.maxHp - c.hp)
       const mp = Math.min(item.power, c.maxMp - c.mp)
       c.hp = Math.min(c.maxHp, c.hp + item.power)
       c.mp = Math.min(c.maxMp, c.mp + item.power)
-      s.message = `🌿 ${def.name}に${item.name}を。HP+${hp}・MP+${mp}`
+      s.message = pick([`🌿 ${def.name}に${item.name}を。HP+${hp}・MP+${mp}`, `🌿 ${def.name}が回復した。HP+${hp} MP+${mp}`, `🌿 ${def.name}に万能薬。HP+${hp} MP+${mp}！`])
     } else if (item.effect === 'cure_status') {
       const hadStatus = c.statusEffects.length > 0
       c.statusEffects = []
-      s.message = hadStatus ? `🫙 ${def.name}の状態異常が消えた！` : `🫙 ${def.name}は異常ではなかったようだ。`
+      s.message = hadStatus
+        ? pick([`🫙 ${def.name}の状態異常が消えた！`, `🫙 ${def.name}「楽になった……！」`, `🫙 ${def.name}の異常が回復した！`])
+        : `🫙 ${def.name}は異常ではなかったようだ。`
     } else {
       s.message = `${item.name}を使った。`
     }
