@@ -381,8 +381,20 @@ export function travel(state: GameState, destId: LocationId): GameState {
     } else if (flavorMsgs.length > 0 && roll < 0.55) {
       // 15% (if flavor exists): 地形フレーバーメッセージ
       s.message = flavorMsgs[Math.floor(Math.random() * flavorMsgs.length)]
+    } else {
+      // 到着フレーバー（サイレント移動を排除）
+      const destName = destLoc.name
+      const ARRIVAL_MSGS = [
+        `${destName}に到着した。`,
+        `${destName}へたどり着いた。`,
+        `長い道のりを経て、${destName}に着いた。`,
+        `${destName}の入口に立った。`,
+        `旅の疲れを感じながら、${destName}に入った。`,
+        `${destName}が見えてきた。もう少しだ。——着いた。`,
+        `一歩一歩、${destName}へ近づき、ついに到着した。`,
+      ]
+      s.message = ARRIVAL_MSGS[Math.floor(Math.random() * ARRIVAL_MSGS.length)]
     }
-    // それ以外: 何も起こらない（サイレント移動）
   }
 
   // castle型ロケーション到着時: 隠しキャラ出現判定
@@ -857,6 +869,18 @@ function pickAttackText(attacker: BattleUnit, target: BattleUnit, dmg: number): 
   return `⚔️ ${attacker.name}${v}。${target.name}に${dmg}ダメージ${suffix}`
 }
 
+function pickCritText(attacker: BattleUnit, target: BattleUnit, dmg: number): string {
+  const CRIT_MSGS = [
+    `💥 ${attacker.name}の会心の一撃！${target.name}に${dmg}ダメージ！`,
+    `💥 急所を突いた！${target.name}に${dmg}の大ダメージ！`,
+    `💥 ${attacker.name}、鋭い見切りで急所！${target.name}に${dmg}ダメージ！`,
+    `💥 クリティカル！${attacker.name}の一撃が${target.name}に${dmg}！`,
+    `💥 渾身の一撃が炸裂！${target.name}に${dmg}ダメージ！`,
+    `💥 ${target.name}の隙をついた！${dmg}の致命打！`,
+  ]
+  return CRIT_MSGS[Math.floor(Math.random() * CRIT_MSGS.length)]
+}
+
 export function setCompanionOrder(state: GameState, companionUid: string, order: import('./types').CompanionOrder): GameState {
   if (!state.battle) return state
   const s = deepClone(state)
@@ -876,7 +900,7 @@ export function battleAttack(state: GameState, targetUid: string): GameState {
   const died = applyDamage(target, result.dmg)
   b.logs.push({
     text: result.crit
-      ? `💥 ${attacker.name}の会心の一撃！${target.name}に${result.dmg}ダメージ！`
+      ? pickCritText(attacker, target, result.dmg)
       : pickAttackText(attacker, target, result.dmg),
     type: result.crit ? 'critical' : 'damage',
   })
@@ -893,14 +917,25 @@ export function battleSkill(state: GameState, skill: Skill, targetUid?: string):
   if (!actor) return state
 
   if (actor.mp < skill.mpCost) {
-    // MP不足 → 1ターン休憩して少し回復
     const mpRecover = Math.max(5, Math.floor(actor.maxMp * 0.08))
     actor.mp = Math.min(actor.maxMp, actor.mp + mpRecover)
-    b.logs.push({ text: `💤 ${actor.name}はMPが足りず休憩した。MP+${mpRecover}回復。`, type: 'status' })
+    const MP_REST_MSGS = [
+      `💤 ${actor.name}はMPが足りず休憩した。MP+${mpRecover}回復。`,
+      `💤 ${actor.name}、MPが切れた……！一息ついてMP+${mpRecover}。`,
+      `💤 ${actor.name}「くっ、魔力が……！」MP+${mpRecover}回復。`,
+      `💤 ${actor.name}は力を蓄えた。MP+${mpRecover}回復。`,
+      `💤 MPが足りない。${actor.name}は呼吸を整えた。MP+${mpRecover}回復。`,
+    ]
+    b.logs.push({ text: MP_REST_MSGS[Math.floor(Math.random() * MP_REST_MSGS.length)], type: 'status' })
     return advanceTurn(s)
   }
   actor.mp -= skill.mpCost
-  b.logs.push({ text: `✨ ${actor.name}は「${skill.name}」を使った！`, type: 'status' })
+  const SKILL_USE_MSGS = [
+    `✨ ${actor.name}は「${skill.name}」を使った！`,
+    `✨ ${actor.name}が「${skill.name}」を発動！`,
+    `✨ 「${skill.name}」——${actor.name}の力が輝く！`,
+  ]
+  b.logs.push({ text: SKILL_USE_MSGS[Math.floor(Math.random() * SKILL_USE_MSGS.length)], type: 'status' })
 
   const targets = resolveTargets(b, skill, actor, targetUid)
   for (const tgt of targets) {
@@ -973,6 +1008,15 @@ export function battleFlee(state: GameState): GameState {
   const success = Math.random() < (s.playerLevel <= 4 ? 0.75 : 0.60)
   if (success) {
     syncBattleToState(s)
+    const FLEE_SUCCESS_MSGS = [
+      '💨 うまく逃げ切った！',
+      '💨 間一髪で脱出した！',
+      '💨 煙の中を駆け抜けた！なんとか逃げられた！',
+      '💨 全力疾走で撒いた……！ハアハア……。',
+      '💨 迷路のような路地を抜けて逃走成功！',
+      '💨 敵の囲みを強引に突破！脱出した！',
+    ]
+    s.message = FLEE_SUCCESS_MSGS[Math.floor(Math.random() * FLEE_SUCCESS_MSGS.length)]
     s.battle = undefined
     s.phase = 'location'
     return s
@@ -1117,7 +1161,7 @@ function processEnemyTurn(state: GameState): GameState {
   const diedFromAtk = applyDamage(target, boostedDmg)
   b.logs.push({
     text: result.crit
-      ? `💥 ${actor.name}の会心！${target.name}に${boostedDmg}ダメージ！`
+      ? pickCritText(actor, target, boostedDmg)
       : isBossDying
       ? `🌋 ${actor.name}の渾身の一撃！${target.name}に${boostedDmg}ダメージ！`
       : pickAttackText(actor, target, boostedDmg),
@@ -1255,7 +1299,7 @@ function processCompanionTurn(state: GameState): GameState {
   const diedFromAtk = applyDamage(target, result.dmg)
   b.logs.push({
     text: result.crit
-      ? `💥 ${actor.name}の会心！${target.name}に${result.dmg}ダメージ！`
+      ? pickCritText(actor, target, result.dmg)
       : pickAttackText(actor, target, result.dmg),
     type: result.crit ? 'critical' : 'damage',
   })
@@ -2419,7 +2463,13 @@ function applySkillEffect(battle: BattleState, actor: BattleUnit, target: Battle
       const base = Math.max(1, (actor.atk * atkMod * skill.power * sealBonus) - (target.def * defMod / 1.5))
       const dmg = Math.max(1, Math.floor(base * (0.9 + Math.random() * 0.2)))
       const died = applyDamage(target, dmg)
-      battle.logs.push({ text: `💥 ${target.name}に${dmg}ダメージ！`, type: 'damage' })
+      const dmgRatio = dmg / (target.maxHp || 1)
+      const SKILL_DMG_MSGS = dmgRatio >= 0.3
+        ? [`💥 ${skill.name}が炸裂！${target.name}に${dmg}の大ダメージ！`, `💥 ${target.name}に${dmg}ダメージ！強烈な一撃！`, `💥 ${skill.name}の一撃で${target.name}が${dmg}の痛手を負った！`]
+        : dmgRatio <= 0.05
+        ? [`💥 ${target.name}に${dmg}ダメージ。効きが甘い……`, `💥 ${skill.name}……${target.name}に${dmg}ダメージ。`, `💥 ${target.name}の防御が厚い。${dmg}ダメージしか与えられない。`]
+        : [`💥 ${target.name}に${dmg}ダメージ！`, `💥 ${skill.name}が${target.name}に命中！${dmg}ダメージ！`, `💥 ${target.name}に${dmg}の痛手！`]
+      battle.logs.push({ text: SKILL_DMG_MSGS[Math.floor(Math.random() * SKILL_DMG_MSGS.length)], type: 'damage' })
       if (died) addDeathLog(battle, target)
       break
     }
