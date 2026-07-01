@@ -2481,7 +2481,18 @@ function addDeathLog(b: BattleState, target: BattleUnit, cause = '倒れた') {
       b.logs.push({ text: `${target.emoji}${target.name}「${word}」`, type: 'system' })
     }
   }
-  b.logs.push({ text: `💀 ${target.name}は${cause}！`, type: 'death' })
+  if (!target.isAlly) {
+    const ENEMY_DEATH_MSGS = [
+      `💀 ${target.name}は${cause}！`,
+      `💀 ${target.name}が倒れた！`,
+      `💀 ${target.name}、討ち取った！`,
+      `💀 ${target.name}はもう動かない。`,
+      `💀 ${target.name}は${cause}……。`,
+    ]
+    b.logs.push({ text: ENEMY_DEATH_MSGS[Math.floor(Math.random() * ENEMY_DEATH_MSGS.length)], type: 'death' })
+  } else {
+    b.logs.push({ text: `💀 ${target.name}は${cause}！`, type: 'death' })
+  }
 
   // 仲間が倒れると生き残り全員が怒り（ATK+15%・2ターン）
   if (target.isAlly && !target.isPlayer) {
@@ -2495,7 +2506,13 @@ function addDeathLog(b: BattleState, target: BattleUnit, cause = '倒れた') {
           ally.statusEffects.push({ id: 'atk_up', name: '怒り', turnsLeft: 2 })
         }
       }
-      b.logs.push({ text: `🔥 仲間の死に激怒！生存者の攻撃力が上昇！`, type: 'system' })
+      const RAGE_ON_DEATH = [
+        `🔥 仲間の死に激怒！生存者の攻撃力が上昇！`,
+        `🔥 怒りが力に変わった！攻撃力上昇！`,
+        `🔥 仲間をやられた……！許さない！`,
+        `🔥 生存者の目の色が変わった。攻撃強化！`,
+      ]
+      b.logs.push({ text: RAGE_ON_DEATH[Math.floor(Math.random() * RAGE_ON_DEATH.length)], type: 'system' })
     }
   }
 }
