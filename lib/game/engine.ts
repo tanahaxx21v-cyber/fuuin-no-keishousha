@@ -700,6 +700,11 @@ export function buyItem(state: GameState, itemId: string): GameState {
     `${item.emoji}${item.name}を${price}Gで購入した！`,
     `${item.emoji}${item.name}を手に入れた。（-${price}G）`,
     `商人「まいど！」${item.emoji}${item.name}を${price}Gで購入。`,
+    `${item.emoji}${item.name}をバッグに詰めた。（${price}G）`,
+    `商人「また来てくれよ！」${item.emoji}${item.name}×1 入手。`,
+    `${item.emoji}${item.name}——必要なものを揃えた。${price}G支払った。`,
+    `旅の備えに${item.emoji}${item.name}を加えた。（-${price}G）`,
+    `${item.emoji}${item.name}、確かに受け取った。${price}G也。`,
   ]
   s.message = BUY_MSGS[Math.floor(Math.random() * BUY_MSGS.length)]
   return s
@@ -1604,7 +1609,14 @@ function applyBattleRewards(state: GameState): GameState {
     const newSkill = PLAYER_SKILL_SCHEDULE.find(ps => ps.level === s.playerLevel)
     if (newSkill && !s.playerSkills.some(sk => sk.id === newSkill.skill.id)) {
       s.playerSkills.push(newSkill.skill)
-      b.logs.push({ text: `✨ 新スキル「${newSkill.skill.name}」を習得した！`, type: 'system' })
+      const SKILL_LEARN_MSGS = [
+        `✨ 新スキル「${newSkill.skill.name}」を習得した！`,
+        `✨ 戦いの中で「${newSkill.skill.name}」を体得した！`,
+        `✨ 新たな技を会得——「${newSkill.skill.name}」！`,
+        `✨「${newSkill.skill.name}」——新しい力が目覚めた！`,
+        `✨ 限界を超えた先で「${newSkill.skill.name}」を掴んだ！`,
+      ]
+      b.logs.push({ text: SKILL_LEARN_MSGS[Math.floor(Math.random() * SKILL_LEARN_MSGS.length)], type: 'system' })
     }
   }
 
@@ -1635,7 +1647,14 @@ function applyBattleRewards(state: GameState): GameState {
       const newCompSkill = def.learnableSkills?.find(ls => ls.level === c.level)
       if (newCompSkill && !c.learnedSkills.some(sk => sk.id === newCompSkill.skill.id)) {
         c.learnedSkills.push(newCompSkill.skill)
-        b.logs.push({ text: `✨ ${def.name}が「${newCompSkill.skill.name}」を習得した！`, type: 'system' })
+        const COMP_SKILL_MSGS = [
+          `✨ ${def.name}が「${newCompSkill.skill.name}」を習得した！`,
+          `✨ ${def.name}の新たな力——「${newCompSkill.skill.name}」！`,
+          `✨ ${def.emoji}${def.name}「${newCompSkill.skill.name}」を会得！`,
+          `✨ ${def.name}が「${newCompSkill.skill.name}」をマスターした！`,
+          `✨ 強くなった！${def.name}が「${newCompSkill.skill.name}」を身につけた！`,
+        ]
+        b.logs.push({ text: COMP_SKILL_MSGS[Math.floor(Math.random() * COMP_SKILL_MSGS.length)], type: 'system' })
       }
     }
   }
@@ -1655,7 +1674,14 @@ function applyBattleRewards(state: GameState): GameState {
         } else {
           s.inventory.push({ itemId: enemyDef.dropItemId!, qty: 1 })
         }
-        b.logs.push({ text: `✨ ${enemy.name}が ${dropped.emoji}${dropped.name} を落とした！`, type: 'system' })
+        const DROP_MSGS = [
+          `✨ ${enemy.name}が ${dropped.emoji}${dropped.name} を落とした！`,
+          `✨ 倒れた${enemy.name}の傍に${dropped.emoji}${dropped.name}が！`,
+          `✨ ${enemy.name}から${dropped.emoji}${dropped.name}を奪った！`,
+          `✨ ${enemy.name}が${dropped.emoji}${dropped.name}を残した。`,
+          `✨ ラッキー！${enemy.name}から${dropped.emoji}${dropped.name}を入手！`,
+        ]
+        b.logs.push({ text: DROP_MSGS[Math.floor(Math.random() * DROP_MSGS.length)], type: 'system' })
       }
     }
   }
@@ -1764,7 +1790,14 @@ function applyBattleRewards(state: GameState): GameState {
         const ex = s.inventory.find(i => i.itemId === itemId)
         if (ex) ex.qty += 1
         else s.inventory.push({ itemId, qty: 1 })
-        b.logs.push({ text: `📦 奥に宝箱を発見！${item.emoji}${item.name}を入手した！`, type: 'system' })
+        const CHEST_MSGS = [
+          `📦 奥に宝箱を発見！${item.emoji}${item.name}を入手した！`,
+          `📦 戦いの後、隅に古い宝箱が。${item.emoji}${item.name}が入っていた！`,
+          `📦 宝箱発見！中から${item.emoji}${item.name}が出てきた！`,
+          `📦 埃かぶった箱を開けると……${item.emoji}${item.name}だ！`,
+          `📦 ダンジョンの恵み——${item.emoji}${item.name}を手にした！`,
+        ]
+        b.logs.push({ text: CHEST_MSGS[Math.floor(Math.random() * CHEST_MSGS.length)], type: 'system' })
       }
     }
   }
