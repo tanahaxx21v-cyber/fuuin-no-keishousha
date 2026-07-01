@@ -645,7 +645,14 @@ export function restAtInn(state: GameState): GameState {
   const s = deepClone(state)
   const totalDays = getDifficultyMultiplier(s.difficulty).days
   const cost = getInnPrice(s.daysLeft, totalDays)
-  if (s.gold < cost) return { ...s, message: `所持金が足りません（${cost}G必要）` }
+  if (s.gold < cost) {
+    const INN_SHORT_MSGS = [
+      `所持金が足りません（${cost}G必要）`,
+      `宿代が払えない……あと${cost - s.gold}G足りない。`,
+      `主人「${cost}G頂かないと……」——今は無理だ。稼いでくる。`,
+    ]
+    return { ...s, message: INN_SHORT_MSGS[Math.floor(Math.random() * INN_SHORT_MSGS.length)] }
+  }
   s.gold -= cost
   s.daysLeft -= 1
   s.playerHp = s.playerMaxHp
@@ -2121,7 +2128,7 @@ export function useItemOutOfBattle(state: GameState, itemId: string, targetId: '
       const healed = Math.min(item.power, s.playerMaxHp - s.playerHp)
       s.playerHp = Math.min(s.playerMaxHp, s.playerHp + item.power)
       s.message = healed === 0
-        ? `🧪 ${item.name}を飲んだ。もう傷はない。`
+        ? pick([`🧪 ${item.name}を飲んだ。もう傷はない。`, `🧪 傷はすでに塞がっている。${item.name}は無駄になった。`, `🧪 HPは満タンだ。${item.name}……勿体なかったか？`])
         : pick([`🧪 ${item.name}を飲んだ。傷が癒えていく。HP+${healed}`, `🧪 薬液が体に染み渡る。HP+${healed}！`, `🧪 ${item.name}——苦い。でも効く。HP+${healed}`])
     } else if (item.effect === 'heal_mp') {
       const healed = Math.min(item.power, s.playerMaxMp - s.playerMp)
@@ -2138,7 +2145,7 @@ export function useItemOutOfBattle(state: GameState, itemId: string, targetId: '
       s.playerStatus = []
       s.message = hadStatus
         ? pick([`🫙 ${item.name}を使った。体が軽くなった！`, `🫙 異常が消えた！体が動く！`, `🫙 ${item.name}——状態が回復した！`])
-        : `🫙 ${item.name}……今は異常がないようだ。`
+        : pick([`🫙 ${item.name}……今は異常がないようだ。`, `🫙 異常はない。${item.name}を使う必要はなかった。`, `🫙 体の状態は正常だ。${item.name}は温存しよう。`])
     } else {
       s.message = `${item.name}を使った。`
     }
@@ -2165,7 +2172,7 @@ export function useItemOutOfBattle(state: GameState, itemId: string, targetId: '
       c.statusEffects = []
       s.message = hadStatus
         ? pick([`🫙 ${def.name}の状態異常が消えた！`, `🫙 ${def.name}「楽になった……！」`, `🫙 ${def.name}の異常が回復した！`])
-        : `🫙 ${def.name}は異常ではなかったようだ。`
+        : pick([`🫙 ${def.name}は異常ではなかったようだ。`, `🫙 ${def.name}に使ったが、異常はなかった。`, `🫙 ${def.name}「大丈夫ですよ？……使わなくてよかったのに」`])
     } else {
       s.message = `${item.name}を使った。`
     }
