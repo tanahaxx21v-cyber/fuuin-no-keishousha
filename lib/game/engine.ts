@@ -1953,11 +1953,31 @@ const WANDER_TRAIN_TEXTS: string[][] = [
   ['暗闇の中で構えを取る練習をした。感覚が研ぎ澄まされる気がした。'],
 ]
 
-const WANDER_ITEM_PLACES: Record<string, string> = {
-  town: '市場の外れに',
-  relay: '茂みの中に',
-  dungeon: '岩陰に',
-  castle: '庭園の隅に',
+const WANDER_ITEM_TEXTS: Record<string, string[]> = {
+  town:    [
+    '市場の外れで箱が放置されていた。開けてみると',
+    '薬屋の前のゴミ箱の横に落ちていた。拾ったら',
+    '路地のぼろ布の下から出てきた。まだ使えそうだ——',
+    '「これ要らないので」と通行人に差し出された。',
+  ],
+  relay:   [
+    '茂みの中に旅人が置いていったらしい荷物があった。中に',
+    '川沿いの石の上に誰かが忘れていった袋があった。中身は',
+    '古い木箱の中に残されていたのは',
+    '草むらを歩いていたら足に当たった。拾い上げると',
+  ],
+  dungeon: [
+    '岩陰に先人が隠したらしき荷物があった。その中に',
+    '宝箱の隅に押しやられていた小袋の中に',
+    '壁の割れ目に詰め込まれていたのは',
+    '倒れた柱の下から出てきた。使えそうだ——',
+  ],
+  castle:  [
+    '廃城の庭園の隅に、まだ無事な荷物があった。中に',
+    '朽ちた棚の上に残されていたのは',
+    '城壁の穴の中に詰め込まれた小袋。取り出すと',
+    '玉座の脇の燭台の下に隠されていたのは',
+  ],
 }
 
 const WANDER_REST_TEXTS: string[] = [
@@ -2066,13 +2086,15 @@ export function wander(state: GameState, mode: 'gold' | 'train' | 'explore' = 'e
     if (ex) ex.qty += 1
     else s.inventory.push({ itemId: found.itemId, qty: 1 })
     const foundItem = ITEMS[found.itemId]
-    const place = WANDER_ITEM_PLACES[locType] ?? 'どこかに'
-    s.message = `🎁 ${place}${foundItem?.emoji ?? ''}${foundItem?.name ?? found.itemId}を見つけた！`
+    const itemTexts = WANDER_ITEM_TEXTS[locType] ?? WANDER_ITEM_TEXTS.relay
+    const itemPrefix = itemTexts[Math.floor(Math.random() * itemTexts.length)]
+    s.message = `🎁 ${itemPrefix}${foundItem?.emoji ?? ''}${foundItem?.name ?? found.itemId}が入っていた！`
   } else if (roll < thresholds[3]) {
     const heal = Math.floor(s.playerMaxHp * 0.15)
     s.playerHp = Math.min(s.playerMaxHp, s.playerHp + heal)
     const restText = WANDER_REST_TEXTS[Math.floor(Math.random() * WANDER_REST_TEXTS.length)]
-    s.message = `✨ ${restText} HP+${heal}`
+    const healSuffix = s.playerHp >= s.playerMaxHp ? '　体が完全に回復した！' : `　HP+${heal}。`
+    s.message = `✨ ${restText}${healSuffix}`
   } else if (roll < thresholds[4]) {
     // 稀に小さな敵エンカウント（中継地のenemy pool使用）
     const pool = loc.travelEnemyPool ?? loc.enemyPool ?? []
